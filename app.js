@@ -42,7 +42,6 @@ document.getElementById("emailForm").addEventListener("submit", async (e) => {
     to: form.to.value,
     subject: form.subject.value,
     text: form.text.value,
-    replyTo: form.replyTo.value || undefined,
     attachments,
   };
 

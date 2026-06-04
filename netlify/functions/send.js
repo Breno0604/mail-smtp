@@ -7,7 +7,7 @@ exports.handler = async (event) => {
 
   try {
     const body = JSON.parse(event.body);
-    const { to, subject, text, replyTo, attachments } = body;
+    const { to, subject, text, attachments } = body;
 
     if (!to || !subject) {
       return { statusCode: 400, body: JSON.stringify({ error: "Missing required fields: to, subject" }) };
@@ -17,10 +17,6 @@ exports.handler = async (event) => {
     if (!emailRegex.test(to)) {
       return { statusCode: 400, body: JSON.stringify({ error: "Formato de email inválido em 'Para'." }) };
     }
-    if (replyTo && !emailRegex.test(replyTo)) {
-      return { statusCode: 400, body: JSON.stringify({ error: "Formato de email inválido em 'Responder Para'." }) };
-    }
-
     if (attachments && attachments.length > 12) {
       return { statusCode: 400, body: JSON.stringify({ error: "Máximo de 12 anexos permitido." }) };
     }
@@ -52,7 +48,6 @@ exports.handler = async (event) => {
       to,
       subject,
       text: text || "",
-      replyTo: replyTo || undefined,
       attachments: attachments || [],
     };
 
