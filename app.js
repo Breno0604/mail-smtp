@@ -3,12 +3,10 @@ document.getElementById("emailForm").addEventListener("submit", async (e) => {
 
   const statusEl = document.getElementById("status");
   const submitBtn = document.getElementById("submitBtn");
-  const progressBar = document.getElementById("progressBar");
 
   statusEl.className = "";
-  statusEl.textContent = "";
+  statusEl.textContent = "Enviando email...";
   submitBtn.disabled = true;
-  progressBar.value = 0;
 
   const form = e.target;
   const fileInput = form.querySelector("#attachments");
@@ -22,7 +20,6 @@ document.getElementById("emailForm").addEventListener("submit", async (e) => {
   }
 
   const attachments = [];
-  let converted = 0;
 
   for (const file of files) {
     const buffer = await file.arrayBuffer();
@@ -34,8 +31,6 @@ document.getElementById("emailForm").addEventListener("submit", async (e) => {
       content: btoa(binary),
       encoding: "base64",
     });
-    converted++;
-    progressBar.value = (converted / files.length) * 100;
   }
 
   const payload = {
@@ -58,7 +53,6 @@ document.getElementById("emailForm").addEventListener("submit", async (e) => {
       statusEl.className = "success";
       statusEl.textContent = "Email enviado com sucesso!";
       form.reset();
-      progressBar.value = 0;
     } else {
       statusEl.className = "error";
       statusEl.textContent = data.error || "Erro ao enviar email.";
