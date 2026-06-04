@@ -1,3 +1,32 @@
+function blobToBase64(blob) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result.split(",")[1]);
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function toBase64(file) {
+  const buffer = await file.arrayBuffer();
+  const bytes = new Uint8Array(buffer);
+  let binary = "";
+  bytes.forEach((b) => (binary += String.fromCharCode(b)));
+  return btoa(binary);
+}
+
+function loadImage(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      resolve(img);
+    };
+    img.onerror = reject;
+    img.src = url;
+  });
+}
+
 document.getElementById("emailForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -22,15 +51,31 @@ document.getElementById("emailForm").addEventListener("submit", async (e) => {
   const attachments = [];
 
   for (const file of files) {
-    const buffer = await file.arrayBuffer();
-    const bytes = new Uint8Array(buffer);
-    let binary = "";
-    bytes.forEach((b) => (binary += String.fromCharCode(b)));
-    attachments.push({
-      filename: file.name,
-      content: btoa(binary),
-      encoding: "base64",
-    });
+    const img = await loadImage(file);
+    if (img.naturalWidth > 1080) {
+      const ratio = 1080 / img.naturalWidth;
+      const canvas = document.createElement("canvas");
+      canvas.width = 1080;
+      canvas.height = Math.round(img.naturalHeight * ratio);
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      const blob = await new Promise((resolve) =>
+        canvas.toBlob(resolve, "image/jpeg", 0.8)
+      );
+      const dot = file.name.lastIndexOf(".");
+      const basename = dot > -1 ? file.name.slice(0, dot) : file.name;
+      attachments.push({
+        filename: basename + "_red.jpg",
+        content: await blobToBase64(blob),
+        encoding: "base64",
+      });
+    } else {
+      attachments.push({
+        filename: file.name,
+        content: await toBase64(file),
+        encoding: "base64",
+      });
+    }
   }
 
   const payload = {
