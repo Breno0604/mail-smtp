@@ -48,18 +48,12 @@ document.getElementById("emailForm").addEventListener("submit", async (e) => {
     return;
   }
 
-  function getTier(size) {
-    if (size <= 686080) return null;
-    if (size <= 1572864) return { targetWidth: 1920, quality: 0.85 };
-    if (size <= 3145728) return { targetWidth: 1080, quality: 0.85 };
-    return { targetWidth: 1080, quality: 0.75 };
-  }
-
+  const MAX_SIZE = 650 * 1024;
+  const SKIP_SIZE = 670 * 1024;
   const attachments = [];
 
   for (const file of files) {
-    const tier = getTier(file.size);
-    if (!tier) {
+    if (file.size <= SKIP_SIZE) {
       attachments.push({
         filename: file.name,
         content: await toBase64(file),
@@ -69,16 +63,35 @@ document.getElementById("emailForm").addEventListener("submit", async (e) => {
     }
 
     const img = await loadImage(file);
-    const target = Math.min(tier.targetWidth, img.naturalWidth);
-    const ratio = target / img.naturalWidth;
     const canvas = document.createElement("canvas");
-    canvas.width = target;
-    canvas.height = Math.round(img.naturalHeight * ratio);
     const ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    const blob = await new Promise((resolve) =>
-      canvas.toBlob(resolve, "image/jpeg", tier.quality)
-    );
+    let width = img.naturalWidth;
+    let quality = 0.9;
+    let blob;
+
+    for (let attempt = 0; attempt < 10; attempt++) {
+      const ratio = width / img.naturalWidth;
+      canvas.width = width;
+      canvas.height = Math.round(img.naturalHeight * ratio);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      blob = await new Promise((resolve) =>
+        canvas.toBlob(resolve, "image/jpeg", quality)
+      );
+      if (blob.size <= MAX_SIZE) break;
+      width = Math.round(width * 0.8);
+    }
+
+    if (blob.size > MAX_SIZE) {
+      quality = 0.7;
+      const ratio = width / img.naturalWidth;
+      canvas.width = width;
+      canvas.height = Math.round(img.naturalHeight * ratio);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      blob = await new Promise((resolve) =>
+        canvas.toBlob(resolve, "image/jpeg", quality)
+      );
+    }
+
     const dot = file.name.lastIndexOf(".");
     const basename = dot > -1 ? file.name.slice(0, dot) : file.name;
     attachments.push({
