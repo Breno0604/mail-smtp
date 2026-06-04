@@ -1,0 +1,8 @@
+{
+  "name": "mail-mvp",
+  "version": "1.0.0",
+  "description": "Minimal webmail with SMTP and attachments",
+  "dependencies": {
+    "nodemailer": "^6.9.0"
+  }
+}
