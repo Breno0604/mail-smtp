@@ -48,34 +48,44 @@ document.getElementById("emailForm").addEventListener("submit", async (e) => {
     return;
   }
 
+  function getTier(size) {
+    if (size <= 686080) return null;
+    if (size <= 1572864) return { targetWidth: 1920, quality: 0.85 };
+    if (size <= 3145728) return { targetWidth: 1080, quality: 0.85 };
+    return { targetWidth: 1080, quality: 0.75 };
+  }
+
   const attachments = [];
 
   for (const file of files) {
-    const img = await loadImage(file);
-    if (img.naturalWidth > 1080) {
-      const ratio = 1080 / img.naturalWidth;
-      const canvas = document.createElement("canvas");
-      canvas.width = 1080;
-      canvas.height = Math.round(img.naturalHeight * ratio);
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      const blob = await new Promise((resolve) =>
-        canvas.toBlob(resolve, "image/jpeg", 0.8)
-      );
-      const dot = file.name.lastIndexOf(".");
-      const basename = dot > -1 ? file.name.slice(0, dot) : file.name;
-      attachments.push({
-        filename: basename + "_red.jpg",
-        content: await blobToBase64(blob),
-        encoding: "base64",
-      });
-    } else {
+    const tier = getTier(file.size);
+    if (!tier) {
       attachments.push({
         filename: file.name,
         content: await toBase64(file),
         encoding: "base64",
       });
+      continue;
     }
+
+    const img = await loadImage(file);
+    const target = Math.min(tier.targetWidth, img.naturalWidth);
+    const ratio = target / img.naturalWidth;
+    const canvas = document.createElement("canvas");
+    canvas.width = target;
+    canvas.height = Math.round(img.naturalHeight * ratio);
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise((resolve) =>
+      canvas.toBlob(resolve, "image/jpeg", tier.quality)
+    );
+    const dot = file.name.lastIndexOf(".");
+    const basename = dot > -1 ? file.name.slice(0, dot) : file.name;
+    attachments.push({
+      filename: basename + "_red.jpg",
+      content: await blobToBase64(blob),
+      encoding: "base64",
+    });
   }
 
   const payload = {
