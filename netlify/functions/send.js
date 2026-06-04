@@ -7,10 +7,31 @@ exports.handler = async (event) => {
 
   try {
     const body = JSON.parse(event.body);
-    const { to, subject, text, attachments } = body;
+    const { to, subject, text, replyTo, attachments } = body;
 
     if (!to || !subject) {
       return { statusCode: 400, body: JSON.stringify({ error: "Missing required fields: to, subject" }) };
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(to)) {
+      return { statusCode: 400, body: JSON.stringify({ error: "Formato de email inválido em 'Para'." }) };
+    }
+    if (replyTo && !emailRegex.test(replyTo)) {
+      return { statusCode: 400, body: JSON.stringify({ error: "Formato de email inválido em 'Responder Para'." }) };
+    }
+
+    if (attachments && attachments.length > 12) {
+      return { statusCode: 400, body: JSON.stringify({ error: "Máximo de 12 anexos permitido." }) };
+    }
+
+    if (attachments) {
+      for (const att of attachments) {
+        const size = Buffer.from(att.content, "base64").length;
+        if (size > 8 * 1024 * 1024) {
+          return { statusCode: 400, body: JSON.stringify({ error: `Anexo '${att.filename}' excede 8 MB.` }) };
+        }
+      }
     }
 
     const transportConfig = {
@@ -31,6 +52,7 @@ exports.handler = async (event) => {
       to,
       subject,
       text: text || "",
+      replyTo: replyTo || undefined,
       attachments: attachments || [],
     };
 
