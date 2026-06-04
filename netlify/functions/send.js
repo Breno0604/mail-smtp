@@ -7,16 +7,27 @@ exports.handler = async (event) => {
 
   try {
     const body = JSON.parse(event.body);
-    const { to, subject, text, attachments } = body;
+    const { subject, text, attachments } = body;
 
-    if (!to || !subject) {
-      return { statusCode: 400, body: JSON.stringify({ error: "Missing required fields: to, subject" }) };
+    if (!subject) {
+      return { statusCode: 400, body: JSON.stringify({ error: "Campo 'assunto' é obrigatório." }) };
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(to)) {
-      return { statusCode: 400, body: JSON.stringify({ error: "Formato de email inválido em 'Para'." }) };
+    const toList = (process.env.SMTP_TO || "")
+      .split(",")
+      .map((e) => e.trim())
+      .filter((e) => e.length > 0);
+
+    if (toList.length === 0) {
+      return { statusCode: 500, body: JSON.stringify({ error: "SMTP_TO não configurado." }) };
     }
+
+    const invalid = toList.filter((e) => !emailRegex.test(e));
+    if (invalid.length > 0) {
+      return { statusCode: 500, body: JSON.stringify({ error: `Emails inválidos em SMTP_TO: ${invalid.join(", ")}` }) };
+    }
+
     if (attachments && attachments.length > 12) {
       return { statusCode: 400, body: JSON.stringify({ error: "Máximo de 12 anexos permitido." }) };
     }
@@ -45,7 +56,7 @@ exports.handler = async (event) => {
 
     const mailOptions = {
       from: process.env.SMTP_FROM,
-      to,
+      to: toList,
       subject,
       text: text || "",
       attachments: attachments || [],
@@ -55,7 +66,7 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ success: true }),
+      body: JSON.stringify({ success: true, to: toList }),
     };
   } catch (error) {
     return {

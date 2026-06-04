@@ -1,3 +1,36 @@
+const DB_NAME = "mail-mvp";
+const DB_VERSION = 1;
+const STORE_NAME = "sent_emails";
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME, {
+          keyPath: "id",
+          autoIncrement: true,
+        });
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function saveRecord(record) {
+  return openDB().then((db) => {
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, "readwrite");
+      const store = tx.objectStore(STORE_NAME);
+      store.add(record);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+  });
+}
+
 function blobToBase64(blob) {
   return new Promise((resolve) => {
     const reader = new FileReader();
@@ -102,7 +135,6 @@ document.getElementById("emailForm").addEventListener("submit", async (e) => {
   }
 
   const payload = {
-    to: form.to.value,
     subject: form.subject.value,
     text: form.text.value,
     attachments,
@@ -121,6 +153,13 @@ document.getElementById("emailForm").addEventListener("submit", async (e) => {
       statusEl.className = "success";
       statusEl.textContent = "Email enviado com sucesso!";
       form.reset();
+
+      saveRecord({
+        to: data.to,
+        subject: payload.subject,
+        sentAt: new Date().toISOString(),
+        status: "sucesso",
+      });
     } else {
       statusEl.className = "error";
       statusEl.textContent = data.error || "Erro ao enviar email.";
