@@ -105,12 +105,27 @@ mail-smtp/
 
 - **Frameworks JavaScript**: Vue, React, Next.js, Angular, Svelte, Solid, etc.
 - **Bundlers / build tools**: Webpack, Vite, esbuild, Babel, TypeScript compiler, etc.
+- **CSS frameworks além do Tailwind**: Bootstrap, Material UI, Bulma, etc.
 - Autenticação de usuários (login, senha, sessão)
 - Banco de dados online ou servidor próprio
 - Campo "Para" editável pelo usuário (destinatário fixo via `SMTP_TO`)
 - Envio para mais de 12 anexos
 - Anexos com mais de 8 MB
 - Templates de email com HTML rich, layouts ou placeholders
+- Editor rich text para o corpo do email (TinyMCE, Quill, CKEditor)
+- Upload de anexos para armazenamento externo (S3, Cloudinary)
+- Notificações push no navegador
+- Agendamento de envio (data futura)
+- CC / BCC (cópia carbono)
+- Templates de email editáveis pelo usuário
+- Rastreamento de abertura (pixel tracking)
+- Integração com APIs externas (IA, ChatGPT, WebSockets)
+- Painel administrativo ou dashboard com gráficos
+- Exportação do histórico (CSV, Excel)
+- Múltiplas contas SMTP configuráveis pelo usuário
+- Validação de tipo real de arquivo (MIME check no backend)
+- Compressão de anexos no backend (a compressão é apenas no frontend)
+- Serviço de emails transacionais (SendGrid, Mailgun, AWS SES) — usa-se apenas SMTP direto
 - Testes automatizados (unitários, integração, e2e)
 - API pública documentada ou endpoints versionados
 - Modo de desenvolvimento local (depende das Netlify Functions)
@@ -130,3 +145,9 @@ mail-smtp/
 
 - **Logs e monitoramento de envios** — rastreamento centralizado de falhas e sucessos
 - **Deleção automática de registros antigos** — registros com data de envio ≥ 90 dias serão removidos permanentemente do IndexedDB
+- **Formulário de retorno de ordens de serviço** — conteúdo do formulário usado como assunto e corpo do email
+- **PWA** — service workers, manifest, instalação, suporte offline
+- **Modo escuro (dark mode)**
+- **Fila de envios pendentes**
+- **Rascunhos** — salvar email não finalizado para envio posterior
+- **Revisão do email antes de enviar** — tela de confirmação com resumo

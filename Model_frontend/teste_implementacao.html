@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teste — Formulário Multi-Seção</title>
+<style>
+  :root {
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --success: #16a34a;
+    --error: #dc2626;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-900: #111827;
+    --radius: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: #eef2f7;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+
+  .container {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    padding: 32px;
+    width: 100%;
+    max-width: 640px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+
+  .header-row h1 {
+    font-size: 1.375rem;
+    color: var(--gray-900);
+    margin: 0;
+  }
+
+  .btn-link {
+    background: none;
+    border: none;
+    color: var(--gray-500);
+    font-size: 0.8125rem;
+    cursor: pointer;
+    font-family: inherit;
+    text-decoration: underline dotted;
+    padding: 4px;
+    transition: color 0.2s;
+  }
+
+  .btn-link:hover { color: var(--error); }
+
+  /* ── Progress ── */
+  .progress {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 32px;
+    gap: 0;
+  }
+
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .step-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    border: 2px solid var(--gray-300);
+    color: var(--gray-500);
+    background: #fff;
+  }
+
+  .step.active .step-circle {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+  }
+
+  .step.completed .step-circle {
+    background: var(--success);
+    color: #fff;
+    border-color: var(--success);
+  }
+
+  .step.done .step-circle::after {
+    content: '✓';
+    font-size: 1rem;
+  }
+
+  .step.done .step-circle span { display: none; }
+
+  .step-label {
+    font-size: 0.6875rem;
+    color: var(--gray-500);
+    white-space: nowrap;
+  }
+
+  .step.active .step-label {
+    color: var(--primary);
+    font-weight: 700;
+  }
+
+  .step.completed .step-label {
+    color: var(--success);
+    font-weight: 600;
+  }
+
+  .step-line {
+    width: 48px;
+    height: 2px;
+    background: var(--gray-200);
+    margin: 0 4px;
+    align-self: flex-start;
+    margin-top: 17px;
+  }
+
+  .step-line.completed {
+    background: var(--success);
+  }
+
+  /* ── Sections ── */
+  .section-wrapper {
+    position: relative;
+    min-height: 320px;
+  }
+
+  .section {
+    display: none;
+    width: 100%;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+  }
+
+  .section.active {
+    display: block;
+    animation: slideIn 0.25s ease forwards;
+  }
+
+  .section.slide-out-left {
+    display: block;
+    animation: slideOutLeft 0.25s ease forwards;
+  }
+
+  .section.slide-out-right {
+    display: block;
+    animation: slideOutRight 0.25s ease forwards;
+  }
+
+  @keyframes slideIn {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  @keyframes slideOutLeft {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(-30px); opacity: 0; }
+  }
+
+  @keyframes slideOutRight {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(30px); opacity: 0; }
+  }
+
+  .section-enter-next {
+    animation: enterFromRight 0.25s ease forwards;
+  }
+
+  .section-enter-prev {
+    animation: enterFromLeft 0.25s ease forwards;
+  }
+
+  @keyframes enterFromRight {
+    from { transform: translateX(30px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  @keyframes enterFromLeft {
+    from { transform: translateX(-30px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  .section h2 {
+    font-size: 1.125rem;
+    color: var(--gray-900);
+    margin-bottom: 4px;
+  }
+
+  .section-desc {
+    font-size: 0.875rem;
+    color: var(--gray-500);
+    margin-bottom: 20px;
+  }
+
+  /* ── Section counter ── */
+  .section-counter {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--gray-400);
+    margin-top: 16px;
+  }
+
+  /* ── Form ── */
+  .form-group { margin-bottom: 16px; }
+
+  .form-group label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--gray-700);
+    margin-bottom: 4px;
+  }
+
+  .required { color: var(--error); }
+
+  input, select, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius);
+    font-size: 0.9375rem;
+    font-family: inherit;
+    color: var(--gray-900);
+    background: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+  }
+
+  input.error, select.error, textarea.error {
+    border-color: var(--error);
+    box-shadow: 0 0 0 3px rgba(220,38,38,0.12);
+  }
+
+  textarea { resize: vertical; min-height: 80px; }
+
+  /* ── Error msg ── */
+  .error-msg {
+    background: #fef2f2;
+    color: var(--error);
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    border: 1px solid #fecaca;
+  }
+
+  /* ── Buttons ── */
+  .btn {
+    padding: 11px 24px;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, opacity 0.2s;
+    font-family: inherit;
+  }
+
+  .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: #fff;
+  }
+
+  .btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
+
+  .btn-secondary {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    border: 1px solid var(--gray-300);
+  }
+
+  .btn-secondary:hover:not(:disabled) { background: var(--gray-200); }
+
+  .btn-success {
+    background: var(--success);
+    color: #fff;
+  }
+
+  .btn-success:hover:not(:disabled) { background: #15803d; }
+
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--gray-200);
+  }
+
+  .nav-buttons .btn { min-width: 130px; text-align: center; }
+
+  /* ── Equipamentos ── */
+  .equip-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 8px;
+    background: var(--gray-50);
+    border-radius: var(--radius);
+  }
+
+  .equip-row:nth-child(even) { background: #fff; }
+
+  .equip-row select.equip-tipo { width: 100px; flex-shrink: 0; }
+  .equip-row select.equip-categoria { width: 150px; flex-shrink: 0; }
+  .equip-row input { flex: 1; min-width: 80px; }
+
+  .btn-remove {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: var(--radius);
+    background: #fef2f2;
+    color: var(--error);
+    font-size: 1rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-remove:hover { background: #fecaca; }
+
+  .equip-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .btn-add {
+    padding: 9px 18px;
+    border: 2px dashed var(--gray-300);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--gray-600);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    flex: 1;
+    transition: border-color 0.2s, color 0.2s;
+    font-family: inherit;
+  }
+
+  .btn-add:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+
+  .btn-skip {
+    background: none;
+    border: none;
+    color: var(--gray-400);
+    font-size: 0.875rem;
+    cursor: pointer;
+    font-family: inherit;
+    padding: 9px 4px;
+    white-space: nowrap;
+    transition: color 0.2s;
+  }
+
+  .btn-skip:hover { color: var(--gray-600); }
+
+  .empty-msg {
+    text-align: center;
+    color: var(--gray-400);
+    font-size: 0.875rem;
+    padding: 20px 0;
+  }
+
+  /* ── Anexos ── */
+  .file-upload-area {
+    border: 2px dashed var(--gray-300);
+    border-radius: var(--radius);
+    padding: 28px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .file-upload-area:hover {
+    border-color: var(--primary);
+    background: #f0f5ff;
+  }
+
+  .file-upload-area .file-icon { font-size: 1.5rem; display: block; margin-bottom: 6px; }
+  .file-upload-area .file-text { font-size: 0.9375rem; color: var(--gray-600); }
+  .file-upload-area .file-count {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.8125rem;
+    color: var(--gray-400);
+    font-weight: 600;
+  }
+
+  #file-input { display: none; }
+
+  .preview-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .preview-item {
+    position: relative;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--gray-50);
+    cursor: pointer;
+  }
+
+  .preview-item img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    display: block;
+  }
+
+  .preview-item .preview-name {
+    font-size: 0.6875rem;
+    color: var(--gray-500);
+    padding: 4px 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .preview-item .preview-remove {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 22px;
+    height: 22px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    font-size: 0.75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  .preview-item .preview-remove:hover { background: rgba(220,38,38,0.85); }
+
+  /* ── Modal ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.active {
+    display: flex;
+  }
+
+  .modal {
+    background: #fff;
+    border-radius: 12px;
+    padding: 28px;
+    max-width: 420px;
+    width: 90%;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    text-align: center;
+  }
+
+  .modal p {
+    font-size: 0.9375rem;
+    color: var(--gray-700);
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+
+  .modal-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .modal-buttons .btn { min-width: 110px; }
+
+  /* ── Lightbox ── */
+  .lightbox-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 1001;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lightbox-overlay.active {
+    display: flex;
+  }
+
+  .lightbox-overlay img {
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 8px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+  }
+
+  .lightbox-overlay .lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 28px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 2rem;
+    cursor: pointer;
+  }
+
+  /* ── Preview email ── */
+  .email-preview {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+
+  .preview-field {
+    margin-bottom: 12px;
+  }
+
+  .preview-field:last-child { margin-bottom: 0; }
+
+  .preview-field strong {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+  }
+
+  .preview-field .preview-value {
+    font-size: 0.9375rem;
+    color: var(--gray-900);
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--gray-900);
+    color: #fff;
+    padding: 14px 28px;
+    border-radius: var(--radius);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    opacity: 0;
+    transition: all 0.4s ease;
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .toast.success { background: var(--success); }
+
+  /* ── Responsivo ── */
+  @media (max-width: 640px) {
+    .container { padding: 20px; }
+    .step-line { width: 24px; }
+    .nav-buttons .btn { min-width: 100px; padding: 10px 14px; }
+    .equip-row { flex-wrap: wrap; }
+    .equip-row select.equip-tipo { width: 100%; }
+    .equip-row select.equip-categoria { width: 100%; }
+    .equip-actions { flex-direction: column; align-items: stretch; }
+    .preview-grid { grid-template-columns: repeat(2, 1fr); }
+    .step-label { font-size: 0.5625rem; }
+    .modal { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header-row">
+    <h1>Formulário de Envio</h1>
+    <button class="btn-link" id="btn-limpar">Limpar tudo</button>
+  </div>
+
+  <!-- Progresso -->
+  <div class="progress" id="progress">
+    <div class="step active" data-step="1">
+      <div class="step-circle"><span>1</span></div>
+      <div class="step-label">Iniciais</div>
+    </div>
+    <div class="step-line" id="line-1"></div>
+    <div class="step" data-step="2">
+      <div class="step-circle"><span>2</span></div>
+      <div class="step-label">Equipamentos</div>
+    </div>
+    <div class="step-line" id="line-2"></div>
+    <div class="step" data-step="3">
+      <div class="step-circle"><span>3</span></div>
+      <div class="step-label">Retorno</div>
+    </div>
+    <div class="step-line" id="line-3"></div>
+    <div class="step" data-step="4">
+      <div class="step-circle"><span>4</span></div>
+      <div class="step-label">Anexos</div>
+    </div>
+    <div class="step-line" id="line-4"></div>
+    <div class="step" data-step="5">
+      <div class="step-circle"><span>5</span></div>
+      <div class="step-label">Revisão</div>
+    </div>
+  </div>
+
+  <!-- Error message -->
+  <div class="error-msg" id="error-msg" style="display:none"></div>
+
+  <div class="section-wrapper" id="section-wrapper">
+
+    <!-- Seção 1: Iniciais -->
+    <div class="section active" id="section-1">
+      <h2>Campos Iniciais</h2>
+      <p class="section-desc">Preencha os dados da ordem de serviço.</p>
+
+      <div class="form-group">
+        <label for="uc">UC <span class="required">*</span></label>
+        <input type="number" id="uc" placeholder="Número da UC">
+      </div>
+
+      <div class="form-group">
+        <label for="os">OS <span class="required">*</span></label>
+        <input type="text" id="os" placeholder="Número da Ordem de Serviço">
+      </div>
+
+      <div class="form-group">
+        <label for="cliente">Cliente <span class="required">*</span></label>
+        <input type="text" id="cliente" placeholder="Nome do cliente">
+      </div>
+
+      <div class="form-group">
+        <label for="tipo-ordem">Tipo de ordem <span class="required">*</span></label>
+        <select id="tipo-ordem">
+          <option value="">Selecione...</option>
+          <option value="ordem-servico">Ordem de Serviço</option>
+          <option value="garantia">Garantia</option>
+          <option value="orcamento">Orçamento</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Seção 2: Equipamentos -->
+    <div class="section" id="section-2">
+      <h2>Equipamentos</h2>
+      <p class="section-desc">Adicione os equipamentos instalados e/ou retirados.</p>
+
+      <div id="equipamentos-list"></div>
+
+      <div class="equip-actions">
+        <button class="btn-add" id="btn-add-equip" type="button">+ Adicionar equipamento</button>
+        <button class="btn-skip" id="btn-skip-equip" type="button" style="display:none">Pular →</button>
+      </div>
+    </div>
+
+    <!-- Seção 3: Retorno -->
+    <div class="section" id="section-3">
+      <h2>Retorno de Ordem</h2>
+      <p class="section-desc" id="retorno-desc">Preencha as informações de retorno.</p>
+      <div id="retorno-campos"></div>
+    </div>
+
+    <!-- Seção 4: Anexos -->
+    <div class="section" id="section-4">
+      <h2>Anexos</h2>
+      <p class="section-desc">Selecione até 12 imagens para anexar ao email.</p>
+
+      <div class="file-upload-area" id="file-upload-area">
+        <span class="file-icon">📎</span>
+        <span class="file-text">Clique para selecionar imagens</span>
+        <span class="file-count" id="file-count">0 / 12</span>
+      </div>
+      <input type="file" id="file-input" accept="image/*" multiple>
+
+      <div class="preview-grid" id="preview-grid"></div>
+    </div>
+
+    <!-- Seção 5: Revisão -->
+    <div class="section" id="section-5">
+      <h2>Revisão do Email</h2>
+      <p class="section-desc">Confira os dados antes do envio simulado.</p>
+
+      <div class="email-preview">
+        <div class="preview-field">
+          <strong>Assunto</strong>
+          <div class="preview-value" id="preview-assunto">—</div>
+        </div>
+        <div class="preview-field">
+          <strong>Corpo do email</strong>
+          <div class="preview-value" id="preview-corpo">—</div>
+        </div>
+        <div class="preview-field">
+          <strong>Anexos</strong>
+          <div class="preview-value" id="preview-anexos">Nenhum anexo</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-counter" id="section-counter">Seção 1 de 5 — Iniciais</div>
+
+  <!-- Navegação -->
+  <div class="nav-buttons">
+    <button class="btn btn-secondary" id="btn-anterior" disabled>← Anterior</button>
+    <button class="btn btn-primary" id="btn-proximo">Avançar →</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Modal tipo ordem -->
+<div class="modal-overlay" id="modal-tipo">
+  <div class="modal">
+    <p>Ao alterar o Tipo de ordem, os campos de Retorno preenchidos serão perdidos.</p>
+    <div class="modal-buttons">
+      <button class="btn btn-secondary" id="modal-cancel">Cancelar</button>
+      <button class="btn btn-primary" id="modal-confirm">Alterar mesmo assim</button>
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox-overlay" id="lightbox">
+  <button class="lightbox-close" id="lightbox-close">✕</button>
+  <img id="lightbox-img" src="" alt="Preview ampliado">
+</div>
+
+<script>
+  const state = {
+    currentSection: 1,
+    totalSections: 5,
+    equipamentos: [],
+    attachments: [],
+    lastTipoOrdem: '',
+    visitedRetorno: false,
+    animating: false,
+  };
+
+  const DOM = {};
+
+  function cacheDOM() {
+    DOM.sections = document.querySelectorAll('.section');
+    DOM.wrapper = document.getElementById('section-wrapper');
+    DOM.steps = document.querySelectorAll('.step');
+    DOM.lines = document.querySelectorAll('.step-line');
+    DOM.btnAnterior = document.getElementById('btn-anterior');
+    DOM.btnProximo = document.getElementById('btn-proximo');
+    DOM.errorMsg = document.getElementById('error-msg');
+    DOM.uc = document.getElementById('uc');
+    DOM.os = document.getElementById('os');
+    DOM.cliente = document.getElementById('cliente');
+    DOM.tipoOrdem = document.getElementById('tipo-ordem');
+    DOM.equipList = document.getElementById('equipamentos-list');
+    DOM.btnAddEquip = document.getElementById('btn-add-equip');
+    DOM.btnSkipEquip = document.getElementById('btn-skip-equip');
+    DOM.retornoDesc = document.getElementById('retorno-desc');
+    DOM.retornoCampos = document.getElementById('retorno-campos');
+    DOM.fileInput = document.getElementById('file-input');
+    DOM.fileCount = document.getElementById('file-count');
+    DOM.previewGrid = document.getElementById('preview-grid');
+    DOM.fileUploadArea = document.getElementById('file-upload-area');
+    DOM.previewAssunto = document.getElementById('preview-assunto');
+    DOM.previewCorpo = document.getElementById('preview-corpo');
+    DOM.previewAnexos = document.getElementById('preview-anexos');
+    DOM.toast = document.getElementById('toast');
+    DOM.sectionCounter = document.getElementById('section-counter');
+    DOM.btnLimpar = document.getElementById('btn-limpar');
+    DOM.modalTipo = document.getElementById('modal-tipo');
+    DOM.modalCancel = document.getElementById('modal-cancel');
+    DOM.modalConfirm = document.getElementById('modal-confirm');
+    DOM.lightbox = document.getElementById('lightbox');
+    DOM.lightboxImg = document.getElementById('lightbox-img');
+    DOM.lightboxClose = document.getElementById('lightbox-close');
+  }
+
+  /* ── Navegação com animação ── */
+  function showSection(n, direction, noAnimation) {
+    if (!noAnimation && state.animating) return;
+    if (!noAnimation) state.animating = true;
+
+    const current = state.currentSection;
+    const goingForward = direction !== 'prev';
+
+    const currentEl = document.getElementById(`section-${current}`);
+    const nextEl = document.getElementById(`section-${n}`);
+
+    if (!noAnimation && current !== n) {
+      currentEl.classList.remove('active');
+      currentEl.classList.add(goingForward ? 'slide-out-left' : 'slide-out-right');
+
+      setTimeout(() => {
+        currentEl.classList.remove('slide-out-left', 'slide-out-right');
+        currentEl.style.display = 'none';
+
+        nextEl.style.display = 'block';
+        nextEl.classList.add(goingForward ? 'section-enter-next' : 'section-enter-prev');
+
+        setTimeout(() => {
+          nextEl.classList.remove('section-enter-next', 'section-enter-prev');
+          nextEl.classList.add('active');
+          state.animating = false;
+        }, 220);
+      }, 220);
+    } else {
+      currentEl.classList.remove('active');
+      currentEl.style.display = 'none';
+      nextEl.style.display = 'block';
+      nextEl.classList.add('active');
+      state.animating = false;
+    }
+
+    DOM.steps.forEach((el, i) => {
+      const num = i + 1;
+      el.classList.toggle('active', num === n);
+      el.classList.toggle('completed', num < n);
+      el.classList.toggle('done', num < n);
+    });
+
+    DOM.lines.forEach((el, i) => {
+      el.classList.toggle('completed', i + 1 < n);
+    });
+
+    DOM.btnAnterior.disabled = n === 1;
+
+    if (n === state.totalSections) {
+      DOM.btnProximo.textContent = 'Enviar';
+      DOM.btnProximo.className = 'btn btn-success';
+      composeEmail();
+    } else if (n === state.totalSections - 1) {
+      DOM.btnProximo.textContent = 'Revisar →';
+      DOM.btnProximo.className = 'btn btn-primary';
+    } else {
+      DOM.btnProximo.textContent = 'Avançar →';
+      DOM.btnProximo.className = 'btn btn-primary';
+    }
+
+    DOM.sectionCounter.textContent = `Seção ${n} de ${state.totalSections} — ${getSectionName(n)}`;
+
+    if (n === 2) renderEquipamentos();
+    if (n === 3) { renderRetorno(); state.visitedRetorno = true; }
+    if (n === 4) renderPreviews();
+
+    hideError();
+    state.currentSection = n;
+    saveState();
+  }
+
+  function getSectionName(n) {
+    const nomes = ['', 'Iniciais', 'Equipamentos', 'Retorno', 'Anexos', 'Revisão'];
+    return nomes[n] || '';
+  }
+
+  function nextSection() {
+    if (!validateSection(state.currentSection)) return;
+    collectSectionData(state.currentSection);
+
+    if (state.currentSection === state.totalSections) {
+      showToast('✅ Simulação — o email seria enviado com os dados acima.', true);
+      return;
+    }
+
+    showSection(state.currentSection + 1, 'next');
+  }
+
+  function prevSection() {
+    if (state.currentSection <= 1) return;
+    showSection(state.currentSection - 1, 'prev');
+  }
+
+  /* ── Validação ── */
+  function validateSection(n) {
+    hideError();
+    let valid = true;
+
+    if (n === 1) {
+      const fields = [
+        { el: DOM.uc, name: 'UC' },
+        { el: DOM.os, name: 'OS' },
+        { el: DOM.cliente, name: 'Cliente' },
+        { el: DOM.tipoOrdem, name: 'Tipo de ordem' },
+      ];
+      fields.forEach(({ el, name }) => {
+        if (!el.value || el.value.trim() === '') {
+          el.classList.add('error');
+          valid = false;
+        } else {
+          el.classList.remove('error');
+        }
+      });
+      if (!valid) showError('Preencha todos os campos obrigatórios.');
+    }
+
+    if (n === 2) {
+      const rows = DOM.equipList.querySelectorAll('.equip-row');
+      if (rows.length > 0) {
+        let hasError = false;
+        const nums = [];
+        rows.forEach((row) => {
+          const tipo = row.querySelector('.equip-tipo');
+          const categoria = row.querySelector('.equip-categoria');
+          const inp = row.querySelector('.equip-numero');
+
+          [tipo, categoria, inp].forEach((el) => el.classList.remove('error'));
+
+          if (tipo.value === '') { tipo.classList.add('error'); hasError = true; }
+          if (categoria.value === '') { categoria.classList.add('error'); hasError = true; }
+          if (inp.value === '') { inp.classList.add('error'); hasError = true; }
+          else if (nums.includes(inp.value)) { inp.classList.add('error'); hasError = true; }
+          else { nums.push(inp.value); }
+        });
+        if (hasError) {
+          const dup = nums.length !== new Set(nums).size;
+          const msg = dup
+            ? 'N° de equipamento duplicado. Cada equipamento deve ter um número único.'
+            : 'Preencha todos os campos de cada equipamento.';
+          showError(msg);
+          valid = false;
+        }
+      }
+    }
+
+    if (n === 3) {
+      const campos = DOM.retornoCampos.querySelectorAll('textarea, input');
+      campos.forEach((el) => {
+        if (el.hasAttribute('data-required') && el.value.trim() === '') {
+          el.classList.add('error');
+          valid = false;
+        } else {
+          el.classList.remove('error');
+        }
+      });
+      if (!valid) showError('Preencha todos os campos obrigatórios.');
+    }
+
+    return valid;
+  }
+
+  function showError(msg) {
+    DOM.errorMsg.textContent = msg;
+    DOM.errorMsg.style.display = 'block';
+  }
+
+  function hideError() {
+    DOM.errorMsg.style.display = 'none';
+    DOM.errorMsg.textContent = '';
+  }
+
+  /* ── Validação em tempo real (onBlur) ── */
+  function addBlurValidation(el) {
+    el.addEventListener('blur', () => {
+      if (el.hasAttribute('required') || el.hasAttribute('data-required')) {
+        if (!el.value || el.value.trim() === '') {
+          el.classList.add('error');
+        } else {
+          el.classList.remove('error');
+        }
+      }
+    });
+    el.addEventListener('input', () => el.classList.remove('error'));
+    el.addEventListener('change', () => {
+      if (el.value && el.value.trim() !== '') {
+        el.classList.remove('error');
+      }
+    });
+  }
+
+  /* ── Coleta dados ── */
+  function collectSectionData(n) {
+    if (n === 2) {
+      const rows = DOM.equipList.querySelectorAll('.equip-row');
+      state.equipamentos = [];
+      rows.forEach((row) => {
+        const status = row.querySelector('.equip-tipo').value;
+        const categoria = row.querySelector('.equip-categoria').value;
+        const numero = row.querySelector('.equip-numero').value;
+        state.equipamentos.push({ status, categoria, numero });
+      });
+    }
+  }
+
+  /* ── Equipamentos ── */
+  function addEquip(data) {
+    const div = document.createElement('div');
+    div.className = 'equip-row';
+    div.innerHTML = `
+      <select class="equip-tipo">
+        <option value="">Selecione...</option>
+        <option value="Instalado" ${data?.status === 'Instalado' ? 'selected' : ''}>Instalado</option>
+        <option value="Retirado" ${data?.status === 'Retirado' ? 'selected' : ''}>Retirado</option>
+      </select>
+      <select class="equip-categoria">
+        <option value="">Selecione...</option>
+        <option value="Medidor" ${data?.categoria === 'Medidor' ? 'selected' : ''}>Medidor</option>
+        <option value="Display" ${data?.categoria === 'Display' ? 'selected' : ''}>Display</option>
+        <option value="Conjunto" ${data?.categoria === 'Conjunto' ? 'selected' : ''}>Conjunto</option>
+        <option value="TC" ${data?.categoria === 'TC' ? 'selected' : ''}>TC</option>
+        <option value="TP" ${data?.categoria === 'TP' ? 'selected' : ''}>TP</option>
+      </select>
+      <input type="number" class="equip-numero" placeholder="N° Equip." value="${data?.numero || ''}">
+      <button class="btn-remove" type="button">✕</button>
+    `;
+
+    const inp = div.querySelector('.equip-numero');
+    addBlurValidation(inp);
+
+    div.querySelector('.btn-remove').addEventListener('click', () => {
+      div.remove();
+      if (DOM.equipList.querySelectorAll('.equip-row').length === 0) showEmptyEquip();
+      updateSkipBtn();
+      saveState();
+    });
+
+    DOM.equipList.appendChild(div);
+    hideEmptyEquip();
+    updateSkipBtn();
+    saveState();
+  }
+
+  function showEmptyEquip() {
+    if (!DOM.equipList.querySelector('.empty-msg')) {
+      const msg = document.createElement('div');
+      msg.className = 'empty-msg';
+      msg.textContent = 'Nenhum equipamento adicionado.';
+      DOM.equipList.appendChild(msg);
+    }
+  }
+
+  function hideEmptyEquip() {
+    const msg = DOM.equipList.querySelector('.empty-msg');
+    if (msg) msg.remove();
+  }
+
+  function updateSkipBtn() {
+    const rows = DOM.equipList.querySelectorAll('.equip-row');
+    DOM.btnSkipEquip.style.display = rows.length === 0 ? 'inline' : 'none';
+  }
+
+  function renderEquipamentos() {
+    DOM.equipList.innerHTML = '';
+    if (state.equipamentos.length === 0) {
+      showEmptyEquip();
+    } else {
+      state.equipamentos.forEach((eq) => addEquip(eq));
+    }
+    updateSkipBtn();
+  }
+
+  /* ── Retorno ── */
+  const retornoFields = {
+    'ordem-servico': [
+      { label: 'Serviço realizado', id: 'servico-realizado', type: 'textarea', required: true },
+      { label: 'Observações', id: 'observacoes', type: 'textarea', required: false },
+    ],
+    'garantia': [
+      { label: 'Defeito relatado', id: 'defeito-relatado', type: 'textarea', required: true },
+      { label: 'Ação tomada', id: 'acao-tomada', type: 'textarea', required: true },
+    ],
+    'orcamento': [
+      { label: 'Descrição', id: 'descricao', type: 'textarea', required: true },
+      { label: 'Valor estimado', id: 'valor-estimado', type: 'number', required: true },
+    ],
+  };
+
+  function renderRetorno() {
+    const tipo = DOM.tipoOrdem.value;
+    const tipoLabel = DOM.tipoOrdem.options[DOM.tipoOrdem.selectedIndex]?.text || '—';
+    DOM.retornoDesc.innerHTML = `Preencha as informações para <strong>${tipoLabel}</strong>.`;
+    DOM.retornoCampos.innerHTML = '';
+
+    if (!tipo || !retornoFields[tipo]) {
+      DOM.retornoCampos.innerHTML = '<p style="color:var(--gray-400);font-size:0.875rem;">Selecione um Tipo de ordem na seção anterior.</p>';
+      return;
+    }
+
+    retornoFields[tipo].forEach((field) => {
+      const group = document.createElement('div');
+      group.className = 'form-group';
+
+      const label = document.createElement('label');
+      label.setAttribute('for', field.id);
+      label.innerHTML = field.label + (field.required ? ' <span class="required">*</span>' : '');
+
+      let input;
+      if (field.type === 'textarea') {
+        input = document.createElement('textarea');
+        input.setAttribute('rows', '4');
+      } else {
+        input = document.createElement('input');
+        input.type = field.type;
+      }
+
+      input.id = field.id;
+      if (field.required) input.setAttribute('data-required', '');
+      input.placeholder = field.label;
+
+      addBlurValidation(input);
+
+      group.appendChild(label);
+      group.appendChild(input);
+      DOM.retornoCampos.appendChild(group);
+    });
+  }
+
+  /* ── Tipo de ordem change com aviso ── */
+  let pendingTipoValue = null;
+
+  DOM.tipoOrdem?.addEventListener('change', function() {
+    if (this.value === state.lastTipoOrdem) return;
+
+    if (state.lastTipoOrdem && state.visitedRetorno) {
+      pendingTipoValue = this.value;
+      DOM.modalTipo.classList.add('active');
+      this.value = state.lastTipoOrdem;
+    } else {
+      state.lastTipoOrdem = this.value;
+      saveState();
+    }
+  });
+
+  DOM.modalCancel?.addEventListener('click', () => {
+    DOM.modalTipo.classList.remove('active');
+    pendingTipoValue = null;
+  });
+
+  DOM.modalConfirm?.addEventListener('click', () => {
+    DOM.modalTipo.classList.remove('active');
+    state.lastTipoOrdem = pendingTipoValue;
+    DOM.tipoOrdem.value = pendingTipoValue;
+    DOM.retornoCampos.innerHTML = '';
+    pendingTipoValue = null;
+    saveState();
+  });
+
+  /* ── Anexos ── */
+  DOM.fileUploadArea?.addEventListener('click', () => DOM.fileInput?.click());
+
+  DOM.fileInput?.addEventListener('change', (e) => {
+    const files = Array.from(e.target.files);
+    const remaining = 12 - state.attachments.length;
+    const toAdd = files.slice(0, remaining);
+
+    toAdd.forEach((file) => state.attachments.push(file));
+
+    if (files.length > remaining) {
+      showError(`Máximo de 12 anexos. ${files.length - remaining} ignorado(s).`);
+    }
+
+    renderPreviews();
+    updateFileCount();
+    DOM.fileInput.value = '';
+    saveState();
+  });
+
+  function removeFile(index) {
+    state.attachments.splice(index, 1);
+    renderPreviews();
+    updateFileCount();
+    saveState();
+  }
+
+  function renderPreviews() {
+    DOM.previewGrid.innerHTML = '';
+    state.attachments.forEach((file, i) => {
+      const div = document.createElement('div');
+      div.className = 'preview-item';
+
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(file);
+      img.alt = file.name;
+
+      const name = document.createElement('div');
+      name.className = 'preview-name';
+      name.textContent = file.name;
+
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'preview-remove';
+      removeBtn.textContent = '✕';
+      removeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        removeFile(i);
+      });
+
+      div.addEventListener('click', () => {
+        DOM.lightboxImg.src = img.src;
+        DOM.lightbox.classList.add('active');
+      });
+
+      div.appendChild(img);
+      div.appendChild(name);
+      div.appendChild(removeBtn);
+      DOM.previewGrid.appendChild(div);
+    });
+  }
+
+  function updateFileCount() {
+    DOM.fileCount.textContent = `${state.attachments.length} / 12`;
+  }
+
+  /* ── Lightbox ── */
+  DOM.lightboxClose?.addEventListener('click', () => DOM.lightbox.classList.remove('active'));
+  DOM.lightbox?.addEventListener('click', (e) => {
+    if (e.target === DOM.lightbox) DOM.lightbox.classList.remove('active');
+  });
+
+  /* ── Revisão ── */
+  function composeEmail() {
+    const uc = DOM.uc.value || '—';
+    const os = DOM.os.value || '—';
+    const cliente = DOM.cliente.value || '—';
+    const tipoLabel = DOM.tipoOrdem.options[DOM.tipoOrdem.selectedIndex]?.text || '—';
+
+    const assunto = `OS #${os} - ${cliente} - ${tipoLabel}`;
+    DOM.previewAssunto.textContent = assunto;
+
+    let body = `UC: ${uc}\nOS: ${os}\nCliente: ${cliente}\nTipo de ordem: ${tipoLabel}`;
+
+    const eqs = DOM.equipList.querySelectorAll('.equip-row');
+    if (eqs.length > 0) {
+      body += '\n\nEquipamentos:';
+      eqs.forEach((row) => {
+        const status = row.querySelector('.equip-tipo').value;
+        const categoria = row.querySelector('.equip-categoria').value;
+        const num = row.querySelector('.equip-numero').value || '—';
+        body += `\n- ${status} - ${categoria} - N° ${num}`;
+      });
+    }
+
+    const tipoKey = DOM.tipoOrdem.value;
+    if (tipoKey && retornoFields[tipoKey]) {
+      body += '\n\nRetorno:';
+      retornoFields[tipoKey].forEach((field) => {
+        const el = document.getElementById(field.id);
+        if (el) {
+          body += `\n${field.label}: ${el.value || '(não preenchido)'}`;
+        }
+      });
+    }
+
+    DOM.previewCorpo.textContent = body;
+
+    if (state.attachments.length === 0) {
+      DOM.previewAnexos.textContent = 'Nenhum anexo';
+    } else {
+      const nomes = state.attachments.map((f) => f.name).join(', ');
+      DOM.previewAnexos.textContent = `${state.attachments.length} arquivo(s): ${nomes}`;
+    }
+  }
+
+  /* ── Toast ── */
+  let toastTimer = null;
+
+  function showToast(msg, success) {
+    DOM.toast.textContent = msg;
+    DOM.toast.className = 'toast' + (success ? ' success' : '');
+    DOM.toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => DOM.toast.classList.remove('show'), 3500);
+  }
+
+  /* ── Limpar tudo ── */
+  DOM.btnLimpar?.addEventListener('click', () => {
+    if (!confirm('Tem certeza? Todos os dados serão perdidos.')) return;
+
+    DOM.uc.value = '';
+    DOM.os.value = '';
+    DOM.cliente.value = '';
+    DOM.tipoOrdem.value = '';
+    DOM.retornoCampos.innerHTML = '';
+    DOM.equipList.innerHTML = '';
+    state.equipamentos = [];
+    state.attachments = [];
+    state.lastTipoOrdem = '';
+    state.visitedRetorno = false;
+    DOM.previewGrid.innerHTML = '';
+    showEmptyEquip();
+    updateFileCount();
+    updateSkipBtn();
+    hideError();
+    localStorage.removeItem(STORAGE_KEY);
+
+    if (state.currentSection !== 1) {
+      showSection(1, 'prev');
+    } else {
+      state.currentSection = 1;
+    }
+  });
+
+  /* ── Persistência localStorage ── */
+  const STORAGE_KEY = 'teste_form_estado';
+
+  function saveState() {
+    // Apenas salva se houver dados preenchidos
+    if (!DOM.uc.value && !DOM.os.value && !DOM.cliente.value && state.equipamentos.length === 0 && state.attachments.length === 0) {
+      return;
+    }
+
+    const data = {
+      uc: DOM.uc.value,
+      os: DOM.os.value,
+      cliente: DOM.cliente.value,
+      tipoOrdem: DOM.tipoOrdem.value,
+      equipamentos: state.equipamentos,
+      lastTipoOrdem: state.lastTipoOrdem,
+      visitedRetorno: state.visitedRetorno,
+      currentSection: state.currentSection,
+    };
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch (e) { /* quota excedida, ignorar */ }
+  }
+
+  function restoreState() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return;
+
+    try {
+      const data = JSON.parse(saved);
+      const section = data.currentSection || 1;
+      const ok = confirm(`Há um formulário salvo (Seção ${section} de 5). Deseja continuar de onde parou?`);
+      if (!ok) {
+        localStorage.removeItem(STORAGE_KEY);
+        return;
+      }
+
+      DOM.uc.value = data.uc || '';
+      DOM.os.value = data.os || '';
+      DOM.cliente.value = data.cliente || '';
+      DOM.tipoOrdem.value = data.tipoOrdem || '';
+      state.equipamentos = data.equipamentos || [];
+      state.lastTipoOrdem = data.lastTipoOrdem || '';
+      state.visitedRetorno = data.visitedRetorno || false;
+      showSection(section, 'next', true);
+    } catch (e) {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  }
+
+  /* ── Event listeners ── */
+  function initEvents() {
+    DOM.btnAnterior.addEventListener('click', prevSection);
+    DOM.btnProximo.addEventListener('click', nextSection);
+    DOM.btnAddEquip.addEventListener('click', () => addEquip());
+    DOM.btnSkipEquip.addEventListener('click', () => showSection(3, 'next'));
+
+    // Blur validation nos campos fixos
+    [DOM.uc, DOM.os, DOM.cliente, DOM.tipoOrdem].forEach((el) => {
+      if (el) addBlurValidation(el);
+    });
+
+    // Save state on input
+    document.querySelectorAll('input, select, textarea').forEach((el) => {
+      el.addEventListener('change', saveState);
+      el.addEventListener('input', saveState);
+    });
+  }
+
+  /* ── Init ── */
+  document.addEventListener('DOMContentLoaded', () => {
+    cacheDOM();
+    initEvents();
+    updateFileCount();
+    restoreState();
+    // Se restoreState não iniciou (cancelou ou sem dados), garante seção 1 visível
+    if (state.currentSection === 1 && !document.getElementById('section-1').classList.contains('active')) {
+      showSection(1, 'next', true);
+    }
+  });
+</script>
+</body>
+</html>

@@ -35,6 +35,11 @@
 - No tests, no linter, no typecheck — none planned for MVP
 - TLS: `rejectUnauthorized: false` (intentional for self-signed SMTP certs)
 
+## Future scope (do not implement until explicitly requested)
+- Formulário de retorno de ordens de serviço (conteúdo vira assunto/corpo)
+- PWA, dark mode, fila de envios, rascunhos, revisão pré-envio
+- Logs centralizados e deleção automática de registros ≥ 90 dias
+
 ## Dev workflow
 - Local testing requires Netlify CLI: `npx netlify dev`
 - No dev server, no hot reload — static files served by Netlify Functions emulator
