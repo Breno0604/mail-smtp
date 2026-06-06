@@ -6,12 +6,12 @@ export function addEquip(data) {
   const div = document.createElement("div");
   div.className = "equip-row flex gap-1 items-center mb-1 py-1.5 bg-gray-50 rounded-lg";
   div.innerHTML = `
-    <select class="equip-tipo flex-1 min-w-0 px-1.5 py-1.5 border border-gray-300 rounded-lg text-base outline-none focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15">
+    <select class="equip-tipo flex-1 min-w-0 px-1.5 py-2.5 border border-gray-300 rounded-lg text-base outline-none focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15">
       <option value="">Selecione...</option>
       <option value="Instalado" ${data?.status === "Instalado" ? "selected" : ""}>Instalado</option>
       <option value="Retirado" ${data?.status === "Retirado" ? "selected" : ""}>Retirado</option>
     </select>
-    <select class="equip-categoria flex-1 min-w-0 px-1.5 py-1.5 border border-gray-300 rounded-lg text-base outline-none focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15">
+    <select class="equip-categoria flex-1 min-w-0 px-1.5 py-2.5 border border-gray-300 rounded-lg text-base outline-none focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15">
       <option value="">Selecione...</option>
       <option value="Medidor" ${data?.categoria === "Medidor" ? "selected" : ""}>Medidor</option>
       <option value="Display" ${data?.categoria === "Display" ? "selected" : ""}>Display</option>
@@ -19,7 +19,7 @@ export function addEquip(data) {
       <option value="TC" ${data?.categoria === "TC" ? "selected" : ""}>TC</option>
       <option value="TP" ${data?.categoria === "TP" ? "selected" : ""}>TP</option>
     </select>
-    <input type="number" class="equip-numero flex-1 min-w-0 px-1.5 py-1.5 border border-gray-300 rounded-lg text-base outline-none focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15" placeholder="N\u00B0" value="${data?.numero || ""}">
+    <input type="number" class="equip-numero flex-1 min-w-0 px-1.5 py-2.5 border border-gray-300 rounded-lg text-base outline-none focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15" placeholder="N\u00B0" value="${data?.numero || ""}">
     <button class="btn-remove w-7 h-7 border-none rounded-lg bg-red-50 text-red-500 text-xs cursor-pointer flex-shrink-0 transition-colors duration-200 flex items-center justify-center hover:bg-red-200" type="button">\u2715</button>
   `;
 
