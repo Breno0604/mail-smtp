@@ -21,9 +21,7 @@ export function cacheDOM() {
   DOM.fileCount = document.getElementById("file-count");
   DOM.previewGrid = document.getElementById("preview-grid");
   DOM.fileUploadArea = document.getElementById("file-upload-area");
-  DOM.previewAssunto = document.getElementById("preview-assunto");
   DOM.previewCorpo = document.getElementById("preview-corpo");
-  DOM.previewAnexos = document.getElementById("preview-anexos");
   DOM.complementoCorpo = document.getElementById("complemento-corpo");
   DOM.toast = document.getElementById("toast");
   DOM.sectionCounter = document.getElementById("section-counter");

@@ -11,12 +11,13 @@
 <body class="font-sans bg-gray-100 flex justify-center items-start min-h-screen p-10 max-sm:p-5">
 
 <div class="container bg-white rounded-xl shadow-lg p-8 max-sm:p-5 w-full max-w-[640px] relative">
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-xl text-gray-900 font-bold m-0">Formulário de Envio</h1>
-    <button class="btn-link bg-none border-none text-gray-500 text-xs underline dotted cursor-pointer font-sans px-1 transition-colors duration-200 hover:text-red-600" id="btn-limpar">Limpar tudo</button>
-  </div>
+  <div class="border-b border-gray-200 pb-4 mb-6">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-xl text-gray-900 font-bold m-0">Formulário de Envio</h1>
+      <button class="btn-link bg-none border-none text-gray-500 text-xs underline dotted cursor-pointer font-sans px-1 transition-colors duration-200 hover:text-red-600" id="btn-limpar">Limpar tudo</button>
+    </div>
 
-  <div class="progress sticky top-0 z-10 bg-white pb-4 -mx-8 px-8 max-sm:-mx-5 max-sm:px-5 flex items-center justify-center mb-8 gap-0" id="progress">
+    <div class="progress flex items-center justify-center gap-0" id="progress">
     <div class="step flex flex-col items-center gap-1.5 active" data-step="1">
       <div class="step-circle w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2 border-gray-300 text-gray-500 bg-white transition-all duration-300"><span>1</span></div>
       <div class="step-label text-[11px] text-gray-500 whitespace-nowrap">Iniciais</div>
@@ -114,25 +115,14 @@
       <p class="text-sm text-gray-500 mb-5">Confira os dados antes de enviar.</p>
 
       <div class="email-preview bg-gray-50 border border-gray-200 rounded-lg p-5">
-        <div class="preview-field mb-3">
-          <strong class="block text-xs text-gray-500 uppercase tracking-wider mb-1">Assunto</strong>
-          <div class="preview-value text-[15px] text-gray-900 whitespace-pre-wrap leading-relaxed" id="preview-assunto">—</div>
-        </div>
-
-
-        <div class="preview-field mb-3">
+        <div class="preview-field mb-0">
           <strong class="block text-xs text-gray-500 uppercase tracking-wider mb-1">Corpo do email</strong>
           <div class="preview-value text-[15px] text-gray-900 whitespace-pre-wrap leading-relaxed" id="preview-corpo">—</div>
         </div>
 
-        <div class="mb-4">
+        <div class="mt-4">
           <label for="complemento-corpo" class="block font-semibold text-sm text-gray-700 mb-1">Complemento do corpo</label>
           <textarea id="complemento-corpo" rows="3" placeholder="Texto adicional para o corpo (opcional)" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-[15px] font-sans text-gray-900 bg-white outline-none transition-all resize-y min-h-[60px] focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15"></textarea>
-        </div>
-
-        <div class="preview-field mb-0">
-          <strong class="block text-xs text-gray-500 uppercase tracking-wider mb-1">Anexos</strong>
-          <div class="preview-value text-[15px] text-gray-900 whitespace-pre-wrap leading-relaxed" id="preview-anexos">Nenhum anexo</div>
         </div>
       </div>
     </div>

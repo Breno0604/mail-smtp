@@ -10,7 +10,11 @@ export async function sendEmail() {
   btn.textContent = "Enviando...";
 
   try {
-    const subject = DOM.previewAssunto.textContent;
+    const uc = DOM.uc.value || "\u2014";
+    const os = DOM.os.value || "\u2014";
+    const cliente = DOM.cliente.value || "\u2014";
+    const tipoLabel = DOM.tipoOrdem.options[DOM.tipoOrdem.selectedIndex]?.text || "\u2014";
+    const subject = `OS #${os} - ${cliente} - ${tipoLabel}`;
     const baseBody = DOM.previewCorpo.textContent;
     const compCorpo = DOM.complementoCorpo.value.trim();
 
