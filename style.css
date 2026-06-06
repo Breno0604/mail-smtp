@@ -83,7 +83,7 @@ input.error, select.error, textarea.error {
   padding: 11px 24px;
   border: none;
   border-radius: 8px;
-  font-size: 0.9375rem;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s, opacity 0.2s;
