@@ -4,7 +4,7 @@ import { addBlurValidation } from "./validation.js";
 
 export function addEquip(data) {
   const div = document.createElement("div");
-  div.className = "equip-row flex gap-1 items-center mb-1 p-1.5 bg-gray-50 rounded-lg";
+  div.className = "equip-row flex gap-1 items-center mb-1 py-1.5 bg-gray-50 rounded-lg";
   div.innerHTML = `
     <select class="equip-tipo flex-1 min-w-0 px-1.5 py-1.5 border border-gray-300 rounded-lg text-sm outline-none focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15">
       <option value="">Selecione...</option>
