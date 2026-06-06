@@ -1,29 +1,172 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Enviar Email</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formulário de Envio</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-5">
-  <div class="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
-    <h1 class="text-2xl font-bold mb-6 text-gray-800">Enviar Email</h1>
-    <form id="emailForm">
-      <label for="subject" class="block mb-1 font-semibold text-gray-600 text-sm">Assunto</label>
-      <input type="text" id="subject" name="subject" required class="w-full px-2.5 py-2 mb-4 border border-gray-300 rounded-md text-base" />
+<body class="font-sans bg-gray-100 flex justify-center items-start min-h-screen p-10 max-sm:p-5">
 
-      <label for="text" class="block mb-1 font-semibold text-gray-600 text-sm">Corpo</label>
-      <textarea id="text" name="text" rows="5" class="w-full px-2.5 py-2 mb-4 border border-gray-300 rounded-md text-base"></textarea>
-
-      <label for="attachments" class="block mb-1 font-semibold text-gray-600 text-sm">Anexos (imagens, máx. 12)</label>
-      <input type="file" id="attachments" name="attachments" multiple accept="image/*" class="w-full mb-4 text-sm" />
-
-      <button type="submit" id="submitBtn" class="w-full py-3 bg-blue-600 text-white rounded-md text-base cursor-pointer hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed">Enviar</button>
-      <div id="status" class="mt-4 py-2 px-3 rounded-md text-sm text-center"></div>
-    </form>
+<div class="container bg-white rounded-xl shadow-lg p-8 max-sm:p-5 w-full max-w-[640px] relative overflow-hidden">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-xl text-gray-900 font-bold m-0">Formulário de Envio</h1>
+    <button class="btn-link bg-none border-none text-gray-500 text-xs underline dotted cursor-pointer font-sans px-1 transition-colors duration-200 hover:text-red-600" id="btn-limpar">Limpar tudo</button>
   </div>
-  <script src="app.js"></script>
+
+  <div class="progress flex items-center justify-center mb-8 gap-0" id="progress">
+    <div class="step flex flex-col items-center gap-1.5 active" data-step="1">
+      <div class="step-circle w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2 border-gray-300 text-gray-500 bg-white transition-all duration-300"><span>1</span></div>
+      <div class="step-label text-[11px] text-gray-500 whitespace-nowrap">Iniciais</div>
+    </div>
+    <div class="step-line w-12 h-0.5 bg-gray-200 self-start mt-[17px] mx-1" id="line-1"></div>
+    <div class="step flex flex-col items-center gap-1.5" data-step="2">
+      <div class="step-circle w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2 border-gray-300 text-gray-500 bg-white transition-all duration-300"><span>2</span></div>
+      <div class="step-label text-[11px] text-gray-500 whitespace-nowrap">Equipamentos</div>
+    </div>
+    <div class="step-line w-12 h-0.5 bg-gray-200 self-start mt-[17px] mx-1" id="line-2"></div>
+    <div class="step flex flex-col items-center gap-1.5" data-step="3">
+      <div class="step-circle w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2 border-gray-300 text-gray-500 bg-white transition-all duration-300"><span>3</span></div>
+      <div class="step-label text-[11px] text-gray-500 whitespace-nowrap">Retorno</div>
+    </div>
+    <div class="step-line w-12 h-0.5 bg-gray-200 self-start mt-[17px] mx-1" id="line-3"></div>
+    <div class="step flex flex-col items-center gap-1.5" data-step="4">
+      <div class="step-circle w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2 border-gray-300 text-gray-500 bg-white transition-all duration-300"><span>4</span></div>
+      <div class="step-label text-[11px] text-gray-500 whitespace-nowrap">Anexos</div>
+    </div>
+    <div class="step-line w-12 h-0.5 bg-gray-200 self-start mt-[17px] mx-1" id="line-4"></div>
+    <div class="step flex flex-col items-center gap-1.5" data-step="5">
+      <div class="step-circle w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2 border-gray-300 text-gray-500 bg-white transition-all duration-300"><span>5</span></div>
+      <div class="step-label text-[11px] text-gray-500 whitespace-nowrap">Revisão</div>
+    </div>
+  </div>
+
+  <div class="error-msg bg-red-50 text-red-600 px-3.5 py-2.5 rounded-lg text-xs font-semibold border border-red-200 mb-4" id="error-msg" style="display:none"></div>
+
+  <div class="section-wrapper relative min-h-[320px]" id="section-wrapper">
+
+    <div class="section active" id="section-1">
+      <h2 class="text-lg text-gray-900 mb-1">Campos Iniciais</h2>
+      <p class="text-sm text-gray-500 mb-5">Preencha os dados da ordem de serviço.</p>
+
+      <div class="mb-4">
+        <label for="uc" class="block font-semibold text-sm text-gray-700 mb-1">UC <span class="text-red-600">*</span></label>
+        <input type="number" id="uc" placeholder="Número da UC" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-[15px] font-sans text-gray-900 bg-white outline-none transition-all focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15">
+      </div>
+
+      <div class="mb-4">
+        <label for="os" class="block font-semibold text-sm text-gray-700 mb-1">OS <span class="text-red-600">*</span></label>
+        <input type="text" id="os" placeholder="Número da Ordem de Serviço" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-[15px] font-sans text-gray-900 bg-white outline-none transition-all focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15">
+      </div>
+
+      <div class="mb-4">
+        <label for="cliente" class="block font-semibold text-sm text-gray-700 mb-1">Cliente <span class="text-red-600">*</span></label>
+        <input type="text" id="cliente" placeholder="Nome do cliente" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-[15px] font-sans text-gray-900 bg-white outline-none transition-all focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15">
+      </div>
+
+      <div class="mb-4">
+        <label for="tipo-ordem" class="block font-semibold text-sm text-gray-700 mb-1">Tipo de ordem <span class="text-red-600">*</span></label>
+        <select id="tipo-ordem" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-[15px] font-sans text-gray-900 bg-white outline-none transition-all focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15">
+          <option value="">Selecione...</option>
+          <option value="ordem-servico">Ordem de Serviço</option>
+          <option value="garantia">Garantia</option>
+          <option value="orcamento">Orçamento</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="section" id="section-2">
+      <h2 class="text-lg text-gray-900 mb-1">Equipamentos</h2>
+      <p class="text-sm text-gray-500 mb-5">Adicione os equipamentos instalados e/ou retirados.</p>
+
+      <div id="equipamentos-list"></div>
+
+      <div class="flex gap-2 items-center">
+        <button class="btn-add flex-1 py-2.5 px-4 border-2 border-dashed border-gray-300 rounded-lg bg-transparent text-gray-600 text-sm font-semibold cursor-pointer transition-colors duration-200 font-sans hover:border-blue-600 hover:text-blue-600" id="btn-add-equip" type="button">+ Adicionar equipamento</button>
+        <button class="btn-skip bg-none border-none text-gray-400 text-sm cursor-pointer font-sans px-1 whitespace-nowrap transition-colors duration-200 hover:text-gray-600" id="btn-skip-equip" type="button" style="display:none">Pular →</button>
+      </div>
+    </div>
+
+    <div class="section" id="section-3">
+      <h2 class="text-lg text-gray-900 mb-1">Retorno de Ordem</h2>
+      <p class="text-sm text-gray-500 mb-5" id="retorno-desc">Preencha as informações de retorno.</p>
+      <div id="retorno-campos"></div>
+    </div>
+
+    <div class="section" id="section-4">
+      <h2 class="text-lg text-gray-900 mb-1">Anexos</h2>
+      <p class="text-sm text-gray-500 mb-5">Selecione até 12 imagens para anexar ao email.</p>
+
+      <div class="file-upload-area border-2 border-dashed border-gray-300 rounded-lg py-7 px-5 text-center cursor-pointer transition-all duration-200 hover:border-blue-600 hover:bg-blue-50" id="file-upload-area">
+        <span class="text-2xl block mb-1.5">📎</span>
+        <span class="text-[15px] text-gray-600">Clique para selecionar imagens</span>
+        <span class="file-count block mt-1.5 text-xs text-gray-400 font-semibold" id="file-count">0 / 12</span>
+      </div>
+      <input type="file" id="file-input" accept="image/*" multiple class="hidden">
+
+      <div class="preview-grid grid grid-cols-4 max-sm:grid-cols-2 gap-2 mt-4" id="preview-grid"></div>
+    </div>
+
+    <div class="section" id="section-5">
+      <h2 class="text-lg text-gray-900 mb-1">Revisão do Email</h2>
+      <p class="text-sm text-gray-500 mb-5">Confira os dados antes de enviar.</p>
+
+      <div class="email-preview bg-gray-50 border border-gray-200 rounded-lg p-5">
+        <div class="preview-field mb-3">
+          <strong class="block text-xs text-gray-500 uppercase tracking-wider mb-1">Assunto</strong>
+          <div class="preview-value text-[15px] text-gray-900 whitespace-pre-wrap leading-relaxed" id="preview-assunto">—</div>
+        </div>
+
+        <div class="mb-4">
+          <label for="complemento-assunto" class="block font-semibold text-sm text-gray-700 mb-1">Complemento do assunto</label>
+          <input type="text" id="complemento-assunto" placeholder="Texto adicional para o assunto (opcional)" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-[15px] font-sans text-gray-900 bg-white outline-none transition-all focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15">
+        </div>
+
+        <div class="preview-field mb-3">
+          <strong class="block text-xs text-gray-500 uppercase tracking-wider mb-1">Corpo do email</strong>
+          <div class="preview-value text-[15px] text-gray-900 whitespace-pre-wrap leading-relaxed" id="preview-corpo">—</div>
+        </div>
+
+        <div class="mb-4">
+          <label for="complemento-corpo" class="block font-semibold text-sm text-gray-700 mb-1">Complemento do corpo</label>
+          <textarea id="complemento-corpo" rows="3" placeholder="Texto adicional para o corpo (opcional)" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-[15px] font-sans text-gray-900 bg-white outline-none transition-all resize-y min-h-[60px] focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15"></textarea>
+        </div>
+
+        <div class="preview-field mb-0">
+          <strong class="block text-xs text-gray-500 uppercase tracking-wider mb-1">Anexos</strong>
+          <div class="preview-value text-[15px] text-gray-900 whitespace-pre-wrap leading-relaxed" id="preview-anexos">Nenhum anexo</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-counter text-center text-xs text-gray-400 mt-4" id="section-counter">Seção 1 de 5 — Iniciais</div>
+
+  <div class="nav-buttons flex justify-between mt-7 pt-5 border-t border-gray-200">
+    <button class="btn btn-secondary" id="btn-anterior" disabled>← Anterior</button>
+    <button class="btn btn-primary" id="btn-proximo">Avançar →</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal-overlay fixed inset-0 bg-black/40 z-50 items-center justify-center hidden" id="modal-tipo">
+  <div class="modal bg-white rounded-xl p-7 max-w-[420px] w-[90%] shadow-2xl text-center">
+    <p class="text-[15px] text-gray-700 mb-6 leading-relaxed">Ao alterar o Tipo de ordem, os campos de Retorno preenchidos serão perdidos.</p>
+    <div class="flex gap-2.5 justify-center">
+      <button class="btn btn-secondary" id="modal-cancel">Cancelar</button>
+      <button class="btn btn-primary" id="modal-confirm">Alterar mesmo assim</button>
+    </div>
+  </div>
+</div>
+
+<div class="lightbox-overlay fixed inset-0 bg-black/80 z-[1001] items-center justify-center hidden" id="lightbox">
+  <button class="lightbox-close absolute top-5 right-7 bg-none border-none text-white text-3xl cursor-pointer" id="lightbox-close">✕</button>
+  <img id="lightbox-img" src="" alt="Preview ampliado" class="max-w-[90vw] max-h-[90vh] rounded-lg shadow-2xl">
+</div>
+
 </body>
 </html>

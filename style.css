@@ -1,85 +1,121 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+.section { display: none; }
+.section.active { display: block; }
+
+@keyframes slideOutLeft {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(-30px); opacity: 0; }
+}
+@keyframes slideOutRight {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(30px); opacity: 0; }
+}
+@keyframes enterFromRight {
+  from { transform: translateX(30px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes enterFromLeft {
+  from { transform: translateX(-30px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: #f4f4f4;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 20px;
+.section.slide-out-left {
+  animation: slideOutLeft 0.25s ease forwards;
+}
+.section.slide-out-right {
+  animation: slideOutRight 0.25s ease forwards;
+}
+.section.section-enter-next {
+  animation: enterFromRight 0.25s ease forwards;
+}
+.section.section-enter-prev {
+  animation: enterFromLeft 0.25s ease forwards;
 }
 
-.container {
-  background: #fff;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  width: 100%;
-  max-width: 480px;
-}
-
-h1 {
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem;
-  color: #333;
-}
-
-label {
-  display: block;
-  margin-bottom: 0.25rem;
-  font-weight: 600;
-  color: #555;
-  font-size: 0.875rem;
-}
-
-input, textarea {
-  width: 100%;
-  padding: 0.625rem;
-  margin-bottom: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+.step.done .step-circle::after {
+  content: '\2713';
   font-size: 1rem;
 }
+.step.done .step-circle span {
+  display: none;
+}
 
-button {
-  width: 100%;
-  padding: 0.75rem;
-  background: #0066cc;
+input.error, select.error, textarea.error {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12) !important;
+}
+
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  padding: 14px 28px;
+  background: #1f2937;
   color: #fff;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0;
+  transition: all 0.4s ease;
+  transform: translateX(-50%) translateY(80px);
+}
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+.toast.success {
+  background: #16a34a !important;
+}
+
+.btn {
+  padding: 11px 24px;
   border: none;
-  border-radius: 6px;
-  font-size: 1rem;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+  font-family: inherit;
+  text-align: center;
+  min-width: 130px;
+  line-height: 1.4;
 }
-
-button:hover {
-  background: #0052a3;
-}
-
-button:disabled {
-  background: #999;
+.btn:disabled {
+  opacity: 0.4;
   cursor: not-allowed;
 }
-
-#status {
-  margin-top: 1rem;
-  padding: 0.5rem;
-  border-radius: 6px;
-  font-size: 0.875rem;
-  text-align: center;
+.btn-primary {
+  background: #2563eb;
+  color: #fff;
+}
+.btn-primary:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+.btn-secondary {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+.btn-secondary:hover:not(:disabled) {
+  background: #e5e7eb;
+}
+.btn-success {
+  background: #16a34a;
+  color: #fff;
+}
+.btn-success:hover:not(:disabled) {
+  background: #15803d;
 }
 
-#status.success {
-  background: #d4edda;
-  color: #155724;
-}
-
-#status.error {
-  background: #f8d7da;
-  color: #721c24;
+@media (max-width: 640px) {
+  .step-line { width: 24px !important; }
+  .equip-row { flex-wrap: wrap; }
+  .equip-row select.equip-tipo { width: 100% !important; }
+  .equip-row select.equip-categoria { width: 100% !important; }
+  .preview-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .nav-buttons .btn { min-width: 100px !important; }
 }
