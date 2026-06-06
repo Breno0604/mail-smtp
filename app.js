@@ -94,7 +94,6 @@ function cacheDOM() {
   DOM.previewAssunto = document.getElementById("preview-assunto");
   DOM.previewCorpo = document.getElementById("preview-corpo");
   DOM.previewAnexos = document.getElementById("preview-anexos");
-  DOM.complementoAssunto = document.getElementById("complemento-assunto");
   DOM.complementoCorpo = document.getElementById("complemento-corpo");
   DOM.toast = document.getElementById("toast");
   DOM.sectionCounter = document.getElementById("section-counter");
@@ -301,14 +300,14 @@ function collectSectionData(n) {
 
 function addEquip(data) {
   const div = document.createElement("div");
-  div.className = "equip-row flex gap-2 items-center mb-2 p-2 bg-gray-50 rounded-lg";
+  div.className = "equip-row flex gap-1 items-center mb-1 p-1.5 bg-gray-50 rounded-lg";
   div.innerHTML = `
-    <select class="equip-tipo w-[100px] flex-shrink-0 px-2.5 py-2 border border-gray-300 rounded-lg text-[15px] outline-none focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15">
+    <select class="equip-tipo flex-1 min-w-0 px-1.5 py-1.5 border border-gray-300 rounded-lg text-sm outline-none focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15">
       <option value="">Selecione...</option>
       <option value="Instalado" ${data?.status === "Instalado" ? "selected" : ""}>Instalado</option>
       <option value="Retirado" ${data?.status === "Retirado" ? "selected" : ""}>Retirado</option>
     </select>
-    <select class="equip-categoria w-[150px] flex-shrink-0 px-2.5 py-2 border border-gray-300 rounded-lg text-[15px] outline-none focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15">
+    <select class="equip-categoria flex-1 min-w-0 px-1.5 py-1.5 border border-gray-300 rounded-lg text-sm outline-none focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15">
       <option value="">Selecione...</option>
       <option value="Medidor" ${data?.categoria === "Medidor" ? "selected" : ""}>Medidor</option>
       <option value="Display" ${data?.categoria === "Display" ? "selected" : ""}>Display</option>
@@ -316,8 +315,8 @@ function addEquip(data) {
       <option value="TC" ${data?.categoria === "TC" ? "selected" : ""}>TC</option>
       <option value="TP" ${data?.categoria === "TP" ? "selected" : ""}>TP</option>
     </select>
-    <input type="number" class="equip-numero flex-1 min-w-[80px] px-2.5 py-2 border border-gray-300 rounded-lg text-[15px] outline-none focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15" placeholder="N\u00B0 Equip." value="${data?.numero || ""}">
-    <button class="btn-remove w-9 h-9 border-none rounded-lg bg-red-50 text-red-600 text-base cursor-pointer flex-shrink-0 transition-colors duration-200 flex items-center justify-center hover:bg-red-200" type="button">\u2715</button>
+    <input type="number" class="equip-numero flex-1 min-w-0 px-1.5 py-1.5 border border-gray-300 rounded-lg text-sm outline-none focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15" placeholder="N\u00B0" value="${data?.numero || ""}">
+    <button class="btn-remove w-7 h-7 border-none rounded-lg bg-red-50 text-red-500 text-xs cursor-pointer flex-shrink-0 transition-colors duration-200 flex items-center justify-center hover:bg-red-200" type="button">\u2715</button>
   `;
 
   addBlurValidation(div.querySelector(".equip-numero"));
@@ -566,12 +565,10 @@ async function sendEmail() {
   btn.textContent = "Enviando...";
 
   try {
-    const baseSubject = DOM.previewAssunto.textContent;
+    const subject = DOM.previewAssunto.textContent;
     const baseBody = DOM.previewCorpo.textContent;
-    const compAssunto = DOM.complementoAssunto.value.trim();
     const compCorpo = DOM.complementoCorpo.value.trim();
 
-    const subject = compAssunto ? `${baseSubject} - ${compAssunto}` : baseSubject;
     const text = compCorpo ? `${baseBody}\n\n${compCorpo}` : baseBody;
 
     const attachments = [];
@@ -650,7 +647,6 @@ function resetForm() {
   DOM.tipoOrdem.value = "";
   DOM.retornoCampos.innerHTML = "";
   DOM.equipList.innerHTML = "";
-  DOM.complementoAssunto.value = "";
   DOM.complementoCorpo.value = "";
   state.equipamentos = [];
   state.attachments = [];

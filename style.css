@@ -40,6 +40,14 @@
 .step.done .step-circle span {
   display: none;
 }
+.step.active .step-label::after {
+  content: '';
+  display: block;
+  height: 2px;
+  background: #2563eb;
+  border-radius: 1px;
+  margin-top: 2px;
+}
 
 input.error, select.error, textarea.error {
   border-color: #dc2626 !important;
@@ -113,9 +121,6 @@ input.error, select.error, textarea.error {
 
 @media (max-width: 640px) {
   .step-line { width: 24px !important; }
-  .equip-row { flex-wrap: wrap; }
-  .equip-row select.equip-tipo { width: 100% !important; }
-  .equip-row select.equip-categoria { width: 100% !important; }
   .preview-grid { grid-template-columns: repeat(2, 1fr) !important; }
   .nav-buttons .btn { min-width: 100px !important; }
 }
