@@ -1,6 +1,6 @@
 import { DOM } from "./dom.js";
 import { state } from "./state.js";
-import { saveRecord } from "./db.js";
+import { updateRecordStatus } from "./db.js";
 import { MAX_SIZE, SKIP_SIZE, toBase64, blobToBase64, loadImage } from "./utils.js";
 import { showToast } from "./ui.js";
 
@@ -75,7 +75,9 @@ export async function sendEmail() {
 
     if (res.ok && data.success) {
       showToast("Email enviado com sucesso!", true);
-      saveRecord({ to: data.to, subject, sentAt: new Date().toISOString(), status: "sucesso" });
+      if (state.currentUUID) {
+        updateRecordStatus(state.currentUUID, { to: data.to, subject, sentAt: new Date().toISOString() }).catch(() => {});
+      }
       return true;
     } else {
       showToast(data.error || "Erro ao enviar email.", false);
