@@ -1,8 +1,9 @@
 import { DOM } from "./dom.js";
 import { state } from "./state.js";
 import { showError, hideError } from "./ui.js";
-import { iniciaisFields, getIniciaisData } from "./iniciais.js";
+import { getIniciaisData } from "./iniciais.js";
 import { getRetornoData } from "./retornos.js";
+import { iniciaisFields } from "./fields.js";
 
 export function validateSection(n) {
   hideError();

@@ -1,12 +1,11 @@
 import { DOM } from "./dom.js";
 import { state, saveState, debouncedSave } from "./state.js";
 import { addBlurValidation } from "./validation.js";
+import { retornoFields } from "./fields.js";
+
+export { retornoFields };
 
 const inputClass = "w-full px-3 py-2.5 border border-gray-300 rounded-lg text-base font-sans text-gray-900 bg-white outline-none transition-all focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15";
-
-export const retornoFields = [
-  { label: "Descri\u00E7\u00E3o", id: "descricao-retorno", type: "textarea", required: true },
-];
 
 export function renderRetorno() {
   const tipoLabel = DOM.tipoOrdem.options[DOM.tipoOrdem.selectedIndex]?.text || "\u2014";
