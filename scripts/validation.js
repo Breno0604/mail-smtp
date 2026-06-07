@@ -5,7 +5,7 @@ import { getIniciaisData } from "./iniciais.js";
 import { getRetornoData } from "./retornos.js";
 import { iniciaisFields as fieldsIniciais } from "./fields.js";
 
-export function validateSection(n) {
+export function validateSection(n, { equipamentos = [] } = {}) {
   hideError();
   let valid = true;
 

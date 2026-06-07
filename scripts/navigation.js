@@ -104,7 +104,7 @@ export function prevSection() {
 }
 
 export async function nextSection() {
-  if (!validateSection(state.currentSection)) return;
+  if (!validateSection(state.currentSection, { equipamentos: state.equipamentos })) return;
   collectSectionData(state.currentSection);
 
   if (state.currentSection === state.totalSections) {
