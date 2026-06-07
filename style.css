@@ -79,10 +79,13 @@ input.error, select.error, textarea.error {
   background: #16a34a !important;
 }
 
+html { overflow: hidden; }
+
 .container {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  height: 100dvh;
   padding-bottom: 0;
 }
 
