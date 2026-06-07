@@ -1,5 +1,5 @@
 import { DOM, cacheDOM } from "./dom.js";
-import { state, debouncedSave } from "./state.js";
+import { state, debouncedSave, getCurrentUUID, clearCurrentUUID } from "./state.js";
 import { renderIniciais } from "./iniciais.js";
 import { addEquip } from "./equipment.js";
 import { handleTipoChange, cancelTipoChange, confirmTipoChange } from "./retornos.js";
@@ -12,18 +12,18 @@ import { applyRecord } from "./restore.js";
 import { showConfirm } from "./ui.js";
 
 async function restoreSavedState() {
-  const uuid = sessionStorage.getItem("currentUUID");
+  const uuid = getCurrentUUID();
   if (!uuid) return false;
 
   try {
     const record = await getRecord(uuid);
     if (!record) {
-      sessionStorage.removeItem("currentUUID");
+      clearCurrentUUID();
       return false;
     }
     const ok = await showConfirm(`H\u00E1 um formul\u00E1rio salvo (Se\u00E7\u00E3o ${record.currentSection} de 5). Deseja continuar de onde parou?`);
     if (!ok) {
-      sessionStorage.removeItem("currentUUID");
+      clearCurrentUUID();
       return false;
     }
 

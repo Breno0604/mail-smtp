@@ -1,5 +1,5 @@
 import { DOM } from "./dom.js";
-import { state } from "./state.js";
+import { state, clearCurrentUUID } from "./state.js";
 import { getAllRecords, deleteRecord, getRecord } from "./db.js";
 import { formatDate } from "./utils.js";
 import { applyRecord } from "./restore.js";
@@ -84,8 +84,7 @@ export async function renderSidebar() {
       try {
         await deleteRecord(record.uuid);
         if (state.currentUUID === record.uuid) {
-          sessionStorage.removeItem("currentUUID");
-          state.currentUUID = "";
+          clearCurrentUUID();
         }
         renderSidebar();
       } catch (err) { /* ignore */ }

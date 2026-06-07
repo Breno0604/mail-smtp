@@ -1,11 +1,10 @@
 import { DOM } from "./dom.js";
-import { state } from "./state.js";
+import { state, setCurrentUUID } from "./state.js";
 import { renderIniciais, iniciaisFields } from "./iniciais.js";
 import { showSection } from "./navigation.js";
 
 export function applyRecord(record) {
-  state.currentUUID = record.uuid;
-  sessionStorage.setItem("currentUUID", record.uuid);
+  setCurrentUUID(record.uuid);
 
   state.equipamentos = record.equipamentos || [];
   state.lastTipoOrdem = record.lastTipoOrdem || "";

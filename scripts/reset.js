@@ -1,5 +1,5 @@
 import { DOM } from "./dom.js";
-import { state } from "./state.js";
+import { state, clearCurrentUUID } from "./state.js";
 import { renderIniciais } from "./iniciais.js";
 import { showEmptyEquip, updateSkipBtn } from "./equipment.js";
 import { updateFileCount } from "./attachments.js";
@@ -21,5 +21,5 @@ export function resetForm() {
   updateFileCount();
   updateSkipBtn();
   hideError();
-  sessionStorage.removeItem("currentUUID");
+  clearCurrentUUID();
 }

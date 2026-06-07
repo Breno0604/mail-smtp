@@ -3,7 +3,17 @@ import { getIniciaisData } from "./iniciais.js";
 import { getRetornoData } from "./retornos.js";
 import { saveDraft, getRecord } from "./db.js";
 
-export const STORAGE_KEY = "mail_form_estado";
+export const getCurrentUUID = () => sessionStorage.getItem("currentUUID") || "";
+
+export const setCurrentUUID = (uuid) => {
+  state.currentUUID = uuid;
+  sessionStorage.setItem("currentUUID", uuid);
+};
+
+export const clearCurrentUUID = () => {
+  state.currentUUID = "";
+  sessionStorage.removeItem("currentUUID");
+};
 
 export const state = {
   currentSection: 1,
@@ -15,7 +25,7 @@ export const state = {
   visitedRetorno: false,
   retorno: {},
   animating: false,
-  currentUUID: sessionStorage.getItem("currentUUID") || "",
+  currentUUID: getCurrentUUID(),
   composicao: { complementoCorpo: "" },
 };
 
@@ -32,7 +42,7 @@ export async function saveState() {
     } catch (_) {
       state.currentUUID = Date.now().toString(36) + Math.random().toString(36).slice(2);
     }
-    sessionStorage.setItem("currentUUID", state.currentUUID);
+    setCurrentUUID(state.currentUUID);
   }
 
   let createdAt = new Date().toISOString();
