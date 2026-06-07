@@ -3,15 +3,10 @@ import { state } from "./state.js";
 import { getAllRecords, deleteRecord, getRecord } from "./db.js";
 import { showSection } from "./navigation.js";
 import { renderIniciais, iniciaisFields } from "./iniciais.js";
+import { formatDate } from "./utils.js";
+
 export function closeSidebar() {
   document.body.classList.remove("sidebar-open");
-}
-
-function formatDate(iso) {
-  if (!iso) return "";
-  const d = new Date(iso);
-  const pad = (n) => String(n).padStart(2, "0");
-  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
 function getRecordSummary(record) {
