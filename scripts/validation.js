@@ -3,14 +3,14 @@ import { state } from "./state.js";
 import { showError, hideError } from "./ui.js";
 import { getIniciaisData } from "./iniciais.js";
 import { getRetornoData } from "./retornos.js";
-import { iniciaisFields } from "./fields.js";
+import { iniciaisFields as fieldsIniciais } from "./fields.js";
 
 export function validateSection(n) {
   hideError();
   let valid = true;
 
   if (n === 1) {
-    iniciaisFields.forEach((field) => {
+    fieldsIniciais.forEach((field) => {
       if (!field.obrigatorio) return;
       const el = document.getElementById(field.nome);
       if (el) {
