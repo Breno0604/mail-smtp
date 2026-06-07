@@ -1,39 +1,50 @@
 import { DOM, cacheDOM } from "./dom.js";
-import { state, STORAGE_KEY, saveState } from "./state.js";
+import { state, saveState, debouncedSave } from "./state.js";
 import { renderIniciais, iniciaisFields } from "./iniciais.js";
 import { addEquip } from "./equipment.js";
 import { handleTipoChange, cancelTipoChange, confirmTipoChange } from "./retornos.js";
 import { handleUploadClick, handleFileChange, closeLightbox, updateFileCount } from "./attachments.js";
 import { showSection, prevSection, nextSection } from "./navigation.js";
 import { resetForm } from "./reset.js";
+import { renderSidebar } from "./sidebar.js";
+import { getRecord } from "./db.js";
 
 function restoreSavedState() {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (!saved) return;
+  const uuid = sessionStorage.getItem("currentUUID");
+  if (!uuid) return;
 
-  try {
-    const data = JSON.parse(saved);
-    const section = data.currentSection || 1;
-    const ok = confirm(`H\u00E1 um formul\u00E1rio salvo (Se\u00E7\u00E3o ${section} de 5). Deseja continuar de onde parou?`);
+  getRecord(uuid).then((record) => {
+    if (!record) {
+      sessionStorage.removeItem("currentUUID");
+      return;
+    }
+    const ok = confirm(`H\u00E1 um formul\u00E1rio salvo (Se\u00E7\u00E3o ${record.currentSection} de 5). Deseja continuar de onde parou?`);
     if (!ok) {
-      localStorage.removeItem(STORAGE_KEY);
+      sessionStorage.removeItem("currentUUID");
       return;
     }
 
-    state.equipamentos = data.equipamentos || [];
-    state.lastTipoOrdem = data.lastTipoOrdem || "";
-    state.visitedRetorno = data.visitedRetorno || false;
-    showSection(section, "next", true);
+    state.currentUUID = uuid;
+    state.equipamentos = record.equipamentos || [];
+    state.lastTipoOrdem = record.lastTipoOrdem || "";
+    state.visitedRetorno = record.visitedRetorno || false;
+    showSection(record.currentSection, "next", true);
 
-    if (data.iniciais) {
+    if (record.iniciais) {
       iniciaisFields.forEach((field) => {
         const el = document.getElementById(field.nome);
-        if (el) el.value = data.iniciais[field.nome] || "";
+        if (el) el.value = record.iniciais[field.nome] || "";
       });
     }
-  } catch (e) {
-    localStorage.removeItem(STORAGE_KEY);
-  }
+
+    if (record.tipoOrdem && DOM.tipoOrdem) {
+      DOM.tipoOrdem.value = record.tipoOrdem;
+    }
+
+    if (record.composicao && record.composicao.complementoCorpo && DOM.complementoCorpo) {
+      DOM.complementoCorpo.value = record.composicao.complementoCorpo;
+    }
+  }).catch(() => {});
 }
 
 function initEvents() {
@@ -55,6 +66,12 @@ function initEvents() {
     resetForm();
     showSection(1, "prev", true);
   });
+  DOM.hamburger.addEventListener("click", () => {
+    renderSidebar();
+    document.body.classList.add("sidebar-open");
+  });
+  DOM.sidebarOverlay.addEventListener("click", closeSidebar);
+  DOM.sidebarClose.addEventListener("click", closeSidebar);
 
   document.addEventListener("pointerdown", (e) => {
     if (e.target.tagName !== "INPUT" && e.target.tagName !== "SELECT" && e.target.tagName !== "TEXTAREA") {
@@ -63,9 +80,13 @@ function initEvents() {
   });
 
   document.querySelectorAll("input, select, textarea").forEach((el) => {
-    el.addEventListener("change", saveState);
-    el.addEventListener("input", saveState);
+    el.addEventListener("change", debouncedSave);
+    el.addEventListener("input", debouncedSave);
   });
+}
+
+export function closeSidebar() {
+  document.body.classList.remove("sidebar-open");
 }
 
 document.addEventListener("DOMContentLoaded", () => {

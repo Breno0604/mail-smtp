@@ -16,6 +16,7 @@ Legacy `app.js` at root is unused.
 - `navigation.js` — section transitions, step indicators, button labels
 - `validation.js` — per-section validation, blur validation, data collection
 - `equipment.js` — equipment row DOM creation and management
+- `iniciais.js` — "Iniciais" field definitions (hardcoded dropdown values for líder, parceiro, município, placa, tipo-ordem), render + data getter
 - `retornos.js` — retorno field definitions + render + tipo-ordem modal
 - `attachments.js` — file upload, thumbnail preview, lightbox
 - `email.js` — composeEmail (preview assembly)
@@ -53,6 +54,11 @@ Legacy `app.js` at root is unused.
 - `.gitignore`: `node_modules`, `.netlify/`
 - No tests, no linter, no typecheck — none planned for MVP
 - TLS: `rejectUnauthorized: false` (intentional for self-signed SMTP certs)
+- localStorage auto-save on any input/change event (`mail_form_estado` key); restore prompt on page load (Section N of 5 dialog)
+- Changing "Tipo de Ordem" after visiting Retorno triggers a confirmation modal that clears retorno fields on confirm
+
+## Orientation overlay
+- CSS-only full-screen overlay (`#orientation-overlay`) shown in landscape on short viewports (`max-height: 500px`), forces portrait mode on phones — no JS involved
 
 ## Dev workflow
 - Local testing: `npx netlify dev` (ES6 modules require HTTP; no `file://`)
@@ -60,6 +66,5 @@ Legacy `app.js` at root is unused.
 - Deploy: `git add -A && git commit -m "msg" && git push`
 
 ## Future scope (do not implement until requested)
-- Formulário de retorno de ordens de serviço (conteúdo vira assunto/corpo)
-- PWA, dark mode, fila de envios, rascunhos, revisão pré-envio
+- PWA, dark mode, fila de envios, deleção automática de rascunhos antigos
 - Logs centralizados e deleção automática de registros ≥ 90 dias
