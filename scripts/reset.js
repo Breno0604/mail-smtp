@@ -1,5 +1,5 @@
 import { DOM } from "./dom.js";
-import { state, STORAGE_KEY } from "./state.js";
+import { state } from "./state.js";
 import { renderIniciais } from "./iniciais.js";
 import { showEmptyEquip, updateSkipBtn } from "./equipment.js";
 import { updateFileCount } from "./attachments.js";
@@ -15,10 +15,11 @@ export function resetForm() {
   state.iniciais = {};
   state.lastTipoOrdem = "";
   state.visitedRetorno = false;
+  state.currentUUID = "";
   DOM.previewGrid.innerHTML = "";
   showEmptyEquip();
   updateFileCount();
   updateSkipBtn();
   hideError();
-  localStorage.removeItem(STORAGE_KEY);
+  sessionStorage.removeItem("currentUUID");
 }
