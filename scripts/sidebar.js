@@ -3,10 +3,9 @@ import { state } from "./state.js";
 import { getAllRecords, deleteRecord, getRecord } from "./db.js";
 import { showSection } from "./navigation.js";
 import { renderIniciais, iniciaisFields } from "./iniciais.js";
-import { renderEquipamentos } from "./equipment.js";
-import { renderRetorno } from "./retornos.js";
-import { renderPreviews, updateFileCount } from "./attachments.js";
-import { closeSidebar } from "./app.js";
+export function closeSidebar() {
+  document.body.classList.remove("sidebar-open");
+}
 
 function formatDate(iso) {
   if (!iso) return "";

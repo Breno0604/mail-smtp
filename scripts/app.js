@@ -6,7 +6,7 @@ import { handleTipoChange, cancelTipoChange, confirmTipoChange } from "./retorno
 import { handleUploadClick, handleFileChange, closeLightbox, updateFileCount } from "./attachments.js";
 import { showSection, prevSection, nextSection } from "./navigation.js";
 import { resetForm } from "./reset.js";
-import { renderSidebar } from "./sidebar.js";
+import { renderSidebar, closeSidebar } from "./sidebar.js";
 import { getRecord } from "./db.js";
 
 async function restoreSavedState() {
@@ -47,7 +47,7 @@ async function restoreSavedState() {
     }
 
     return true;
-  } catch () {
+  } catch (_) {
     return false;
   }
 }
@@ -88,10 +88,6 @@ function initEvents() {
     el.addEventListener("change", debouncedSave);
     el.addEventListener("input", debouncedSave);
   });
-}
-
-export function closeSidebar() {
-  document.body.classList.remove("sidebar-open");
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
