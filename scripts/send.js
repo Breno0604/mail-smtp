@@ -3,8 +3,12 @@ import { state } from "./state.js";
 import { updateRecordStatus } from "./db.js";
 import { MAX_SIZE, SKIP_SIZE, toBase64, blobToBase64, loadImage } from "./utils.js";
 import { showToast } from "./ui.js";
+import { checkDuplicate } from "./duplicate.js";
 
 export async function sendEmail() {
+  const canProceed = await checkDuplicate();
+  if (!canProceed) return;
+
   const btn = DOM.btnProximo;
   btn.disabled = true;
   btn.textContent = "Enviando...";
