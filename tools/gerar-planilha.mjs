@@ -40,24 +40,6 @@ const grupo1Tipos = [
 // Group 2 — Substituição de Equipamentos (Tela_Substituicao_de_Equipamentos) — gv=2
 const grupo2Fields = [
   h(1,  'servico_executado',               'Serviço Executado',                      'SELECT',  'INSTALAR CONJUNTO,RETIRADO,TROCA DE CONJUNTO SEM CRIME,INSTALADO RETIRADO NAO ALTERADO','SIM','','','','Substituição'),
-  h(2,  'cs_medidor_instalado',            'Medidor Instalado',                      'CHECKBOX','','SIM','','','','Substituição'),
-  h(3,  'cs_conjunto_instalado',           'Conjunto Instalado',                     'CHECKBOX','','SIM','','','','Substituição'),
-  h(4,  'cs_display_instalado',            'Display Instalado',                      'CHECKBOX','','SIM','','','','Substituição'),
-  h(5,  'cs_tc_fase_a_instalado',          'TC Fase A Instalado',                    'CHECKBOX','','SIM','','','','Substituição'),
-  h(6,  'cs_tc_fase_b_instalado',          'TC Fase B Instalado',                    'CHECKBOX','','SIM','','','','Substituição'),
-  h(7,  'cs_tc_fase_c_instalado',          'TC Fase C Instalado',                    'CHECKBOX','','SIM','','','','Substituição'),
-  h(8,  'cs_tp_fase_a_instalado',          'TP Fase A Instalado',                    'CHECKBOX','','SIM','','','','Substituição'),
-  h(9,  'cs_tp_fase_b_instalado',          'TP Fase B Instalado',                    'CHECKBOX','','SIM','','','','Substituição'),
-  h(10, 'cs_tp_fase_c_instalado',          'TP Fase C Instalado',                    'CHECKBOX','','SIM','','','','Substituição'),
-  h(11, 'cs_medidor_retirado',             'Medidor Retirado',                       'CHECKBOX','','SIM','','','','Substituição'),
-  h(12, 'cs_conjunto_retirado',            'Conjunto Retirado',                      'CHECKBOX','','SIM','','','','Substituição'),
-  h(13, 'cs_display_retirado',             'Display Retirado',                       'CHECKBOX','','SIM','','','','Substituição'),
-  h(14, 'cs_tc_fase_a_retirado',           'TC Fase A Retirado',                     'CHECKBOX','','SIM','','','','Substituição'),
-  h(15, 'cs_tc_fase_b_retirado',           'TC Fase B Retirado',                     'CHECKBOX','','SIM','','','','Substituição'),
-  h(16, 'cs_tc_fase_c_retirado',           'TC Fase C Retirado',                     'CHECKBOX','','SIM','','','','Substituição'),
-  h(17, 'cs_tp_fase_a_retirado',           'TP Fase A Retirado',                     'CHECKBOX','','SIM','','','','Substituição'),
-  h(18, 'cs_tp_fase_b_retirado',           'TP Fase B Retirado',                     'CHECKBOX','','SIM','','','','Substituição'),
-  h(19, 'cs_tp_fase_c_retirado',           'TP Fase C Retirado',                     'CHECKBOX','','SIM','','','','Substituição'),
 ];
 const grupo2Tipos = [
   'LIGACAO NOVA MT - CLIENTE LIVRE',
@@ -286,7 +268,7 @@ async function main() {
   s2.getRow(1).font = { bold: true };
 
   // ─── write ─────────────────────────────────────────────────────────────────
-  await wb.xlsx.writeFile('C:\\web-projects\\mail\\dados_projeto\\tipos_ordem_template.xlsx');
+  await wb.xlsx.writeFile('C:\\web-projects\\mail\\dados_projeto\\tipos_ordem_template_v2.xlsx');
   console.log('✅ Planilha gerada em dados_projeto/tipos_ordem_template.xlsx');
   console.log(`   Sheet "tipos_ordem": ${rows.length} linhas`);
   console.log(`   Sheet "Texto_ordem": ${textosTemplate.length} linhas`);
