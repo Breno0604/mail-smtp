@@ -121,6 +121,23 @@ const grupo9Fields = [
 ];
 const grupo9Tipos = ['DESLIG.PROG.MANUTENÇÃO'];
 
+// ─── tela_inicial ───────────────────────────────────────────────────────────
+const telaInicialFields = [
+  { ordem:1, campo_nome:'tipo_ordem',  campo_label:'Tipo de Ordem',  tipo:'SELECT',   opcoes:'(50 tipos)',             inicia_visivel:'SIM', gatilho_campo:'', gatilho_valor:'', placeholder:'Selecione o tipo',          obrigatorio:'SIM' },
+  { ordem:2, campo_nome:'cliente',     campo_label:'Cliente',        tipo:'SELECT',   opcoes:'(~140 clientes)',        inicia_visivel:'SIM', gatilho_campo:'', gatilho_valor:'', placeholder:'Selecione o cliente',        obrigatorio:'SIM' },
+  { ordem:3, campo_nome:'ordem',       campo_label:'Ordem',          tipo:'TEXT',     opcoes:'',                         inicia_visivel:'SIM', gatilho_campo:'', gatilho_valor:'', placeholder:'Número da Ordem de Serviço', obrigatorio:'SIM' },
+  { ordem:4, campo_nome:'uc',          campo_label:'UC',             tipo:'TEXT',     opcoes:'',                         inicia_visivel:'SIM', gatilho_campo:'', gatilho_valor:'', placeholder:'Número da UC',               obrigatorio:'SIM' },
+  { ordem:5, campo_nome:'municipio',   campo_label:'Município',      tipo:'SELECT',   opcoes:'(lista de municípios)',   inicia_visivel:'SIM', gatilho_campo:'', gatilho_valor:'', placeholder:'Selecione o município',      obrigatorio:'SIM' },
+  { ordem:6, campo_nome:'apr',         campo_label:'APR',            tipo:'TEXT',     opcoes:'',                         inicia_visivel:'NÃO', gatilho_campo:'', gatilho_valor:'', placeholder:'Número APR',                obrigatorio:'NÃO' },
+  { ordem:7, campo_nome:'pre_apr',     campo_label:'PRE APR',        tipo:'TEXT',     opcoes:'',                         inicia_visivel:'NÃO', gatilho_campo:'', gatilho_valor:'', placeholder:'Número PRE APR',            obrigatorio:'NÃO' },
+  { ordem:8, campo_nome:'notificado',  campo_label:'Notificado',     tipo:'SELECT',   opcoes:'SIM,NÃO',                   inicia_visivel:'SIM', gatilho_campo:'', gatilho_valor:'', placeholder:'',                           obrigatorio:'NÃO' },
+  { ordem:9, campo_nome:'muck_bq',     campo_label:'Muck B&Q',       tipo:'TEXT',     opcoes:'',                         inicia_visivel:'NÃO', gatilho_campo:'', gatilho_valor:'', placeholder:'Muck B&Q',                 obrigatorio:'NÃO' },
+  { ordem:10,campo_nome:'placa',       campo_label:'Placa',          tipo:'TEXT',     opcoes:'',                         inicia_visivel:'NÃO', gatilho_campo:'', gatilho_valor:'', placeholder:'Placa do veículo',          obrigatorio:'NÃO' },
+  { ordem:11,campo_nome:'tecnicos',    campo_label:'Técnico(s)',     tipo:'TEXT',     opcoes:'',                         inicia_visivel:'SIM', gatilho_campo:'', gatilho_valor:'', placeholder:'Nome do(s) técnico(s)',      obrigatorio:'NÃO' },
+  { ordem:12,campo_nome:'data_hora',   campo_label:'Data/Hora',      tipo:'TEXT',     opcoes:'',                         inicia_visivel:'SIM', gatilho_campo:'', gatilho_valor:'', placeholder:'Data e hora (automático)',    obrigatorio:'NÃO' },
+  { ordem:13,campo_nome:'observacao',  campo_label:'Observação',     tipo:'TEXTAREA', opcoes:'',                         inicia_visivel:'SIM', gatilho_campo:'', gatilho_valor:'', placeholder:'Observação geral',           obrigatorio:'NÃO' },
+];
+
 // ─── tipos com template fixo (tipo_retorno=template) ────────────────────────
 // Fonte: ordens_servico.md §Templates
 const templatesTipos = [
@@ -267,11 +284,30 @@ async function main() {
   for (const t of textosTemplate) s2.addRow(t);
   s2.getRow(1).font = { bold: true };
 
+  // ─── Sheet 3: tela_inicial ────────────────────────────────────────────────
+  const s3 = wb.addWorksheet('tela_inicial');
+  s3.columns = [
+    { header: 'ordem',           key: 'ordem',           width: 8 },
+    { header: 'campo_nome',      key: 'campo_nome',      width: 25 },
+    { header: 'campo_label',     key: 'campo_label',     width: 25 },
+    { header: 'tipo',            key: 'tipo',            width: 12 },
+    { header: 'opcoes',          key: 'opcoes',          width: 40 },
+    { header: 'inicia_visivel',  key: 'inicia_visivel',  width: 14 },
+    { header: 'gatilho_campo',   key: 'gatilho_campo',   width: 20 },
+    { header: 'gatilho_valor',   key: 'gatilho_valor',   width: 20 },
+    { header: 'placeholder',     key: 'placeholder',     width: 30 },
+    { header: 'obrigatorio',     key: 'obrigatorio',     width: 14 },
+  ];
+
+  for (const f of telaInicialFields) s3.addRow(f);
+  s3.getRow(1).font = { bold: true };
+
   // ─── write ─────────────────────────────────────────────────────────────────
-  await wb.xlsx.writeFile('C:\\web-projects\\mail\\dados_projeto\\tipos_ordem_template_v2.xlsx');
+  await wb.xlsx.writeFile('C:\\web-projects\\mail\\dados_projeto\\tipos_ordem_template.xlsx');
   console.log('✅ Planilha gerada em dados_projeto/tipos_ordem_template.xlsx');
   console.log(`   Sheet "tipos_ordem": ${rows.length} linhas`);
   console.log(`   Sheet "Texto_ordem": ${textosTemplate.length} linhas`);
+  console.log(`   Sheet "tela_inicial": ${telaInicialFields.length} linhas`);
 }
 
 main().catch(console.error);
