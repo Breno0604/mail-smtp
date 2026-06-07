@@ -73,8 +73,6 @@ export function showSection(n, direction, noAnimation) {
     DOM.btnProximo.className = "btn btn-primary";
   }
 
-  DOM.sectionCounter.textContent = `Se\u00E7\u00E3o ${n} de ${state.totalSections} \u2014 ${getSectionName(n)}`;
-
   if (n === 1) { renderIniciais(); DOM.tipoOrdem = document.getElementById("tipo-ordem"); }
   if (n === 2) renderEquipamentos();
   if (n === 3) { renderRetorno(); state.visitedRetorno = true; }

@@ -22,7 +22,6 @@ export function cacheDOM() {
   DOM.previewCorpo = document.getElementById("preview-corpo");
   DOM.complementoCorpo = document.getElementById("complemento-corpo");
   DOM.toast = document.getElementById("toast");
-  DOM.sectionCounter = document.getElementById("section-counter");
   DOM.btnLimpar = document.getElementById("btn-limpar");
   DOM.modalTipo = document.getElementById("modal-tipo");
   DOM.modalCancel = document.getElementById("modal-cancel");

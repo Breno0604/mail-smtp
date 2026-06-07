@@ -20,10 +20,11 @@ export const iniciaisFields = [
 const linhaConfig = {
   4: "grid grid-cols-2 gap-3 mb-4",
   5: "grid grid-cols-2 gap-3 mb-4",
-  6: "grid grid-cols-3 gap-3 mb-4",
+  6: "linha-data gap-3 mb-4",
 };
 
 const inputClass = "w-full px-3 py-2.5 border border-gray-300 rounded-lg text-base font-sans text-gray-900 bg-white outline-none transition-all focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15";
+const selectClass = inputClass + " py-3";
 
 export function renderIniciais() {
   DOM.iniciaisCampos.innerHTML = "";
@@ -50,7 +51,7 @@ export function renderIniciais() {
     let input;
     if (field.tipo === "select") {
       input = document.createElement("select");
-      input.className = inputClass;
+      input.className = selectClass;
       const placeholder = document.createElement("option");
       placeholder.value = "";
       placeholder.textContent = "Selecione";

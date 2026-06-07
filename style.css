@@ -79,6 +79,23 @@ input.error, select.error, textarea.error {
   background: #16a34a !important;
 }
 
+.container {
+  padding-bottom: 80px;
+}
+
+#nav-buttons {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: #fff;
+  border-top: 1px solid #e5e7eb;
+  padding: 12px 16px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
 .btn {
   padding: 11px 24px;
   border: none;
@@ -117,6 +134,16 @@ input.error, select.error, textarea.error {
 }
 .btn-success:hover:not(:disabled) {
   background: #15803d;
+}
+
+.linha-data {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+@media (max-width: 640px) {
+  .linha-data {
+    grid-template-columns: 1.4fr 1fr 1fr;
+  }
 }
 
 @media (max-width: 640px) {
