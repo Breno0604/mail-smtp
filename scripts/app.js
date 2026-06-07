@@ -1,5 +1,5 @@
 import { DOM, cacheDOM } from "./dom.js";
-import { state, saveState, debouncedSave } from "./state.js";
+import { state, debouncedSave } from "./state.js";
 import { renderIniciais, iniciaisFields } from "./iniciais.js";
 import { addEquip } from "./equipment.js";
 import { handleTipoChange, cancelTipoChange, confirmTipoChange } from "./retornos.js";
@@ -9,19 +9,20 @@ import { resetForm } from "./reset.js";
 import { renderSidebar } from "./sidebar.js";
 import { getRecord } from "./db.js";
 
-function restoreSavedState() {
+async function restoreSavedState() {
   const uuid = sessionStorage.getItem("currentUUID");
-  if (!uuid) return;
+  if (!uuid) return false;
 
-  getRecord(uuid).then((record) => {
+  try {
+    const record = await getRecord(uuid);
     if (!record) {
       sessionStorage.removeItem("currentUUID");
-      return;
+      return false;
     }
     const ok = confirm(`H\u00E1 um formul\u00E1rio salvo (Se\u00E7\u00E3o ${record.currentSection} de 5). Deseja continuar de onde parou?`);
     if (!ok) {
       sessionStorage.removeItem("currentUUID");
-      return;
+      return false;
     }
 
     state.currentUUID = uuid;
@@ -44,7 +45,11 @@ function restoreSavedState() {
     if (record.composicao && record.composicao.complementoCorpo && DOM.complementoCorpo) {
       DOM.complementoCorpo.value = record.composicao.complementoCorpo;
     }
-  }).catch(() => {});
+
+    return true;
+  } catch () {
+    return false;
+  }
 }
 
 function initEvents() {
@@ -89,14 +94,14 @@ export function closeSidebar() {
   document.body.classList.remove("sidebar-open");
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   cacheDOM();
   renderIniciais();
   DOM.tipoOrdem = document.getElementById("tipo-ordem");
   initEvents();
   updateFileCount();
-  restoreSavedState();
-  if (state.currentSection === 1 && !document.getElementById("section-1").classList.contains("active")) {
+  const restored = await restoreSavedState();
+  if (!restored && state.currentSection === 1 && !document.getElementById("section-1").classList.contains("active")) {
     showSection(1, "next", true);
   }
 });
