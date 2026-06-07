@@ -1,6 +1,7 @@
 import { DOM } from "./dom.js";
 import { addBlurValidation } from "./validation.js";
 import { iniciaisFields } from "./fields.js";
+import { debouncedSave } from "./state.js";
 
 export { iniciaisFields };
 
@@ -74,6 +75,8 @@ export function renderIniciais() {
     if (field.obrigatorio) input.setAttribute("data-required", "");
 
     addBlurValidation(input);
+    input.addEventListener("input", debouncedSave);
+    input.addEventListener("change", debouncedSave);
     group.appendChild(label);
     group.appendChild(input);
     wrapper.appendChild(group);
