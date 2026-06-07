@@ -41,7 +41,7 @@ export function addEquip(data) {
 export function showEmptyEquip() {
   if (!DOM.equipList.querySelector(".empty-msg")) {
     const msg = document.createElement("div");
-    msg.className = "empty-msg text-center text-gray-400 text-base py-5";
+    msg.className = "empty-msg text-center text-gray-500 text-base py-5";
     msg.textContent = "Nenhum equipamento adicionado.";
     DOM.equipList.appendChild(msg);
   }

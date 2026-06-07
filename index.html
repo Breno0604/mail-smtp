@@ -13,33 +13,33 @@
 <div class="container bg-white rounded-xl shadow-lg p-1 w-full max-w-[640px] relative">
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-2xl text-gray-900 font-bold m-0">Formulário de Envio</h1>
-    <button class="btn-link bg-none border-none text-gray-500 text-sm underline dotted cursor-pointer font-sans px-1 transition-colors duration-200 hover:text-red-600" id="btn-limpar">Limpar tudo</button>
+    <button class="btn-link bg-none border-none text-gray-600 text-sm underline dotted cursor-pointer font-sans px-1 transition-colors duration-200 hover:text-red-600" id="btn-limpar">Limpar tudo</button>
   </div>
 
   <div class="progress sticky top-0 z-10 bg-white pb-4 -mx-1 px-1 border-b border-gray-200 flex items-center justify-center mb-6 gap-0" id="progress">
     <div class="step flex flex-col items-center gap-1.5 active" data-step="1">
-      <div class="step-circle w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2 border-gray-300 text-gray-500 bg-white transition-all duration-300"><span>1</span></div>
-      <div class="step-label text-[11px] text-gray-500 whitespace-nowrap">Iniciais</div>
+      <div class="step-circle w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2 border-gray-300 text-gray-600 bg-white transition-all duration-300"><span>1</span></div>
+      <div class="step-label text-[11px] text-gray-600 whitespace-nowrap">Iniciais</div>
     </div>
     <div class="step-line w-12 h-0.5 bg-gray-200 self-start mt-[17px] mx-1" id="line-1"></div>
     <div class="step flex flex-col items-center gap-1.5" data-step="2">
-      <div class="step-circle w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2 border-gray-300 text-gray-500 bg-white transition-all duration-300"><span>2</span></div>
-      <div class="step-label text-[11px] text-gray-500 whitespace-nowrap">Equip.</div>
+      <div class="step-circle w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2 border-gray-300 text-gray-600 bg-white transition-all duration-300"><span>2</span></div>
+      <div class="step-label text-[11px] text-gray-600 whitespace-nowrap">Equip.</div>
     </div>
     <div class="step-line w-12 h-0.5 bg-gray-200 self-start mt-[17px] mx-1" id="line-2"></div>
     <div class="step flex flex-col items-center gap-1.5" data-step="3">
-      <div class="step-circle w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2 border-gray-300 text-gray-500 bg-white transition-all duration-300"><span>3</span></div>
-      <div class="step-label text-[11px] text-gray-500 whitespace-nowrap">Retorno</div>
+      <div class="step-circle w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2 border-gray-300 text-gray-600 bg-white transition-all duration-300"><span>3</span></div>
+      <div class="step-label text-[11px] text-gray-600 whitespace-nowrap">Retorno</div>
     </div>
     <div class="step-line w-12 h-0.5 bg-gray-200 self-start mt-[17px] mx-1" id="line-3"></div>
     <div class="step flex flex-col items-center gap-1.5" data-step="4">
-      <div class="step-circle w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2 border-gray-300 text-gray-500 bg-white transition-all duration-300"><span>4</span></div>
-      <div class="step-label text-[11px] text-gray-500 whitespace-nowrap">Anexos</div>
+      <div class="step-circle w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2 border-gray-300 text-gray-600 bg-white transition-all duration-300"><span>4</span></div>
+      <div class="step-label text-[11px] text-gray-600 whitespace-nowrap">Anexos</div>
     </div>
     <div class="step-line w-12 h-0.5 bg-gray-200 self-start mt-[17px] mx-1" id="line-4"></div>
     <div class="step flex flex-col items-center gap-1.5" data-step="5">
-      <div class="step-circle w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2 border-gray-300 text-gray-500 bg-white transition-all duration-300"><span>5</span></div>
-      <div class="step-label text-[11px] text-gray-500 whitespace-nowrap">Revisão</div>
+      <div class="step-circle w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2 border-gray-300 text-gray-600 bg-white transition-all duration-300"><span>5</span></div>
+      <div class="step-label text-[11px] text-gray-600 whitespace-nowrap">Revisão</div>
     </div>
   </div>
 
@@ -57,12 +57,12 @@
 
       <div class="flex gap-2 items-center">
         <button class="btn-add flex-1 py-2.5 px-4 border-2 border-dashed border-gray-300 rounded-lg bg-transparent text-gray-600 text-base font-semibold cursor-pointer transition-colors duration-200 font-sans hover:border-blue-600 hover:text-blue-600" id="btn-add-equip" type="button">+ Adicionar equipamento</button>
-        <button class="btn-skip bg-none border-none text-gray-400 text-base cursor-pointer font-sans px-1 whitespace-nowrap transition-colors duration-200 hover:text-gray-600" id="btn-skip-equip" type="button" style="display:none">Pular →</button>
+        <button class="btn-skip bg-none border-none text-gray-500 text-base cursor-pointer font-sans px-1 whitespace-nowrap transition-colors duration-200 hover:text-gray-600" id="btn-skip-equip" type="button" style="display:none">Pular →</button>
       </div>
     </div>
 
     <div class="section" id="section-3">
-      <p class="text-base text-gray-500 mb-5" id="retorno-desc">Preencha as informações de retorno.</p>
+      <p class="text-base text-gray-600 mb-5" id="retorno-desc">Preencha as informações de retorno.</p>
       <div id="retorno-campos"></div>
     </div>
 
@@ -71,7 +71,7 @@
       <div class="file-upload-area border-2 border-dashed border-gray-300 rounded-lg py-7 px-5 text-center cursor-pointer transition-all duration-200 hover:border-blue-600 hover:bg-blue-50" id="file-upload-area">
         <span class="text-2xl block mb-1.5">📎</span>
         <span class="text-base text-gray-600">Clique para selecionar imagens</span>
-        <span class="file-count block mt-1.5 text-xs text-gray-400 font-semibold" id="file-count">0 / 12</span>
+        <span class="file-count block mt-1.5 text-xs text-gray-500 font-semibold" id="file-count">0 / 12</span>
       </div>
       <input type="file" id="file-input" accept="image/*" multiple class="hidden">
 
@@ -113,6 +113,14 @@
 <div class="lightbox-overlay fixed inset-0 bg-black/80 z-[1001] items-center justify-center hidden" id="lightbox">
   <button class="lightbox-close absolute top-5 right-7 bg-none border-none text-white text-3xl cursor-pointer" id="lightbox-close">✕</button>
   <img id="lightbox-img" src="" alt="Preview ampliado" class="max-w-[90vw] max-h-[90vh] rounded-lg shadow-2xl">
+</div>
+
+<div class="orientation-overlay" id="orientation-overlay">
+  <div class="orientation-overlay-content">
+    <div class="orientation-icon">📱</div>
+    <p class="orientation-text">Gire o celular na vertical</p>
+    <p class="orientation-sub">O formulário funciona melhor no modo retrato.</p>
+  </div>
 </div>
 
 </body>

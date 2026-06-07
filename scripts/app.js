@@ -56,6 +56,12 @@ function initEvents() {
     showSection(1, "prev", true);
   });
 
+  document.addEventListener("pointerdown", (e) => {
+    if (e.target.tagName !== "INPUT" && e.target.tagName !== "SELECT" && e.target.tagName !== "TEXTAREA") {
+      document.activeElement?.blur();
+    }
+  });
+
   document.querySelectorAll("input, select, textarea").forEach((el) => {
     el.addEventListener("change", saveState);
     el.addEventListener("input", saveState);

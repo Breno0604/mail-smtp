@@ -79,6 +79,7 @@ export function showSection(n, direction, noAnimation) {
   if (n === 4) renderPreviews();
 
   hideError();
+  DOM.wrapper.scrollTop = 0;
   state.currentSection = n;
   saveState();
 }

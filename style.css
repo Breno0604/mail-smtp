@@ -80,6 +80,7 @@ input.error, select.error, textarea.error {
 }
 
 html { overflow: hidden; }
+body { touch-action: manipulation; }
 
 .container {
   display: flex;
@@ -152,6 +153,50 @@ html { overflow: hidden; }
   .linha-data {
     grid-template-columns: 1.4fr 1fr 1fr;
   }
+}
+
+.orientation-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #fff;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .orientation-overlay { display: flex; }
+}
+
+.orientation-overlay-content {
+  text-align: center;
+  padding: 24px;
+}
+
+.orientation-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 16px;
+  animation: rotate-phone 2s ease-in-out infinite;
+}
+
+.orientation-text {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.orientation-sub {
+  font-size: 0.875rem;
+  color: #4B5563;
+}
+
+@keyframes rotate-phone {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(90deg); }
 }
 
 @media (max-width: 640px) {
