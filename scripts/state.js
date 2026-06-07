@@ -74,7 +74,14 @@ export async function saveState() {
     sentData: null,
   };
 
-  saveDraft(data).catch((err) => console.error("saveDraft error:", err));
+  saveDraft(data).catch((err) => {
+    console.error("saveDraft error:", err);
+    if (err?.name === "QuotaExceededError" || err?.message?.includes("quota")) {
+      import("./ui.js").then(({ showToast }) => {
+        showToast("Espaço insuficiente no navegador. Limpe dados antigos.", false);
+      });
+    }
+  });
 }
 
 export function debouncedSave() {
