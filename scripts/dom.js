@@ -8,9 +8,7 @@ export function cacheDOM() {
   DOM.btnAnterior = document.getElementById("btn-anterior");
   DOM.btnProximo = document.getElementById("btn-proximo");
   DOM.errorMsg = document.getElementById("error-msg");
-  DOM.uc = document.getElementById("uc");
-  DOM.os = document.getElementById("os");
-  DOM.cliente = document.getElementById("cliente");
+  DOM.iniciaisCampos = document.getElementById("iniciais-campos");
   DOM.tipoOrdem = document.getElementById("tipo-ordem");
   DOM.equipList = document.getElementById("equipamentos-list");
   DOM.btnAddEquip = document.getElementById("btn-add-equip");

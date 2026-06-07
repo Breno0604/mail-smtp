@@ -2,6 +2,7 @@ import { DOM } from "./dom.js";
 import { state, saveState } from "./state.js";
 import { hideError } from "./ui.js";
 import { validateSection, collectSectionData } from "./validation.js";
+import { renderIniciais } from "./iniciais.js";
 import { renderEquipamentos } from "./equipment.js";
 import { renderRetorno } from "./retornos.js";
 import { renderPreviews } from "./attachments.js";
@@ -74,6 +75,7 @@ export function showSection(n, direction, noAnimation) {
 
   DOM.sectionCounter.textContent = `Se\u00E7\u00E3o ${n} de ${state.totalSections} \u2014 ${getSectionName(n)}`;
 
+  if (n === 1) { renderIniciais(); DOM.tipoOrdem = document.getElementById("tipo-ordem"); }
   if (n === 2) renderEquipamentos();
   if (n === 3) { renderRetorno(); state.visitedRetorno = true; }
   if (n === 4) renderPreviews();

@@ -1,24 +1,23 @@
 import { DOM } from "./dom.js";
 import { state } from "./state.js";
 import { showError, hideError } from "./ui.js";
+import { iniciaisFields, getIniciaisData } from "./iniciais.js";
 
 export function validateSection(n) {
   hideError();
   let valid = true;
 
   if (n === 1) {
-    const fields = [
-      { el: DOM.uc, name: "UC" },
-      { el: DOM.os, name: "OS" },
-      { el: DOM.cliente, name: "Cliente" },
-      { el: DOM.tipoOrdem, name: "Tipo de ordem" },
-    ];
-    fields.forEach(({ el }) => {
-      if (!el.value || el.value.trim() === "") {
-        el.classList.add("error");
-        valid = false;
-      } else {
-        el.classList.remove("error");
+    iniciaisFields.forEach((field) => {
+      if (!field.obrigatorio) return;
+      const el = document.getElementById(field.nome);
+      if (el) {
+        if (!el.value || el.value.trim() === "") {
+          el.classList.add("error");
+          valid = false;
+        } else {
+          el.classList.remove("error");
+        }
       }
     });
     if (!valid) showError("Preencha todos os campos obrigat\u00F3rios.");
@@ -79,6 +78,9 @@ export function addBlurValidation(el) {
 }
 
 export function collectSectionData(n) {
+  if (n === 1) {
+    state.iniciais = getIniciaisData();
+  }
   if (n === 2) {
     const rows = DOM.equipList.querySelectorAll(".equip-row");
     state.equipamentos = [];

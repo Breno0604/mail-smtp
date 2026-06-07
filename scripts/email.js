@@ -1,13 +1,15 @@
 import { DOM } from "./dom.js";
+import { iniciaisFields } from "./iniciais.js";
 import { retornoFields } from "./retornos.js";
 
 export function composeEmail() {
-  const uc = DOM.uc.value || "\u2014";
-  const os = DOM.os.value || "\u2014";
-  const cliente = DOM.cliente.value || "\u2014";
-  const tipoLabel = DOM.tipoOrdem.options[DOM.tipoOrdem.selectedIndex]?.text || "\u2014";
+  let body = "";
 
-  let body = `UC: ${uc}\nOS: ${os}\nCliente: ${cliente}\nTipo de ordem: ${tipoLabel}`;
+  iniciaisFields.forEach((field) => {
+    const el = document.getElementById(field.nome);
+    const val = el ? el.value || "\u2014" : "\u2014";
+    body += `${field.label}: ${val}\n`;
+  });
 
   const eqs = DOM.equipList.querySelectorAll(".equip-row");
   if (eqs.length > 0) {
@@ -16,18 +18,15 @@ export function composeEmail() {
       const status = row.querySelector(".equip-tipo").value;
       const categoria = row.querySelector(".equip-categoria").value;
       const num = row.querySelector(".equip-numero").value || "\u2014";
-      body += `\n${categoria} ${status} NC ${num}`;
+      body += `\n${categoria} ${status} N\u00BA ${num}`;
     });
   }
 
-  const tipoKey = DOM.tipoOrdem.value;
-  if (tipoKey && retornoFields[tipoKey]) {
-    body += "\n\nRetorno:";
-    retornoFields[tipoKey].forEach((field) => {
-      const el = document.getElementById(field.id);
-      if (el) body += `\n${field.label}: ${el.value || "(n\u00E3o preenchido)"}`;
-    });
-  }
+  body += "\n\nRetorno:";
+  retornoFields.forEach((field) => {
+    const el = document.getElementById(field.id);
+    if (el) body += `\n${field.label}: ${el.value || "(n\u00E3o preenchido)"}`;
+  });
 
   DOM.previewCorpo.textContent = body;
 }

@@ -1,6 +1,6 @@
 import { DOM, cacheDOM } from "./dom.js";
 import { state, STORAGE_KEY, saveState } from "./state.js";
-import { addBlurValidation } from "./validation.js";
+import { renderIniciais, iniciaisFields } from "./iniciais.js";
 import { addEquip } from "./equipment.js";
 import { handleTipoChange, cancelTipoChange, confirmTipoChange } from "./retornos.js";
 import { handleUploadClick, handleFileChange, closeLightbox, updateFileCount } from "./attachments.js";
@@ -20,14 +20,17 @@ function restoreSavedState() {
       return;
     }
 
-    DOM.uc.value = data.uc || "";
-    DOM.os.value = data.os || "";
-    DOM.cliente.value = data.cliente || "";
-    DOM.tipoOrdem.value = data.tipoOrdem || "";
     state.equipamentos = data.equipamentos || [];
     state.lastTipoOrdem = data.lastTipoOrdem || "";
     state.visitedRetorno = data.visitedRetorno || false;
     showSection(section, "next", true);
+
+    if (data.iniciais) {
+      iniciaisFields.forEach((field) => {
+        const el = document.getElementById(field.nome);
+        if (el) el.value = data.iniciais[field.nome] || "";
+      });
+    }
   } catch (e) {
     localStorage.removeItem(STORAGE_KEY);
   }
@@ -53,10 +56,6 @@ function initEvents() {
     showSection(1, "prev", true);
   });
 
-  [DOM.uc, DOM.os, DOM.cliente, DOM.tipoOrdem].forEach((el) => {
-    if (el) addBlurValidation(el);
-  });
-
   document.querySelectorAll("input, select, textarea").forEach((el) => {
     el.addEventListener("change", saveState);
     el.addEventListener("input", saveState);
@@ -65,6 +64,8 @@ function initEvents() {
 
 document.addEventListener("DOMContentLoaded", () => {
   cacheDOM();
+  renderIniciais();
+  DOM.tipoOrdem = document.getElementById("tipo-ordem");
   initEvents();
   updateFileCount();
   restoreSavedState();
