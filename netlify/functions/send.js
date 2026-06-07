@@ -13,6 +13,21 @@ exports.handler = async (event) => {
       return { statusCode: 400, body: JSON.stringify({ error: "Campo 'assunto' é obrigatório." }) };
     }
 
+    if (!text || typeof text !== "string") {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "Campo 'text' é obrigatório." }),
+      };
+    }
+
+    const SMTP_FROM = process.env.SMTP_FROM;
+    if (!SMTP_FROM || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(SMTP_FROM)) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: "SMTP_FROM inválido ou não configurado." }),
+      };
+    }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const toList = (process.env.SMTP_TO || "")
       .split(",")
@@ -55,7 +70,7 @@ exports.handler = async (event) => {
     const transporter = nodemailer.createTransport(transportConfig);
 
     const mailOptions = {
-      from: process.env.SMTP_FROM,
+      from: SMTP_FROM,
       to: toList,
       subject,
       text: text || "",
