@@ -25,7 +25,11 @@ export async function saveState() {
   if (!hasData && state.equipamentos.length === 0 && state.attachments.length === 0 && !state.currentUUID) return;
 
   if (!state.currentUUID) {
-    state.currentUUID = crypto.randomUUID();
+    try {
+      state.currentUUID = crypto.randomUUID();
+    } catch (_) {
+      state.currentUUID = Date.now().toString(36) + Math.random().toString(36).slice(2);
+    }
     sessionStorage.setItem("currentUUID", state.currentUUID);
   }
 
@@ -38,7 +42,7 @@ export async function saveState() {
       if (existing?.createdAt) {
         createdAt = existing.createdAt;
       }
-    } catch (_) { /* ignore */ }
+    } catch (_) { console.error("getRecord in saveState:", _); }
     state._createdAt = createdAt;
   }
 
@@ -57,7 +61,7 @@ export async function saveState() {
     sentData: null,
   };
 
-  saveDraft(data).catch(() => {});
+  saveDraft(data).catch((err) => console.error("saveDraft error:", err));
 }
 
 export function debouncedSave() {

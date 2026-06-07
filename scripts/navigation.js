@@ -2,7 +2,7 @@ import { DOM } from "./dom.js";
 import { state, saveState } from "./state.js";
 import { hideError } from "./ui.js";
 import { validateSection, collectSectionData } from "./validation.js";
-import { renderIniciais } from "./iniciais.js";
+import { renderIniciais, iniciaisFields } from "./iniciais.js";
 import { renderEquipamentos } from "./equipment.js";
 import { renderRetorno } from "./retornos.js";
 import { renderPreviews } from "./attachments.js";
@@ -73,7 +73,16 @@ export function showSection(n, direction, noAnimation) {
     DOM.btnProximo.className = "btn btn-primary";
   }
 
-  if (n === 1) { renderIniciais(); DOM.tipoOrdem = document.getElementById("tipo-ordem"); }
+  if (n === 1) {
+    renderIniciais();
+    DOM.tipoOrdem = document.getElementById("tipo-ordem");
+    if (state.iniciais && Object.keys(state.iniciais).length > 0) {
+      iniciaisFields.forEach((field) => {
+        const el = document.getElementById(field.nome);
+        if (el) el.value = state.iniciais[field.nome] || "";
+      });
+    }
+  }
   if (n === 2) renderEquipamentos();
   if (n === 3) { renderRetorno(); state.visitedRetorno = true; }
   if (n === 4) renderPreviews();
