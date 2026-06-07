@@ -1,5 +1,6 @@
 import { DOM } from "./dom.js";
 import { getIniciaisData } from "./iniciais.js";
+import { saveDraft, getRecord } from "./db.js";
 
 export const STORAGE_KEY = "mail_form_estado";
 
@@ -12,22 +13,54 @@ export const state = {
   lastTipoOrdem: "",
   visitedRetorno: false,
   animating: false,
+  currentUUID: sessionStorage.getItem("currentUUID") || "",
+  composicao: { complementoCorpo: "" },
 };
 
-export function saveState() {
+let saveTimer = null;
+
+export async function saveState() {
   const iniciaisData = getIniciaisData();
   const hasData = Object.values(iniciaisData).some(v => v && v.trim() !== "");
-  if (!hasData && state.equipamentos.length === 0 && state.attachments.length === 0) return;
+  if (!hasData && state.equipamentos.length === 0 && state.attachments.length === 0 && !state.currentUUID) return;
+
+  if (!state.currentUUID) {
+    state.currentUUID = crypto.randomUUID();
+    sessionStorage.setItem("currentUUID", state.currentUUID);
+  }
+
+  let createdAt = new Date().toISOString();
+  if (state._createdAt) {
+    createdAt = state._createdAt;
+  } else {
+    try {
+      const existing = await getRecord(state.currentUUID);
+      if (existing?.createdAt) {
+        createdAt = existing.createdAt;
+      }
+    } catch (_) { /* ignore */ }
+    state._createdAt = createdAt;
+  }
 
   const data = {
+    uuid: state.currentUUID,
+    status: "draft",
+    createdAt,
+    updatedAt: new Date().toISOString(),
+    currentSection: state.currentSection,
     iniciais: iniciaisData,
     tipoOrdem: DOM.tipoOrdem ? DOM.tipoOrdem.value : "",
     equipamentos: state.equipamentos,
     lastTipoOrdem: state.lastTipoOrdem,
     visitedRetorno: state.visitedRetorno,
-    currentSection: state.currentSection,
+    composicao: { complementoCorpo: DOM.complementoCorpo ? DOM.complementoCorpo.value : "" },
+    sentData: null,
   };
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  } catch (e) { /* quota exceeded */ }
+
+  saveDraft(data).catch(() => {});
+}
+
+export function debouncedSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveState, 300);
 }
