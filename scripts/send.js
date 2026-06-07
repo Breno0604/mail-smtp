@@ -36,7 +36,7 @@ export async function sendEmail() {
     if (res.ok && data.success) {
       showToast("Email enviado com sucesso!", true);
       if (state.currentUUID) {
-        updateRecordStatus(state.currentUUID, { to: data.to, subject, sentAt: new Date().toISOString() }).catch(() => {});
+        await updateRecordStatus(state.currentUUID, { to: data.to, subject, sentAt: new Date().toISOString() });
       }
       return true;
     } else {
