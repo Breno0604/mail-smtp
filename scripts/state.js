@@ -3,16 +3,16 @@ import { getIniciaisData } from "./iniciais.js";
 import { getRetornoData } from "./retornos.js";
 import { saveDraft, getRecord } from "./db.js";
 
-export const getCurrentUUID = () => sessionStorage.getItem("currentUUID") || "";
+export const getCurrentUUID = () => localStorage.getItem("currentUUID") || "";
 
 export const setCurrentUUID = (uuid) => {
   state.currentUUID = uuid;
-  sessionStorage.setItem("currentUUID", uuid);
+  localStorage.setItem("currentUUID", uuid);
 };
 
 export const clearCurrentUUID = () => {
   state.currentUUID = "";
-  sessionStorage.removeItem("currentUUID");
+  localStorage.removeItem("currentUUID");
 };
 
 export const state = {
