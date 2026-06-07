@@ -29,4 +29,14 @@ export function cacheDOM() {
   DOM.lightbox = document.getElementById("lightbox");
   DOM.lightboxImg = document.getElementById("lightbox-img");
   DOM.lightboxClose = document.getElementById("lightbox-close");
+  DOM.hamburger = document.getElementById("hamburger");
+  DOM.sidebar = document.getElementById("sidebar");
+  DOM.sidebarOverlay = document.getElementById("sidebar-overlay");
+  DOM.sidebarClose = document.getElementById("sidebar-close");
+  DOM.sidebarList = document.getElementById("sidebar-list");
+  DOM.dupModal = document.getElementById("dup-modal");
+  DOM.dupModalTitle = document.getElementById("dup-modal-title");
+  DOM.dupModalBody = document.getElementById("dup-modal-body");
+  DOM.dupModalCancel = document.getElementById("dup-modal-cancel");
+  DOM.dupModalConfirm = document.getElementById("dup-modal-confirm");
 }
