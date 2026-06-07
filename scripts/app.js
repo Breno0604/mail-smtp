@@ -1,6 +1,6 @@
 import { DOM, cacheDOM } from "./dom.js";
 import { state, debouncedSave } from "./state.js";
-import { renderIniciais, iniciaisFields } from "./iniciais.js";
+import { renderIniciais } from "./iniciais.js";
 import { addEquip } from "./equipment.js";
 import { handleTipoChange, cancelTipoChange, confirmTipoChange } from "./retornos.js";
 import { handleUploadClick, handleFileChange, closeLightbox, updateFileCount } from "./attachments.js";
@@ -8,6 +8,7 @@ import { showSection, prevSection, nextSection } from "./navigation.js";
 import { resetForm } from "./reset.js";
 import { renderSidebar, closeSidebar } from "./sidebar.js";
 import { getRecord } from "./db.js";
+import { applyRecord } from "./restore.js";
 
 async function restoreSavedState() {
   const uuid = sessionStorage.getItem("currentUUID");
@@ -25,28 +26,7 @@ async function restoreSavedState() {
       return false;
     }
 
-    state.currentUUID = uuid;
-    state.equipamentos = record.equipamentos || [];
-    state.lastTipoOrdem = record.lastTipoOrdem || "";
-    state.visitedRetorno = record.visitedRetorno || false;
-    state.retorno = record.retorno || {};
-    showSection(record.currentSection, "next", true);
-
-    if (record.iniciais) {
-      iniciaisFields.forEach((field) => {
-        const el = document.getElementById(field.nome);
-        if (el) el.value = record.iniciais[field.nome] || "";
-      });
-    }
-
-    if (record.tipoOrdem && DOM.tipoOrdem) {
-      DOM.tipoOrdem.value = record.tipoOrdem;
-    }
-
-    if (record.composicao && record.composicao.complementoCorpo && DOM.complementoCorpo) {
-      DOM.complementoCorpo.value = record.composicao.complementoCorpo;
-    }
-
+    applyRecord(record);
     return true;
   } catch (_) {
     return false;
