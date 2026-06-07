@@ -2,7 +2,15 @@
   "name": "mail-mvp",
   "version": "1.0.0",
   "description": "Minimal webmail with SMTP and attachments",
+  "scripts": {
+    "build:css": "tailwindcss -i tailwind-input.css -o tailwind.css --minify"
+  },
   "dependencies": {
     "nodemailer": "^6.9.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.5.0",
+    "postcss": "^8.5.15",
+    "tailwindcss": "^3.4.19"
   }
 }
