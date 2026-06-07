@@ -29,12 +29,14 @@ export function addEquip(data) {
     div.remove();
     if (DOM.equipList.querySelectorAll(".equip-row").length === 0) showEmptyEquip();
     updateSkipBtn();
+    collectEquipamentos();
     saveState();
   });
 
   DOM.equipList.appendChild(div);
   hideEmptyEquip();
   updateSkipBtn();
+  collectEquipamentos();
   saveState();
 }
 
@@ -55,6 +57,18 @@ export function hideEmptyEquip() {
 export function updateSkipBtn() {
   const rows = DOM.equipList.querySelectorAll(".equip-row");
   DOM.btnSkipEquip.style.display = rows.length === 0 ? "inline" : "none";
+}
+
+function collectEquipamentos() {
+  const rows = DOM.equipList.querySelectorAll(".equip-row");
+  state.equipamentos = [];
+  rows.forEach((row) => {
+    state.equipamentos.push({
+      status: row.querySelector(".equip-tipo").value,
+      categoria: row.querySelector(".equip-categoria").value,
+      numero: row.querySelector(".equip-numero").value,
+    });
+  });
 }
 
 export function renderEquipamentos() {
