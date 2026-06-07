@@ -2,7 +2,11 @@ const DB_NAME = "mail-mvp";
 const DB_VERSION = 2;
 const STORE_NAME = "records";
 
+let _db = null;
+
 function openDB() {
+  if (_db) return Promise.resolve(_db);
+
   return new Promise((resolve, reject) => {
     const req = indexedDB.open(DB_NAME, DB_VERSION);
     req.onupgradeneeded = () => {
@@ -14,7 +18,10 @@ function openDB() {
         db.createObjectStore(STORE_NAME, { keyPath: "uuid" });
       }
     };
-    req.onsuccess = () => resolve(req.result);
+    req.onsuccess = () => {
+      _db = req.result;
+      resolve(_db);
+    };
     req.onerror = () => reject(req.error);
   });
 }
