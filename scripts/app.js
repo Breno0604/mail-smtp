@@ -9,6 +9,7 @@ import { resetForm } from "./reset.js";
 import { renderSidebar, closeSidebar } from "./sidebar.js";
 import { getRecord } from "./db.js";
 import { applyRecord } from "./restore.js";
+import { showConfirm } from "./ui.js";
 
 async function restoreSavedState() {
   const uuid = sessionStorage.getItem("currentUUID");
@@ -20,7 +21,7 @@ async function restoreSavedState() {
       sessionStorage.removeItem("currentUUID");
       return false;
     }
-    const ok = confirm(`H\u00E1 um formul\u00E1rio salvo (Se\u00E7\u00E3o ${record.currentSection} de 5). Deseja continuar de onde parou?`);
+    const ok = await showConfirm(`H\u00E1 um formul\u00E1rio salvo (Se\u00E7\u00E3o ${record.currentSection} de 5). Deseja continuar de onde parou?`);
     if (!ok) {
       sessionStorage.removeItem("currentUUID");
       return false;
@@ -47,8 +48,9 @@ function initEvents() {
   DOM.lightbox.addEventListener("click", (e) => {
     if (e.target === DOM.lightbox) closeLightbox();
   });
-  DOM.btnLimpar.addEventListener("click", () => {
-    if (!confirm("Tem certeza? Todos os dados ser\u00E3o perdidos.")) return;
+  DOM.btnLimpar.addEventListener("click", async () => {
+    const ok = await showConfirm("Tem certeza? Todos os dados ser\u00E3o perdidos.");
+    if (!ok) return;
     resetForm();
     showSection(1, "prev", true);
   });

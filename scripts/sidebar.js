@@ -3,6 +3,7 @@ import { state } from "./state.js";
 import { getAllRecords, deleteRecord, getRecord } from "./db.js";
 import { formatDate } from "./utils.js";
 import { applyRecord } from "./restore.js";
+import { showConfirm } from "./ui.js";
 
 export function closeSidebar() {
   document.body.classList.remove("sidebar-open");
@@ -78,7 +79,8 @@ export async function renderSidebar() {
     deleteBtn.textContent = "\uD83D\uDDD1\uFE0F Excluir";
     deleteBtn.addEventListener("click", async (e) => {
       e.stopPropagation();
-      if (!confirm("Excluir este registro? Esta ação não pode ser desfeita.")) return;
+      const ok = await showConfirm("Excluir este registro? Esta ação não pode ser desfeita.");
+      if (!ok) return;
       try {
         await deleteRecord(record.uuid);
         if (state.currentUUID === record.uuid) {
