@@ -2,6 +2,7 @@ import { DOM } from "./dom.js";
 import { state } from "./state.js";
 import { showError, hideError } from "./ui.js";
 import { iniciaisFields, getIniciaisData } from "./iniciais.js";
+import { getRetornoData } from "./retornos.js";
 
 export function validateSection(n) {
   hideError();
@@ -91,5 +92,8 @@ export function collectSectionData(n) {
         numero: row.querySelector(".equip-numero").value,
       });
     });
+  }
+  if (n === 3) {
+    state.retorno = getRetornoData();
   }
 }

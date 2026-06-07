@@ -4,7 +4,7 @@ import { hideError } from "./ui.js";
 import { validateSection, collectSectionData } from "./validation.js";
 import { renderIniciais, iniciaisFields } from "./iniciais.js";
 import { renderEquipamentos } from "./equipment.js";
-import { renderRetorno } from "./retornos.js";
+import { renderRetorno, setRetornoData } from "./retornos.js";
 import { renderPreviews } from "./attachments.js";
 import { composeEmail } from "./email.js";
 import { sendEmail } from "./send.js";
@@ -84,7 +84,11 @@ export function showSection(n, direction, noAnimation) {
     }
   }
   if (n === 2) renderEquipamentos();
-  if (n === 3) { renderRetorno(); state.visitedRetorno = true; }
+  if (n === 3) {
+    renderRetorno();
+    setRetornoData(state.retorno);
+    state.visitedRetorno = true;
+  }
   if (n === 4) renderPreviews();
 
   hideError();
@@ -95,6 +99,7 @@ export function showSection(n, direction, noAnimation) {
 
 export function prevSection() {
   if (state.currentSection <= 1) return;
+  collectSectionData(state.currentSection);
   showSection(state.currentSection - 1, "prev");
 }
 

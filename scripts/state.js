@@ -1,5 +1,6 @@
 import { DOM } from "./dom.js";
 import { getIniciaisData } from "./iniciais.js";
+import { getRetornoData } from "./retornos.js";
 import { saveDraft, getRecord } from "./db.js";
 
 export const STORAGE_KEY = "mail_form_estado";
@@ -12,6 +13,7 @@ export const state = {
   attachments: [],
   lastTipoOrdem: "",
   visitedRetorno: false,
+  retorno: {},
   animating: false,
   currentUUID: sessionStorage.getItem("currentUUID") || "",
   composicao: { complementoCorpo: "" },
@@ -53,6 +55,7 @@ export async function saveState() {
     updatedAt: new Date().toISOString(),
     currentSection: state.currentSection,
     iniciais: iniciaisData,
+    retorno: getRetornoData(),
     tipoOrdem: DOM.tipoOrdem ? DOM.tipoOrdem.value : "",
     equipamentos: state.equipamentos,
     lastTipoOrdem: state.lastTipoOrdem,

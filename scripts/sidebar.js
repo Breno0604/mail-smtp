@@ -113,6 +113,7 @@ function loadRecord(record) {
   state.lastTipoOrdem = record.lastTipoOrdem || "";
   state.visitedRetorno = record.visitedRetorno || false;
   state.iniciais = record.iniciais || {};
+  state.retorno = record.retorno || {};
 
   renderIniciais();
   DOM.tipoOrdem = document.getElementById("tipo-ordem");

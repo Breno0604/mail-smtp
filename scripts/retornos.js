@@ -1,5 +1,5 @@
 import { DOM } from "./dom.js";
-import { state, saveState } from "./state.js";
+import { state, saveState, debouncedSave } from "./state.js";
 import { addBlurValidation } from "./validation.js";
 
 const inputClass = "w-full px-3 py-2.5 border border-gray-300 rounded-lg text-base font-sans text-gray-900 bg-white outline-none transition-all focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15";
@@ -30,10 +30,23 @@ export function renderRetorno() {
     input.className = inputClass + " resize-y min-h-[80px]";
 
     addBlurValidation(input);
+    input.addEventListener("input", debouncedSave);
+    input.addEventListener("change", debouncedSave);
     group.appendChild(label);
     group.appendChild(input);
     DOM.retornoCampos.appendChild(group);
   });
+}
+
+export function getRetornoData() {
+  const el = document.getElementById("descricao-retorno");
+  return { descricao: el ? el.value : "" };
+}
+
+export function setRetornoData(data) {
+  if (!data) return;
+  const el = document.getElementById("descricao-retorno");
+  if (el && data.descricao) el.value = data.descricao;
 }
 
 let pendingTipoValue = null;

@@ -29,6 +29,7 @@ async function restoreSavedState() {
     state.equipamentos = record.equipamentos || [];
     state.lastTipoOrdem = record.lastTipoOrdem || "";
     state.visitedRetorno = record.visitedRetorno || false;
+    state.retorno = record.retorno || {};
     showSection(record.currentSection, "next", true);
 
     if (record.iniciais) {
