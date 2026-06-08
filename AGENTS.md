@@ -15,22 +15,25 @@
 
 ## Module structure (`scripts/`)
 - `app.js` — entry point, event wiring, bootstrap
-- `navigation.js` — section transitions, step indicators, button labels
-- `validation.js` — per-section validation, blur validation, data collection
-- `equipment.js` — equipment row DOM creation and management
+- `animator.js` — section transition animations (slide in/out)
+- `sectionManager.js` — showSection, prevSection, nextSection, step indicators, nav buttons, section content rendering
+- `navigation.js` — re-exports from sectionManager.js (backward compatibility)
+- `validation.js` — per-section validation, blur validation
+- `equipment.js` — equipment row DOM creation, management, and collectEquipamentos
 - `iniciais.js` — "Iniciais" field definitions (hardcoded dropdown values for líder, parceiro, município, placa, tipo-ordem), render + data getter
 - `retornos.js` — retorno field definitions + render + tipo-ordem modal
 - `attachments.js` — file upload, thumbnail preview, lightbox
-- `email.js` — composeEmail (preview assembly)
+- `email.js` — composeEmail (receives data as parameter, returns body string)
 - `send.js` — sendEmail (image compression via Canvas, fetch POST, response)
 - `reset.js` — resetForm (clears fields + state, no navigation)
-- `state.js` — state object + localStorage save/restore helpers
+- `state.js` — state object only (re-exports persistence helpers)
+- `persistence.js` — saveState, debouncedSave, getCurrentUUID, setCurrentUUID, clearCurrentUUID
 - `ui.js` — showError/hideError/showToast
-- `dom.js` — singleton DOM cache populated by cacheDOM()
+- `dom.js` — singleton DOM cache populated by cacheDOM() (convention: never reassign DOM properties outside cacheDOM)
 - `db.js` — IndexedDB wrappers (openDB, saveRecord, saveDraft, deleteRecord, updateRecordStatus, getAllRecords, getRecord)
-- `utils.js` — toBase64/blobToBase64/loadImage + `MAX_SIZE`/`SKIP_SIZE` thresholds
+- `utils.js` — toBase64/blobToBase64/loadImage + `MAX_SIZE`/`SKIP_SIZE` thresholds + captureCoordinates
 - `compress.js` — compressAttachments (Canvas resize loop)
-- `restore.js` — applyRecord (load saved record into form)
+- `restore.js` — applyRecord (load saved record into form, returns section number)
 - `duplicate.js` — duplicate send modal and logic
 - `sidebar.js` — renderSidebar, closeSidebar, initSidebarFilter
 - `sw-update.js` — SW update detection with reload modal
@@ -76,7 +79,7 @@
 - **Manifest** (`manifest.json`): name "Retorno - Formulário de Envio", display standalone, orientation portrait, theme #2563eb
 - **Icons**: `icons/icon-192.png` and `icons/icon-512.png` (blue bg #2563eb, white "R"), generated via `tools/generate-icons.mjs`
 - **Headers** (`netlify.toml`): `sw.js` no-cache, `manifest.json` 1h, `icons/*` 1y immutable
-- **Cache version**: `CACHE_NAME = 'retorno-v15'` in `sw.js`
+- **Cache version**: `CACHE_NAME = 'retorno-v16'` in `sw.js`
 
 ### PWA update checklist
 Whenever you modify any static asset (HTML, CSS, JS, manifest, icons), you **must** increment the `CACHE_NAME` version in `sw.js` (e.g., `retorno-v5` → `retorno-v6`). This forces the service worker to install a new version, cache the fresh files, and notify the user to reload.
