@@ -6,6 +6,7 @@ import { base64ToBlob } from "./utils.js";
 
 export function applyRecord(record) {
   setCurrentUUID(record.uuid);
+  state.iniciaisValido = true;
 
   state.equipamentos = record.equipamentos || [];
   state.lastTipoOrdem = record.lastTipoOrdem || "";
