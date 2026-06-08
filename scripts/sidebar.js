@@ -99,7 +99,7 @@ export async function renderSidebar(filterTerm) {
         if (state.currentUUID === record.uuid) {
           clearCurrentUUID();
         }
-        renderSidebar();
+        renderSidebar(DOM.sidebarFilter.value);
       } catch (err) { /* ignore */ }
     });
 
