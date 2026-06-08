@@ -52,6 +52,7 @@ function initEvents() {
     await saveState();
     resetForm();
     showSection(1, "prev", true);
+    await captureCoordinates();
   });
   DOM.hamburger.addEventListener("click", () => {
     renderSidebar();

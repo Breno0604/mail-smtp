@@ -77,7 +77,7 @@ export function renderIniciais() {
 
       const refreshBtn = document.createElement("button");
       refreshBtn.type = "button";
-      refreshBtn.className = "coord-refresh absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center border-none rounded bg-transparent text-gray-500 text-base cursor-pointer transition-colors duration-200 hover:text-blue-600 hover:bg-blue-50";
+      refreshBtn.className = "coord-refresh absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center border-none rounded bg-transparent text-gray-500 text-base cursor-pointer transition-colors duration-200 hover:text-blue-600 hover:bg-blue-50 z-10";
       refreshBtn.innerHTML = "&#x21BB;";
       refreshBtn.title = "Atualizar coordenadas";
       refreshBtn.addEventListener("click", (e) => {
