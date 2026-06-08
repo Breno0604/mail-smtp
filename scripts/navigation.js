@@ -1,7 +1,7 @@
 import { DOM } from "./dom.js";
 import { state, saveState } from "./state.js";
 import { hideError } from "./ui.js";
-import { validateSection, collectSectionData, isIniciaisValid } from "./validation.js";
+import { validateSection, collectSectionData } from "./validation.js";
 import { renderIniciais, iniciaisFields } from "./iniciais.js";
 import { renderEquipamentos } from "./equipment.js";
 import { renderRetorno, setRetornoData } from "./retornos.js";
