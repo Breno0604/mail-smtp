@@ -64,6 +64,7 @@ export function renderIniciais() {
     } else if (field.tipo === "time") {
       input = document.createElement("input");
       input.type = "time";
+      input.step = "300";
       input.className = inputClass;
     } else if (field.tipo === "coordinates") {
       const coordWrapper = document.createElement("div");
