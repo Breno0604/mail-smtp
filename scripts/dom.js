@@ -34,6 +34,7 @@ export function cacheDOM() {
   DOM.sidebarOverlay = document.getElementById("sidebar-overlay");
   DOM.sidebarClose = document.getElementById("sidebar-close");
   DOM.sidebarList = document.getElementById("sidebar-list");
+  DOM.sidebarFilter = document.getElementById("sidebar-filter");
   DOM.dupModal = document.getElementById("dup-modal");
   DOM.dupModalTitle = document.getElementById("dup-modal-title");
   DOM.dupModalBody = document.getElementById("dup-modal-body");
