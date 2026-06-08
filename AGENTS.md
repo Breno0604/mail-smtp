@@ -6,6 +6,7 @@
 - Local storage: IndexedDB (`mail-mvp` DB, `records` store)
 - PWA: Service Worker (`sw.js`) + Manifest (`manifest.json`) + local icons
 - Build step (optional): `npm run build:css` regenerates `tailwind.css` from `tailwind-input.css`
+- Tests: Vitest + jsdom (`npm test`)
 - No bundler, no TypeScript, no framework
 - Deploy: `git push` → Netlify auto-deploys (`npm install` runs on build)
 
@@ -64,7 +65,8 @@
 ## Conventions
 - UI language: pt-BR
 - `.gitignore`: `node_modules`, `.netlify/`
-- No tests, no linter, no typecheck — none planned for MVP
+- Tests: Vitest + jsdom (268 tests in `tests/`). Run: `npm test`
+- No linter, no typecheck
 - TLS: `rejectUnauthorized: false` (intentional for self-signed SMTP certs)
 - localStorage auto-save on any input/change event (`mail_form_estado` key); restore prompt on page load (Section N of 5 dialog)
 - Changing "Tipo de Ordem" after visiting Retorno triggers a confirmation modal that clears retorno fields on confirm
@@ -74,7 +76,7 @@
 - **Manifest** (`manifest.json`): name "Retorno - Formulário de Envio", display standalone, orientation portrait, theme #2563eb
 - **Icons**: `icons/icon-192.png` and `icons/icon-512.png` (blue bg #2563eb, white "R"), generated via `tools/generate-icons.mjs`
 - **Headers** (`netlify.toml`): `sw.js` no-cache, `manifest.json` 1h, `icons/*` 1y immutable
-- **Cache version**: `CACHE_NAME = 'retorno-v5'` in `sw.js`
+- **Cache version**: `CACHE_NAME = 'retorno-v15'` in `sw.js`
 
 ### PWA update checklist
 Whenever you modify any static asset (HTML, CSS, JS, manifest, icons), you **must** increment the `CACHE_NAME` version in `sw.js` (e.g., `retorno-v5` → `retorno-v6`). This forces the service worker to install a new version, cache the fresh files, and notify the user to reload.
@@ -92,6 +94,7 @@ Steps for each deploy that touches static files:
 ## Dev workflow
 - Local testing: `npx netlify dev` (ES6 modules require HTTP; no `file://`)
 - No dev server, no hot reload — static files served by Netlify Functions emulator
+- Tests: `npm test` (Vitest + jsdom, 268 tests covering all modules except `send.js`)
 - Deploy: `git add -A && git commit -m "msg" && git push`
 
 ## Future scope (do not implement until requested)
