@@ -2,6 +2,7 @@ import { DOM } from "./dom.js";
 import { addBlurValidation } from "./validation.js";
 import { iniciaisFields } from "./fields.js";
 import { debouncedSave } from "./state.js";
+import { captureCoordinates } from "./app.js";
 
 export { iniciaisFields };
 
@@ -65,10 +66,32 @@ export function renderIniciais() {
       input.type = "time";
       input.className = inputClass;
     } else if (field.tipo === "coordinates") {
+      const coordWrapper = document.createElement("div");
+      coordWrapper.className = "flex gap-1";
+
       input = document.createElement("input");
+      input.id = field.nome;
       input.type = "text";
       input.readOnly = true;
-      input.className = inputClass + " bg-gray-100 cursor-not-allowed";
+      input.className = inputClass + " bg-gray-100 cursor-not-allowed flex-1 min-w-0";
+
+      const refreshBtn = document.createElement("button");
+      refreshBtn.type = "button";
+      refreshBtn.className = "coord-refresh w-10 h-[46px] flex items-center justify-center border border-gray-300 rounded-lg bg-white text-gray-500 text-lg cursor-pointer transition-colors duration-200 flex-shrink-0 hover:border-blue-600 hover:text-blue-600 hover:bg-blue-50";
+      refreshBtn.innerHTML = "&#x21BB;";
+      refreshBtn.title = "Atualizar coordenadas";
+      refreshBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        captureCoordinates();
+      });
+
+      coordWrapper.appendChild(input);
+      coordWrapper.appendChild(refreshBtn);
+
+      group.appendChild(label);
+      group.appendChild(coordWrapper);
+      wrapper.appendChild(group);
+      return;
     } else {
       input = document.createElement("input");
       input.type = "text";

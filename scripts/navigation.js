@@ -52,7 +52,6 @@ export function showSection(n, direction, noAnimation) {
     const num = i + 1;
     el.classList.toggle("active", num === n);
     el.classList.toggle("completed", num < n);
-    el.classList.toggle("done", num < n);
   });
 
   DOM.steps.forEach((el, i) => {

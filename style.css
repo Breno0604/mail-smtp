@@ -49,11 +49,10 @@
   background: #dbeafe;
   color: #1e40af;
 }
-.step.done::before {
-  content: '\2713 ';
-  color: #16a34a;
-  font-weight: bold;
-}
+.step.completed {
+  border-color: #22c55e;
+  background: #f0fdf4;
+  color: #166534;
 }
 
 input.error, select.error, textarea.error {

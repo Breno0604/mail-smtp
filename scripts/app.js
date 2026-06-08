@@ -1,5 +1,5 @@
 import { DOM, cacheDOM } from "./dom.js";
-import { state, debouncedSave, getCurrentUUID, clearCurrentUUID } from "./state.js";
+import { state, debouncedSave, saveState, getCurrentUUID, clearCurrentUUID } from "./state.js";
 import { renderIniciais } from "./iniciais.js";
 import { addEquip } from "./equipment.js";
 import { handleTipoChange, cancelTipoChange, confirmTipoChange } from "./retornos.js";
@@ -48,9 +48,8 @@ function initEvents() {
   DOM.lightbox.addEventListener("click", (e) => {
     if (e.target === DOM.lightbox) closeLightbox();
   });
-  DOM.btnLimpar.addEventListener("click", async () => {
-    const ok = await showConfirm("Tem certeza? Todos os dados ser\u00E3o perdidos.");
-    if (!ok) return;
+  DOM.btnNovoForm.addEventListener("click", async () => {
+    await saveState();
     resetForm();
     showSection(1, "prev", true);
   });
