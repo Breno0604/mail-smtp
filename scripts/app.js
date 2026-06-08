@@ -61,7 +61,7 @@ function initEvents() {
   DOM.sidebarClose.addEventListener("click", closeSidebar);
 
   document.addEventListener("pointerdown", (e) => {
-    if (e.target.tagName !== "INPUT" && e.target.tagName !== "SELECT" && e.target.tagName !== "TEXTAREA") {
+    if (e.target.tagName !== "INPUT" && e.target.tagName !== "SELECT" && e.target.tagName !== "TEXTAREA" && e.target.tagName !== "BUTTON") {
       document.activeElement?.blur();
     }
   });

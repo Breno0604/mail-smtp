@@ -67,17 +67,17 @@ export function renderIniciais() {
       input.className = inputClass;
     } else if (field.tipo === "coordinates") {
       const coordWrapper = document.createElement("div");
-      coordWrapper.className = "flex gap-1";
+      coordWrapper.className = "relative";
 
       input = document.createElement("input");
       input.id = field.nome;
       input.type = "text";
       input.readOnly = true;
-      input.className = inputClass + " bg-gray-100 cursor-not-allowed flex-1 min-w-0";
+      input.className = inputClass + " bg-gray-100 cursor-not-allowed pr-10";
 
       const refreshBtn = document.createElement("button");
       refreshBtn.type = "button";
-      refreshBtn.className = "coord-refresh w-10 h-[46px] flex items-center justify-center border border-gray-300 rounded-lg bg-white text-gray-500 text-lg cursor-pointer transition-colors duration-200 flex-shrink-0 hover:border-blue-600 hover:text-blue-600 hover:bg-blue-50";
+      refreshBtn.className = "coord-refresh absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center border-none rounded bg-transparent text-gray-500 text-base cursor-pointer transition-colors duration-200 hover:text-blue-600 hover:bg-blue-50";
       refreshBtn.innerHTML = "&#x21BB;";
       refreshBtn.title = "Atualizar coordenadas";
       refreshBtn.addEventListener("click", (e) => {
