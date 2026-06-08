@@ -67,22 +67,34 @@ export function renderIniciais() {
       input.className = inputClass;
     } else if (field.tipo === "coordinates") {
       const coordWrapper = document.createElement("div");
-      coordWrapper.className = "relative";
+      coordWrapper.style.position = "relative";
+      coordWrapper.style.display = "inline-block";
+      coordWrapper.style.width = "100%";
 
       input = document.createElement("input");
       input.id = field.nome;
       input.type = "text";
       input.readOnly = true;
-      input.className = inputClass + " bg-gray-100 cursor-not-allowed pr-10";
+      input.className = inputClass + " bg-gray-100 cursor-not-allowed";
+      input.style.paddingRight = "40px";
 
       const refreshBtn = document.createElement("button");
       refreshBtn.type = "button";
-      refreshBtn.className = "coord-refresh absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center border-none rounded bg-transparent text-gray-500 text-base cursor-pointer transition-colors duration-200 hover:text-blue-600 hover:bg-blue-50 z-10";
+      refreshBtn.className = "coord-refresh";
+      refreshBtn.style.cssText = "position:absolute;right:8px;top:50%;transform:translateY(-50%);width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:none;border-radius:4px;background:transparent;color:#6b7280;font-size:16px;cursor:pointer;transition:color 0.2s,background 0.2s;z-index:10;";
       refreshBtn.innerHTML = "&#x21BB;";
       refreshBtn.title = "Atualizar coordenadas";
       refreshBtn.addEventListener("click", (e) => {
         e.preventDefault();
         captureCoordinates();
+      });
+      refreshBtn.addEventListener("mouseenter", () => {
+        refreshBtn.style.color = "#2563eb";
+        refreshBtn.style.background = "#eff6ff";
+      });
+      refreshBtn.addEventListener("mouseleave", () => {
+        refreshBtn.style.color = "#6b7280";
+        refreshBtn.style.background = "transparent";
       });
 
       coordWrapper.appendChild(input);
