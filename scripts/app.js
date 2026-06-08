@@ -6,7 +6,7 @@ import { handleTipoChange, cancelTipoChange, confirmTipoChange } from "./retorno
 import { handleUploadClick, handleFileChange, closeLightbox, updateFileCount } from "./attachments.js";
 import { showSection, prevSection, nextSection } from "./navigation.js";
 import { resetForm } from "./reset.js";
-import { renderSidebar, closeSidebar } from "./sidebar.js";
+import { renderSidebar, closeSidebar, initSidebarFilter } from "./sidebar.js";
 import { getRecord } from "./db.js";
 import { applyRecord } from "./restore.js";
 import { showConfirm } from "./ui.js";
@@ -75,6 +75,7 @@ function initEvents() {
 
 document.addEventListener("DOMContentLoaded", async () => {
   cacheDOM();
+  initSidebarFilter();
   renderIniciais();
   DOM.tipoOrdem = document.getElementById("tipo-ordem");
   initEvents();

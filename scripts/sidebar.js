@@ -18,7 +18,7 @@ function getRecordSummary(record) {
   return "(rascunho vazio)";
 }
 
-export async function renderSidebar() {
+export async function renderSidebar(filterTerm) {
   const list = DOM.sidebarList;
   list.innerHTML = "";
 
@@ -36,6 +36,19 @@ export async function renderSidebar() {
   }
 
   records.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
+  if (filterTerm) {
+    const term = filterTerm.toString().toLowerCase();
+    records = records.filter((r) => {
+      const uc = (r.iniciais?.uc ?? "").toString().toLowerCase();
+      const os = (r.iniciais?.os ?? "").toLowerCase();
+      return uc.includes(term) || os.includes(term);
+    });
+    if (records.length === 0) {
+      list.innerHTML = `<div class="sidebar-empty">Nenhum registro encontrado para "${filterTerm}".</div>`;
+      return;
+    }
+  }
 
   records.forEach((record) => {
     const item = document.createElement("div");
@@ -103,4 +116,10 @@ export async function renderSidebar() {
 function loadRecord(record) {
   applyRecord(record);
   closeSidebar();
+}
+
+export function initSidebarFilter() {
+  DOM.sidebarFilter.addEventListener("input", () => {
+    renderSidebar(DOM.sidebarFilter.value);
+  });
 }
