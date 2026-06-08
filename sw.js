@@ -1,4 +1,4 @@
-const CACHE_NAME = 'retorno-v1';
+const CACHE_NAME = 'retorno-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -26,7 +26,8 @@ const STATIC_ASSETS = [
   '/scripts/db.js',
   '/scripts/utils.js',
   '/scripts/duplicate.js',
-  '/scripts/fields.js'
+  '/scripts/fields.js',
+  '/scripts/sw-update.js'
 ];
 
 self.addEventListener('install', (event) => {
@@ -61,6 +62,21 @@ self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
   if (event.request.url.includes('/api/')) {
+    return;
+  }
+
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          if (response && response.status === 200) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          }
+          return response;
+        })
+        .catch(() => caches.match('/index.html'))
+    );
     return;
   }
 

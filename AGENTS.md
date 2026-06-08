@@ -64,7 +64,7 @@ Legacy `app.js` at root is unused.
 - **Manifest** (`manifest.json`): name "Retorno - Formulário de Envio", display standalone, orientation portrait, theme #2563eb
 - **Icons**: `icons/icon-192.png` and `icons/icon-512.png` (blue bg #2563eb, white "R"), generated via `tools/generate-icons.mjs`
 - **Headers** (`netlify.toml`): `sw.js` no-cache, `manifest.json` 1h, `icons/*` 1y immutable
-- **Cache version**: `CACHE_NAME = 'retorno-v1'` in `sw.js` — bump for cache refresh
+- **Cache version**: `CACHE_NAME = 'retorno-v2'` in `sw.js` — bump for cache refresh
 
 ## Orientation overlay
 - CSS-only full-screen overlay (`#orientation-overlay`) shown in landscape on short viewports (`max-height: 500px`), forces portrait mode on phones — no JS involved
