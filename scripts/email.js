@@ -7,7 +7,10 @@ export function composeEmail() {
 
   iniciaisFields.forEach((field) => {
     const el = document.getElementById(field.nome);
-    const val = el ? el.value || "\u2014" : "\u2014";
+    const raw = el ? el.value : "";
+    const val = raw && field.tipo === "date"
+      ? raw.split("-").reverse().join("-")
+      : (raw || "\u2014");
     body += `${field.label}: ${val}\n`;
   });
 

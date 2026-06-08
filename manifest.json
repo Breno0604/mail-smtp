@@ -4,7 +4,7 @@
   "description": "Formulário de retorno para serviços de campo",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f9fafb",
+  "background_color": "#e5e7eb",
   "theme_color": "#2563eb",
   "orientation": "portrait",
   "icons": [

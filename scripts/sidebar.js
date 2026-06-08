@@ -92,6 +92,7 @@ export async function renderSidebar(filterTerm = "") {
     deleteBtn.textContent = "\uD83D\uDDD1\uFE0F Excluir";
     deleteBtn.addEventListener("click", async (e) => {
       e.stopPropagation();
+      closeSidebar();
       const ok = await showConfirm("Excluir este registro? Esta ação não pode ser desfeita.");
       if (!ok) return;
       try {
