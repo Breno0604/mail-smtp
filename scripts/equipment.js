@@ -59,7 +59,7 @@ export function updateSkipBtn() {
   DOM.btnSkipEquip.style.display = rows.length === 0 ? "inline" : "none";
 }
 
-function collectEquipamentos() {
+export function collectEquipamentos() {
   const rows = DOM.equipList.querySelectorAll(".equip-row");
   state.equipamentos = [];
   rows.forEach((row) => {

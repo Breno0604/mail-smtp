@@ -4,6 +4,7 @@ import { showError, hideError } from "./ui.js";
 import { getIniciaisData } from "./iniciais.js";
 import { getRetornoData } from "./retornos.js";
 import { iniciaisFields as fieldsIniciais } from "./fields.js";
+import { collectEquipamentos } from "./equipment.js";
 
 export function validateSection(n, { equipamentos = [] } = {}) {
   hideError();
@@ -117,15 +118,7 @@ export function collectSectionData(n) {
     state.iniciais = getIniciaisData();
   }
   if (n === 2) {
-    const rows = DOM.equipList.querySelectorAll(".equip-row");
-    state.equipamentos = [];
-    rows.forEach((row) => {
-      state.equipamentos.push({
-        status: row.querySelector(".equip-tipo").value,
-        categoria: row.querySelector(".equip-categoria").value,
-        numero: row.querySelector(".equip-numero").value,
-      });
-    });
+    collectEquipamentos();
   }
   if (n === 3) {
     state.retorno = getRetornoData();
