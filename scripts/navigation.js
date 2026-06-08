@@ -55,10 +55,6 @@ export function showSection(n, direction, noAnimation) {
     el.classList.toggle("done", num < n);
   });
 
-  DOM.lines.forEach((el, i) => {
-    el.classList.toggle("completed", i + 1 < n);
-  });
-
   DOM.steps.forEach((el, i) => {
     el.onclick = () => {
       if (state.animating) return;

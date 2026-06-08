@@ -4,7 +4,6 @@ export function cacheDOM() {
   DOM.sections = document.querySelectorAll(".section");
   DOM.wrapper = document.getElementById("section-wrapper");
   DOM.steps = document.querySelectorAll(".step");
-  DOM.lines = document.querySelectorAll(".step-line");
   DOM.btnAnterior = document.getElementById("btn-anterior");
   DOM.btnProximo = document.getElementById("btn-proximo");
   DOM.errorMsg = document.getElementById("error-msg");
