@@ -4,6 +4,7 @@ import { getAllRecords, deleteRecord, getRecord } from "./db.js";
 import { formatDate } from "./utils.js";
 import { applyRecord } from "./restore.js";
 import { showConfirm } from "./ui.js";
+import { showSection } from "./navigation.js";
 
 export function closeSidebar() {
   document.body.classList.remove("sidebar-open");
@@ -115,8 +116,9 @@ export async function renderSidebar(filterTerm = "") {
 }
 
 function loadRecord(record) {
-  applyRecord(record);
+  const section = applyRecord(record);
   closeSidebar();
+  showSection(section, "next", true);
 }
 
 export function initSidebarFilter() {

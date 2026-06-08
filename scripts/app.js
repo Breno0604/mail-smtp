@@ -28,7 +28,8 @@ async function restoreSavedState() {
       return false;
     }
 
-    applyRecord(record);
+    const section = applyRecord(record);
+    showSection(section, "next", true);
     return true;
   } catch (_) {
     return false;

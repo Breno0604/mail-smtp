@@ -1,7 +1,6 @@
 import { DOM } from "./dom.js";
 import { state, setCurrentUUID } from "./state.js";
 import { renderIniciais, iniciaisFields } from "./iniciais.js";
-import { showSection } from "./navigation.js";
 import { base64ToBlob } from "./utils.js";
 
 export function applyRecord(record) {
@@ -42,5 +41,5 @@ export function applyRecord(record) {
     DOM.complementoCorpo.value = record.composicao.complementoCorpo;
   }
 
-  showSection(record.currentSection || 1, "next", true);
+  return record.currentSection || 1;
 }

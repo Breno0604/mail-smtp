@@ -175,17 +175,15 @@ describe('restore', () => {
       expect(DOM.complementoCorpo.value).toBe('Restored complement');
     });
 
-    it('should call showSection with record.currentSection', async () => {
-      const navigation = await import('../scripts/navigation.js');
-      applyRecord(sampleRecord);
-      expect(navigation.showSection).toHaveBeenCalledWith(3, 'next', true);
+    it('should return record.currentSection', () => {
+      const result = applyRecord(sampleRecord);
+      expect(result).toBe(3);
     });
 
-    it('should default to section 1 if currentSection is not set', async () => {
-      const navigation = await import('../scripts/navigation.js');
+    it('should default to section 1 if currentSection is not set', () => {
       const recordWithoutSection = { ...sampleRecord, currentSection: undefined };
-      applyRecord(recordWithoutSection);
-      expect(navigation.showSection).toHaveBeenCalledWith(1, 'next', true);
+      const result = applyRecord(recordWithoutSection);
+      expect(result).toBe(1);
     });
 
     it('should handle empty or missing composicao', () => {
