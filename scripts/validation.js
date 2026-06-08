@@ -131,3 +131,31 @@ export function collectSectionData(n) {
     state.retorno = getRetornoData();
   }
 }
+
+/**
+ * Verifica se todos os campos obrigatórios de Iniciais estão preenchidos corretamente.
+ * Versão silenciosa de validateSection(1) — não modifica UI, apenas retorna boolean.
+ */
+export function isIniciaisValid() {
+  for (const field of fieldsIniciais) {
+    if (!field.obrigatorio) continue;
+    const el = document.getElementById(field.nome);
+    if (!el || !el.value || el.value.trim() === "") return false;
+  }
+
+  const dataEl = document.getElementById("data");
+  if (dataEl && dataEl.value) {
+    const selectedDate = new Date(dataEl.value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (selectedDate > today) return false;
+  }
+
+  const horaInicioEl = document.getElementById("hora_inicio");
+  const horaFimEl = document.getElementById("hora_fim");
+  if (horaInicioEl && horaFimEl && horaInicioEl.value && horaFimEl.value) {
+    if (horaFimEl.value <= horaInicioEl.value) return false;
+  }
+
+  return true;
+}
