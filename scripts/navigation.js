@@ -77,7 +77,6 @@ export function showSection(n, direction, noAnimation) {
 
   if (n === 1) {
     renderIniciais();
-    DOM.tipoOrdem = document.getElementById("tipo-ordem");
     if (state.iniciais && Object.keys(state.iniciais).length > 0) {
       iniciaisFields.forEach((field) => {
         const el = document.getElementById(field.nome);

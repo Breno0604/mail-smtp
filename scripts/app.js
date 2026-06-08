@@ -78,7 +78,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   cacheDOM();
   initSidebarFilter();
   renderIniciais();
-  DOM.tipoOrdem = document.getElementById("tipo-ordem");
   initEvents();
   updateFileCount();
   await captureCoordinates();

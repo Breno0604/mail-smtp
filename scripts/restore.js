@@ -25,7 +25,6 @@ export function applyRecord(record) {
   }
 
   renderIniciais();
-  DOM.tipoOrdem = document.getElementById("tipo-ordem");
 
   if (record.tipoOrdem && DOM.tipoOrdem) {
     DOM.tipoOrdem.value = record.tipoOrdem;

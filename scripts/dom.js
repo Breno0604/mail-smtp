@@ -1,4 +1,8 @@
-export const DOM = {};
+// DOM cache module
+// Convention: DOM elements are cached once via cacheDOM() and never reassigned.
+// Individual element properties (textContent, className, value) may be mutated.
+
+const DOM = {};
 
 export function cacheDOM() {
   DOM.sections = document.querySelectorAll(".section");
@@ -40,3 +44,5 @@ export function cacheDOM() {
   DOM.dupModalCancel = document.getElementById("dup-modal-cancel");
   DOM.dupModalConfirm = document.getElementById("dup-modal-confirm");
 }
+
+export { DOM };
