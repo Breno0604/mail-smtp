@@ -79,6 +79,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   cacheDOM();
   initSidebarFilter();
   renderIniciais();
+  // Re-captura tipo-ordem porque é criado por renderIniciais() após cacheDOM()
+  DOM.tipoOrdem = document.getElementById("tipo-ordem");
   initEvents();
   updateFileCount();
   await captureCoordinates();

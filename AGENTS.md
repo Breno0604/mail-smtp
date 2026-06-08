@@ -79,7 +79,7 @@
 - **Manifest** (`manifest.json`): name "Retorno - Formulário de Envio", display standalone, orientation portrait, theme #2563eb
 - **Icons**: `icons/icon-192.png` and `icons/icon-512.png` (blue bg #2563eb, white "R"), generated via `tools/generate-icons.mjs`
 - **Headers** (`netlify.toml`): `sw.js` no-cache, `manifest.json` 1h, `icons/*` 1y immutable
-- **Cache version**: `CACHE_NAME = 'retorno-v16'` in `sw.js`
+- **Cache version**: `CACHE_NAME = 'retorno-v18'` in `sw.js`
 
 ### PWA update checklist
 Whenever you modify any static asset (HTML, CSS, JS, manifest, icons), you **must** increment the `CACHE_NAME` version in `sw.js` (e.g., `retorno-v5` → `retorno-v6`). This forces the service worker to install a new version, cache the fresh files, and notify the user to reload.
