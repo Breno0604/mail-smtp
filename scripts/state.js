@@ -2,6 +2,7 @@ import { DOM } from "./dom.js";
 import { getIniciaisData } from "./iniciais.js";
 import { getRetornoData } from "./retornos.js";
 import { saveDraft, getRecord } from "./db.js";
+import { toBase64 } from "./utils.js";
 
 export const getCurrentUUID = () => localStorage.getItem("currentUUID") || "";
 
@@ -58,6 +59,14 @@ export async function saveState() {
     state._createdAt = createdAt;
   }
 
+  const attachmentsData = await Promise.all(
+    state.attachments.map(async (file) => ({
+      name: file.name,
+      type: file.type,
+      data: await toBase64(file),
+    }))
+  );
+
   const data = {
     uuid: state.currentUUID,
     status: "draft",
@@ -71,6 +80,7 @@ export async function saveState() {
     lastTipoOrdem: state.lastTipoOrdem,
     visitedRetorno: state.visitedRetorno,
     composicao: { complementoCorpo: DOM.complementoCorpo ? DOM.complementoCorpo.value : "" },
+    attachments: attachmentsData,
     sentData: null,
   };
 

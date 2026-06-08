@@ -59,6 +59,13 @@ export function showSection(n, direction, noAnimation) {
     el.classList.toggle("completed", i + 1 < n);
   });
 
+  DOM.steps.forEach((el, i) => {
+    el.onclick = () => {
+      if (state.animating) return;
+      showSection(i + 1, i + 1 > state.currentSection ? "next" : "prev", true);
+    };
+  });
+
   DOM.btnAnterior.disabled = n === 1;
 
   if (n === state.totalSections) {

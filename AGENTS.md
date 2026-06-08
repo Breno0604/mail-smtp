@@ -42,6 +42,11 @@
 - Compressed files renamed to `{basename}_red.jpg`
 - Max 12 attachments, 8 MB each (enforced frontend + backend)
 
+## Attachment persistence
+- Attachments saved as base64 in IndexedDB `records` store (`attachments` field)
+- On restore, base64 data reconstructed into `File` objects via `base64ToBlob()` in `utils.js`
+- Non-image files > 670 KB skip compression, sent as-is
+
 ## Env vars (6 required in Netlify dashboard)
 `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`, `SMTP_TO`
 - `SMTP_TO` supports multiple emails separated by comma
@@ -69,10 +74,10 @@
 - **Manifest** (`manifest.json`): name "Retorno - Formulário de Envio", display standalone, orientation portrait, theme #2563eb
 - **Icons**: `icons/icon-192.png` and `icons/icon-512.png` (blue bg #2563eb, white "R"), generated via `tools/generate-icons.mjs`
 - **Headers** (`netlify.toml`): `sw.js` no-cache, `manifest.json` 1h, `icons/*` 1y immutable
-- **Cache version**: `CACHE_NAME = 'retorno-v3'` in `sw.js`
+- **Cache version**: `CACHE_NAME = 'retorno-v5'` in `sw.js`
 
 ### PWA update checklist
-Whenever you modify any static asset (HTML, CSS, JS, manifest, icons), you **must** increment the `CACHE_NAME` version in `sw.js` (e.g., `retorno-v3` → `retorno-v4`). This forces the service worker to install a new version, cache the fresh files, and notify the user to reload.
+Whenever you modify any static asset (HTML, CSS, JS, manifest, icons), you **must** increment the `CACHE_NAME` version in `sw.js` (e.g., `retorno-v5` → `retorno-v6`). This forces the service worker to install a new version, cache the fresh files, and notify the user to reload.
 
 Backend-only changes (`netlify/functions/`) do NOT require a cache bump — the SW uses network-only for `/api/`.
 

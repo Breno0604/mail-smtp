@@ -33,6 +33,16 @@
   animation: enterFromLeft 0.25s ease forwards;
 }
 
+.step {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.step:hover {
+  background-color: #eff6ff;
+}
+.step.active {
+  background-color: #dbeafe;
+}
 .step.done .step-circle::after {
   content: '\2713';
   font-size: 1rem;
@@ -251,6 +261,7 @@ body { touch-action: manipulation; }
   display: flex;
   flex-direction: column;
   height: 100%;
+  padding: 1rem;
 }
 .sidebar-head {
   display: flex;

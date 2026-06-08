@@ -73,6 +73,31 @@ function initEvents() {
   });
 }
 
+export async function captureCoordinates() {
+  const coordEl = document.getElementById("coordenadas");
+  if (!coordEl) return;
+
+  if (!navigator.geolocation) {
+    coordEl.value = "Não disponível";
+    return;
+  }
+
+  try {
+    const position = await new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject, {
+        timeout: 10000,
+        enableHighAccuracy: false,
+      });
+    });
+
+    const lat = position.coords.latitude.toFixed(4);
+    const lon = position.coords.longitude.toFixed(4);
+    coordEl.value = `${lat}, ${lon}`;
+  } catch (err) {
+    coordEl.value = "Não disponível";
+  }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   cacheDOM();
   initSidebarFilter();
@@ -80,6 +105,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   DOM.tipoOrdem = document.getElementById("tipo-ordem");
   initEvents();
   updateFileCount();
+  await captureCoordinates();
   const restored = await restoreSavedState();
   if (!restored && state.currentSection === 1 && !document.getElementById("section-1").classList.contains("active")) {
     showSection(1, "next", true);

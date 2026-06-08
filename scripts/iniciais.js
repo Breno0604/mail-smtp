@@ -64,6 +64,11 @@ export function renderIniciais() {
       input = document.createElement("input");
       input.type = "time";
       input.className = inputClass;
+    } else if (field.tipo === "coordinates") {
+      input = document.createElement("input");
+      input.type = "text";
+      input.readOnly = true;
+      input.className = inputClass + " bg-gray-100 cursor-not-allowed";
     } else {
       input = document.createElement("input");
       input.type = "text";

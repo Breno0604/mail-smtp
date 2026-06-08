@@ -23,6 +23,26 @@ export function validateSection(n, { equipamentos = [] } = {}) {
       }
     });
     if (!valid) showError("Preencha todos os campos obrigat\u00F3rios.");
+    const dataEl = document.getElementById("data");
+    if (dataEl && dataEl.value) {
+      const selectedDate = new Date(dataEl.value);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (selectedDate > today) {
+        dataEl.classList.add("error");
+        showError("Data não pode ser futura.");
+        valid = false;
+      }
+    }
+    const horaInicioEl = document.getElementById("hora_inicio");
+    const horaFimEl = document.getElementById("hora_fim");
+    if (horaInicioEl && horaFimEl && horaInicioEl.value && horaFimEl.value) {
+      if (horaFimEl.value <= horaInicioEl.value) {
+        horaFimEl.classList.add("error");
+        showError("Hora fim deve ser maior que hora início.");
+        valid = false;
+      }
+    }
   }
 
   if (n === 2) {

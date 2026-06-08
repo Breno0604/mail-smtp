@@ -4,9 +4,11 @@ import { renderIniciais } from "./iniciais.js";
 import { showEmptyEquip, updateSkipBtn } from "./equipment.js";
 import { updateFileCount } from "./attachments.js";
 import { hideError } from "./ui.js";
+import { captureCoordinates } from "./app.js";
 
 export function resetForm() {
   renderIniciais();
+  captureCoordinates();
   DOM.retornoCampos.innerHTML = "";
   DOM.equipList.innerHTML = "";
   DOM.complementoCorpo.value = "";

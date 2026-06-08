@@ -1,6 +1,7 @@
 const nomesTecnicos = ["ANDRE DE SOUSA CARVALHO","ANTONIO MAURIELLTON DE ARAUJO MARTINS","BERKSON EVANGELISTA DE OLIVEIRA","CARLOS CRISTIANO DO NASCIMENTO SILVA","DIEGO DA SILVA DE LIMA","DOUGLAS MONTEIRO DE ABREU","FRANCISCO ADRIANO DE SOUSA VIANA","JOSE DOGIVAN DA SILVA","LEANDRO OLIVEIRA SOUSA","MARCIO JOHNNATAN CHAGAS CAETANO","RENATO RODRIGUES VIEIRA","VALDI DOS SANTOS VIANA FILHO"];
 
 export const iniciaisFields = [
+  { linha: 0, nome: "coordenadas", label: "Coordenadas", tipo: "coordinates", readonly: true },
   { linha: 1, nome: "lider",     label: "Líder",     tipo: "select", obrigatorio: true, opcoes: nomesTecnicos },
   { linha: 2, nome: "parceiro",  label: "Parceiro",  tipo: "select", obrigatorio: true, opcoes: nomesTecnicos },
   { linha: 3, nome: "municipio", label: "Município", tipo: "select", obrigatorio: true, opcoes: ["ACARAPE","AQUIRAZ","ARACOIABA","ARATUBA","BARREIRA","BATURITE","BEBERIBE","CAPISTRANO","CASCAVEL","CAUCAIA","CHOROZINHO","EUSÉBIO","FORTALEZA","GUAIUBA","GUARAMIRANGA","HORIZONTE","ITAITINGA","ITAPIUNA","MARACANAU","MARANGUAPE","MULUNGU","OCARA","PACAJUS","PACATUBA","PACOTI","PALMACIA","PINDORETAMA","REDENCAO","SAO GONCALO"] },
