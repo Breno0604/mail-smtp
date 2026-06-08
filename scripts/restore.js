@@ -33,7 +33,8 @@ export function applyRecord(record) {
   if (record.iniciais) {
     iniciaisFields.forEach((field) => {
       const el = document.getElementById(field.nome);
-      if (el) el.value = record.iniciais[field.nome] || "";
+      const val = record.iniciais[field.nome];
+      if (el && val != null && val !== "") el.value = val;
     });
   }
 

@@ -22,7 +22,12 @@ export function validateSection(n, { equipamentos = [] } = {}) {
         }
       }
     });
-    if (!valid) showError("Preencha todos os campos obrigat\u00F3rios.");
+    if (!valid) {
+      showError("Preencha todos os campos obrigatórios.");
+      return false;
+    }
+
+    let errorMsg = "";
     const dataEl = document.getElementById("data");
     if (dataEl && dataEl.value) {
       const selectedDate = new Date(dataEl.value);
@@ -30,8 +35,9 @@ export function validateSection(n, { equipamentos = [] } = {}) {
       today.setHours(0, 0, 0, 0);
       if (selectedDate > today) {
         dataEl.classList.add("error");
-        showError("Data não pode ser futura.");
-        valid = false;
+        errorMsg = "Data não pode ser futura.";
+      } else {
+        dataEl.classList.remove("error");
       }
     }
     const horaInicioEl = document.getElementById("hora_inicio");
@@ -39,9 +45,16 @@ export function validateSection(n, { equipamentos = [] } = {}) {
     if (horaInicioEl && horaFimEl && horaInicioEl.value && horaFimEl.value) {
       if (horaFimEl.value <= horaInicioEl.value) {
         horaFimEl.classList.add("error");
-        showError("Hora fim deve ser maior que hora início.");
-        valid = false;
+        errorMsg = errorMsg
+          ? errorMsg + " Hora fim deve ser maior que hora início."
+          : "Hora fim deve ser maior que hora início.";
+      } else {
+        horaFimEl.classList.remove("error");
       }
+    }
+    if (errorMsg) {
+      showError(errorMsg);
+      valid = false;
     }
   }
 
