@@ -25,4 +25,5 @@ export function resetForm() {
   updateSkipBtn();
   hideError();
   clearCurrentUUID();
+  state.iniciaisValido = false;
 }
