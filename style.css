@@ -207,7 +207,7 @@ body { touch-action: manipulation; }
 }
 
 @media (max-width: 640px) {
-  .step { font-size: 0.75rem; padding: 0.375rem 0.5rem; }
+  .step { font-size: 0.7rem; padding: 0.25rem 0.5rem; }
   .preview-grid { grid-template-columns: repeat(2, 1fr) !important; }
   .nav-buttons .btn { min-width: 100px !important; }
 }
