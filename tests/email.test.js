@@ -54,26 +54,27 @@ describe('email', () => {
   });
 
   describe('composeEmail', () => {
-    function fillIniciaisField(name, value) {
-      const el = document.getElementById(name);
-      if (el) el.value = value;
-    }
+    const sampleData = {
+      iniciais: {
+        coordenadas: '-3.123, -38.456',
+        lider: 'ANDRE DE SOUSA CARVALHO',
+        parceiro: '',
+        municipio: 'FORTALEZA',
+        uc: '12345',
+        os: '67890',
+        notificado: 'SIM',
+        placa: 'RHS6G02',
+        data: '2024-03-15',
+        hora_inicio: '08:00',
+        hora_fim: '17:00',
+        'tipo-ordem': 'ADEQUACAO SMF',
+      },
+      equipamentos: [],
+      retorno: { descricao: '' },
+    };
 
     it('should generate email body with iniciais fields', () => {
-      renderIniciais();
-      fillIniciaisField('lider', 'ANDRE DE SOUSA CARVALHO');
-      fillIniciaisField('uc', '12345');
-      fillIniciaisField('os', '67890');
-      fillIniciaisField('notificado', 'SIM');
-      fillIniciaisField('placa', 'RHS6G02');
-      fillIniciaisField('tipo-ordem', 'ADEQUACAO SMF');
-      fillIniciaisField('data', '2024-03-15');
-      fillIniciaisField('hora_inicio', '08:00');
-      fillIniciaisField('hora_fim', '17:00');
-      fillIniciaisField('coordenadas', '-3.123, -38.456');
-
-      composeEmail();
-      const body = DOM.previewCorpo.textContent;
+      const body = composeEmail(sampleData);
       expect(body).toContain('Líder:');
       expect(body).toContain('ANDRE DE SOUSA CARVALHO');
       expect(body).toContain('UC:');
@@ -83,34 +84,23 @@ describe('email', () => {
     });
 
     it('should format date field as DD-MM-YYYY', () => {
-      renderIniciais();
-      fillIniciaisField('data', '2024-03-15');
-      composeEmail();
-      const body = DOM.previewCorpo.textContent;
-      // Date format: DD-MM-YYYY
+      const data = { ...sampleData, iniciais: { ...sampleData.iniciais, data: '2024-03-15' } };
+      const body = composeEmail(data);
       expect(body).toContain('15-03-2024');
     });
 
     it('should include "—" for empty iniciais fields', () => {
-      renderIniciais();
-      composeEmail();
-      const body = DOM.previewCorpo.textContent;
+      const data = { ...sampleData, iniciais: { ...sampleData.iniciais, lider: '' } };
+      const body = composeEmail(data);
       expect(body).toContain('—');
     });
 
     it('should include equipamentos section when equipment rows exist', () => {
-      renderIniciais();
-      const row = document.createElement('div');
-      row.className = 'equip-row';
-      row.innerHTML = `
-        <select class="equip-tipo"><option value="Instalado">Instalado</option></select>
-        <select class="equip-categoria"><option value="Medidor">Medidor</option></select>
-        <input class="equip-numero" value="12345">
-      `;
-      DOM.equipList.appendChild(row);
-
-      composeEmail();
-      const body = DOM.previewCorpo.textContent;
+      const data = {
+        ...sampleData,
+        equipamentos: [{ status: 'Instalado', categoria: 'Medidor', numero: '12345' }],
+      };
+      const body = composeEmail(data);
       expect(body).toContain('Equipamentos:');
       expect(body).toContain('Medidor');
       expect(body).toContain('Instalado');
@@ -119,46 +109,31 @@ describe('email', () => {
     });
 
     it('should include "—" for equipment number when empty', () => {
-      renderIniciais();
-      const row = document.createElement('div');
-      row.className = 'equip-row';
-      row.innerHTML = `
-        <select class="equip-tipo"><option value="Instalado">Instalado</option></select>
-        <select class="equip-categoria"><option value="Medidor">Medidor</option></select>
-        <input class="equip-numero" value="">
-      `;
-      DOM.equipList.appendChild(row);
-
-      composeEmail();
-      const body = DOM.previewCorpo.textContent;
+      const data = {
+        ...sampleData,
+        equipamentos: [{ status: 'Instalado', categoria: 'Medidor', numero: '' }],
+      };
+      const body = composeEmail(data);
       expect(body).toContain('—');
     });
 
     it('should include retorno section', () => {
-      renderIniciais();
-      renderRetorno();
-      const textarea = document.getElementById('descricao-retorno');
-      textarea.value = 'Retorno test description';
-
-      composeEmail();
-      const body = DOM.previewCorpo.textContent;
+      const data = { ...sampleData, retorno: { descricao: 'Retorno test description' } };
+      const body = composeEmail(data);
       expect(body).toContain('Retorno:');
       expect(body).toContain('Descrição:');
       expect(body).toContain('Retorno test description');
     });
 
     it('should show "(não preenchido)" for empty retorno field', () => {
-      renderIniciais();
-      renderRetorno();
-      composeEmail();
-      const body = DOM.previewCorpo.textContent;
+      const body = composeEmail(sampleData);
       expect(body).toContain('(não preenchido)');
     });
 
-    it('should update preview-corpo element', () => {
-      renderIniciais();
-      composeEmail();
-      expect(DOM.previewCorpo.textContent).not.toBe('—');
+    it('should return body string', () => {
+      const body = composeEmail(sampleData);
+      expect(typeof body).toBe('string');
+      expect(body.length).toBeGreaterThan(0);
     });
   });
 });

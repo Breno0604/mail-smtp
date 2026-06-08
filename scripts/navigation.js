@@ -66,7 +66,12 @@ export function showSection(n, direction, noAnimation) {
   if (n === state.totalSections) {
     DOM.btnProximo.textContent = "Enviar";
     DOM.btnProximo.className = "btn btn-success";
-    composeEmail();
+    const emailData = {
+      iniciais: state.iniciais,
+      equipamentos: state.equipamentos,
+      retorno: state.retorno,
+    };
+    DOM.previewCorpo.textContent = composeEmail(emailData);
   } else if (n === state.totalSections - 1) {
     DOM.btnProximo.textContent = "Revisar \u2192";
     DOM.btnProximo.className = "btn btn-primary";

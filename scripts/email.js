@@ -1,35 +1,29 @@
-import { DOM } from "./dom.js";
 import { iniciaisFields } from "./iniciais.js";
 import { retornoFields } from "./retornos.js";
 
-export function composeEmail() {
+export function composeEmail(data) {
   let body = "";
 
   iniciaisFields.forEach((field) => {
-    const el = document.getElementById(field.nome);
-    const raw = el ? el.value : "";
+    const raw = data.iniciais?.[field.nome] || "";
     const val = raw && field.tipo === "date"
       ? raw.split("-").reverse().join("-")
       : (raw || "\u2014");
     body += `${field.label}: ${val}\n`;
   });
 
-  const eqs = DOM.equipList.querySelectorAll(".equip-row");
-  if (eqs.length > 0) {
+  if (data.equipamentos && data.equipamentos.length > 0) {
     body += "\n\nEquipamentos:";
-    eqs.forEach((row) => {
-      const status = row.querySelector(".equip-tipo").value;
-      const categoria = row.querySelector(".equip-categoria").value;
-      const num = row.querySelector(".equip-numero").value || "\u2014";
-      body += `\n${categoria} ${status} N\u00BA ${num}`;
+    data.equipamentos.forEach((eq) => {
+      body += `\n${eq.categoria} ${eq.status} N\u00BA ${eq.numero || "\u2014"}`;
     });
   }
 
   body += "\n\nRetorno:";
   retornoFields.forEach((field) => {
-    const el = document.getElementById(field.id);
-    if (el) body += `\n${field.label}: ${el.value || "(n\u00E3o preenchido)"}`;
+    const val = data.retorno?.descricao || "";
+    body += `\n${field.label}: ${val || "(n\u00E3o preenchido)"}`;
   });
 
-  DOM.previewCorpo.textContent = body;
+  return body;
 }
