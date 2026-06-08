@@ -2,7 +2,7 @@ import { DOM } from "./dom.js";
 import { addBlurValidation } from "./validation.js";
 import { iniciaisFields } from "./fields.js";
 import { debouncedSave } from "./state.js";
-import { captureCoordinates } from "./app.js";
+import { captureCoordinates } from "./utils.js";
 
 export { iniciaisFields };
 

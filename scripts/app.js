@@ -10,6 +10,7 @@ import { renderSidebar, closeSidebar, initSidebarFilter } from "./sidebar.js";
 import { getRecord } from "./db.js";
 import { applyRecord } from "./restore.js";
 import { showConfirm } from "./ui.js";
+import { captureCoordinates } from "./utils.js";
 
 async function restoreSavedState() {
   const uuid = getCurrentUUID();
@@ -71,31 +72,6 @@ function initEvents() {
     el.addEventListener("change", debouncedSave);
     el.addEventListener("input", debouncedSave);
   });
-}
-
-export async function captureCoordinates() {
-  const coordEl = document.getElementById("coordenadas");
-  if (!coordEl) return;
-
-  if (!navigator.geolocation) {
-    coordEl.value = "Não disponível";
-    return;
-  }
-
-  try {
-    const position = await new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resolve, reject, {
-        timeout: 10000,
-        enableHighAccuracy: false,
-      });
-    });
-
-    const lat = position.coords.latitude.toFixed(4);
-    const lon = position.coords.longitude.toFixed(4);
-    coordEl.value = `${lat}, ${lon}`;
-  } catch (err) {
-    coordEl.value = "Não disponível";
-  }
 }
 
 document.addEventListener("DOMContentLoaded", async () => {

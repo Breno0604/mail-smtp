@@ -4,7 +4,7 @@ import { renderIniciais } from "./iniciais.js";
 import { showEmptyEquip, updateSkipBtn } from "./equipment.js";
 import { updateFileCount } from "./attachments.js";
 import { hideError } from "./ui.js";
-import { captureCoordinates } from "./app.js";
+import { captureCoordinates } from "./utils.js";
 
 export function resetForm() {
   renderIniciais();
