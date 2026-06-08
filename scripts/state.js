@@ -28,11 +28,14 @@ export const state = {
   animating: false,
   currentUUID: getCurrentUUID(),
   composicao: { complementoCorpo: "" },
+  iniciaisValido: false,
 };
 
 let saveTimer = null;
 
 export async function saveState() {
+  if (!state.iniciaisValido) return;
+
   const iniciaisData = getIniciaisData();
   const hasData = Object.values(iniciaisData).some(v => v && v.trim() !== "");
   if (!hasData && state.equipamentos.length === 0 && state.attachments.length === 0 && !state.currentUUID) return;
