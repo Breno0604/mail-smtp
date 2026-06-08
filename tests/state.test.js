@@ -1,5 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import 'fake-indexeddb/auto';
 import { state, getCurrentUUID, setCurrentUUID, clearCurrentUUID, debouncedSave, saveState } from '../scripts/state.js';
+import { getRecord } from '../scripts/db.js';
 import { cacheDOM, DOM } from '../scripts/dom.js';
 
 describe('state', () => {
@@ -169,6 +171,13 @@ describe('state', () => {
       await saveState();
       expect(state.currentUUID).toBeTruthy();
       expect(localStorage.getItem('currentUUID')).toBe(state.currentUUID);
+
+      // Verify data was persisted to IndexedDB
+      const record = await getRecord(state.currentUUID);
+      expect(record).toBeTruthy();
+      expect(record.uuid).toBe(state.currentUUID);
+      expect(record.iniciais.uc).toBe('12345');
+      expect(record.iniciais.os).toBe('67890');
     });
 
     it('should reuse existing UUID', async () => {
@@ -193,6 +202,11 @@ describe('state', () => {
 
       await saveState();
       expect(state.currentUUID).toBe('existing-uuid');
+
+      // Verify it reused the same UUID in the DB (not creating a new record)
+      const record = await getRecord('existing-uuid');
+      expect(record).toBeTruthy();
+      expect(record.uuid).toBe('existing-uuid');
     });
 
     it('should preserve createdAt from state._createdAt', async () => {
