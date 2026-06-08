@@ -18,7 +18,7 @@ function getRecordSummary(record) {
   return "(rascunho vazio)";
 }
 
-export async function renderSidebar(filterTerm) {
+export async function renderSidebar(filterTerm = "") {
   const list = DOM.sidebarList;
   list.innerHTML = "";
 
