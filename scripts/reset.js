@@ -16,6 +16,7 @@ export function resetForm() {
   state.lastTipoOrdem = "";
   state.visitedRetorno = false;
   state.currentUUID = "";
+  state._createdAt = null;
   DOM.previewGrid.innerHTML = "";
   showEmptyEquip();
   updateFileCount();

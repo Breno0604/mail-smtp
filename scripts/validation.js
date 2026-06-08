@@ -29,6 +29,7 @@ export function validateSection(n, { equipamentos = [] } = {}) {
     const rows = DOM.equipList.querySelectorAll(".equip-row");
     if (rows.length > 0) {
       let hasError = false;
+      let hasDuplicate = false;
       const nums = [];
       rows.forEach((row) => {
         const tipo = row.querySelector(".equip-tipo");
@@ -38,12 +39,11 @@ export function validateSection(n, { equipamentos = [] } = {}) {
         if (tipo.value === "") { tipo.classList.add("error"); hasError = true; }
         if (categoria.value === "") { categoria.classList.add("error"); hasError = true; }
         if (inp.value === "") { inp.classList.add("error"); hasError = true; }
-        else if (nums.includes(inp.value)) { inp.classList.add("error"); hasError = true; }
+        else if (nums.includes(inp.value)) { inp.classList.add("error"); hasError = true; hasDuplicate = true; }
         else { nums.push(inp.value); }
       });
       if (hasError) {
-        const dup = nums.length !== new Set(nums).size;
-        showError(dup
+        showError(hasDuplicate
           ? "N\u00BA de equipamento duplicado."
           : "Preencha todos os campos de cada equipamento.");
         valid = false;

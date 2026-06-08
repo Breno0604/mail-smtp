@@ -4,7 +4,7 @@ export async function compressAttachments(files) {
   const attachments = [];
 
   for (const file of files) {
-    if (file.size <= SKIP_SIZE) {
+    if (file.size <= SKIP_SIZE || !file.type.startsWith("image/")) {
       attachments.push({
         filename: file.name,
         content: await toBase64(file),

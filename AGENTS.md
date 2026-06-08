@@ -3,15 +3,14 @@
 ## Stack
 - Frontend: HTML5 + Tailwind CSS (local static) + vanilla JS (ES6 modules)
 - Backend: single Netlify Function at `netlify/functions/send.js` (Node.js + `nodemailer`)
-- Local storage: IndexedDB (`mail-mvp` DB, `sent_emails` store)
+- Local storage: IndexedDB (`mail-mvp` DB, `records` store)
 - PWA: Service Worker (`sw.js`) + Manifest (`manifest.json`) + local icons
 - Build step (optional): `npm run build:css` regenerates `tailwind.css` from `tailwind-input.css`
 - No bundler, no TypeScript, no framework
 - Deploy: `git push` → Netlify auto-deploys (`npm install` runs on build)
 
 ## Entry point
-`index.html` loads `<script type="module" src="scripts/app.js">` (not `app.js`).
-Legacy `app.js` at root is unused.
+`index.html` loads `<script type="module" src="scripts/app.js">`.
 
 ## Module structure (`scripts/`)
 - `app.js` — entry point, event wiring, bootstrap
@@ -27,8 +26,14 @@ Legacy `app.js` at root is unused.
 - `state.js` — state object + localStorage save/restore helpers
 - `ui.js` — showError/hideError/showToast
 - `dom.js` — singleton DOM cache populated by cacheDOM()
-- `db.js` — IndexedDB wrappers (openDB, saveRecord)
+- `db.js` — IndexedDB wrappers (openDB, saveRecord, saveDraft, deleteRecord, updateRecordStatus, getAllRecords, getRecord)
 - `utils.js` — toBase64/blobToBase64/loadImage + `MAX_SIZE`/`SKIP_SIZE` thresholds
+- `compress.js` — compressAttachments (Canvas resize loop)
+- `restore.js` — applyRecord (load saved record into form)
+- `duplicate.js` — duplicate send modal and logic
+- `sidebar.js` — renderSidebar, closeSidebar, initSidebarFilter
+- `sw-update.js` — SW update detection with reload modal
+- `fields.js` — field definitions (iniciaisFields, retornoFields) with hardcoded options
 
 ## Image compression thresholds (`scripts/utils.js`)
 - `MAX_SIZE = 650 * 1024` — target size after compression
@@ -64,7 +69,17 @@ Legacy `app.js` at root is unused.
 - **Manifest** (`manifest.json`): name "Retorno - Formulário de Envio", display standalone, orientation portrait, theme #2563eb
 - **Icons**: `icons/icon-192.png` and `icons/icon-512.png` (blue bg #2563eb, white "R"), generated via `tools/generate-icons.mjs`
 - **Headers** (`netlify.toml`): `sw.js` no-cache, `manifest.json` 1h, `icons/*` 1y immutable
-- **Cache version**: `CACHE_NAME = 'retorno-v2'` in `sw.js` — bump for cache refresh
+- **Cache version**: `CACHE_NAME = 'retorno-v3'` in `sw.js`
+
+### PWA update checklist
+Whenever you modify any static asset (HTML, CSS, JS, manifest, icons), you **must** increment the `CACHE_NAME` version in `sw.js` (e.g., `retorno-v3` → `retorno-v4`). This forces the service worker to install a new version, cache the fresh files, and notify the user to reload.
+
+Backend-only changes (`netlify/functions/`) do NOT require a cache bump — the SW uses network-only for `/api/`.
+
+Steps for each deploy that touches static files:
+1. Edit the asset files
+2. Increment `CACHE_NAME` in `sw.js`
+3. Commit and push (`sw.js` changes trigger SW update, which fetches new cache)
 
 ## Orientation overlay
 - CSS-only full-screen overlay (`#orientation-overlay`) shown in landscape on short viewports (`max-height: 500px`), forces portrait mode on phones — no JS involved
