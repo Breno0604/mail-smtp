@@ -1,10 +1,12 @@
 # Mail MVP — AGENTS.md
 
 ## Stack
-- Frontend: HTML5 + Tailwind CSS (CDN) + vanilla JS (ES6 modules)
+- Frontend: HTML5 + Tailwind CSS (local static) + vanilla JS (ES6 modules)
 - Backend: single Netlify Function at `netlify/functions/send.js` (Node.js + `nodemailer`)
 - Local storage: IndexedDB (`mail-mvp` DB, `sent_emails` store)
-- No build step, no bundler, no TypeScript, no framework
+- PWA: Service Worker (`sw.js`) + Manifest (`manifest.json`) + local icons
+- Build step (optional): `npm run build:css` regenerates `tailwind.css` from `tailwind-input.css`
+- No bundler, no TypeScript, no framework
 - Deploy: `git push` → Netlify auto-deploys (`npm install` runs on build)
 
 ## Entry point
@@ -57,6 +59,13 @@ Legacy `app.js` at root is unused.
 - localStorage auto-save on any input/change event (`mail_form_estado` key); restore prompt on page load (Section N of 5 dialog)
 - Changing "Tipo de Ordem" after visiting Retorno triggers a confirmation modal that clears retorno fields on confirm
 
+## PWA
+- **Service Worker** (`sw.js`): cache-first for static assets (30 files), network-only for `/api/`, offline fallback to `/index.html`
+- **Manifest** (`manifest.json`): name "Retorno - Formulário de Envio", display standalone, orientation portrait, theme #2563eb
+- **Icons**: `icons/icon-192.png` and `icons/icon-512.png` (blue bg #2563eb, white "R"), generated via `tools/generate-icons.mjs`
+- **Headers** (`netlify.toml`): `sw.js` no-cache, `manifest.json` 1h, `icons/*` 1y immutable
+- **Cache version**: `CACHE_NAME = 'retorno-v1'` in `sw.js` — bump for cache refresh
+
 ## Orientation overlay
 - CSS-only full-screen overlay (`#orientation-overlay`) shown in landscape on short viewports (`max-height: 500px`), forces portrait mode on phones — no JS involved
 
@@ -66,5 +75,5 @@ Legacy `app.js` at root is unused.
 - Deploy: `git add -A && git commit -m "msg" && git push`
 
 ## Future scope (do not implement until requested)
-- PWA, dark mode, fila de envios, deleção automática de rascunhos antigos
+- Dark mode, fila de envios, deleção automática de rascunhos antigos
 - Logs centralizados e deleção automática de registros ≥ 90 dias
