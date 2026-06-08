@@ -21,6 +21,22 @@ export function showToast(msg, success) {
   toastTimer = setTimeout(() => DOM.toast.classList.remove("show"), 3500);
 }
 
+export function setFieldError(el, message) {
+  const span = el.nextElementSibling;
+  if (span && span.classList.contains("field-error")) {
+    span.textContent = message;
+    span.classList.add("show");
+  }
+}
+
+export function clearFieldError(el) {
+  const span = el.nextElementSibling;
+  if (span && span.classList.contains("field-error")) {
+    span.textContent = "";
+    span.classList.remove("show");
+  }
+}
+
 export function showConfirm(message) {
   return new Promise((resolve) => {
     const modal = document.getElementById("confirm-modal");

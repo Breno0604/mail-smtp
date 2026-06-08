@@ -23,6 +23,8 @@ export function addEquip(data) {
     <button class="btn-remove w-7 h-7 border-none rounded-lg bg-red-50 text-red-500 text-xs cursor-pointer flex-shrink-0 transition-colors duration-200 flex items-center justify-center hover:bg-red-200" type="button">\u2715</button>
   `;
 
+  addBlurValidation(div.querySelector(".equip-tipo"));
+  addBlurValidation(div.querySelector(".equip-categoria"));
   addBlurValidation(div.querySelector(".equip-numero"));
 
   div.querySelector(".btn-remove").addEventListener("click", () => {

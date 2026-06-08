@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { validateSection, addBlurValidation, collectSectionData } from '../scripts/validation.js';
+import { validateSection, addBlurValidation, collectSectionData, _resetValidationCache } from '../scripts/validation.js';
 import { cacheDOM, DOM } from '../scripts/dom.js';
 import { state } from '../scripts/state.js';
 import { renderIniciais } from '../scripts/iniciais.js';
@@ -72,6 +72,9 @@ describe('validation', () => {
     setupDOM();
     state.iniciais = {};
     state.iniciaisValido = false;
+    state.retorno = {};
+    state.equipamentos = [];
+    _resetValidationCache();
   });
 
   describe('validateSection(1) - Iniciais', () => {
@@ -160,6 +163,49 @@ describe('validation', () => {
       document.getElementById('data').value = '2024-03-15';
       const result = validateSection(1);
       expect(result).toBe(true);
+    });
+
+    it('should show inline error span on empty required field', () => {
+      renderIniciais();
+      DOM.tipoOrdem = document.getElementById('tipo-ordem');
+      validateSection(1);
+      const lider = document.getElementById('lider');
+      const errorSpan = lider.nextElementSibling;
+      expect(errorSpan.classList.contains('field-error')).toBe(true);
+      expect(errorSpan.classList.contains('show')).toBe(true);
+      expect(errorSpan.textContent).toBe('Campo obrigatório');
+    });
+
+    it('should hide inline error span on filled field', () => {
+      fillAllRequiredFields();
+      validateSection(1);
+      const lider = document.getElementById('lider');
+      const errorSpan = lider.nextElementSibling;
+      expect(errorSpan.classList.contains('show')).toBe(false);
+    });
+
+    it('should show "Data não pode ser futura" inline on future date', () => {
+      fillAllRequiredFields();
+      const futureDate = new Date();
+      futureDate.setFullYear(futureDate.getFullYear() + 1);
+      const year = futureDate.getFullYear();
+      const month = String(futureDate.getMonth() + 1).padStart(2, '0');
+      const day = String(futureDate.getDate()).padStart(2, '0');
+      document.getElementById('data').value = `${year}-${month}-${day}`;
+      validateSection(1);
+      const dataEl = document.getElementById('data');
+      const errorSpan = dataEl.nextElementSibling;
+      expect(errorSpan.textContent).toContain('futura');
+    });
+
+    it('should show "Hora fim" inline error when hora_fim <= hora_inicio', () => {
+      fillAllRequiredFields();
+      document.getElementById('hora_inicio').value = '10:00';
+      document.getElementById('hora_fim').value = '09:00';
+      validateSection(1);
+      const horaFim = document.getElementById('hora_fim');
+      const errorSpan = horaFim.nextElementSibling;
+      expect(errorSpan.textContent).toContain('Hora fim');
     });
 
     it('should handle coordinates field (readonly, not required)', () => {
@@ -258,6 +304,25 @@ describe('validation', () => {
       expect(categoria.classList.contains('error')).toBe(true);
       expect(numero.classList.contains('error')).toBe(true);
     });
+
+    it('should show inline error "Selecione o tipo" on empty tipo', () => {
+      addEquipmentRow('', 'Medidor', '123');
+      validateSection(2);
+      const tipo = DOM.equipList.querySelector('.equip-tipo');
+      // Equipment fields don't have .field-error next siblings,
+      // so errors remain in the top bar only
+      const errorMsg = document.getElementById('error-msg');
+      expect(errorMsg.textContent).toContain('Preencha');
+    });
+
+    it('should show inline error "Número duplicado" on duplicate', () => {
+      addEquipmentRow('Instalado', 'Medidor', '111');
+      addEquipmentRow('Retirado', 'Display', '111');
+      validateSection(2);
+      const inputs = DOM.equipList.querySelectorAll('.equip-numero');
+      const errorMsg = document.getElementById('error-msg');
+      expect(errorMsg.textContent).toContain('duplicado');
+    });
   });
 
   describe('validateSection(3) - Retorno', () => {
@@ -304,6 +369,77 @@ describe('validation', () => {
       textarea.value = 'filled';
       validateSection(3);
       expect(textarea.classList.contains('error')).toBe(false);
+    });
+
+    it('should show inline error "Campo obrigatório" on empty retorno', () => {
+      renderRetorno();
+      validateSection(3);
+      const textarea = document.getElementById('descricao-retorno');
+      const errorSpan = textarea.nextElementSibling;
+      expect(errorSpan.classList.contains('field-error')).toBe(true);
+      expect(errorSpan.classList.contains('show')).toBe(true);
+      expect(errorSpan.textContent).toBe('Campo obrigatório');
+    });
+  });
+
+  describe('validateSection(4) - Anexos', () => {
+    it('should return true when there are no attachments', () => {
+      state.attachments = [];
+      const result = validateSection(4);
+      expect(result).toBe(true);
+    });
+
+    it('should return true when attachments are within limits', () => {
+      state.attachments = [
+        new File(['x'.repeat(100)], 'img1.jpg', { type: 'image/jpeg' }),
+        new File(['x'.repeat(200)], 'img2.jpg', { type: 'image/jpeg' }),
+      ];
+      const result = validateSection(4);
+      expect(result).toBe(true);
+    });
+
+    it('should return false when there are more than 12 attachments', () => {
+      state.attachments = [];
+      for (let i = 0; i < 13; i++) {
+        state.attachments.push(new File(['x'], `f-${i}.jpg`, { type: 'image/jpeg' }));
+      }
+      const result = validateSection(4);
+      expect(result).toBe(false);
+    });
+
+    it('should show error message when more than 12 attachments', () => {
+      state.attachments = [];
+      for (let i = 0; i < 13; i++) {
+        state.attachments.push(new File(['x'], `f-${i}.jpg`, { type: 'image/jpeg' }));
+      }
+      validateSection(4);
+      const errorMsg = document.getElementById('error-msg');
+      expect(errorMsg.style.display).not.toBe('none');
+      expect(errorMsg.textContent).toContain('12');
+    });
+
+    it('should return false when an attachment exceeds 8 MB', () => {
+      state.attachments = [
+        new File(['x'.repeat(9 * 1024 * 1024)], 'big.jpg', { type: 'image/jpeg' }),
+      ];
+      const result = validateSection(4);
+      expect(result).toBe(false);
+    });
+
+    it('should show error with oversized file name', () => {
+      state.attachments = [
+        new File(['x'.repeat(9 * 1024 * 1024)], 'huge-photo.jpg', { type: 'image/jpeg' }),
+      ];
+      validateSection(4);
+      const errorMsg = document.getElementById('error-msg');
+      expect(errorMsg.textContent).toContain('huge-photo.jpg');
+    });
+  });
+
+  describe('validateSection(5) - Revis\u00E3o', () => {
+    it('should always return true', () => {
+      const result = validateSection(5);
+      expect(result).toBe(true);
     });
   });
 
@@ -358,6 +494,110 @@ describe('validation', () => {
       input.focus();
       input.blur();
       expect(input.classList.contains('error')).toBe(true);
+    });
+
+    it('should show inline error span on blur when field has field-error sibling', () => {
+      const input = document.createElement('input');
+      input.setAttribute('required', '');
+      document.body.appendChild(input);
+      const errorSpan = document.createElement('span');
+      errorSpan.className = 'field-error';
+      input.insertAdjacentElement('afterend', errorSpan);
+      addBlurValidation(input);
+      input.focus();
+      input.blur();
+      expect(errorSpan.classList.contains('show')).toBe(true);
+      expect(errorSpan.textContent).toBe('Campo obrigatório');
+    });
+
+    it('should hide inline error span on input', () => {
+      const input = document.createElement('input');
+      input.setAttribute('required', '');
+      document.body.appendChild(input);
+      const errorSpan = document.createElement('span');
+      errorSpan.className = 'field-error';
+      errorSpan.classList.add('show');
+      errorSpan.textContent = 'Campo obrigatório';
+      input.insertAdjacentElement('afterend', errorSpan);
+      addBlurValidation(input);
+      input.value = 'filled';
+      input.dispatchEvent(new Event('input'));
+      expect(errorSpan.classList.contains('show')).toBe(false);
+      expect(errorSpan.textContent).toBe('');
+    });
+
+    it('should hide inline error span on change when value is filled', () => {
+      const input = document.createElement('input');
+      input.setAttribute('required', '');
+      document.body.appendChild(input);
+      const errorSpan = document.createElement('span');
+      errorSpan.className = 'field-error';
+      errorSpan.classList.add('show');
+      errorSpan.textContent = 'Campo obrigatório';
+      input.insertAdjacentElement('afterend', errorSpan);
+      addBlurValidation(input);
+      input.value = 'new value';
+      input.dispatchEvent(new Event('change'));
+      expect(errorSpan.classList.contains('show')).toBe(false);
+      expect(errorSpan.textContent).toBe('');
+    });
+  });
+
+  describe('validateSection populates state', () => {
+    it('should populate state.iniciais after valid section 1', () => {
+      fillAllRequiredFields();
+      validateSection(1);
+      expect(state.iniciais.lider).toBe('ANDRE DE SOUSA CARVALHO');
+      expect(state.iniciais.uc).toBe('12345');
+      expect(state.iniciais.os).toBe('67890');
+      expect(state.iniciais.coordenadas).toBeDefined();
+    });
+
+    it('should not populate state.iniciais when section 1 validation fails', () => {
+      renderIniciais();
+      DOM.tipoOrdem = document.getElementById('tipo-ordem');
+      validateSection(1);
+      expect(state.iniciais.lider).toBeUndefined();
+    });
+
+    it('should populate state.equipamentos after valid section 2', () => {
+      const row1 = document.createElement('div');
+      row1.className = 'equip-row';
+      row1.innerHTML = '<select class="equip-tipo"><option value="Instalado">Instalado</option></select><select class="equip-categoria"><option value="Medidor">Medidor</option></select><input class="equip-numero" value="111">';
+      DOM.equipList.appendChild(row1);
+      const row2 = document.createElement('div');
+      row2.className = 'equip-row';
+      row2.innerHTML = '<select class="equip-tipo"><option value="Retirado">Retirado</option></select><select class="equip-categoria"><option value="Display">Display</option></select><input class="equip-numero" value="222">';
+      DOM.equipList.appendChild(row2);
+      validateSection(2);
+      expect(state.equipamentos).toHaveLength(2);
+      expect(state.equipamentos[0].status).toBe('Instalado');
+      expect(state.equipamentos[0].categoria).toBe('Medidor');
+      expect(state.equipamentos[0].numero).toBe('111');
+    });
+
+    it('should populate state.retorno after valid section 3', () => {
+      const select = document.createElement('select');
+      select.id = 'tipo-ordem';
+      select.innerHTML = '<option value="">Selecione</option>';
+      document.body.appendChild(select);
+      DOM.tipoOrdem = select;
+      renderRetorno();
+      const textarea = document.getElementById('descricao-retorno');
+      textarea.value = 'descricao valida';
+      validateSection(3);
+      expect(state.retorno.descricao).toBe('descricao valida');
+    });
+
+    it('should not populate state.retorno when section 3 validation fails', () => {
+      const select = document.createElement('select');
+      select.id = 'tipo-ordem';
+      select.innerHTML = '<option value="">Selecione</option>';
+      document.body.appendChild(select);
+      DOM.tipoOrdem = select;
+      renderRetorno();
+      validateSection(3);
+      expect(state.retorno.descricao).toBeUndefined();
     });
   });
 

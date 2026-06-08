@@ -178,6 +178,19 @@ describe('iniciais', () => {
         expect(el).toBeTruthy();
       });
     });
+
+    it('should create field-error span after each required input', () => {
+      renderIniciais();
+      const requiredFields = iniciaisFields.filter(f => f.obrigatorio);
+      requiredFields.forEach(field => {
+        const el = document.getElementById(field.nome);
+        if (el && field.tipo !== 'coordinates') {
+          const errorSpan = el.nextElementSibling;
+          expect(errorSpan).toBeTruthy();
+          expect(errorSpan.classList.contains('field-error')).toBe(true);
+        }
+      });
+    });
   });
 
   describe('getIniciaisData', () => {

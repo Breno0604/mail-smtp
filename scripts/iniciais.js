@@ -101,6 +101,10 @@ export function renderIniciais() {
       coordWrapper.appendChild(input);
       coordWrapper.appendChild(refreshBtn);
 
+      const coordError = document.createElement("span");
+      coordError.className = "field-error";
+      coordWrapper.appendChild(coordError);
+
       group.appendChild(label);
       group.appendChild(coordWrapper);
       wrapper.appendChild(group);
@@ -118,8 +122,11 @@ export function renderIniciais() {
     addBlurValidation(input);
     input.addEventListener("input", debouncedSave);
     input.addEventListener("change", debouncedSave);
+    const errorSpan = document.createElement("span");
+    errorSpan.className = "field-error";
     group.appendChild(label);
     group.appendChild(input);
+    group.appendChild(errorSpan);
     wrapper.appendChild(group);
   });
 }

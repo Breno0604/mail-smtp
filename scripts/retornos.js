@@ -28,11 +28,14 @@ export function renderRetorno() {
     input.placeholder = field.label;
     input.className = inputClass + " resize-y min-h-[80px]";
 
+    const errorSpan = document.createElement("span");
+    errorSpan.className = "field-error";
     addBlurValidation(input);
     input.addEventListener("input", debouncedSave);
     input.addEventListener("change", debouncedSave);
     group.appendChild(label);
     group.appendChild(input);
+    group.appendChild(errorSpan);
     DOM.retornoCampos.appendChild(group);
   });
 }
