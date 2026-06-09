@@ -31,7 +31,7 @@ describe('DOM readiness', () => {
       'sidebar', 'sidebar-list', 'sidebar-overlay', 'sidebar-close', 'sidebar-filter',
       'btn-anterior', 'btn-proximo', 'error-msg',
       'iniciais-campos',
-      'equipamentos-list', 'btn-add-equip', 'btn-skip-equip',
+      'equipamentos-list', 'btn-add-equip',
       'retorno-desc', 'retorno-campos',
       'file-input', 'file-count', 'preview-grid', 'file-upload-area',
       'preview-corpo', 'complemento-corpo',

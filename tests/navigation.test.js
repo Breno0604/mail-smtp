@@ -55,7 +55,6 @@ describe('navigation', () => {
         <div class="section" id="section-2">
           <div id="equipamentos-list"></div>
           <button id="btn-add-equip">+ Adicionar equipamento</button>
-          <button id="btn-skip-equip" style="display:none">Pular →</button>
         </div>
         <div class="section" id="section-3">
           <p id="retorno-desc">Preencha as informações de retorno.</p>

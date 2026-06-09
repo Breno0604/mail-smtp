@@ -4,14 +4,14 @@ import { addBlurValidation } from "./validation.js";
 
 export function addEquip(data) {
   const div = document.createElement("div");
-  div.className = "equip-row flex gap-2 items-center mb-2.5 p-2 bg-slate-50/50 border border-slate-200/50 rounded-xl shadow-sm";
+  div.className = "equip-row flex gap-2.5 items-center mb-6 p-3 bg-slate-50/50 border border-slate-200/50 rounded-xl shadow-sm";
   div.innerHTML = `
-    <select class="equip-tipo flex-1 min-w-0 px-2 py-2 border border-slate-200 rounded-lg text-base outline-none bg-white transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 text-slate-800 font-sans">
+    <select class="equip-tipo flex-1 min-w-0 px-3 py-4 border border-slate-200 rounded-lg text-lg outline-none bg-white transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 text-slate-800 font-sans">
       <option value="">Selecione...</option>
       <option value="Instalado" ${data?.status === "Instalado" ? "selected" : ""}>Instalado</option>
       <option value="Retirado" ${data?.status === "Retirado" ? "selected" : ""}>Retirado</option>
     </select>
-    <select class="equip-categoria flex-1 min-w-0 px-2 py-2 border border-slate-200 rounded-lg text-base outline-none bg-white transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 text-slate-800 font-sans">
+    <select class="equip-categoria flex-1 min-w-0 px-3 py-4 border border-slate-200 rounded-lg text-lg outline-none bg-white transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 text-slate-800 font-sans">
       <option value="">Selecione...</option>
       <option value="Medidor" ${data?.categoria === "Medidor" ? "selected" : ""}>Medidor</option>
       <option value="Display" ${data?.categoria === "Display" ? "selected" : ""}>Display</option>
@@ -19,8 +19,8 @@ export function addEquip(data) {
       <option value="TC" ${data?.categoria === "TC" ? "selected" : ""}>TC</option>
       <option value="TP" ${data?.categoria === "TP" ? "selected" : ""}>TP</option>
     </select>
-    <input type="number" class="equip-numero flex-1 min-w-0 px-2 py-2 border border-slate-200 rounded-lg text-base outline-none bg-white transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 text-slate-800 font-sans placeholder-slate-400" placeholder="N\u00B0" value="${data?.numero || ""}">
-    <button class="btn-remove w-8 h-8 border-none rounded-lg bg-red-50 text-red-500 text-sm cursor-pointer flex-shrink-0 transition-all duration-200 flex items-center justify-center hover:bg-red-100 hover:scale-105 active:scale-95" type="button">\u2715</button>
+    <input type="number" class="equip-numero flex-1 min-w-0 px-3 py-4 border border-slate-200 rounded-lg text-lg outline-none bg-white transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 text-slate-800 font-sans placeholder-slate-400" placeholder="N\u00B0" value="${data?.numero || ""}">
+    <button class="btn-remove w-9 h-9 border-none rounded-lg bg-red-50 text-red-500 text-sm cursor-pointer flex-shrink-0 transition-all duration-200 flex items-center justify-center hover:bg-red-100 hover:scale-105 active:scale-95" type="button">\u2715</button>
   `;
 
   addBlurValidation(div.querySelector(".equip-tipo"));
@@ -30,14 +30,12 @@ export function addEquip(data) {
   div.querySelector(".btn-remove").addEventListener("click", () => {
     div.remove();
     if (DOM.equipList.querySelectorAll(".equip-row").length === 0) showEmptyEquip();
-    updateSkipBtn();
     collectEquipamentos();
     saveState();
   });
 
   DOM.equipList.appendChild(div);
   hideEmptyEquip();
-  updateSkipBtn();
   collectEquipamentos();
   saveState();
 }
@@ -54,11 +52,6 @@ export function showEmptyEquip() {
 export function hideEmptyEquip() {
   const msg = DOM.equipList.querySelector(".empty-msg");
   if (msg) msg.remove();
-}
-
-export function updateSkipBtn() {
-  const rows = DOM.equipList.querySelectorAll(".equip-row");
-  DOM.btnSkipEquip.style.display = rows.length === 0 ? "inline" : "none";
 }
 
 export function collectEquipamentos() {
@@ -80,5 +73,4 @@ export function renderEquipamentos() {
   } else {
     state.equipamentos.forEach((eq) => addEquip(eq));
   }
-  updateSkipBtn();
 }

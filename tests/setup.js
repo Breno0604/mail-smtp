@@ -52,7 +52,6 @@ document.body.innerHTML = `
       <div class="section" id="section-2">
         <div id="equipamentos-list"></div>
         <button id="btn-add-equip">+ Adicionar equipamento</button>
-        <button id="btn-skip-equip" style="display:none">Pular →</button>
       </div>
 
       <div class="section" id="section-3">

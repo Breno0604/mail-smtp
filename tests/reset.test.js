@@ -13,7 +13,6 @@ describe('reset', () => {
     document.body.innerHTML = `
       <div id="iniciais-campos"></div>
       <div id="equipamentos-list"></div>
-      <button id="btn-skip-equip" style="display:none">Pular →</button>
       <div id="retorno-campos"></div>
       <div id="retorno-desc"></div>
       <select id="tipo-ordem"><option value="">Selecione</option></select>
