@@ -126,8 +126,8 @@ body { touch-action: manipulation; }
 .container {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 64px);
-  height: calc(100dvh - 64px);
+  height: 100vh;
+  height: 100dvh;
   padding-bottom: 0;
 }
 
