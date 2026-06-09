@@ -30,17 +30,31 @@ async function restoreSavedState() {
 
     const section = applyRecord(record);
     showSection(section, "next", true);
+    updateAllFilledClasses();
     return true;
   } catch (_) {
     return false;
   }
 }
 
+function updateFilledClass(el) {
+  if (el.value && el.value.trim() !== "") {
+    el.classList.add("is-filled");
+  } else {
+    el.classList.remove("is-filled");
+  }
+}
+
+export function updateAllFilledClasses() {
+  document.querySelectorAll("input, select, textarea").forEach((el) => {
+    updateFilledClass(el);
+  });
+}
+
 function initEvents() {
   DOM.btnAnterior.addEventListener("click", prevSection);
   DOM.btnProximo.addEventListener("click", nextSection);
   DOM.btnAddEquip.addEventListener("click", () => addEquip());
-  DOM.btnSkipEquip.addEventListener("click", () => showSection(3, "next"));
   DOM.tipoOrdem.addEventListener("change", handleTipoChange);
   DOM.modalCancel.addEventListener("click", cancelTipoChange);
   DOM.modalConfirm.addEventListener("click", confirmTipoChange);
@@ -55,6 +69,7 @@ function initEvents() {
     resetForm();
     showSection(1, "prev", true);
     await captureCoordinates();
+    updateAllFilledClasses();
   });
   DOM.hamburger.addEventListener("click", () => {
     renderSidebar();
@@ -73,6 +88,17 @@ function initEvents() {
     el.addEventListener("change", debouncedSave);
     el.addEventListener("input", debouncedSave);
   });
+
+  document.addEventListener("input", (e) => {
+    if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT" || e.target.tagName === "TEXTAREA") {
+      updateFilledClass(e.target);
+    }
+  });
+  document.addEventListener("change", (e) => {
+    if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT" || e.target.tagName === "TEXTAREA") {
+      updateFilledClass(e.target);
+    }
+  });
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -86,4 +112,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (!restored && state.currentSection === 1 && !document.getElementById("section-1").classList.contains("active")) {
     showSection(1, "next", true);
   }
+  updateAllFilledClasses();
 });

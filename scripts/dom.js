@@ -15,7 +15,6 @@ export function cacheDOM() {
   DOM.tipoOrdem = document.getElementById("tipo-ordem");
   DOM.equipList = document.getElementById("equipamentos-list");
   DOM.btnAddEquip = document.getElementById("btn-add-equip");
-  DOM.btnSkipEquip = document.getElementById("btn-skip-equip");
   DOM.retornoDesc = document.getElementById("retorno-desc");
   DOM.retornoCampos = document.getElementById("retorno-campos");
   DOM.fileInput = document.getElementById("file-input");

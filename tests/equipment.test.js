@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { addEquip, showEmptyEquip, hideEmptyEquip, updateSkipBtn, renderEquipamentos } from '../scripts/equipment.js';
+import { addEquip, showEmptyEquip, hideEmptyEquip, renderEquipamentos } from '../scripts/equipment.js';
 import { cacheDOM, DOM } from '../scripts/dom.js';
 import { state } from '../scripts/state.js';
 
@@ -8,7 +8,6 @@ describe('equipment', () => {
     document.body.innerHTML = `
       <div id="equipamentos-list"></div>
       <button id="btn-add-equip">+ Adicionar equipamento</button>
-      <button id="btn-skip-equip" style="display:none">Pular →</button>
       <div id="error-msg" style="display:none"></div>
       <div id="iniciais-campos"></div>
       <div id="retorno-campos"></div>
@@ -150,20 +149,6 @@ describe('equipment', () => {
     });
   });
 
-  describe('updateSkipBtn', () => {
-    it('should show skip button when no equipment rows exist', () => {
-      DOM.equipList.innerHTML = '';
-      DOM.btnSkipEquip.style.display = 'none';
-      updateSkipBtn();
-      expect(DOM.btnSkipEquip.style.display).not.toBe('none');
-    });
-
-    it('should hide skip button when equipment rows exist', () => {
-      addEquip({ status: 'Instalado', categoria: 'Medidor', numero: '12345' });
-      expect(DOM.btnSkipEquip.style.display).toBe('none');
-    });
-  });
-
   describe('renderEquipamentos', () => {
     it('should show empty message when state.equipamentos is empty', () => {
       state.equipamentos = [];
@@ -207,12 +192,6 @@ describe('equipment', () => {
       const rows = DOM.equipList.querySelectorAll('.equip-row');
       expect(rows.length).toBe(1);
       expect(rows[0].querySelector('.equip-numero').value).toBe('42');
-    });
-
-    it('should hide skip button after rendering rows', () => {
-      state.equipamentos = [{ status: 'Instalado', categoria: 'Medidor', numero: '1' }];
-      renderEquipamentos();
-      expect(DOM.btnSkipEquip.style.display).toBe('none');
     });
   });
 });

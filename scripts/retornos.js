@@ -11,7 +11,7 @@ const getDescricaoEl = () => document.getElementById("descricao-retorno");
 
 export function renderRetorno() {
   const tipoLabel = DOM.tipoOrdem.options[DOM.tipoOrdem.selectedIndex]?.text || "—";
-  DOM.retornoDesc.innerHTML = `Preencha as informações de retorno para <strong>${tipoLabel}</strong>.`;
+  DOM.retornoDesc.innerHTML = `<span class="text-lg font-bold text-slate-800">${tipoLabel}</span>`;
   DOM.retornoCampos.innerHTML = "";
 
   retornoFields.forEach((field) => {
