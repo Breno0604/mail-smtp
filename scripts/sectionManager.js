@@ -17,13 +17,6 @@ function updateStepIndicators(n) {
     el.classList.toggle("active", num === n);
     el.classList.toggle("completed", num < n);
   });
-
-  DOM.steps.forEach((el, i) => {
-    el.onclick = () => {
-      if (state.animating) return;
-      showSection(i + 1, i + 1 > state.currentSection ? "next" : "prev", true);
-    };
-  });
 }
 
 function updateNavButtons(n) {
@@ -39,6 +32,9 @@ function updateNavButtons(n) {
     DOM.btnProximo.textContent = "Avan\u00E7ar \u2192";
     DOM.btnProximo.className = "btn btn-primary";
   }
+
+  const stepNames = ["Inicio", "Equip.", "Retorno", "Anexos", "Revisão"];
+  DOM.stepCurrentText.textContent = stepNames[n - 1] || "";
 }
 
 function renderSectionContent(n) {

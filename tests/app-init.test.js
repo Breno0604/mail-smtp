@@ -40,12 +40,13 @@ describe('DOM readiness', () => {
       'lightbox', 'lightbox-img', 'lightbox-close',
       'dup-modal', 'dup-modal-title', 'dup-modal-body', 'dup-modal-cancel', 'dup-modal-confirm',
       'confirm-modal', 'confirm-modal-text', 'confirm-modal-cancel', 'confirm-modal-ok',
+      'step-current-text',
     ];
     ids.forEach((id) => {
       expect(document.getElementById(id), `Element #${id} not found in HTML`).toBeTruthy();
     });
     expect(document.querySelectorAll('.section')).toHaveLength(5);
-    expect(document.querySelectorAll('.step')).toHaveLength(5);
+    expect(document.querySelectorAll('.step-label')).toHaveLength(5);
   });
 
   it('should execute cacheDOM without errors', async () => {

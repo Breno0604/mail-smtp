@@ -41,11 +41,11 @@ describe('navigation', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <div class="progress" id="progress">
-        <div class="step" data-step="1">Iniciais</div>
-        <div class="step" data-step="2">Equip.</div>
-        <div class="step" data-step="3">Retorno</div>
-        <div class="step" data-step="4">Anexos</div>
-        <div class="step" data-step="5">Revisão</div>
+        <div class="step-label" data-step="1">Inicio</div>
+        <div class="step-label" data-step="2">Equip.</div>
+        <div class="step-label" data-step="3">Retorno</div>
+        <div class="step-label" data-step="4">Anexos</div>
+        <div class="step-label" data-step="5">Revisão</div>
       </div>
       <div id="error-msg" style="display:none"></div>
       <div class="section-wrapper" id="section-wrapper">
@@ -73,8 +73,9 @@ describe('navigation', () => {
           </div>
         </div>
       </div>
-      <div class="nav-buttons" id="nav-buttons">
-        <button class="btn btn-secondary" id="btn-anterior" disabled>← Anterior</button>
+      <div id="nav-buttons">
+        <button class="btn btn-primary" id="btn-anterior" disabled>← Anterior</button>
+        <span class="step-current-text" id="step-current-text">Inicio</span>
         <button class="btn btn-primary" id="btn-proximo">Avançar →</button>
       </div>
       <div class="toast" id="toast"></div>
@@ -143,9 +144,19 @@ describe('navigation', () => {
 
     it('should update step indicators for active step', () => {
       showSection(2, 'next', true);
-      const steps = document.querySelectorAll('.step');
+      const steps = document.querySelectorAll('.step-label');
       expect(steps[1].classList.contains('active')).toBe(true);
       expect(steps[0].classList.contains('completed')).toBe(true);
+    });
+
+    it('should update step current text', () => {
+      showSection(2, 'next', true);
+      expect(DOM.stepCurrentText.textContent).toBe('Equip.');
+    });
+
+    it('should show "Inicio" on section 1', () => {
+      showSection(1, 'next', true);
+      expect(DOM.stepCurrentText.textContent).toBe('Inicio');
     });
 
     it('should disable previous button on section 1', () => {

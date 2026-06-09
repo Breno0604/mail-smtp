@@ -7,7 +7,7 @@ const DOM = {};
 export function cacheDOM() {
   DOM.sections = document.querySelectorAll(".section");
   DOM.wrapper = document.getElementById("section-wrapper");
-  DOM.steps = document.querySelectorAll(".step");
+  DOM.steps = document.querySelectorAll(".step-label");
   DOM.btnAnterior = document.getElementById("btn-anterior");
   DOM.btnProximo = document.getElementById("btn-proximo");
   DOM.errorMsg = document.getElementById("error-msg");
@@ -46,6 +46,7 @@ export function cacheDOM() {
   DOM.confirmModalText = document.getElementById("confirm-modal-text");
   DOM.confirmModalOk = document.getElementById("confirm-modal-ok");
   DOM.confirmModalCancel = document.getElementById("confirm-modal-cancel");
+  DOM.stepCurrentText = document.getElementById("step-current-text");
 }
 
 export { DOM };

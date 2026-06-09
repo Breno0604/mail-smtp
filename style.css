@@ -41,37 +41,32 @@ body {
   animation: enterFromLeft 0.25s ease forwards;
 }
 
-.step {
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid #cbd5e1;
-  background: #f8fafc;
-  color: #334155;
-  border-radius: 9999px;
+.step-label {
+  color: #64748b;
   font-size: 14px;
   font-weight: 500;
   padding: 7px 17px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
   user-select: none;
 }
-.step:hover {
-  border-color: #cbd5e1;
-  background: #f1f5f9;
-  color: #475569;
-  transform: translateY(-1px);
-}
-.step.active {
-  border-color: #3b82f6;
-  background: #eff6ff;
+.step-label.active {
   color: #1d4ed8;
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08);
 }
-.step.completed {
-  border-color: #10b981;
-  background: #ecfdf5;
+.step-label.completed {
   color: #047857;
   font-weight: 500;
+}
+
+.step-current-text {
+  color: #1d4ed8;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  text-align: center;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .field-error {
@@ -143,8 +138,8 @@ body { touch-action: manipulation; }
   padding: 0 16px;
 }
 
-#nav-buttons {
-  flex-shrink: 0;
+#nav-buttons .btn {
+  min-width: 100px;
 }
 
 .btn {
@@ -269,9 +264,9 @@ body { touch-action: manipulation; }
 }
 
 @media (max-width: 640px) {
-  .step { font-size: 12px !important; padding: 6px 13px !important; }
+  .step-label { font-size: 12px !important; padding: 6px 13px !important; }
   .preview-grid { grid-template-columns: repeat(2, 1fr) !important; }
-  #nav-buttons .btn { min-width: 110px !important; }
+  #nav-buttons .btn { min-width: 100px !important; }
 }
 
 /* === New Form Button === */

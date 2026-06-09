@@ -15,27 +15,26 @@
 <script type="module" src="scripts/app.js"></script>
 <script type="module" src="scripts/sw-update.js"></script>
 </head>
-<body class="font-sans bg-gradient-to-br from-slate-100 to-blue-50 flex justify-center items-start min-h-screen p-0 pt-4">
+<body class="font-sans bg-gradient-to-br from-slate-100 to-blue-50 flex justify-center items-start min-h-screen p-0 pt-6">
 
 <div class="container bg-white rounded-2xl shadow-xl shadow-blue-900/5 border border-slate-200/50 p-1 w-full max-w-[640px] relative">
   <div class="flex justify-between items-center mb-6 px-4 pt-3">
-    <div class="flex items-center gap-2">
-      <button class="hamburger" id="hamburger">&#9776;</button>
-      <h1 class="text-2xl text-slate-800 font-bold m-0 tracking-tight">Retorno de Ordens</h1>
-    </div>
+    <button class="hamburger" id="hamburger">&#9776;</button>
+    <h1 class="text-2xl text-slate-800 font-bold m-0 tracking-tight">Retorno de Ordens</h1>
     <button class="btn-new-form" id="btn-novo-form" title="Novo formulário">+</button>
   </div>
 
   <div class="sticky top-0 z-10 bg-white/80 backdrop-blur-md pb-3 -mx-1 px-1 border-b border-slate-100 flex flex-col gap-2 mb-6" id="progress">
     <div class="flex items-center justify-center flex-wrap gap-1.5 sm:gap-2.5 pt-2.5">
-      <div class="step active" data-step="1">Iniciais</div>
-      <div class="step" data-step="2">Equip.</div>
-      <div class="step" data-step="3">Retorno</div>
-      <div class="step" data-step="4">Anexos</div>
-      <div class="step" data-step="5">Revisão</div>
+      <div class="step-label" data-step="1">Inicio</div>
+      <div class="step-label" data-step="2">Equip.</div>
+      <div class="step-label" data-step="3">Retorno</div>
+      <div class="step-label" data-step="4">Anexos</div>
+      <div class="step-label" data-step="5">Revisão</div>
     </div>
-    <div class="flex justify-between px-3" id="nav-buttons">
+    <div class="flex justify-between items-center px-3 gap-2" id="nav-buttons">
       <button class="btn btn-primary" id="btn-anterior" disabled>← Anterior</button>
+      <span class="step-current-text" id="step-current-text">Inicio</span>
       <button class="btn btn-primary" id="btn-proximo">Avançar →</button>
     </div>
   </div>
