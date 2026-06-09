@@ -85,13 +85,13 @@ describe('validation', () => {
       expect(result).toBe(false);
     });
 
-    it('should show error message when required fields are empty', () => {
+    it('should hide global error when required fields are empty (per-field shown)', () => {
       renderIniciais();
       DOM.tipoOrdem = document.getElementById('tipo-ordem');
       validateSection(1);
       const errorMsg = document.getElementById('error-msg');
-      expect(errorMsg.style.display).not.toBe('none');
-      expect(errorMsg.textContent).toBeTruthy();
+      expect(errorMsg.style.display).toBe('none');
+      expect(errorMsg.textContent).toBe('');
     });
 
     it('should return true when all required fields are filled with valid data', () => {
@@ -279,12 +279,13 @@ describe('validation', () => {
       expect(result).toBe(false);
     });
 
-    it('should show duplicate error message', () => {
+    it('should hide global error on duplicate (per-field error shown)', () => {
       addEquipmentRow('Instalado', 'Medidor', '12345');
       addEquipmentRow('Retirado', 'Display', '12345');
       validateSection(2);
       const errorMsg = document.getElementById('error-msg');
-      expect(errorMsg.textContent).toContain('duplicado');
+      expect(errorMsg.style.display).toBe('none');
+      expect(errorMsg.textContent).toBe('');
     });
 
     it('should return true for valid equipment rows', () => {
@@ -305,23 +306,23 @@ describe('validation', () => {
       expect(numero.classList.contains('error')).toBe(true);
     });
 
-    it('should show inline error "Selecione o tipo" on empty tipo', () => {
+    it('should add error class to empty tipo (no global message)', () => {
       addEquipmentRow('', 'Medidor', '123');
       validateSection(2);
       const tipo = DOM.equipList.querySelector('.equip-tipo');
-      // Equipment fields don't have .field-error next siblings,
-      // so errors remain in the top bar only
+      expect(tipo.classList.contains('error')).toBe(true);
       const errorMsg = document.getElementById('error-msg');
-      expect(errorMsg.textContent).toContain('Preencha');
+      expect(errorMsg.style.display).toBe('none');
     });
 
-    it('should show inline error "Número duplicado" on duplicate', () => {
+    it('should add error class to duplicated input (no global message)', () => {
       addEquipmentRow('Instalado', 'Medidor', '111');
       addEquipmentRow('Retirado', 'Display', '111');
       validateSection(2);
       const inputs = DOM.equipList.querySelectorAll('.equip-numero');
+      expect(inputs[1].classList.contains('error')).toBe(true);
       const errorMsg = document.getElementById('error-msg');
-      expect(errorMsg.textContent).toContain('duplicado');
+      expect(errorMsg.style.display).toBe('none');
     });
   });
 
@@ -349,11 +350,12 @@ describe('validation', () => {
       expect(result).toBe(true);
     });
 
-    it('should show error message when required retorno field is empty', () => {
+    it('should hide global error when retorno field is empty (per-field shown)', () => {
       renderRetorno();
       validateSection(3);
       const errorMsg = document.getElementById('error-msg');
-      expect(errorMsg.style.display).not.toBe('none');
+      expect(errorMsg.style.display).toBe('none');
+      expect(errorMsg.textContent).toBe('');
     });
 
     it('should add error class to empty textarea', () => {

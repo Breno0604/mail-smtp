@@ -48,10 +48,7 @@ function validateSection1() {
     }
   });
 
-  if (!valid) {
-    showError("Preencha todos os campos obrigatórios.");
-    return false;
-  }
+  if (!valid) return false;
 
   // Validações especiais usando os dados já coletados
   let errorMsg = "";
@@ -122,12 +119,7 @@ function validateSection2() {
     }
   });
 
-  if (hasError) {
-    showError(hasDuplicate
-      ? "Nº de equipamento duplicado."
-      : "Preencha todos os campos de cada equipamento.");
-    return false;
-  }
+  if (hasError) return false;
 
   collectEquipamentos();
   _validatedData[2] = state.equipamentos;
@@ -154,10 +146,7 @@ function validateSection3() {
     }
   });
 
-  if (!valid) {
-    showError("Preencha todos os campos obrigatórios.");
-    return false;
-  }
+  if (!valid) return false;
 
   state.retorno = { descricao };
   _validatedData[3] = { descricao };
