@@ -178,14 +178,24 @@ body { touch-action: manipulation; }
 .field-error.show { display: block; }
 .equip-row .field-error { flex-basis: 100%; order: 99; }
 
+/* Campos não preenchidos: azul claro + borda grossa azul */
+input:not(.error):not(.is-filled), select:not(.error):not(.is-filled), textarea:not(.error):not(.is-filled) {
+  background-color: #eff6ff !important;
+  border-color: #2563eb !important;
+  border-width: 2.5px !important;
+}
+
 input.error, select.error, textarea.error {
+  background-color: #fef2f2 !important;
   border-color: #dc2626 !important;
+  border-width: 2.5px !important;
   box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12) !important;
 }
 
+/* Campos preenchidos: verde claro + borda grossa verde */
 input.is-filled, select.is-filled, textarea.is-filled {
-  background-color: #eff6ff !important;
-  border-color: #2563eb !important;
+  background-color: #dcfce7 !important;
+  border-color: #16a34a !important;
   border-width: 2.5px !important;
 }
 
@@ -418,4 +428,101 @@ input.is-filled, select.is-filled, textarea.is-filled {
   .step-label { font-size: 10px !important; padding: 7px 0 !important; }
   .preview-grid { grid-template-columns: repeat(2, 1fr) !important; }
   #nav-buttons .btn { min-width: 90px !important; padding: 8px 14px !important; font-size: 0.8125rem !important; }
+}
+
+/* === Outdoor / High Contrast (sol intenso) === */
+/* Texto mais escuro e pesado para legibilidade */
+body {
+  color: #0f172a;
+}
+
+/* Labels mais escuros e em negrito */
+label, .sidebar-title {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+/* Títulos com máximo contraste */
+h1, h2, h3, .step-current-text {
+  color: #000000 !important;
+}
+
+/* Container com sombra mais pronunciada para profundidade */
+.container {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Botões com sombras mais escuras */
+.btn-primary {
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4) !important;
+}
+.btn-success {
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4) !important;
+}
+
+/* Step indicators com mais contraste */
+.step-label {
+  color: #334155 !important;
+  font-weight: 700 !important;
+}
+.step-label.active {
+  background: #1d4ed8 !important;
+  color: #ffffff !important;
+}
+.step-label.completed {
+  background: #dbeafe !important;
+  color: #1e40af !important;
+}
+
+/* Inputs com texto mais escuro */
+input, select, textarea {
+  color: #0f172a !important;
+  font-weight: 500 !important;
+}
+
+/* Placeholders mais visíveis */
+::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
+}
+
+/* Sidebar com mais contraste */
+.sidebar-item {
+  border-width: 2px !important;
+  border-color: #cbd5e1 !important;
+}
+.sidebar-item-title {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+/* Toast com mais contraste */
+.toast {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Preview de imagens com borda mais grossa */
+.preview-item {
+  border-width: 2px !important;
+  border-color: #94a3b8 !important;
+}
+
+/* File upload area com mais contraste */
+.file-upload-area {
+  border-width: 3px !important;
+  border-color: #64748b !important;
+  background: #f8fafc !important;
+}
+
+/* Equipment rows com borda mais visível */
+.equip-row {
+  border-width: 2px !important;
+  border-color: #94a3b8 !important;
+}
+
+/* Email preview com mais contraste */
+.email-preview {
+  border-width: 2px !important;
+  border-color: #94a3b8 !important;
+  background: #f8fafc !important;
 }

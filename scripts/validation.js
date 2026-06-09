@@ -51,7 +51,18 @@ function validateSection1() {
   if (!valid) return false;
 
   // Validações especiais usando os dados já coletados
-  let errorMsg = "";
+  let hasSpecialError = false;
+
+  // Validação de UC: apenas números
+  const ucEl = document.getElementById("uc");
+  if (ucEl && data.uc) {
+    if (!/^\d+$/.test(data.uc)) {
+      markError(ucEl, "UC deve conter apenas números");
+      hasSpecialError = true;
+    } else {
+      clearError(ucEl);
+    }
+  }
 
   const dataEl = document.getElementById("data");
   if (dataEl && data.data) {
@@ -60,7 +71,7 @@ function validateSection1() {
     today.setHours(0, 0, 0, 0);
     if (selectedDate > today) {
       markError(dataEl, "Data não pode ser futura.");
-      errorMsg = "Data não pode ser futura.";
+      hasSpecialError = true;
     } else {
       clearError(dataEl);
     }
@@ -71,16 +82,13 @@ function validateSection1() {
   if (horaInicioEl && horaFimEl && data.hora_inicio && data.hora_fim) {
     if (data.hora_fim <= data.hora_inicio) {
       markError(horaFimEl, "Hora fim deve ser maior que hora início.");
-      errorMsg = errorMsg
-        ? errorMsg + " Hora fim deve ser maior que hora início."
-        : "Hora fim deve ser maior que hora início.";
+      hasSpecialError = true;
     } else {
       clearError(horaFimEl);
     }
   }
 
-  if (errorMsg) {
-    showError(errorMsg);
+  if (hasSpecialError) {
     return false;
   }
 
