@@ -146,9 +146,10 @@ body { touch-action: manipulation; }
 #nav-buttons {
   flex-shrink: 0;
   z-index: 100;
-  background: #fff;
-  border-top: 1px solid #e5e7eb;
-  padding: 12px 16px;
+  background: transparent;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 8px 16px 12px;
+  margin-bottom: 0;
 }
 
 .btn {
@@ -275,7 +276,7 @@ body { touch-action: manipulation; }
 @media (max-width: 640px) {
   .step { font-size: 0.85rem !important; padding: 6px 13px !important; }
   .preview-grid { grid-template-columns: repeat(2, 1fr) !important; }
-  .nav-buttons .btn { min-width: 100px !important; }
+  .nav-buttons .btn { min-width: 110px !important; }
 }
 
 /* === Sidebar === */
