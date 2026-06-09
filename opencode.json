@@ -1,6 +1,8 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["superpowers@git+https://github.com/obra/superpowers.git"],
+  "plugin": [
+    "superpowers@git+https://github.com/obra/superpowers.git"
+  ],
   "default_agent": "gerente",
   "model": "opencode/qwen3.7-plus",
   "small_model": "opencode/big-pickle",
@@ -14,19 +16,19 @@
     "designer": {
       "description": "Subagente de telas e visual (Frontend)",
       "mode": "subagent",
-      "model": "opencode/qwen3.7-plus",
+      "model": "big-pickle",
       "prompt": "Você é o designer visual. Foque apenas na parte estética e de interface (CSS, HTML, layouts)."
     },
     "arquiteto": {
       "description": "Subagente de lógica e banco de dados (Backend)",
       "mode": "subagent",
-      "model": "opencode/deepseek-v4-pro",
+      "model": "opencode/qwen3.7-plus",
       "prompt": "Você é o especialista em lógica de programação pura e organização de dados."
     },
     "detetive": {
       "description": "Subagente especialista em procurar bugs",
       "mode": "subagent",
-      "model": "opencode/deepseek-v4-pro",
+      "model": "opencode/qwen3.7-plus",
       "prompt": "Você é um investigador de erros. Analise logs e códigos para achar a causa do problema."
     },
     "testador": {
