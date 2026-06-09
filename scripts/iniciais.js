@@ -142,7 +142,7 @@ export function renderIniciais() {
 
     const label = document.createElement("label");
     label.setAttribute("for", field.nome);
-    label.className = "block font-semibold text-base text-gray-700 mb-1";
+    label.className = "block font-semibold text-[13px] text-slate-600 mb-1";
     label.innerHTML = field.label + (field.obrigatorio ? ' <span class="text-red-600">*</span>' : "");
 
     // Tipo especial: coordenadas tem layout próprio

@@ -11,7 +11,7 @@ const getDescricaoEl = () => document.getElementById("descricao-retorno");
 
 export function renderRetorno() {
   const tipoLabel = DOM.tipoOrdem.options[DOM.tipoOrdem.selectedIndex]?.text || "—";
-  DOM.retornoDesc.innerHTML = `<span class="text-lg font-bold text-slate-800">${tipoLabel}</span>`;
+  DOM.retornoDesc.innerHTML = `<span class="text-base font-bold text-slate-900">${tipoLabel}</span>`;
   DOM.retornoCampos.innerHTML = "";
 
   retornoFields.forEach((field) => {
@@ -20,7 +20,7 @@ export function renderRetorno() {
 
     const label = document.createElement("label");
     label.setAttribute("for", field.id);
-    label.className = "block font-semibold text-base text-gray-700 mb-1";
+    label.className = "block font-semibold text-[13px] text-slate-600 mb-1";
     label.innerHTML = field.label + (field.required ? ' <span class="text-red-600">*</span>' : "");
 
     const input = document.createElement("textarea");
