@@ -43,6 +43,10 @@ export function cacheDOM() {
   DOM.dupModalBody = document.getElementById("dup-modal-body");
   DOM.dupModalCancel = document.getElementById("dup-modal-cancel");
   DOM.dupModalConfirm = document.getElementById("dup-modal-confirm");
+  DOM.confirmModal = document.getElementById("confirm-modal");
+  DOM.confirmModalText = document.getElementById("confirm-modal-text");
+  DOM.confirmModalOk = document.getElementById("confirm-modal-ok");
+  DOM.confirmModalCancel = document.getElementById("confirm-modal-cancel");
 }
 
 export { DOM };

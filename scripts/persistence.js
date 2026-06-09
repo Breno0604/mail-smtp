@@ -1,20 +1,23 @@
 import { state } from "./state.js";
+import { getRawUUID, storeUUID, removeUUID } from "./storage.js";
 import { getIniciaisData } from "./iniciais.js";
 import { getRetornoData } from "./retornos.js";
 import { saveDraft, getRecord } from "./db.js";
 import { toBase64 } from "./utils.js";
 import { DOM } from "./dom.js";
 
-export const getCurrentUUID = () => localStorage.getItem("currentUUID") || "";
+// UUID helpers — delegam a storage.js para operações puras de localStorage,
+// e sincronizam o state em memória quando necessário.
+export const getCurrentUUID = () => getRawUUID();
 
 export const setCurrentUUID = (uuid) => {
   state.currentUUID = uuid;
-  localStorage.setItem("currentUUID", uuid);
+  storeUUID(uuid);
 };
 
 export const clearCurrentUUID = () => {
   state.currentUUID = "";
-  localStorage.removeItem("currentUUID");
+  removeUUID();
 };
 
 let saveTimer = null;
@@ -26,35 +29,10 @@ export async function saveState() {
   const hasData = Object.values(iniciaisData).some(v => v && v.trim() !== "");
   if (!hasData && state.equipamentos.length === 0 && state.attachments.length === 0 && !state.currentUUID) return;
 
-  if (!state.currentUUID) {
-    try {
-      state.currentUUID = crypto.randomUUID();
-    } catch (_) {
-      state.currentUUID = Date.now().toString(36) + Math.random().toString(36).slice(2);
-    }
-    setCurrentUUID(state.currentUUID);
-  }
+  await _ensureUUID();
 
-  let createdAt = new Date().toISOString();
-  if (state._createdAt) {
-    createdAt = state._createdAt;
-  } else {
-    try {
-      const existing = await getRecord(state.currentUUID);
-      if (existing?.createdAt) {
-        createdAt = existing.createdAt;
-      }
-    } catch (_) { console.error("getRecord in saveState:", _); }
-    state._createdAt = createdAt;
-  }
-
-  const attachmentsData = await Promise.all(
-    state.attachments.map(async (file) => ({
-      name: file.name,
-      type: file.type,
-      data: await toBase64(file),
-    }))
-  );
+  const createdAt = await _resolveCreatedAt(state.currentUUID);
+  const attachmentsData = await _serializeAttachments(state.attachments);
 
   const data = {
     uuid: state.currentUUID,
@@ -86,4 +64,41 @@ export async function saveState() {
 export function debouncedSave() {
   clearTimeout(saveTimer);
   saveTimer = setTimeout(saveState, 300);
+}
+
+// ── helpers privados ──────────────────────────────────────────────────────────
+
+async function _ensureUUID() {
+  if (state.currentUUID) return;
+  try {
+    state.currentUUID = crypto.randomUUID();
+  } catch (_) {
+    state.currentUUID = Date.now().toString(36) + Math.random().toString(36).slice(2);
+  }
+  setCurrentUUID(state.currentUUID);
+}
+
+async function _resolveCreatedAt(uuid) {
+  if (state._createdAt) return state._createdAt;
+  try {
+    const existing = await getRecord(uuid);
+    if (existing?.createdAt) {
+      state._createdAt = existing.createdAt;
+      return state._createdAt;
+    }
+  } catch (_) {
+    console.error("getRecord in saveState:", _);
+  }
+  state._createdAt = new Date().toISOString();
+  return state._createdAt;
+}
+
+async function _serializeAttachments(files) {
+  return Promise.all(
+    files.map(async (file) => ({
+      name: file.name,
+      type: file.type,
+      data: await toBase64(file),
+    }))
+  );
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { showSection, prevSection, nextSection } from '../scripts/navigation.js';
+import { showSection, prevSection, nextSection } from '../scripts/sectionManager.js';
 import { cacheDOM, DOM } from '../scripts/dom.js';
 import { state } from '../scripts/state.js';
 import * as validation from '../scripts/validation.js';

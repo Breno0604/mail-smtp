@@ -15,6 +15,7 @@ export function resetForm() {
   state.equipamentos = [];
   state.attachments = [];
   state.iniciais = {};
+  state.retorno = {};
   state.lastTipoOrdem = "";
   state.visitedRetorno = false;
   state.currentUUID = "";

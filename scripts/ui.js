@@ -39,26 +39,21 @@ export function clearFieldError(el) {
 
 export function showConfirm(message) {
   return new Promise((resolve) => {
-    const modal = document.getElementById("confirm-modal");
-    const text = document.getElementById("confirm-modal-text");
-    const okBtn = document.getElementById("confirm-modal-ok");
-    const cancelBtn = document.getElementById("confirm-modal-cancel");
-
-    text.textContent = message;
-    modal.classList.remove("hidden");
+    DOM.confirmModalText.textContent = message;
+    DOM.confirmModal.classList.remove("hidden");
 
     const cleanup = () => {
-      modal.classList.add("hidden");
-      okBtn.onclick = null;
-      cancelBtn.onclick = null;
+      DOM.confirmModal.classList.add("hidden");
+      DOM.confirmModalOk.onclick = null;
+      DOM.confirmModalCancel.onclick = null;
     };
 
-    okBtn.onclick = () => {
+    DOM.confirmModalOk.onclick = () => {
       cleanup();
       resolve(true);
     };
 
-    cancelBtn.onclick = () => {
+    DOM.confirmModalCancel.onclick = () => {
       cleanup();
       resolve(false);
     };

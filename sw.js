@@ -1,4 +1,4 @@
-const CACHE_NAME = 'retorno-v18';
+const CACHE_NAME = 'retorno-v19';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -7,27 +7,31 @@ const STATIC_ASSETS = [
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
+  '/scripts/animator.js',
   '/scripts/app.js',
-  '/scripts/state.js',
-  '/scripts/dom.js',
-  '/scripts/navigation.js',
-  '/scripts/validation.js',
-  '/scripts/iniciais.js',
-  '/scripts/retornos.js',
-  '/scripts/equipment.js',
   '/scripts/attachments.js',
-  '/scripts/email.js',
-  '/scripts/send.js',
   '/scripts/compress.js',
+  '/scripts/db.js',
+  '/scripts/dom.js',
+  '/scripts/duplicate.js',
+  '/scripts/email.js',
+  '/scripts/equipment.js',
+  '/scripts/fields.js',
+  '/scripts/iniciais.js',
+  '/scripts/persistence.js',
   '/scripts/reset.js',
   '/scripts/restore.js',
+  '/scripts/retornos.js',
+  '/scripts/sectionManager.js',
+  '/scripts/send.js',
   '/scripts/sidebar.js',
+  '/scripts/state.js',
+  '/scripts/storage.js',
+  '/scripts/styles.js',
+  '/scripts/sw-update.js',
   '/scripts/ui.js',
-  '/scripts/db.js',
   '/scripts/utils.js',
-  '/scripts/duplicate.js',
-  '/scripts/fields.js',
-  '/scripts/sw-update.js'
+  '/scripts/validation.js'
 ];
 
 self.addEventListener('install', (event) => {

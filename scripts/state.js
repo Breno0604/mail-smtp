@@ -1,4 +1,7 @@
-import { getCurrentUUID as _getCurrentUUID } from "./persistence.js";
+// state.js — objeto de estado global da aplicação.
+// Importa getRawUUID de storage.js (sem dependências) para inicializar currentUUID,
+// quebrando o ciclo: state.js → persistence.js → state.js.
+import { getRawUUID } from "./storage.js";
 
 export { setCurrentUUID, clearCurrentUUID, saveState, debouncedSave, getCurrentUUID } from "./persistence.js";
 
@@ -12,7 +15,7 @@ export const state = {
   visitedRetorno: false,
   retorno: {},
   animating: false,
-  currentUUID: _getCurrentUUID(),
+  currentUUID: getRawUUID(),
   composicao: { complementoCorpo: "" },
   iniciaisValido: false,
 };

@@ -2,14 +2,16 @@ import { DOM } from "./dom.js";
 import { state, saveState, debouncedSave } from "./state.js";
 import { addBlurValidation } from "./validation.js";
 import { retornoFields } from "./fields.js";
+import { INPUT_CLASS } from "./styles.js";
 
 export { retornoFields };
 
-const inputClass = "w-full px-3 py-2.5 border border-gray-300 rounded-lg text-base font-sans text-gray-900 bg-white outline-none transition-all focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15";
+// Helper privado: evita repetir a query do elemento de descrição
+const getDescricaoEl = () => document.getElementById("descricao-retorno");
 
 export function renderRetorno() {
-  const tipoLabel = DOM.tipoOrdem.options[DOM.tipoOrdem.selectedIndex]?.text || "\u2014";
-  DOM.retornoDesc.innerHTML = `Preencha as informa\u00E7\u00F5es de retorno para <strong>${tipoLabel}</strong>.`;
+  const tipoLabel = DOM.tipoOrdem.options[DOM.tipoOrdem.selectedIndex]?.text || "—";
+  DOM.retornoDesc.innerHTML = `Preencha as informações de retorno para <strong>${tipoLabel}</strong>.`;
   DOM.retornoCampos.innerHTML = "";
 
   retornoFields.forEach((field) => {
@@ -26,7 +28,7 @@ export function renderRetorno() {
     input.id = field.id;
     if (field.required) input.setAttribute("data-required", "");
     input.placeholder = field.label;
-    input.className = inputClass + " resize-y min-h-[80px]";
+    input.className = INPUT_CLASS + " resize-y min-h-[80px]";
 
     const errorSpan = document.createElement("span");
     errorSpan.className = "field-error";
@@ -41,13 +43,13 @@ export function renderRetorno() {
 }
 
 export function getRetornoData() {
-  const el = document.getElementById("descricao-retorno");
-  return { descricao: el ? el.value : "" };
+  const el = getDescricaoEl();
+  return { descricao: el?.value ?? "" };
 }
 
 export function setRetornoData(data) {
   if (!data) return;
-  const el = document.getElementById("descricao-retorno");
+  const el = getDescricaoEl();
   if (el && data.descricao) el.value = data.descricao;
 }
 

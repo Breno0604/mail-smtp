@@ -26,71 +26,57 @@ function openDB() {
   });
 }
 
-export function saveDraft(record) {
-  return openDB().then((db) => {
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, "readwrite");
-      const store = tx.objectStore(STORE_NAME);
-      store.put(record);
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error);
-    });
+// Helper privado: abre uma transação e executa fn(store, tx).
+// Resolve quando a transação completa, rejeita em erro.
+async function withStore(mode, fn) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, mode);
+    fn(tx.objectStore(STORE_NAME), tx);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
   });
+}
+
+// Helper privado: lê um registro e resolve com o resultado (ou null).
+async function readFromStore(fn) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, "readonly");
+    const req = fn(tx.objectStore(STORE_NAME));
+    req.onsuccess = () => resolve(req.result || null);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+export function saveDraft(record) {
+  return withStore("readwrite", (store) => store.put(record));
 }
 
 export function getRecord(uuid) {
-  return openDB().then((db) => {
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, "readonly");
-      const store = tx.objectStore(STORE_NAME);
-      const req = store.get(uuid);
-      req.onsuccess = () => resolve(req.result || null);
-      req.onerror = () => reject(req.error);
-    });
-  });
+  return readFromStore((store) => store.get(uuid));
 }
 
 export function getAllRecords() {
-  return openDB().then((db) => {
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, "readonly");
-      const store = tx.objectStore(STORE_NAME);
-      const req = store.getAll();
-      req.onsuccess = () => resolve(req.result || []);
-      req.onerror = () => reject(req.error);
-    });
-  });
+  return readFromStore((store) => store.getAll()).then((r) => r || []);
 }
 
 export function deleteRecord(uuid) {
-  return openDB().then((db) => {
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, "readwrite");
-      const store = tx.objectStore(STORE_NAME);
-      store.delete(uuid);
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error);
-    });
-  });
+  return withStore("readwrite", (store) => store.delete(uuid));
 }
 
 export function updateRecordStatus(uuid, sentData) {
-  return openDB().then((db) => {
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, "readwrite");
-      const store = tx.objectStore(STORE_NAME);
-      const req = store.get(uuid);
-      req.onsuccess = () => {
-        const record = req.result;
-        if (record) {
-          record.status = "sent";
-          record.sentData = sentData;
-          record.updatedAt = new Date().toISOString();
-          store.put(record);
-        }
-      };
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error);
-    });
+  return withStore("readwrite", (store, tx) => {
+    const req = store.get(uuid);
+    req.onsuccess = () => {
+      const record = req.result;
+      if (record) {
+        record.status = "sent";
+        record.sentData = sentData;
+        record.updatedAt = new Date().toISOString();
+        store.put(record);
+      }
+    };
+    req.onerror = () => {}; // propagado pelo tx.onerror
   });
 }

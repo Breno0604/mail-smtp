@@ -1,5 +1,5 @@
-import { iniciaisFields } from "./iniciais.js";
-import { retornoFields } from "./retornos.js";
+import { iniciaisFields } from "./fields.js";
+import { retornoFields } from "./fields.js";
 
 export function composeEmail(data) {
   let body = "";

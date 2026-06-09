@@ -4,7 +4,7 @@ import { renderIniciais } from "./iniciais.js";
 import { addEquip } from "./equipment.js";
 import { handleTipoChange, cancelTipoChange, confirmTipoChange } from "./retornos.js";
 import { handleUploadClick, handleFileChange, closeLightbox, updateFileCount } from "./attachments.js";
-import { showSection, prevSection, nextSection } from "./navigation.js";
+import { showSection, prevSection, nextSection } from "./sectionManager.js";
 import { resetForm } from "./reset.js";
 import { renderSidebar, closeSidebar, initSidebarFilter } from "./sidebar.js";
 import { getRecord } from "./db.js";
@@ -79,8 +79,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   cacheDOM();
   initSidebarFilter();
   renderIniciais();
-  // Re-captura tipo-ordem porque é criado por renderIniciais() após cacheDOM()
-  DOM.tipoOrdem = document.getElementById("tipo-ordem");
   initEvents();
   updateFileCount();
   await captureCoordinates();

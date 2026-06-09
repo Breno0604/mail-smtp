@@ -14,8 +14,8 @@ export async function sendEmail() {
   btn.textContent = "Enviando...";
 
   try {
-    const uc = document.getElementById("uc")?.value || "\u2014";
-    const os = document.getElementById("os")?.value || "\u2014";
+    const uc = state.iniciais?.uc || "—";
+    const os = state.iniciais?.os || "—";
     const tipoLabel = DOM.tipoOrdem.options[DOM.tipoOrdem.selectedIndex]?.text || "\u2014";
     const subject = `OS #${os} - UC ${uc} - ${tipoLabel}`;
     const baseBody = DOM.previewCorpo.textContent;

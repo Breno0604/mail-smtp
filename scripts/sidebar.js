@@ -4,7 +4,7 @@ import { getAllRecords, deleteRecord, getRecord } from "./db.js";
 import { formatDate } from "./utils.js";
 import { applyRecord } from "./restore.js";
 import { showConfirm } from "./ui.js";
-import { showSection } from "./navigation.js";
+import { showSection } from "./sectionManager.js";
 
 export function closeSidebar() {
   document.body.classList.remove("sidebar-open");
