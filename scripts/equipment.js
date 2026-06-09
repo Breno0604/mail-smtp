@@ -4,14 +4,14 @@ import { addBlurValidation } from "./validation.js";
 
 export function addEquip(data) {
   const div = document.createElement("div");
-  div.className = "equip-row flex gap-1 items-center mb-1 py-1.5 bg-gray-50 rounded-lg";
+  div.className = "equip-row flex gap-2 items-center mb-2.5 p-2 bg-slate-50/50 border border-slate-200/50 rounded-xl shadow-sm";
   div.innerHTML = `
-    <select class="equip-tipo flex-1 min-w-0 px-1.5 py-2.5 border border-gray-300 rounded-lg text-base outline-none focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15">
+    <select class="equip-tipo flex-1 min-w-0 px-2 py-2 border border-slate-200 rounded-lg text-base outline-none bg-white transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 text-slate-800 font-sans">
       <option value="">Selecione...</option>
       <option value="Instalado" ${data?.status === "Instalado" ? "selected" : ""}>Instalado</option>
       <option value="Retirado" ${data?.status === "Retirado" ? "selected" : ""}>Retirado</option>
     </select>
-    <select class="equip-categoria flex-1 min-w-0 px-1.5 py-2.5 border border-gray-300 rounded-lg text-base outline-none focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15">
+    <select class="equip-categoria flex-1 min-w-0 px-2 py-2 border border-slate-200 rounded-lg text-base outline-none bg-white transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 text-slate-800 font-sans">
       <option value="">Selecione...</option>
       <option value="Medidor" ${data?.categoria === "Medidor" ? "selected" : ""}>Medidor</option>
       <option value="Display" ${data?.categoria === "Display" ? "selected" : ""}>Display</option>
@@ -19,8 +19,8 @@ export function addEquip(data) {
       <option value="TC" ${data?.categoria === "TC" ? "selected" : ""}>TC</option>
       <option value="TP" ${data?.categoria === "TP" ? "selected" : ""}>TP</option>
     </select>
-    <input type="number" class="equip-numero flex-1 min-w-0 px-1.5 py-2.5 border border-gray-300 rounded-lg text-base outline-none focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15" placeholder="N\u00B0" value="${data?.numero || ""}">
-    <button class="btn-remove w-7 h-7 border-none rounded-lg bg-red-50 text-red-500 text-xs cursor-pointer flex-shrink-0 transition-colors duration-200 flex items-center justify-center hover:bg-red-200" type="button">\u2715</button>
+    <input type="number" class="equip-numero flex-1 min-w-0 px-2 py-2 border border-slate-200 rounded-lg text-base outline-none bg-white transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 text-slate-800 font-sans placeholder-slate-400" placeholder="N\u00B0" value="${data?.numero || ""}">
+    <button class="btn-remove w-8 h-8 border-none rounded-lg bg-red-50 text-red-500 text-sm cursor-pointer flex-shrink-0 transition-all duration-200 flex items-center justify-center hover:bg-red-100 hover:scale-105 active:scale-95" type="button">\u2715</button>
   `;
 
   addBlurValidation(div.querySelector(".equip-tipo"));
@@ -45,7 +45,7 @@ export function addEquip(data) {
 export function showEmptyEquip() {
   if (!DOM.equipList.querySelector(".empty-msg")) {
     const msg = document.createElement("div");
-    msg.className = "empty-msg text-center text-gray-500 text-base py-5";
+    msg.className = "empty-msg text-center text-slate-400 text-sm font-medium py-8 bg-slate-50/30 border border-dashed border-slate-200 rounded-xl mb-4";
     msg.textContent = "Nenhum equipamento adicionado.";
     DOM.equipList.appendChild(msg);
   }
