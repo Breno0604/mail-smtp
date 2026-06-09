@@ -34,7 +34,7 @@ export function renderPreviews() {
   DOM.previewGrid.innerHTML = "";
   state.attachments.forEach((file, i) => {
     const div = document.createElement("div");
-    div.className = "preview-item relative border border-gray-200 rounded-lg overflow-hidden bg-gray-50 cursor-pointer";
+    div.className = "preview-item relative border border-slate-200 rounded-[10px] overflow-hidden bg-slate-50 cursor-pointer transition-all duration-200 hover:border-blue-300";
 
     const img = document.createElement("img");
     img.src = URL.createObjectURL(file);
