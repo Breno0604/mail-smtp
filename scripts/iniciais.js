@@ -81,19 +81,24 @@ function createCoordinatesGroup(field, label) {
   refreshBtn.type = "button";
   refreshBtn.className = "coord-refresh";
   refreshBtn.style.cssText =
-    "position:absolute;right:8px;top:50%;transform:translateY(-50%);width:28px;height:28px;" +
-    "display:flex;align-items:center;justify-content:center;border:none;border-radius:4px;" +
-    "background:transparent;color:#6b7280;font-size:16px;cursor:pointer;transition:color 0.2s,background 0.2s;z-index:10;";
+    "position:absolute;right:8px;top:50%;transform:translateY(-50%);width:36px;height:36px;" +
+    "display:flex;align-items:center;justify-content:center;border:1px solid #d1d5db;border-radius:8px;" +
+    "background:#f9fafb;color:#2563eb;font-size:20px;cursor:pointer;transition:all 0.15s;z-index:10;" +
+    "box-shadow:0 1px 3px rgba(0,0,0,0.08);";
   refreshBtn.innerHTML = "&#x21BB;";
   refreshBtn.title = "Atualizar coordenadas";
   refreshBtn.addEventListener("click", (e) => { e.preventDefault(); captureCoordinates(); });
   refreshBtn.addEventListener("mouseenter", () => {
     refreshBtn.style.color = "#2563eb";
     refreshBtn.style.background = "#eff6ff";
+    refreshBtn.style.borderColor = "#3b82f6";
+    refreshBtn.style.boxShadow = "0 2px 8px rgba(59,130,246,0.15)";
   });
   refreshBtn.addEventListener("mouseleave", () => {
-    refreshBtn.style.color = "#6b7280";
-    refreshBtn.style.background = "transparent";
+    refreshBtn.style.color = "#2563eb";
+    refreshBtn.style.background = "#f9fafb";
+    refreshBtn.style.borderColor = "#d1d5db";
+    refreshBtn.style.boxShadow = "0 1px 3px rgba(0,0,0,0.08)";
   });
 
   const coordError = document.createElement("span");
