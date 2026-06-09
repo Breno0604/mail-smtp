@@ -95,6 +95,11 @@ body { touch-action: manipulation; }
   padding: 0 16px;
 }
 
+/* Espaço após último campo da seção 1 (Início) */
+#iniciais-campos > :last-child {
+  margin-bottom: 24px;
+}
+
 /* === Buttons === */
 .btn {
   padding: 10px 20px;
@@ -135,14 +140,14 @@ body { touch-action: manipulation; }
   box-shadow: 0 2px 6px rgba(37, 99, 235, 0.15);
 }
 .btn-secondary {
-  background: #f1f5f9;
-  color: #64748b;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: #fff;
   border: none;
-  box-shadow: none;
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.2);
 }
 .btn-secondary:hover:not(:disabled) {
-  background: #e2e8f0;
-  color: #475569;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
   transform: translateY(-1px);
 }
 .btn-secondary:active:not(:disabled) {
@@ -161,6 +166,13 @@ body { touch-action: manipulation; }
 .btn-success:active:not(:disabled) {
   transform: translateY(1px);
   box-shadow: 0 2px 6px rgba(5, 150, 105, 0.15);
+}
+
+#nav-buttons {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 4px;
+  background: #f8fafc;
 }
 
 #nav-buttons .btn {
@@ -532,4 +544,9 @@ input, select, textarea {
   border-width: 2px !important;
   border-color: #94a3b8 !important;
   background: #f8fafc !important;
+}
+
+/* Texto do email em negrito (seção Revisão) */
+#preview-corpo {
+  font-weight: 700 !important;
 }

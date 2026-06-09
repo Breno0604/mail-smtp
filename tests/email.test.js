@@ -75,7 +75,7 @@ describe('email', () => {
 
     it('should generate email body with iniciais fields', () => {
       const body = composeEmail(sampleData);
-      expect(body).toContain('Líder:');
+      expect(body).toContain('LIDER:');
       expect(body).toContain('ANDRE DE SOUSA CARVALHO');
       expect(body).toContain('UC:');
       expect(body).toContain('12345');
@@ -101,9 +101,9 @@ describe('email', () => {
         equipamentos: [{ status: 'Instalado', categoria: 'Medidor', numero: '12345' }],
       };
       const body = composeEmail(data);
-      expect(body).toContain('Equipamentos:');
-      expect(body).toContain('Medidor');
-      expect(body).toContain('Instalado');
+      expect(body).toContain('EQUIPAMENTOS:');
+      expect(body).toContain('MEDIDOR');
+      expect(body).toContain('INSTALADO');
       expect(body).toContain('Nº');
       expect(body).toContain('12345');
     });
@@ -120,14 +120,14 @@ describe('email', () => {
     it('should include retorno section', () => {
       const data = { ...sampleData, retorno: { descricao: 'Retorno test description' } };
       const body = composeEmail(data);
-      expect(body).toContain('Retorno:');
-      expect(body).toContain('Descrição:');
-      expect(body).toContain('Retorno test description');
+      expect(body).toContain('RETORNO:');
+      expect(body).toContain('DESCRICAO:');
+      expect(body).toContain('RETORNO TEST DESCRIPTION');
     });
 
-    it('should show "(não preenchido)" for empty retorno field', () => {
+    it('should show "(NAO PREENCHIDO)" for empty retorno field', () => {
       const body = composeEmail(sampleData);
-      expect(body).toContain('(não preenchido)');
+      expect(body).toContain('(NAO PREENCHIDO)');
     });
 
     it('should return body string', () => {
