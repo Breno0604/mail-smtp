@@ -178,22 +178,29 @@ body { touch-action: manipulation; }
 .field-error.show { display: block; }
 .equip-row .field-error { flex-basis: 100%; order: 99; }
 
-/* Campos não preenchidos: azul claro + borda grossa azul */
-input:not(.error):not(.is-filled), select:not(.error):not(.is-filled), textarea:not(.error):not(.is-filled) {
+/* Campos não preenchidos: azul claro + borda grossa azul (persiste em todos os estados) */
+input:not(.error):not(.is-filled), select:not(.error):not(.is-filled), textarea:not(.error):not(.is-filled),
+input:not(.error):not(.is-filled):focus, select:not(.error):not(.is-filled):focus, textarea:not(.error):not(.is-filled):focus,
+input:not(.error):not(.is-filled):hover, select:not(.error):not(.is-filled):hover, textarea:not(.error):not(.is-filled):hover {
   background-color: #eff6ff !important;
   border-color: #2563eb !important;
   border-width: 2.5px !important;
 }
 
-input.error, select.error, textarea.error {
+/* Campos com erro: vermelho (persiste em todos os estados) */
+input.error, select.error, textarea.error,
+input.error:focus, select.error:focus, textarea.error:focus,
+input.error:hover, select.error:hover, textarea.error:hover {
   background-color: #fef2f2 !important;
   border-color: #dc2626 !important;
   border-width: 2.5px !important;
   box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12) !important;
 }
 
-/* Campos preenchidos: verde claro + borda grossa verde */
-input.is-filled, select.is-filled, textarea.is-filled {
+/* Campos preenchidos: verde claro + borda grossa verde (persiste em todos os estados) */
+input.is-filled, select.is-filled, textarea.is-filled,
+input.is-filled:focus, select.is-filled:focus, textarea.is-filled:focus,
+input.is-filled:hover, select.is-filled:hover, textarea.is-filled:hover {
   background-color: #dcfce7 !important;
   border-color: #16a34a !important;
   border-width: 2.5px !important;
