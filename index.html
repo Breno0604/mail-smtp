@@ -17,29 +17,29 @@
 </head>
 <body class="font-sans bg-gradient-to-br from-slate-100 to-blue-50 flex justify-center items-start min-h-screen p-0">
 
-<div class="container bg-white rounded-2xl shadow-xl shadow-blue-900/5 border border-slate-200/50 p-1 w-full max-w-[640px] relative">
-  <div class="flex justify-between items-center px-4" style="padding-top: 12px !important; margin-bottom: 4px !important;">
+<div class="container bg-white rounded-[20px] shadow-sm border border-slate-200/50 w-full max-w-[640px] relative">
+  <div class="flex justify-between items-center px-5 pt-3.5 pb-2.5">
     <button class="hamburger" id="hamburger">&#9776;</button>
-    <h1 class="text-2xl text-slate-800 font-bold m-0 tracking-tight">Retorno de Ordens</h1>
+    <h1 class="text-xl text-slate-900 font-bold m-0 tracking-tight">Retorno de Ordens</h1>
     <button class="btn-new-form" id="btn-novo-form" title="Novo formulário">+</button>
   </div>
 
-  <div class="sticky top-0 z-10 bg-white/80 backdrop-blur-md pb-3 -mx-1 px-1 border-b border-slate-100 flex flex-col gap-2 mb-6" id="progress">
-    <div class="flex items-center justify-center flex-wrap gap-1.5 sm:gap-2.5" style="padding-top: 4px;">
+  <div class="sticky top-0 z-10 bg-white/85 backdrop-blur-md pb-3 px-5 border-b border-slate-100 flex flex-col gap-2.5" id="progress">
+    <div class="flex items-center gap-1.5" style="padding-top: 4px;">
       <div class="step-label" data-step="1">Inicio</div>
       <div class="step-label" data-step="2">Equip.</div>
       <div class="step-label" data-step="3">Retorno</div>
       <div class="step-label" data-step="4">Anexos</div>
       <div class="step-label" data-step="5">Revisão</div>
     </div>
-    <div class="flex justify-between items-center px-3 gap-2" id="nav-buttons">
-      <button class="btn btn-primary" id="btn-anterior" disabled>← Anterior</button>
+    <div class="flex justify-between items-center gap-3" id="nav-buttons">
+      <button class="btn btn-secondary" id="btn-anterior" disabled>← Anterior</button>
       <span class="step-current-text" id="step-current-text">Inicio</span>
       <button class="btn btn-primary" id="btn-proximo">Avançar →</button>
     </div>
   </div>
 
-  <div class="error-msg bg-red-50 text-red-600 px-3.5 py-2.5 rounded-lg text-xs font-semibold border border-red-200 mb-4" id="error-msg" style="display:none"></div>
+  <div class="bg-red-50 text-red-600 px-4 py-3 rounded-[10px] text-xs font-semibold border border-red-200 mx-4 mt-3" id="error-msg" style="display:none"></div>
 
   <div class="section-wrapper relative min-h-[320px]" id="section-wrapper">
 
@@ -48,39 +48,33 @@
     </div>
 
     <div class="section" id="section-2">
-
       <div id="equipamentos-list"></div>
-
-      <div class="flex gap-3.5 items-center">
-        <button class="btn-add flex-1 py-3 px-4 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50/30 text-slate-600 text-base font-semibold cursor-pointer transition-all duration-300 hover:border-blue-500 hover:text-blue-500 hover:bg-slate-50/80 hover:scale-[1.01]" id="btn-add-equip" type="button">+ Adicionar equipamento</button>
+      <div class="flex gap-3.5 items-center mt-2">
+        <button class="btn-add flex-1 py-3 px-4 border-2 border-dashed border-slate-200 rounded-[10px] bg-slate-50/30 text-slate-600 text-sm font-semibold cursor-pointer transition-all duration-200 hover:border-blue-500 hover:text-blue-500 hover:bg-blue-50/30" id="btn-add-equip" type="button">+ Adicionar equipamento</button>
       </div>
     </div>
 
     <div class="section" id="section-3">
-      <p class="text-lg font-bold text-slate-800 mb-5" id="retorno-desc">—</p>
+      <p class="text-base font-bold text-slate-900 mb-4" id="retorno-desc">—</p>
       <div id="retorno-campos"></div>
     </div>
 
     <div class="section" id="section-4">
-
-      <div class="file-upload-area border-2 border-dashed border-slate-200 rounded-xl py-8 px-5 text-center cursor-pointer transition-all duration-300 hover:border-blue-500 hover:bg-blue-50/30 hover:scale-[1.01] bg-slate-50/50 shadow-sm" id="file-upload-area">
+      <div class="file-upload-area border-2 border-dashed border-slate-200 rounded-[12px] py-8 px-5 text-center cursor-pointer transition-all duration-200 hover:border-blue-500 hover:bg-blue-50/30 bg-slate-50/50" id="file-upload-area">
         <span class="text-3xl block mb-2">📎</span>
-        <span class="text-base text-slate-600 font-medium">Clique para selecionar imagens</span>
-        <span class="file-count block mt-1.5 text-xs text-slate-400 font-semibold" id="file-count">0 / 12</span>
+        <span class="text-sm text-slate-600 font-semibold">Clique para selecionar imagens</span>
+        <span class="file-count block mt-1.5 text-xs text-slate-400 font-medium" id="file-count">0 / 12</span>
       </div>
       <input type="file" id="file-input" accept="image/*" multiple class="hidden">
-
       <div class="preview-grid grid grid-cols-4 max-sm:grid-cols-2 gap-2 mt-4" id="preview-grid"></div>
     </div>
 
     <div class="section" id="section-5">
-
-      <div class="email-preview bg-slate-50/70 border border-slate-200 rounded-xl p-5 shadow-sm">
-        <div class="preview-value text-base text-slate-800 whitespace-pre-wrap leading-relaxed" id="preview-corpo">—</div>
-
+      <div class="email-preview bg-slate-50/70 border border-slate-200 rounded-[12px] p-5">
+        <div class="preview-value text-sm text-slate-800 whitespace-pre-wrap leading-relaxed" id="preview-corpo">—</div>
         <div class="mt-5 pt-4 border-t border-slate-200/60">
           <label for="complemento-corpo" class="block font-semibold text-sm text-slate-700 mb-1.5">Complemento do corpo (opcional)</label>
-          <textarea id="complemento-corpo" rows="3" placeholder="Texto adicional para o corpo..." class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-base font-sans text-slate-800 bg-white outline-none transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 placeholder-slate-400 resize-y min-h-[60px]"></textarea>
+          <textarea id="complemento-corpo" rows="3" placeholder="Texto adicional para o corpo..." class="w-full px-3.5 py-3 border border-slate-200 rounded-[10px] text-sm font-sans text-slate-800 bg-white outline-none transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 placeholder-slate-400 resize-y min-h-[60px]"></textarea>
         </div>
       </div>
     </div>
@@ -94,7 +88,7 @@
       <h2 class="sidebar-title">Registros</h2>
       <button class="sidebar-close" id="sidebar-close">&times;</button>
     </div>
-    <input type="search" id="sidebar-filter" placeholder="Buscar por UC ou OS..." autocomplete="off" class="w-full px-4 py-3 mb-3 border border-gray-300 rounded-lg text-sm font-sans text-gray-900 bg-white outline-none transition-colors focus:border-blue-600 focus:ring-3 focus:ring-blue-600/15">
+    <input type="search" id="sidebar-filter" placeholder="Buscar por UC ou OS..." autocomplete="off" class="w-full px-4 py-3 mb-3 border border-slate-200 rounded-[10px] text-sm font-sans text-slate-900 bg-white outline-none transition-colors focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10">
     <div class="sidebar-list" id="sidebar-list"></div>
   </div>
 </div>
@@ -103,8 +97,8 @@
 <div class="toast" id="toast"></div>
 
 <div class="modal-overlay fixed inset-0 bg-black/40 z-50 items-center justify-center hidden" id="modal-tipo">
-  <div class="modal bg-white rounded-xl p-7 max-w-[420px] w-[90%] shadow-2xl text-center">
-    <p class="text-base text-gray-700 mb-6 leading-relaxed">Ao alterar o Tipo de ordem, os campos de Retorno preenchidos serão perdidos.</p>
+  <div class="modal bg-white rounded-[12px] p-7 max-w-[420px] w-[90%] shadow-xl text-center">
+    <p class="text-sm text-slate-600 mb-6 leading-relaxed">Ao alterar o Tipo de ordem, os campos de Retorno preenchidos serão perdidos.</p>
     <div class="flex gap-2.5 justify-center">
       <button class="btn btn-secondary" id="modal-cancel">Cancelar</button>
       <button class="btn btn-primary" id="modal-confirm">Alterar mesmo assim</button>
@@ -113,9 +107,9 @@
 </div>
 
 <div class="modal-overlay fixed inset-0 bg-black/40 z-50 items-center justify-center hidden" id="dup-modal">
-  <div class="modal bg-white rounded-xl p-7 max-w-[420px] w-[90%] shadow-2xl text-center">
-    <p class="text-lg font-bold text-gray-900 mb-3" id="dup-modal-title"></p>
-    <p class="text-base text-gray-700 mb-6 leading-relaxed" id="dup-modal-body"></p>
+  <div class="modal bg-white rounded-[12px] p-7 max-w-[420px] w-[90%] shadow-xl text-center">
+    <p class="text-base font-bold text-slate-900 mb-3" id="dup-modal-title"></p>
+    <p class="text-sm text-slate-600 mb-6 leading-relaxed" id="dup-modal-body"></p>
     <div class="flex gap-2.5 justify-center">
       <button class="btn btn-secondary" id="dup-modal-cancel">Cancelar</button>
       <button class="btn btn-primary" id="dup-modal-confirm">Reenviar</button>
@@ -125,7 +119,7 @@
 
 <div class="lightbox-overlay fixed inset-0 bg-black/80 z-[1001] items-center justify-center hidden" id="lightbox">
   <button class="lightbox-close absolute top-5 right-7 bg-none border-none text-white text-3xl cursor-pointer" id="lightbox-close">✕</button>
-  <img id="lightbox-img" src="" alt="Preview ampliado" class="max-w-[90vw] max-h-[90vh] rounded-lg shadow-2xl">
+  <img id="lightbox-img" src="" alt="Preview ampliado" class="max-w-[90vw] max-h-[90vh] rounded-[10px] shadow-2xl">
 </div>
 
 <div class="orientation-overlay" id="orientation-overlay">
@@ -137,8 +131,8 @@
 </div>
 
 <div class="modal-overlay fixed inset-0 bg-black/40 z-50 items-center justify-center hidden" id="confirm-modal">
-  <div class="modal bg-white rounded-xl p-7 max-w-[420px] w-[90%] shadow-2xl text-center">
-    <p class="text-base text-gray-700 mb-6 leading-relaxed" id="confirm-modal-text"></p>
+  <div class="modal bg-white rounded-[12px] p-7 max-w-[420px] w-[90%] shadow-xl text-center">
+    <p class="text-sm text-slate-600 mb-6 leading-relaxed" id="confirm-modal-text"></p>
     <div class="flex gap-2.5 justify-center">
       <button class="btn btn-secondary" id="confirm-modal-cancel">Cancelar</button>
       <button class="btn btn-primary" id="confirm-modal-ok">Confirmar</button>
@@ -147,9 +141,9 @@
 </div>
 
 <div class="modal-overlay fixed inset-0 bg-black/40 z-50 items-center justify-center hidden" id="update-modal">
-  <div class="modal bg-white rounded-xl p-7 max-w-[420px] w-[90%] shadow-2xl text-center">
-    <p class="text-lg font-bold text-gray-900 mb-3">Sistema atualizado</p>
-    <p class="text-base text-gray-700 mb-6 leading-relaxed">O sistema foi atualizado com sucesso. Clique em OK para recarregar.</p>
+  <div class="modal bg-white rounded-[12px] p-7 max-w-[420px] w-[90%] shadow-xl text-center">
+    <p class="text-base font-bold text-slate-900 mb-3">Sistema atualizado</p>
+    <p class="text-sm text-slate-600 mb-6 leading-relaxed">O sistema foi atualizado com sucesso. Clique em OK para recarregar.</p>
     <div class="flex gap-2.5 justify-center">
       <button class="btn btn-primary" id="update-modal-ok">OK</button>
     </div>
