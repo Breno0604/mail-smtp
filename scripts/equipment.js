@@ -6,12 +6,12 @@ export function addEquip(data) {
   const div = document.createElement("div");
   div.className = "equip-row flex gap-2 items-center mb-4 p-3 bg-slate-50/50 border border-slate-200/50 rounded-[10px]";
   div.innerHTML = `
-    <select class="equip-tipo flex-1 min-w-0 px-3 py-3 border border-slate-200 rounded-[10px] text-sm outline-none bg-white transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 text-slate-900 font-sans">
+    <select class="equip-tipo flex-1 min-w-0 px-3 py-3 border rounded-[10px] text-sm outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10 text-slate-900 font-sans">
       <option value="">Selecione...</option>
       <option value="Instalado" ${data?.status === "Instalado" ? "selected" : ""}>Instalado</option>
       <option value="Retirado" ${data?.status === "Retirado" ? "selected" : ""}>Retirado</option>
     </select>
-    <select class="equip-categoria flex-1 min-w-0 px-3 py-3 border border-slate-200 rounded-[10px] text-sm outline-none bg-white transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 text-slate-900 font-sans">
+    <select class="equip-categoria flex-1 min-w-0 px-3 py-3 border rounded-[10px] text-sm outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10 text-slate-900 font-sans">
       <option value="">Selecione...</option>
       <option value="Medidor" ${data?.categoria === "Medidor" ? "selected" : ""}>Medidor</option>
       <option value="Display" ${data?.categoria === "Display" ? "selected" : ""}>Display</option>
@@ -19,7 +19,7 @@ export function addEquip(data) {
       <option value="TC" ${data?.categoria === "TC" ? "selected" : ""}>TC</option>
       <option value="TP" ${data?.categoria === "TP" ? "selected" : ""}>TP</option>
     </select>
-    <input type="number" class="equip-numero flex-1 min-w-0 px-3 py-3 border border-slate-200 rounded-[10px] text-sm outline-none bg-white transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 text-slate-900 font-sans placeholder-slate-400" placeholder="N\u00B0" value="${data?.numero || ""}">
+    <input type="number" class="equip-numero flex-1 min-w-0 px-3 py-3 border rounded-[10px] text-sm outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10 text-slate-900 font-sans" placeholder="N\u00B0" value="${data?.numero || ""}">
     <button class="btn-remove w-9 h-9 border-none rounded-[8px] bg-red-50 text-red-500 text-sm cursor-pointer flex-shrink-0 transition-all duration-200 flex items-center justify-center hover:bg-red-100 active:scale-95" type="button">\u2715</button>
   `;
 
