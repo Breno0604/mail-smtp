@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planejamento - Nova UI</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:system-ui,-apple-system,sans-serif;
+  background:linear-gradient(135deg,#f1f5f9,#e2e8f0);
+  min-height:100vh;padding:2rem 1rem;display:flex;flex-direction:column;align-items:center
+}
+h1{color:#0f172a;font-size:1.25rem;margin-bottom:0.2rem;text-align:center}
+.sub{color:#64748b;font-size:0.75rem;margin-bottom:1.2rem;text-align:center;max-width:600px}
+
+.page{
+  max-width:640px;width:100%;margin:0 auto;
+  display:flex;flex-direction:column;gap:0.75rem
+}
+
+/* header bar */
+.header-bar{
+  background:linear-gradient(135deg,#2563eb,#1d4ed8);
+  color:#fff;border-radius:14px;padding:0.8rem 1.2rem;
+  display:flex;justify-content:space-between;align-items:center
+}
+.header-bar .ttl{font-weight:700;font-size:0.9rem}
+.header-bar .actions{display:flex;gap:8px}
+.header-bar .actions .btn{
+  background:rgba(255,255,255,.2);border:none;color:#fff;
+  width:32px;height:32px;border-radius:8px;cursor:pointer;
+  font-size:1.1rem;display:flex;align-items:center;justify-content:center;
+  transition:background .15s
+}
+.header-bar .actions .btn:hover{background:rgba(255,255,255,.35)}
+
+/* section */
+.sec{
+  background:#fff;border-radius:14px;overflow:hidden;
+  border:2px solid #e2e8f0;transition:border-color .2s
+}
+.sec:hover{border-color:#cbd5e1}
+.sec-head{
+  padding:0.7rem 1.2rem;font-weight:700;font-size:0.85rem;
+  color:#0f172a;border-bottom:1px solid #f1f5f9;
+  display:flex;align-items:center;gap:8px
+}
+.sec-head .num{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:6px;
+  font-size:0.65rem;font-weight:700;color:#fff
+}
+.sec-head .num.s1{background:#2563eb}
+.sec-head .num.s2{background:#d97706}
+.sec-head .num.s3{background:#059669}
+.sec-head .num.s4{background:#7c3aed}
+.sec-head .num.s5{background:#0891b2}
+.sec-head .badge{
+  margin-left:auto;font-size:0.55rem;font-weight:600;
+  background:#f1f5f9;color:#64748b;padding:2px 8px;border-radius:10px
+}
+
+.sec-body{padding:0.8rem 1.2rem}
+
+/* field simulation */
+.fields{display:flex;flex-direction:column;gap:0.5rem}
+.fld{
+  padding:0.4rem 0.6rem;border-radius:6px;font-size:0.72rem;
+  border:1px dashed #d1d5db;background:#fafbfc;color:#94a3b8
+}
+.fld .lab{font-weight:600;color:#64748b;display:block;margin-bottom:2px}
+.fld.real{
+  border:1px solid #d1d5db;background:#fff;color:#334155;
+  border-left:3px solid #2563eb
+}
+.fld.real .lab{color:#334155}
+.fld.req{border-left-color:#2563eb}
+.fld.cond{
+  border-left-color:#d97706;background:#fffbeb;border-color:#fde68a
+}
+.fld.cond .lab{color:#92400e}
+.fld.placeholder{
+  border-style:dashed;background:#f8fafc;color:#94a3b8
+}
+.fld .hint{font-size:0.6rem;color:#94a3b8;display:block;margin-top:2px}
+.fld .tag{
+  display:inline-block;font-size:0.5rem;font-weight:700;
+  padding:1px 5px;border-radius:8px;margin-left:4px
+}
+.fld .tag.t{background:#dbeafe;color:#1d4ed8}
+.fld .tag.c{background:#fef3c7;color:#d97706}
+.fld .tag.o{background:#d1fae5;color:#059669}
+.fld-row{
+  display:grid;grid-template-columns:1fr 1fr;gap:0.5rem
+}
+
+/* retorno placeholder */
+.ret-placeholder{
+  text-align:center;padding:1rem;color:#94a3b8;font-size:0.75rem
+}
+.ret-placeholder .icon{font-size:1.5rem;display:block;margin-bottom:4px}
+
+/* send button */
+.send-area{
+  padding:1rem 0;text-align:center
+}
+.send-btn{
+  background:linear-gradient(135deg,#059669,#047857);
+  color:#fff;border:none;padding:0.8rem 3rem;border-radius:30px;
+  font-weight:700;font-size:0.95rem;cursor:pointer;
+  box-shadow:0 4px 14px rgba(5,150,105,.3);transition:all .2s
+}
+.send-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(5,150,105,.4)}
+.send-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+/* flow arrow */
+.arrow-down{
+  text-align:center;color:#cbd5e1;font-size:1rem;padding:2px 0
+}
+
+/* info card */
+.info-card{
+  background:#f1f5f9;border-radius:10px;padding:0.6rem 0.8rem;
+  font-size:0.7rem;color:#475569;line-height:1.5;
+  border:1px solid #e2e8f0
+}
+
+/* layout note */
+.layout-note{
+  text-align:center;font-size:0.7rem;color:#64748b;padding:0.5rem
+}
+
+/* decisions table */
+.decisions{
+  max-width:640px;width:100%;margin-top:1.5rem
+}
+.decisions h2{
+  font-size:0.9rem;color:#0f172a;margin-bottom:0.6rem;text-align:center
+}
+.dec-table{
+  width:100%;border-collapse:collapse;font-size:0.7rem;border-radius:10px;overflow:hidden
+}
+.dec-table th{
+  background:#1e293b;color:#fff;padding:0.5rem 0.7rem;text-align:left;font-weight:600
+}
+.dec-table td{
+  padding:0.4rem 0.7rem;border-bottom:1px solid #e2e8f0;color:#334155
+}
+.dec-table tr:nth-child(even) td{background:#f8fafc}
+.dec-table tr:last-child td{border-bottom:none}
+</style>
+</head>
+<body>
+
+<h1>📐 Planejamento: Nova UI Single Page</h1>
+<p class="sub">5 seções empilhadas verticalmente · Sem navegação por etapas · Tudo visível · Valida no Enviar</p>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header-bar">
+    <span class="ttl">📋 Retorno de Ordens</span>
+    <span class="actions">
+      <span class="btn" title="Sidebar (registros salvos)">☰</span>
+      <span class="btn" title="Novo formulário">+</span>
+    </span>
+  </div>
+
+  <!-- SEÇÃO 1: INÍCIO -->
+  <div class="sec">
+    <div class="sec-head">
+      <span class="num s1">1</span> Início
+      <span class="badge">obrigatório</span>
+    </div>
+    <div class="sec-body">
+      <div class="fields">
+        <div class="fld real req"><span class="lab">Coordenadas</span>captura automática via GPS</div>
+        <div class="fld-row">
+          <div class="fld real req"><span class="lab">Líder</span>select · 12 técnicos</div>
+          <div class="fld real req"><span class="lab">Parceiro</span>select · 12 técnicos</div>
+        </div>
+        <div class="fld real req"><span class="lab">Município</span>select · 29 opções</div>
+        <div class="fld-row">
+          <div class="fld real req"><span class="lab">UC</span>number · validação numérica</div>
+          <div class="fld real req"><span class="lab">OS</span>text</div>
+        </div>
+        <div class="fld-row">
+          <div class="fld real req"><span class="lab">Notificado</span>SIM / NÃO</div>
+          <div class="fld real req"><span class="lab">Placa</span>select · 12 placas</div>
+        </div>
+        <div class="fld-row">
+          <div class="fld real req"><span class="lab">Data</span>date · não pode ser futura</div>
+          <div class="fld real req"><span class="lab">Início</span>time</div>
+          <div class="fld real req"><span class="lab">Fim</span>time · deve ser > Início</div>
+        </div>
+        <div class="fld real req">
+          <span class="lab">Tipo de Ordem <span class="tag t">43 opções</span></span>
+          select · ao selecionar → renderiza campos do Retorno
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <!-- SEÇÃO 2: RETORNO -->
+  <div class="sec">
+    <div class="sec-head">
+      <span class="num s2">2</span> Retorno
+      <span class="badge">obrigatório</span>
+    </div>
+    <div class="sec-body">
+      <!-- estado inicial (antes de selecionar tipo) -->
+      <div class="ret-placeholder" id="retPlaceholder">
+        <span class="icon">👆</span>
+        Selecione o Tipo de Ordem na seção "Início"<br>para exibir os campos de Retorno
+      </div>
+
+      <!-- estado após selecionar tipo (exemplo: SUBST. MEDIDOR) -->
+      <div class="fields" id="retFields" style="display:none">
+        <div class="fld real req"><span class="lab">Descrição do Serviço</span>textarea</div>
+        <div class="fld real req">
+          <span class="lab">Tipo de Serviço <span class="tag t">3 opções</span></span>
+          Troca de Medidor / Reparo / Aferição
+          <span class="hint">Ao selecionar, campos condicionais aparecem</span>
+        </div>
+        <div class="fld cond"><span class="lab">Nº do Medidor Antigo <span class="tag c">condicional</span></span>só aparece se Tipo = "Troca de Medidor"</div>
+        <div class="fld cond"><span class="lab">Nº do Medidor Novo <span class="tag c">condicional</span></span>só aparece se Tipo = "Troca de Medidor"</div>
+        <div class="fld cond"><span class="lab">Marca do Medidor <span class="tag c">condicional</span></span>select · só se Tipo = "Troca de Medidor"</div>
+        <div class="fld cond"><span class="lab">Leitura Anterior/Atual <span class="tag c">condicional</span></span>só aparece se Tipo = "Aferição"</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <!-- SEÇÃO 3: EQUIPAMENTOS -->
+  <div class="sec">
+    <div class="sec-head">
+      <span class="num s3">3</span> Equipamentos
+      <span class="badge">opcional</span>
+    </div>
+    <div class="sec-body">
+      <div class="ret-placeholder" style="padding:0.8rem">
+        <span class="icon">➕</span>
+        Botão "Adicionar equipamento" — mesma interface atual
+      </div>
+      <div class="info-card" style="margin-top:0.5rem">
+        <strong>✓ Seção opcional:</strong> se vazia, não atrapalha o envio.
+        Se houver equipamentos, valida nº série e tipo de cada linha.
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <!-- SEÇÃO 4: ANEXOS -->
+  <div class="sec">
+    <div class="sec-head">
+      <span class="num s4">4</span> Anexos
+      <span class="badge">opcional</span>
+    </div>
+    <div class="sec-body">
+      <div class="ret-placeholder" style="padding:0.8rem">
+        <span class="icon">📎</span>
+        Upload de imagens · Máx 12 · 8 MB cada · Compressão automática
+      </div>
+      <div class="info-card" style="margin-top:0.5rem">
+        <strong>✓ Seção opcional:</strong> pode enviar sem anexos.
+        Valida apenas se houver arquivos: limite de 12 e 8 MB cada.
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <!-- SEÇÃO 5: REVISÃO -->
+  <div class="sec">
+    <div class="sec-head">
+      <span class="num s5">5</span> Revisão
+      <span class="badge">opcional</span>
+    </div>
+    <div class="sec-body">
+      <div class="fields">
+        <div class="fld real"><span class="lab">Preview do Email</span>corpo gerado automaticamente (readonly)</div>
+        <div class="fld real"><span class="lab">Complemento <span class="tag o">opcional</span></span>textarea · texto extra</div>
+      </div>
+      <div class="info-card" style="margin-top:0.5rem">
+        <strong>💡 Preview ao vivo:</strong> atualiza automaticamente a cada digitação em qualquer seção.
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTÃO ENVIAR -->
+  <div class="send-area">
+    <button class="send-btn">📨 Enviar</button>
+    <div class="layout-note">Sempre ativo — ao clicar, valida tudo e rola até o primeiro campo com erro</div>
+  </div>
+
+</div>
+
+<!-- DECISÕES TOMADAS -->
+<div class="decisions">
+  <h2>✅ Decisões do Planejamento</h2>
+  <table class="dec-table" style="margin-bottom:1.5rem">
+    <tr><th>Tópico</th><th>Decisão</th></tr>
+    <tr><td>Layout</td><td>Vertical (rolável) — uma seção abaixo da outra</td></tr>
+    <tr><td>Navegação</td><td>Nenhuma — sem botões Anterior/Próximo, sem progresso</td></tr>
+    <tr><td>Ordem das seções</td><td>Início → Retorno → Equipamentos → Anexos → Revisão</td></tr>
+    <tr><td>Estado inicial Retorno</td><td>Placeholder até Tipo de Ordem ser selecionado</td></tr>
+    <tr><td>Renderização Retorno</td><td>Imediata ao selecionar Tipo de Ordem (change event)</td></tr>
+    <tr><td>Expansão das seções</td><td>Sempre abertas — sem collapsar</td></tr>
+    <tr><td>Validação</td><td>Tudo de uma vez ao clicar Enviar</td></tr>
+    <tr><td>Botão Enviar</td><td>Sempre ativo — valida no clique e rola até primeiro erro</td></tr>
+    <tr><td>Erro na validação</td><td>Destaque vermelho no campo + scroll suave até o primeiro erro</td></tr>
+    <tr><td>Modal troca Tipo</td><td>Removido — troca direta sem confirmação</td></tr>
+    <tr><td>Preview email</td><td>Atualização ao vivo em tempo real (on input)</td></tr>
+    <tr><td>Sidebar / Rascunhos</td><td>Mantém como está (sidebar, IndexedDB, restaurar)</td></tr>
+    <tr><td>Auto-save</td><td>Mantém como está (salva a cada input)</td></tr>
+    <tr><td>Mobile</td><td>Scroll normal — sem swipe</td></tr>
+    <tr><td>Campos condicionais Retorno</td><td>Aparecem/desaparecem na hora conforme escolha (sem modal)</td></tr>
+    <tr><td>Seções opcionais</td><td>Equipamentos e Anexos — não bloqueiam envio se vazias</td></tr>
+  </table>
+
+  <h2>📦 Módulos Impactados</h2>
+  <table class="dec-table">
+    <tr><th>Arquivo</th><th>Mudança</th></tr>
+    <tr><td><code>index.html</code></td><td>Remove steps, nav buttons, section wrapper. Adiciona seções fixas no HTML. Muda #section-N para #sec-N com classes .sec-visivel.</td></tr>
+    <tr><td><code>style.css</code></td><td>Remove estilos de wizard (step-label, nav-buttons, section.active). Adiciona estilos de seção vertical.</td></tr>
+    <tr><td><code>scripts/app.js</code></td><td>Remove initEvents de navegação. Adiciona initEvents do Enviar + preview ao vivo + tipo-ordem change handler. Remove restoreSavedState navigation.</td></tr>
+    <tr><td><code>scripts/sectionManager.js</code></td><td>Reduzido/substituído — não precisa mais de showSection/next/prev. Mantém apenas se necessário para sidebar/restore scroll.</td></tr>
+    <tr><td><code>scripts/animator.js</code></td><td>Removido — sem animações de transição entre seções.</td></tr>
+    <tr><td><code>scripts/validation.js</code></td><td>Substitui validateSection(N) por validateAll(). Percorre todas as seções, marca erros inline, retorna false + scroll ao primeiro erro.</td></tr>
+    <tr><td><code>scripts/retornos.js</code></td><td>Remove modal de troca (handleTipoChange simplificado). renderRetorno agora é chamado direto no change do select tipo-ordem.</td></tr>
+    <tr><td><code>scripts/fields.js</code></td><td>Adiciona retornoFieldsByTipo (mapa tipo → campos) + getRetornoFields().</td></tr>
+    <tr><td><code>scripts/iniciais.js</code></td><td>Exporta INPUT_CREATORS + add createTextarea para reuso em retornos.js.</td></tr>
+    <tr><td><code>scripts/email.js</code></td><td>Adapta composeEmail para usar retornoFieldsByTipo. Preview ganha função separate para atualização ao vivo.</td></tr>
+    <tr><td><code>scripts/send.js</code></td><td>sendEmail() agora usa validateAll() antes de enviar. Se falhar, scrolla ao erro.</td></tr>
+    <tr><td><code>scripts/reset.js</code></td><td>resetForm limpa todas as 5 seções de uma vez (não só a atual).</td></tr>
+    <tr><td><code>scripts/dom.js</code></td><td>cacheDOM atualizado: novos elementos (btn-enviar, sec-retorno, sec-revisao). Remove refs antigas (btn-anterior, btn-proximo, steps).</td></tr>
+    <tr><td><code>scripts/state.js</code></td><td>Remove currentSection (obsoleto). Mantém demais estados.</td></tr>
+    <tr><td><code>tests/*.test.js</code></td><td>Adaptar tests para nova estrutura de uma página. Remover tests de navegação. Adicionar tests de validateAll e preview ao vivo.</td></tr>
+  </table>
+</div>
+
+</body>
+</html>

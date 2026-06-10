@@ -24,42 +24,48 @@
     <button class="btn-new-form" id="btn-novo-form" title="Novo formulário">+</button>
   </div>
 
-  <div class="sticky top-0 z-10 bg-white/85 backdrop-blur-md pb-3 px-5 border-b border-slate-100 flex flex-col gap-2.5" id="progress">
-    <div class="flex items-center gap-1.5" style="padding-top: 4px;">
-      <div class="step-label" data-step="1">Inicio</div>
-      <div class="step-label" data-step="2">Equip.</div>
-      <div class="step-label" data-step="3">Retorno</div>
-      <div class="step-label" data-step="4">Anexos</div>
-      <div class="step-label" data-step="5">Revisão</div>
-    </div>
-    <div class="flex justify-between items-center gap-3" id="nav-buttons">
-      <button class="btn btn-secondary btn-nav-back" id="btn-anterior" disabled>← Anterior</button>
-      <span class="step-current-text" id="step-current-text">Inicio</span>
-      <button class="btn btn-primary" id="btn-proximo">Avançar →</button>
-    </div>
-  </div>
-
   <div class="bg-red-50 text-red-600 px-4 py-3 rounded-[10px] text-xs font-semibold border border-red-200 mx-4 mt-3" id="error-msg" style="display:none"></div>
 
-  <div class="section-wrapper relative min-h-[320px]" id="section-wrapper">
-
-    <div class="section active" id="section-1">
-      <div id="iniciais-campos"></div>
+  <!-- Section 1: Início -->
+  <section class="sec-card mx-4 mt-4" id="sec-inicio">
+    <div class="sec-head">
+      <span class="sec-num">1</span> Início
     </div>
+    <div class="sec-body" id="iniciais-campos"></div>
+  </section>
 
-    <div class="section" id="section-2">
-      <div id="equipamentos-list"></div>
-      <div class="flex gap-3.5 items-center mt-2">
-        <button class="btn-add flex-1 py-3 px-4 border-2 border-dashed border-slate-200 rounded-[10px] bg-slate-50/30 text-slate-600 text-sm font-semibold cursor-pointer transition-all duration-200 hover:border-blue-500 hover:text-blue-500 hover:bg-blue-50/30" id="btn-add-equip" type="button">+ Adicionar equipamento</button>
-      </div>
+  <!-- Section 2: Retorno -->
+  <section class="sec-card mx-4 mt-4" id="sec-retorno">
+    <div class="sec-head">
+      <span class="sec-num">2</span> Retorno
     </div>
-
-    <div class="section" id="section-3">
+    <div class="sec-body">
       <p class="text-base font-bold text-slate-900 mb-4" id="retorno-desc">—</p>
+      <div id="retorno-placeholder" class="ret-placeholder">
+        <span class="ret-icon">👆</span>
+        Selecione o Tipo de Ordem na seção "Início" para exibir os campos de Retorno
+      </div>
       <div id="retorno-campos"></div>
     </div>
+  </section>
 
-    <div class="section" id="section-4">
+  <!-- Section 3: Equipamentos -->
+  <section class="sec-card mx-4 mt-4" id="sec-equipamentos">
+    <div class="sec-head">
+      <span class="sec-num">3</span> Equipamentos
+    </div>
+    <div class="sec-body">
+      <div id="equipamentos-list"></div>
+      <button class="btn-add flex-1 py-3 px-4 border-2 border-dashed border-slate-200 rounded-[10px] bg-slate-50/30 text-slate-600 text-sm font-semibold cursor-pointer transition-all duration-200 hover:border-blue-500 hover:text-blue-500 hover:bg-blue-50/30" id="btn-add-equip" type="button">+ Adicionar equipamento</button>
+    </div>
+  </section>
+
+  <!-- Section 4: Anexos -->
+  <section class="sec-card mx-4 mt-4" id="sec-anexos">
+    <div class="sec-head">
+      <span class="sec-num">4</span> Anexos
+    </div>
+    <div class="sec-body">
       <div class="file-upload-area border-2 border-dashed border-slate-200 rounded-[12px] py-8 px-5 text-center cursor-pointer transition-all duration-200 hover:border-blue-500 hover:bg-blue-50/30 bg-slate-50/50" id="file-upload-area">
         <span class="text-3xl block mb-2">📎</span>
         <span class="text-sm text-slate-600 font-semibold">Clique para selecionar imagens</span>
@@ -68,8 +74,14 @@
       <input type="file" id="file-input" accept="image/*" multiple class="hidden">
       <div class="preview-grid grid grid-cols-4 max-sm:grid-cols-2 gap-2 mt-4" id="preview-grid"></div>
     </div>
+  </section>
 
-    <div class="section" id="section-5">
+  <!-- Section 5: Revisão -->
+  <section class="sec-card mx-4 mt-4" id="sec-revisao">
+    <div class="sec-head">
+      <span class="sec-num">5</span> Revisão
+    </div>
+    <div class="sec-body">
       <div class="email-preview bg-slate-50/70 border border-slate-200 rounded-[12px] p-5">
         <div class="preview-value text-sm text-slate-800 whitespace-pre-wrap leading-relaxed" id="preview-corpo">—</div>
         <div class="mt-5 pt-4 border-t border-slate-200/60">
@@ -78,7 +90,11 @@
         </div>
       </div>
     </div>
+  </section>
 
+  <!-- Send button -->
+  <div class="mx-4 mt-4 mb-6 text-center">
+    <button class="btn btn-success" id="btn-enviar">📨 Enviar</button>
   </div>
 </div>
 
@@ -95,16 +111,6 @@
 <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
 <div class="toast" id="toast"></div>
-
-<div class="modal-overlay fixed inset-0 bg-black/40 z-50 items-center justify-center hidden" id="modal-tipo">
-  <div class="modal bg-white rounded-[12px] p-7 max-w-[420px] w-[90%] shadow-xl text-center">
-    <p class="text-sm text-slate-600 mb-6 leading-relaxed">Ao alterar o Tipo de ordem, os campos de Retorno preenchidos serão perdidos.</p>
-    <div class="flex gap-2.5 justify-center">
-      <button class="btn btn-secondary" id="modal-cancel">Cancelar</button>
-      <button class="btn btn-primary" id="modal-confirm">Alterar mesmo assim</button>
-    </div>
-  </div>
-</div>
 
 <div class="modal-overlay fixed inset-0 bg-black/40 z-50 items-center justify-center hidden" id="dup-modal">
   <div class="modal bg-white rounded-[12px] p-7 max-w-[420px] w-[90%] shadow-xl text-center">
