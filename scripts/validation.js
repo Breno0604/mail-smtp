@@ -135,29 +135,31 @@ function validateSection2() {
 }
 
 function validateSection3() {
-  if (DOM.retornoCampos.children.length === 0) {
-    showError("Navegue até a seção de Retorno primeiro.");
-    return false;
-  }
+  const tipo = DOM.tipoOrdem?.value || "";
+  if (!tipo) return true;
 
-  const campos = DOM.retornoCampos.querySelectorAll("textarea, input");
+  const campos = DOM.retornoCampos.querySelectorAll(".mb-4");
   let valid = true;
-  let descricao = "";
 
-  campos.forEach((el) => {
-    if (el.hasAttribute("data-required") && el.value.trim() === "") {
-      markError(el, "Campo obrigatório");
+  campos.forEach((group) => {
+    // Skip hidden conditional fields
+    if (group.style.display === "none") return;
+
+    const input = group.querySelector("input, select, textarea");
+    if (!input) return;
+
+    if (!input.value || input.value.trim() === "") {
+      markError(input, "Campo obrigatório");
       valid = false;
     } else {
-      clearError(el);
-      if (el.id === "descricao-retorno") descricao = el.value;
+      clearError(input);
     }
   });
 
   if (!valid) return false;
 
-  state.retorno = { descricao };
-  _validatedData[3] = { descricao };
+  state.retorno = getRetornoData();
+  _validatedData[3] = state.retorno;
   return true;
 }
 
@@ -194,6 +196,50 @@ export function validateSection(n) {
   const validator = SECTION_VALIDATORS[n];
   if (!validator) return true;
   return validator();
+}
+
+export function validateAll() {
+  hideError();
+  let firstError = null;
+  let valid = true;
+
+  // Section 1: Iniciais
+  const s1Valid = validateSection1();
+  if (!s1Valid && !firstError) {
+    firstError = document.querySelector("#sec-inicio .error");
+  }
+  valid = valid && s1Valid;
+
+  // Section 3: Retorno (only if tipo is selected)
+  const tipo = DOM.tipoOrdem?.value || "";
+  if (tipo) {
+    const s3Valid = validateSection3();
+    if (!s3Valid && !firstError) {
+      firstError = document.querySelector("#sec-retorno .error");
+    }
+    valid = valid && s3Valid;
+  }
+
+  // Section 2: Equipamentos (optional, but validate if rows exist)
+  const s2Valid = validateSection2();
+  if (!s2Valid && !firstError) {
+    firstError = document.querySelector("#sec-equipamentos .error");
+  }
+  valid = valid && s2Valid;
+
+  // Section 4: Anexos
+  const s4Valid = validateSection4();
+  if (!s4Valid && !firstError) {
+    firstError = document.querySelector("#sec-anexos .error");
+  }
+  valid = valid && s4Valid;
+
+  // Scroll to first error
+  if (firstError) {
+    firstError.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  return valid;
 }
 
 export function addBlurValidation(el) {
