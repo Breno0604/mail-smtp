@@ -2,7 +2,7 @@ import { state } from "./state.js";
 import { getRawUUID, storeUUID, removeUUID } from "./storage.js";
 import { getIniciaisData } from "./iniciais.js";
 import { getRetornoData } from "./retornos.js";
-import { saveDraft, getRecord } from "./db.js";
+import { saveDraft, getRecord, saveAttachments } from "./db.js";
 import { toBase64 } from "./utils.js";
 import { DOM } from "./dom.js";
 
@@ -18,9 +18,24 @@ export const setCurrentUUID = (uuid) => {
 export const clearCurrentUUID = () => {
   state.currentUUID = "";
   removeUUID();
+  attachmentsDirty = true;
 };
 
 let saveTimer = null;
+
+// ── Dirty tracking para anexos ───────────────────────────────────────────────
+// Evita re-serializar e re-salvar anexos quando eles não mudaram.
+let attachmentsDirty = true;
+
+/**
+ * Marca os anexos como "sujos" — serão re-serializados e salvos no próximo saveState().
+ * Deve ser chamada quando anexos são adicionados, removidos ou o form é resetado.
+ */
+export function markAttachmentsDirty() {
+  attachmentsDirty = true;
+}
+
+// ── saveState ────────────────────────────────────────────────────────────────
 
 export async function saveState() {
   if (!state.iniciaisValido) return;
@@ -32,8 +47,8 @@ export async function saveState() {
   await _ensureUUID();
 
   const createdAt = await _resolveCreatedAt(state.currentUUID);
-  const attachmentsData = await _serializeAttachments(state.attachments);
 
+  // Record principal — SEM anexos (anexos ficam em store separado)
   const data = {
     uuid: state.currentUUID,
     status: "draft",
@@ -45,10 +60,11 @@ export async function saveState() {
     equipamentos: state.equipamentos,
     lastTipoOrdem: state.lastTipoOrdem,
     composicao: { complementoCorpo: DOM.complementoCorpo ? DOM.complementoCorpo.value : "" },
-    attachments: attachmentsData,
+    attachmentCount: state.attachments.length, // Apenas contagem para referência
     sentData: null,
   };
 
+  // Salvar record principal
   saveDraft(data).catch((err) => {
     console.error("saveDraft error:", err);
     if (err?.name === "QuotaExceededError" || err?.message?.includes("quota")) {
@@ -57,6 +73,15 @@ export async function saveState() {
       });
     }
   });
+
+  // Salvar anexos no store separado — só se dirty
+  if (attachmentsDirty) {
+    attachmentsDirty = false;
+    _serializeAndSaveAttachments(state.currentUUID, state.attachments).catch((err) => {
+      console.error("saveAttachments error:", err);
+      attachmentsDirty = true; // Marcar dirty novamente para retry
+    });
+  }
 }
 
 export function debouncedSave() {
@@ -91,12 +116,20 @@ async function _resolveCreatedAt(uuid) {
   return state._createdAt;
 }
 
-async function _serializeAttachments(files) {
-  return Promise.all(
+async function _serializeAndSaveAttachments(uuid, files) {
+  if (files.length === 0) {
+    // Se não há anexos, apenas limpar store (se havia antes)
+    await saveAttachments(uuid, []);
+    return;
+  }
+
+  const serialized = await Promise.all(
     files.map(async (file) => ({
       name: file.name,
       type: file.type,
       data: await toBase64(file),
     }))
   );
+
+  await saveAttachments(uuid, serialized);
 }

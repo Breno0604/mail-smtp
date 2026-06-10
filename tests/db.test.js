@@ -1,6 +1,6 @@
 import 'fake-indexeddb/auto';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { saveDraft, getRecord, getAllRecords, deleteRecord, updateRecordStatus } from '../scripts/db.js';
+import { saveDraft, getRecord, getAllRecords, deleteRecord, updateRecordStatus, saveAttachments, getAttachmentsByUuid, deleteAttachmentsByUuid } from '../scripts/db.js';
 
 describe('db', () => {
   const sampleRecord = {
@@ -149,6 +149,115 @@ describe('db', () => {
 
     it('should not throw when record does not exist', async () => {
       await expect(updateRecordStatus('non-existent', sentData)).resolves.toBeUndefined();
+    });
+  });
+
+  describe('saveAttachments', () => {
+    it('should save attachments for a record', async () => {
+      const attachments = [
+        { name: 'photo1.jpg', type: 'image/jpeg', data: 'base64data1' },
+        { name: 'photo2.jpg', type: 'image/jpeg', data: 'base64data2' },
+      ];
+      await saveAttachments('test-uuid-1', attachments);
+      const retrieved = await getAttachmentsByUuid('test-uuid-1');
+      expect(retrieved).toHaveLength(2);
+      expect(retrieved[0].name).toBe('photo1.jpg');
+      expect(retrieved[1].name).toBe('photo2.jpg');
+    });
+
+    it('should replace existing attachments on re-save', async () => {
+      const attachments1 = [{ name: 'old.jpg', type: 'image/jpeg', data: 'olddata' }];
+      await saveAttachments('test-uuid-1', attachments1);
+      
+      const attachments2 = [{ name: 'new.jpg', type: 'image/jpeg', data: 'newdata' }];
+      await saveAttachments('test-uuid-1', attachments2);
+      
+      const retrieved = await getAttachmentsByUuid('test-uuid-1');
+      expect(retrieved).toHaveLength(1);
+      expect(retrieved[0].name).toBe('new.jpg');
+    });
+
+    it('should handle empty attachments array', async () => {
+      await saveAttachments('test-uuid-1', []);
+      const retrieved = await getAttachmentsByUuid('test-uuid-1');
+      expect(retrieved).toHaveLength(0);
+    });
+  });
+
+  describe('getAttachmentsByUuid', () => {
+    it('should return empty array when no attachments exist', async () => {
+      const retrieved = await getAttachmentsByUuid('non-existent');
+      expect(retrieved).toEqual([]);
+    });
+
+    it('should return attachments in correct order', async () => {
+      const attachments = [
+        { name: 'first.jpg', type: 'image/jpeg', data: 'data1' },
+        { name: 'second.jpg', type: 'image/jpeg', data: 'data2' },
+        { name: 'third.jpg', type: 'image/jpeg', data: 'data3' },
+      ];
+      await saveAttachments('test-uuid-1', attachments);
+      const retrieved = await getAttachmentsByUuid('test-uuid-1');
+      expect(retrieved.map(a => a.name)).toEqual(['first.jpg', 'second.jpg', 'third.jpg']);
+    });
+
+    it('should only return attachments for specific UUID', async () => {
+      await saveAttachments('uuid-1', [{ name: 'a.jpg', type: 'image/jpeg', data: 'data1' }]);
+      await saveAttachments('uuid-2', [{ name: 'b.jpg', type: 'image/jpeg', data: 'data2' }]);
+      
+      const retrieved1 = await getAttachmentsByUuid('uuid-1');
+      const retrieved2 = await getAttachmentsByUuid('uuid-2');
+      
+      expect(retrieved1).toHaveLength(1);
+      expect(retrieved1[0].name).toBe('a.jpg');
+      expect(retrieved2).toHaveLength(1);
+      expect(retrieved2[0].name).toBe('b.jpg');
+    });
+  });
+
+  describe('deleteAttachmentsByUuid', () => {
+    it('should delete all attachments for a UUID', async () => {
+      await saveAttachments('test-uuid-1', [
+        { name: 'a.jpg', type: 'image/jpeg', data: 'data1' },
+        { name: 'b.jpg', type: 'image/jpeg', data: 'data2' },
+      ]);
+      await deleteAttachmentsByUuid('test-uuid-1');
+      const retrieved = await getAttachmentsByUuid('test-uuid-1');
+      expect(retrieved).toHaveLength(0);
+    });
+
+    it('should not throw when deleting non-existent UUID', async () => {
+      await expect(deleteAttachmentsByUuid('non-existent')).resolves.toBeUndefined();
+    });
+
+    it('should only delete attachments for specific UUID', async () => {
+      await saveAttachments('uuid-1', [{ name: 'a.jpg', type: 'image/jpeg', data: 'data1' }]);
+      await saveAttachments('uuid-2', [{ name: 'b.jpg', type: 'image/jpeg', data: 'data2' }]);
+      
+      await deleteAttachmentsByUuid('uuid-1');
+      
+      const retrieved1 = await getAttachmentsByUuid('uuid-1');
+      const retrieved2 = await getAttachmentsByUuid('uuid-2');
+      
+      expect(retrieved1).toHaveLength(0);
+      expect(retrieved2).toHaveLength(1);
+    });
+  });
+
+  describe('deleteRecord with attachments', () => {
+    it('should delete both record and its attachments', async () => {
+      await saveDraft(sampleRecord);
+      await saveAttachments('test-uuid-1', [
+        { name: 'photo.jpg', type: 'image/jpeg', data: 'data1' },
+      ]);
+      
+      await deleteRecord('test-uuid-1');
+      
+      const record = await getRecord('test-uuid-1');
+      const attachments = await getAttachmentsByUuid('test-uuid-1');
+      
+      expect(record).toBeNull();
+      expect(attachments).toHaveLength(0);
     });
   });
 });

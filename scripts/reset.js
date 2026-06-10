@@ -1,5 +1,5 @@
 import { DOM } from "./dom.js";
-import { state, clearCurrentUUID } from "./state.js";
+import { state, clearCurrentUUID, markAttachmentsDirty } from "./state.js";
 import { renderIniciais } from "./iniciais.js";
 import { renderRetorno, handleTipoChange } from "./retornos.js";
 import { showEmptyEquip } from "./equipment.js";
@@ -17,6 +17,9 @@ export function resetForm() {
   state.currentUUID = "";
   state._createdAt = null;
   state.iniciaisValido = false;
+
+  // Marcar anexos como dirty (força re-save vazio no próximo saveState)
+  markAttachmentsDirty();
 
   // Clear all sections
   renderIniciais();

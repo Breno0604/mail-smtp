@@ -3,7 +3,7 @@
 // quebrando o ciclo: state.js → persistence.js → state.js.
 import { getRawUUID } from "./storage.js";
 
-export { setCurrentUUID, clearCurrentUUID, saveState, debouncedSave, getCurrentUUID } from "./persistence.js";
+export { setCurrentUUID, clearCurrentUUID, saveState, debouncedSave, getCurrentUUID, markAttachmentsDirty } from "./persistence.js";
 
 export const state = {
   iniciais: {},
