@@ -12,7 +12,7 @@ export function closeSidebar() {
 function getRecordSummary(record) {
   const uc = record.iniciais?.uc || "";
   const os = record.iniciais?.os || "";
-  if (uc && os) return `OS #${os} — UC ${uc}`;
+  if (uc && os) return `${uc}-${os}`;
   if (os) return `OS #${os}`;
   if (uc) return `UC ${uc}`;
   return "(rascunho vazio)";

@@ -1,43 +1,14 @@
 import { DOM, cacheDOM } from "./dom.js";
-import { state, debouncedSave, saveState, getCurrentUUID, clearCurrentUUID } from "./state.js";
+import { state, debouncedSave, saveState, clearCurrentUUID } from "./state.js";
 import { renderIniciais, getIniciaisData } from "./iniciais.js";
 import { addEquip } from "./equipment.js";
 import { handleTipoChange } from "./retornos.js";
 import { handleUploadClick, handleFileChange, closeLightbox, updateFileCount, renderPreviews } from "./attachments.js";
 import { resetForm } from "./reset.js";
 import { renderSidebar, closeSidebar, initSidebarFilter } from "./sidebar.js";
-import { getRecord } from "./db.js";
-import { applyRecord } from "./restore.js";
-import { showConfirm } from "./ui.js";
 import { captureCoordinates } from "./utils.js";
 import { sendEmail } from "./send.js";
 import { updateLivePreview } from "./email.js";
-
-async function restoreSavedState() {
-  const uuid = getCurrentUUID();
-  if (!uuid) return false;
-
-  try {
-    const record = await getRecord(uuid);
-    if (!record) {
-      clearCurrentUUID();
-      return false;
-    }
-
-    const ok = await showConfirm("H\u00E1 um formul\u00E1rio salvo. Deseja continuar de onde parou?");
-    if (!ok) {
-      clearCurrentUUID();
-      return false;
-    }
-
-    applyRecord(record);
-    updateAllFilledClasses();
-    updateLivePreview();
-    return true;
-  } catch (_) {
-    return false;
-  }
-}
 
 function updateFilledClass(el) {
   if (el.value && el.value.trim() !== "") {
@@ -136,9 +107,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   updateFileCount();
   renderPreviews();
   await captureCoordinates();
-  const restored = await restoreSavedState();
-  if (!restored) {
-    updateLivePreview();
-  }
+  updateLivePreview();
   updateAllFilledClasses();
+  // Limpar UUID ao iniciar (sempre começa limpo)
+  clearCurrentUUID();
 });

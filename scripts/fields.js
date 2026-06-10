@@ -29,7 +29,6 @@ const UC_CORTADA_FIELDS = [
   { linha: 4, nome: "chaves", label: "Chaves", tipo: "select", opcoes: ["COM CHAVE", "SEM CHAVE"] },
   { linha: 5, nome: "aplicado-toi", label: "Aplicado TOI", tipo: "select", opcoes: ["SIM", "NAO"] },
   { linha: 5, nome: "toi", label: "TOI", tipo: "text", condicional: { campoRef: "aplicado-toi", valor: "SIM" } },
-  { linha: 6, nome: "observacoes", label: "Observações Adicionais", tipo: "text" },
 ];
 
 export const retornoFieldsByTipo = {

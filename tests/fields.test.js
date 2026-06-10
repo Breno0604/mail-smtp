@@ -133,10 +133,10 @@ describe('fields', () => {
       'INSPECAO UC CORTADA I180',
     ];
 
-    it('should have exactly 9 fields for each UC Cortada tipo', () => {
+    it('should have exactly 8 fields for each UC Cortada tipo', () => {
       ucCortadaTipos.forEach((tipo) => {
         const fields = getRetornoFields(tipo);
-        expect(fields.length).toBe(9);
+        expect(fields.length).toBe(8);
       });
     });
 
@@ -210,18 +210,28 @@ describe('fields', () => {
       });
     });
 
-    it('should have observacoes as last field with tipo text', () => {
+    it('should have toi as last field (observacoes removed)', () => {
       const fields = getRetornoFields('INSPECAO UC CORTADA I15');
-      const obs = fields[fields.length - 1];
-      expect(obs.nome).toBe('observacoes');
-      expect(obs.tipo).toBe('text');
-      expect(obs.linha).toBe(6);
+      const lastField = fields[fields.length - 1];
+      expect(lastField.nome).toBe('toi');
+      expect(lastField.linha).toBe(5);
     });
 
-    it('should NOT have descricao field (uses observacoes instead)', () => {
+    it('should NOT have descricao field', () => {
       const fields = getRetornoFields('INSPECAO UC CORTADA I15');
       const descricao = fields.find(f => f.nome === 'descricao');
       expect(descricao).toBeUndefined();
+    });
+
+    it('should NOT have observacoes field (removed)', () => {
+      const fields = getRetornoFields('INSPECAO UC CORTADA I15');
+      const observacoes = fields.find(f => f.nome === 'observacoes');
+      expect(observacoes).toBeUndefined();
+    });
+
+    it('should have exactly 8 fields (observacoes removed)', () => {
+      const fields = getRetornoFields('INSPECAO UC CORTADA I15');
+      expect(fields.length).toBe(8);
     });
   });
 });

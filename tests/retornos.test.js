@@ -184,7 +184,7 @@ describe('retornos', () => {
   });
 
   describe('UC Cortada - layout lado-a-lado', () => {
-    it('should render 9 fields for INSPECAO UC CORTADA I15', () => {
+    it('should render 8 fields for INSPECAO UC CORTADA I15', () => {
       DOM.tipoOrdem.value = 'INSPECAO UC CORTADA I15';
       renderRetorno();
       const situacao = document.getElementById('situacao-cliente');
@@ -195,7 +195,6 @@ describe('retornos', () => {
       const chaves = document.getElementById('chaves');
       const aplicadoToi = document.getElementById('aplicado-toi');
       const toi = document.getElementById('toi');
-      const observacoes = document.getElementById('observacoes');
       expect(situacao).toBeTruthy();
       expect(viavel).toBeTruthy();
       expect(ramal).toBeTruthy();
@@ -204,7 +203,6 @@ describe('retornos', () => {
       expect(chaves).toBeTruthy();
       expect(aplicadoToi).toBeTruthy();
       expect(toi).toBeTruthy();
-      expect(observacoes).toBeTruthy();
     });
 
     it('should render ramal and medicao in same flex row container', () => {
@@ -290,7 +288,7 @@ describe('retornos', () => {
       expect(document.getElementById('chaves')).toBeTruthy();
       expect(document.getElementById('aplicado-toi')).toBeTruthy();
       expect(document.getElementById('toi')).toBeTruthy();
-      expect(document.getElementById('observacoes')).toBeTruthy();
+      expect(document.getElementById('observacoes')).toBeNull();
     });
 
     it('should NOT render descricao field for UC Cortada', () => {
@@ -310,7 +308,6 @@ describe('retornos', () => {
       document.getElementById('jump').value = 'COM JUMP';
       document.getElementById('chaves').value = 'COM CHAVE';
       document.getElementById('aplicado-toi').value = 'NAO';
-      document.getElementById('observacoes').value = 'Teste obs';
       const data = getRetornoData();
       expect(data['situacao-cliente']).toBe('CORTADO');
       expect(data['viavel-retirar']).toBe('COM MUNK');
@@ -318,7 +315,7 @@ describe('retornos', () => {
       expect(data['medicao']).toBe('COM MEDIÇÃO');
       expect(data['jump']).toBe('COM JUMP');
       expect(data['chaves']).toBe('COM CHAVE');
-      expect(data['observacoes']).toBe('Teste obs');
+      expect(data['observacoes']).toBeUndefined();
       expect(data['toi']).toBeUndefined();
     });
 
