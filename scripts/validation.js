@@ -80,8 +80,9 @@ function validateSection1() {
   const horaInicioEl = document.getElementById("hora_inicio");
   const horaFimEl = document.getElementById("hora_fim");
   if (horaInicioEl && horaFimEl && data.hora_inicio && data.hora_fim) {
-    if (data.hora_fim <= data.hora_inicio) {
-      markError(horaFimEl, "Hora fim deve ser maior que hora início.");
+    // Permitir overnight (ex: 23:00 → 01:00), mas impedir duração zero (ex: 10:00 → 10:00)
+    if (data.hora_fim === data.hora_inicio) {
+      markError(horaFimEl, "Hora fim deve ser diferente da hora início.");
       hasSpecialError = true;
     } else {
       clearError(horaFimEl);
@@ -118,12 +119,16 @@ function validateSection2() {
     if (inp.value === "") {
       markError(inp, "Informe o número");
       hasError = true;
-    } else if (nums.includes(inp.value)) {
-      markError(inp, "Número duplicado");
-      hasError = true;
-      hasDuplicate = true;
     } else {
-      nums.push(inp.value);
+      // Normalizar número: converter para número se possível, senão remover zeros à esquerda
+      const normalizedNum = isNaN(Number(inp.value)) ? inp.value.replace(/^0+/, '') : String(Number(inp.value));
+      if (nums.includes(normalizedNum)) {
+        markError(inp, "Número duplicado");
+        hasError = true;
+        hasDuplicate = true;
+      } else {
+        nums.push(normalizedNum);
+      }
     }
   });
 
@@ -138,10 +143,12 @@ function validateSection3() {
   const tipo = DOM.tipoOrdem?.value || "";
   if (!tipo) return true;
 
-  const campos = DOM.retornoCampos.querySelectorAll(".mb-4");
+  // Iterar sobre todos os campos individuais usando [data-field-nome]
+  // Isso funciona tanto para layout antigo (um campo por .mb-4) quanto novo (múltiplos campos por linha flex)
+  const fieldGroups = DOM.retornoCampos.querySelectorAll("[data-field-nome]");
   let valid = true;
 
-  campos.forEach((group) => {
+  fieldGroups.forEach((group) => {
     // Skip hidden conditional fields
     if (group.style.display === "none") return;
 

@@ -141,12 +141,12 @@ describe('validation', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false if hora_fim <= hora_inicio', () => {
+    it('should return true if hora_fim < hora_inicio (overnight)', () => {
       fillAllRequiredFields();
-      document.getElementById('hora_inicio').value = '10:00';
-      document.getElementById('hora_fim').value = '09:00';
+      document.getElementById('hora_inicio').value = '23:00';
+      document.getElementById('hora_fim').value = '01:00';
       const result = validateSection(1);
-      expect(result).toBe(false);
+      expect(result).toBe(true);
     });
 
     it('should return false if hora_fim equals hora_inicio', () => {
@@ -199,14 +199,24 @@ describe('validation', () => {
       expect(errorSpan.textContent).toContain('futura');
     });
 
-    it('should show "Hora fim" inline error when hora_fim <= hora_inicio', () => {
+    it('should show "Hora fim" inline error when hora_fim equals hora_inicio', () => {
       fillAllRequiredFields();
       document.getElementById('hora_inicio').value = '10:00';
-      document.getElementById('hora_fim').value = '09:00';
+      document.getElementById('hora_fim').value = '10:00';
       validateSection(1);
       const horaFim = document.getElementById('hora_fim');
       const errorSpan = horaFim.nextElementSibling;
       expect(errorSpan.textContent).toContain('Hora fim');
+    });
+
+    it('should not show error when hora_fim < hora_inicio (overnight)', () => {
+      fillAllRequiredFields();
+      document.getElementById('hora_inicio').value = '23:00';
+      document.getElementById('hora_fim').value = '01:00';
+      validateSection(1);
+      const horaFim = document.getElementById('hora_fim');
+      const errorSpan = horaFim.nextElementSibling;
+      expect(errorSpan.textContent).toBe('');
     });
 
     it('should handle coordinates field (readonly, not required)', () => {

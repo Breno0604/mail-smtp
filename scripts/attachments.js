@@ -2,6 +2,15 @@ import { DOM } from "./dom.js";
 import { state, saveState } from "./state.js";
 import { showError } from "./ui.js";
 
+// Array para rastrear Object URLs criadas para previews
+let previewObjectUrls = [];
+
+// Função para revogar todas as URLs de preview
+function revokePreviewUrls() {
+  previewObjectUrls.forEach(url => URL.revokeObjectURL(url));
+  previewObjectUrls = [];
+}
+
 export function handleUploadClick() {
   DOM.fileInput.click();
 }
@@ -31,13 +40,18 @@ export function removeFile(index) {
 }
 
 export function renderPreviews() {
+  // Revogar URLs antigas para evitar memory leak
+  revokePreviewUrls();
+  
   DOM.previewGrid.innerHTML = "";
   state.attachments.forEach((file, i) => {
     const div = document.createElement("div");
     div.className = "preview-item relative border border-slate-200 rounded-[10px] overflow-hidden bg-slate-50 cursor-pointer transition-all duration-200 hover:border-blue-300";
 
     const img = document.createElement("img");
-    img.src = URL.createObjectURL(file);
+    const objectUrl = URL.createObjectURL(file);
+    previewObjectUrls.push(objectUrl); // Rastrear URL para revogação futura
+    img.src = objectUrl;
     img.alt = file.name;
     img.className = "w-full aspect-square object-cover block";
 

@@ -1,7 +1,7 @@
 import { DOM } from "./dom.js";
 import { state, setCurrentUUID } from "./state.js";
 import { renderIniciais, iniciaisFields } from "./iniciais.js";
-import { renderRetorno, setRetornoData } from "./retornos.js";
+import { renderRetorno, setRetornoData, handleTipoChange } from "./retornos.js";
 import { renderEquipamentos } from "./equipment.js";
 import { renderPreviews } from "./attachments.js";
 import { base64ToBlob } from "./utils.js";
@@ -27,6 +27,11 @@ export function applyRecord(record) {
 
   // Render Início
   renderIniciais();
+
+  // Re-atachar listener de tipo-ordem (renderIniciais recria o elemento)
+  if (DOM.tipoOrdem) {
+    DOM.tipoOrdem.addEventListener("change", handleTipoChange);
+  }
 
   if (record.tipoOrdem && DOM.tipoOrdem) {
     DOM.tipoOrdem.value = record.tipoOrdem;

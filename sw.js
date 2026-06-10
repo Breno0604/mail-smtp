@@ -1,4 +1,4 @@
-const CACHE_NAME = 'retorno-v52';
+const CACHE_NAME = 'retorno-v53';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
