@@ -14,7 +14,9 @@ describe('reset', () => {
       <div id="iniciais-campos"></div>
       <div id="equipamentos-list"></div>
       <div id="retorno-campos"></div>
+      <div id="retorno-placeholder"></div>
       <div id="retorno-desc"></div>
+      <div id="preview-corpo">—</div>
       <select id="tipo-ordem"><option value="">Selecione</option></select>
       <div id="preview-grid"></div>
       <div id="file-count">0 / 12</div>
@@ -57,7 +59,6 @@ describe('reset', () => {
     state.equipamentos = [{ status: 'Instalado', categoria: 'Medidor', numero: '1' }];
     state.attachments = [new File(['test'], 'test.jpg', { type: 'image/jpeg' })];
     state.lastTipoOrdem = 'ADEQUACAO SMF';
-    state.visitedRetorno = true;
     state.currentUUID = 'test-uuid-123';
     state.iniciaisValido = true;
     state._createdAt = '2024-01-01T00:00:00.000Z';
@@ -92,11 +93,6 @@ describe('reset', () => {
     it('should clear state.lastTipoOrdem', () => {
       resetForm();
       expect(state.lastTipoOrdem).toBe('');
-    });
-
-    it('should clear state.visitedRetorno', () => {
-      resetForm();
-      expect(state.visitedRetorno).toBe(false);
     });
 
     it('should clear state.currentUUID', () => {

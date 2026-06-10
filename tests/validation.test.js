@@ -12,6 +12,7 @@ describe('validation', () => {
       <div id="iniciais-campos"></div>
       <div id="equipamentos-list"></div>
       <div id="retorno-campos"></div>
+      <div id="retorno-placeholder"></div>
       <div id="retorno-desc"></div>
       <div id="preview-grid"></div>
       <div id="file-count">0 / 12</div>
@@ -328,12 +329,12 @@ describe('validation', () => {
 
   describe('validateSection(3) - Retorno', () => {
     beforeEach(() => {
-      // Set up tipo-ordem for renderRetorno
       const select = document.createElement('select');
       select.id = 'tipo-ordem';
       select.innerHTML = '<option value="">Selecione</option><option value="ADEQUACAO SMF">ADEQUACAO SMF</option>';
       document.body.appendChild(select);
       DOM.tipoOrdem = select;
+      DOM.tipoOrdem.value = 'ADEQUACAO SMF';
     });
 
     it('should return false when textarea with data-required is empty', () => {
@@ -344,7 +345,7 @@ describe('validation', () => {
 
     it('should return true when textarea with data-required is filled', () => {
       renderRetorno();
-      const textarea = document.getElementById('descricao-retorno');
+      const textarea = document.getElementById('descricao');
       textarea.value = 'Some description text';
       const result = validateSection(3);
       expect(result).toBe(true);
@@ -361,13 +362,13 @@ describe('validation', () => {
     it('should add error class to empty textarea', () => {
       renderRetorno();
       validateSection(3);
-      const textarea = document.getElementById('descricao-retorno');
+      const textarea = document.getElementById('descricao');
       expect(textarea.classList.contains('error')).toBe(true);
     });
 
     it('should remove error class when value is present', () => {
       renderRetorno();
-      const textarea = document.getElementById('descricao-retorno');
+      const textarea = document.getElementById('descricao');
       textarea.value = 'filled';
       validateSection(3);
       expect(textarea.classList.contains('error')).toBe(false);
@@ -376,7 +377,7 @@ describe('validation', () => {
     it('should show inline error "Campo obrigatório" on empty retorno', () => {
       renderRetorno();
       validateSection(3);
-      const textarea = document.getElementById('descricao-retorno');
+      const textarea = document.getElementById('descricao');
       const errorSpan = textarea.nextElementSibling;
       expect(errorSpan.classList.contains('field-error')).toBe(true);
       expect(errorSpan.classList.contains('show')).toBe(true);
@@ -581,11 +582,12 @@ describe('validation', () => {
     it('should populate state.retorno after valid section 3', () => {
       const select = document.createElement('select');
       select.id = 'tipo-ordem';
-      select.innerHTML = '<option value="">Selecione</option>';
+      select.innerHTML = '<option value="">Selecione</option><option value="ADEQUACAO SMF">ADEQUACAO SMF</option>';
       document.body.appendChild(select);
       DOM.tipoOrdem = select;
+      DOM.tipoOrdem.value = 'ADEQUACAO SMF';
       renderRetorno();
-      const textarea = document.getElementById('descricao-retorno');
+      const textarea = document.getElementById('descricao');
       textarea.value = 'descricao valida';
       validateSection(3);
       expect(state.retorno.descricao).toBe('descricao valida');
@@ -594,9 +596,10 @@ describe('validation', () => {
     it('should not populate state.retorno when section 3 validation fails', () => {
       const select = document.createElement('select');
       select.id = 'tipo-ordem';
-      select.innerHTML = '<option value="">Selecione</option>';
+      select.innerHTML = '<option value="">Selecione</option><option value="ADEQUACAO SMF">ADEQUACAO SMF</option>';
       document.body.appendChild(select);
       DOM.tipoOrdem = select;
+      DOM.tipoOrdem.value = 'ADEQUACAO SMF';
       renderRetorno();
       validateSection(3);
       expect(state.retorno.descricao).toBeUndefined();
@@ -635,12 +638,13 @@ describe('validation', () => {
     it('should collect retorno data for section 3', () => {
       const select = document.createElement('select');
       select.id = 'tipo-ordem';
-      select.innerHTML = '<option value="">Selecione</option>';
+      select.innerHTML = '<option value="">Selecione</option><option value="ADEQUACAO SMF">ADEQUACAO SMF</option>';
       document.body.appendChild(select);
       DOM.tipoOrdem = select;
+      DOM.tipoOrdem.value = 'ADEQUACAO SMF';
       
       renderRetorno();
-      const textarea = document.getElementById('descricao-retorno');
+      const textarea = document.getElementById('descricao');
       textarea.value = 'test description';
       collectSectionData(3);
       expect(state.retorno.descricao).toBe('test description');

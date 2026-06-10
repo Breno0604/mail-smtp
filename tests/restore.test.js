@@ -14,6 +14,7 @@ describe('restore', () => {
       <div id="iniciais-campos"></div>
       <div id="equipamentos-list"></div>
       <div id="retorno-campos"></div>
+      <div id="retorno-placeholder"></div>
       <div id="retorno-desc"></div>
       <select id="tipo-ordem">
         <option value="">Selecione</option>
@@ -61,7 +62,6 @@ describe('restore', () => {
     state.equipamentos = [];
     state.attachments = [];
     state.lastTipoOrdem = '';
-    state.visitedRetorno = false;
     state.iniciaisValido = false;
     state.currentUUID = '';
     state.retorno = {};
@@ -93,7 +93,6 @@ describe('restore', () => {
       ],
       retorno: { descricao: 'Restored description' },
       lastTipoOrdem: 'ADEQUACAO SMF',
-      visitedRetorno: true,
       tipoOrdem: 'ADEQUACAO SMF',
       composicao: { complementoCorpo: 'Restored complement' },
       attachments: [
@@ -121,11 +120,6 @@ describe('restore', () => {
     it('should restore lastTipoOrdem', () => {
       applyRecord(sampleRecord);
       expect(state.lastTipoOrdem).toBe('ADEQUACAO SMF');
-    });
-
-    it('should restore visitedRetorno', () => {
-      applyRecord(sampleRecord);
-      expect(state.visitedRetorno).toBe(true);
     });
 
     it('should restore iniciais data', () => {
@@ -173,17 +167,6 @@ describe('restore', () => {
     it('should restore complementoCorpo', () => {
       applyRecord(sampleRecord);
       expect(DOM.complementoCorpo.value).toBe('Restored complement');
-    });
-
-    it('should return record.currentSection', () => {
-      const result = applyRecord(sampleRecord);
-      expect(result).toBe(3);
-    });
-
-    it('should default to section 1 if currentSection is not set', () => {
-      const recordWithoutSection = { ...sampleRecord, currentSection: undefined };
-      const result = applyRecord(recordWithoutSection);
-      expect(result).toBe(1);
     });
 
     it('should handle empty or missing composicao', () => {
