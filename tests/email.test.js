@@ -121,7 +121,7 @@ describe('email', () => {
       const data = { ...sampleData, retorno: { descricao: 'Retorno test description' } };
       const body = composeEmail(data);
       expect(body).toContain('RETORNO:');
-      expect(body).toContain('DESCRICAO:');
+      expect(body).toContain('DESCRICAO DO SERVICO:');
       expect(body).toContain('RETORNO TEST DESCRIPTION');
     });
 
