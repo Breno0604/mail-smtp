@@ -19,8 +19,26 @@ export const iniciaisFields = [
 
 const FIELD_DESCRICAO = { nome: "descricao", label: "Descrição do Serviço", tipo: "textarea" };
 
+// Campos para Inspeção UC Cortada (I15, I30, I90, I180) - mesmos campos, 4 tipos
+const UC_CORTADA_FIELDS = [
+  { linha: 1, nome: "situacao-cliente", label: "Situação", tipo: "select", opcoes: ["CORTADO", "AUTO RELIGADO CORTE EXECUTADO", "AUTO RELIGADO", "SOLICITOU RELIGACAO", "NOVO CLIENTE NO LOCAL"] },
+  { linha: 2, nome: "viavel-retirar", label: "Viável Retirar", tipo: "select", opcoes: ["COM MUNK OU GUINCHO", "COM MUNK", "COM LINHA VIVA", "N/A"] },
+  { linha: 3, nome: "ramal", label: "Ramal", tipo: "select", opcoes: ["COM RAMAL", "SEM RAMAL"] },
+  { linha: 3, nome: "medicao", label: "Medição", tipo: "select", opcoes: ["COM MEDIÇÃO", "SEM MEDIÇÃO"] },
+  { linha: 4, nome: "jump", label: "Jump", tipo: "select", opcoes: ["COM JUMP", "SEM JUMP"] },
+  { linha: 4, nome: "chaves", label: "Chaves", tipo: "select", opcoes: ["COM CHAVE", "SEM CHAVE"] },
+  { linha: 5, nome: "aplicado-toi", label: "Aplicado TOI", tipo: "select", opcoes: ["SIM", "NAO"] },
+  { linha: 5, nome: "toi", label: "TOI", tipo: "text", condicional: { campoRef: "aplicado-toi", valor: "SIM" } },
+  { linha: 6, nome: "observacoes", label: "Observações Adicionais", tipo: "text" },
+];
+
 export const retornoFieldsByTipo = {
   "default": [FIELD_DESCRICAO],
+
+  "INSPECAO UC CORTADA I15": UC_CORTADA_FIELDS,
+  "INSPECAO UC CORTADA I30": UC_CORTADA_FIELDS,
+  "INSPECAO UC CORTADA I90": UC_CORTADA_FIELDS,
+  "INSPECAO UC CORTADA I180": UC_CORTADA_FIELDS,
 
   "SUBST. MEDIDOR A PEDIDO": [
     FIELD_DESCRICAO,

@@ -21,47 +21,72 @@ export function renderRetorno() {
   DOM.retornoPlaceholder.style.display = "none";
 
   const fields = getRetornoFields(tipo);
+  const linhas = agruparPorLinha(fields);
 
-  fields.forEach((field) => {
-    const group = document.createElement("div");
-    group.className = "mb-4";
-    group.dataset.fieldNome = field.nome;
+  linhas.forEach((camposLinha) => {
+    const isMultiCampo = camposLinha.length > 1;
+    const rowDiv = document.createElement("div");
+    rowDiv.className = isMultiCampo ? "flex gap-3 mb-4" : "mb-4";
 
-    if (field.condicional) {
-      group.dataset.condicionalRef = field.condicional.campoRef;
-      group.dataset.condicionalVal = field.condicional.valor;
-      group.style.display = "none";
-    }
+    camposLinha.forEach((field) => {
+      const group = document.createElement("div");
+      group.className = isMultiCampo ? "flex-1" : "";
+      group.dataset.fieldNome = field.nome;
 
-    const label = document.createElement("label");
-    label.setAttribute("for", field.nome);
-    label.className = "block font-semibold text-[13px] text-slate-600 mb-1";
-    label.textContent = field.label;
+      if (field.condicional) {
+        group.dataset.condicionalRef = field.condicional.campoRef;
+        group.dataset.condicionalVal = field.condicional.valor;
+        group.style.display = "none";
+      }
 
-    const creator = INPUT_CREATORS[field.tipo] ?? INPUT_CREATORS.text;
-    const input = creator(field);
-    input.id = field.nome;
-    input.placeholder = field.label;
-    input.setAttribute("data-required", "");
+      const label = document.createElement("label");
+      label.setAttribute("for", field.nome);
+      label.className = "block font-semibold text-[13px] text-slate-600 mb-1";
+      label.textContent = field.label;
 
-    addBlurValidation(input);
-    input.addEventListener("input", debouncedSave);
-    input.addEventListener("change", debouncedSave);
+      const creator = INPUT_CREATORS[field.tipo] ?? INPUT_CREATORS.text;
+      const input = creator(field);
+      input.id = field.nome;
+      input.placeholder = field.label;
+      input.setAttribute("data-required", "");
 
-    if (hasConditionalDependents(field.nome, fields)) {
-      input.addEventListener("change", () => updateConditionalFields(fields));
-    }
+      addBlurValidation(input);
+      input.addEventListener("input", debouncedSave);
+      input.addEventListener("change", debouncedSave);
 
-    const errorSpan = document.createElement("span");
-    errorSpan.className = "field-error";
+      if (hasConditionalDependents(field.nome, fields)) {
+        input.addEventListener("change", () => updateConditionalFields(fields));
+      }
 
-    group.appendChild(label);
-    group.appendChild(input);
-    group.appendChild(errorSpan);
-    DOM.retornoCampos.appendChild(group);
+      const errorSpan = document.createElement("span");
+      errorSpan.className = "field-error";
+
+      group.appendChild(label);
+      group.appendChild(input);
+      group.appendChild(errorSpan);
+      rowDiv.appendChild(group);
+    });
+
+    DOM.retornoCampos.appendChild(rowDiv);
   });
 
   updateConditionalFields(fields);
+}
+
+function agruparPorLinha(fields) {
+  const linhas = [];
+  const mapa = new Map();
+
+  fields.forEach((field) => {
+    const linhaKey = field.linha ?? linhas.length;
+    if (!mapa.has(linhaKey)) {
+      mapa.set(linhaKey, []);
+      linhas.push(mapa.get(linhaKey));
+    }
+    mapa.get(linhaKey).push(field);
+  });
+
+  return linhas;
 }
 
 function hasConditionalDependents(nome, fields) {

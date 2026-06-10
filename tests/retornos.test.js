@@ -13,6 +13,8 @@ describe('retornos', () => {
         <option value="">Selecione</option>
         <option value="ADEQUACAO SMF">ADEQUACAO SMF</option>
         <option value="CORTE POR FALTA DE PAGAMENTO">CORTE POR FALTA DE PAGAMENTO</option>
+        <option value="INSPECAO UC CORTADA I15">INSPECAO UC CORTADA I15</option>
+        <option value="INSPECAO UC CORTADA I30">INSPECAO UC CORTADA I30</option>
       </select>
       <div id="iniciais-campos"></div>
       <div id="equipamentos-list"></div>
@@ -178,6 +180,156 @@ describe('retornos', () => {
       DOM.tipoOrdem.value = 'ADEQUACAO SMF';
       handleTipoChange();
       expect(state.lastTipoOrdem).toBe('ADEQUACAO SMF');
+    });
+  });
+
+  describe('UC Cortada - layout lado-a-lado', () => {
+    it('should render 9 fields for INSPECAO UC CORTADA I15', () => {
+      DOM.tipoOrdem.value = 'INSPECAO UC CORTADA I15';
+      renderRetorno();
+      const situacao = document.getElementById('situacao-cliente');
+      const viavel = document.getElementById('viavel-retirar');
+      const ramal = document.getElementById('ramal');
+      const medicao = document.getElementById('medicao');
+      const jump = document.getElementById('jump');
+      const chaves = document.getElementById('chaves');
+      const aplicadoToi = document.getElementById('aplicado-toi');
+      const toi = document.getElementById('toi');
+      const observacoes = document.getElementById('observacoes');
+      expect(situacao).toBeTruthy();
+      expect(viavel).toBeTruthy();
+      expect(ramal).toBeTruthy();
+      expect(medicao).toBeTruthy();
+      expect(jump).toBeTruthy();
+      expect(chaves).toBeTruthy();
+      expect(aplicadoToi).toBeTruthy();
+      expect(toi).toBeTruthy();
+      expect(observacoes).toBeTruthy();
+    });
+
+    it('should render ramal and medicao in same flex row container', () => {
+      DOM.tipoOrdem.value = 'INSPECAO UC CORTADA I15';
+      renderRetorno();
+      const ramalGroup = document.querySelector('[data-field-nome="ramal"]');
+      const medicaoGroup = document.querySelector('[data-field-nome="medicao"]');
+      expect(ramalGroup.parentElement).toBe(medicaoGroup.parentElement);
+      expect(ramalGroup.parentElement.classList.contains('flex')).toBe(true);
+    });
+
+    it('should render jump and chaves in same flex row container', () => {
+      DOM.tipoOrdem.value = 'INSPECAO UC CORTADA I15';
+      renderRetorno();
+      const jumpGroup = document.querySelector('[data-field-nome="jump"]');
+      const chavesGroup = document.querySelector('[data-field-nome="chaves"]');
+      expect(jumpGroup.parentElement).toBe(chavesGroup.parentElement);
+      expect(jumpGroup.parentElement.classList.contains('flex')).toBe(true);
+    });
+
+    it('should render aplicado-toi and toi in same flex row container', () => {
+      DOM.tipoOrdem.value = 'INSPECAO UC CORTADA I15';
+      renderRetorno();
+      const aplicadoGroup = document.querySelector('[data-field-nome="aplicado-toi"]');
+      const toiGroup = document.querySelector('[data-field-nome="toi"]');
+      expect(aplicadoGroup.parentElement).toBe(toiGroup.parentElement);
+      expect(aplicadoGroup.parentElement.classList.contains('flex')).toBe(true);
+    });
+
+    it('should render situacao-cliente alone (no flex container)', () => {
+      DOM.tipoOrdem.value = 'INSPECAO UC CORTADA I15';
+      renderRetorno();
+      const situacaoGroup = document.querySelector('[data-field-nome="situacao-cliente"]');
+      expect(situacaoGroup.parentElement.classList.contains('flex')).toBe(false);
+    });
+
+    it('should have flex-1 class on fields sharing a row', () => {
+      DOM.tipoOrdem.value = 'INSPECAO UC CORTADA I15';
+      renderRetorno();
+      const ramalGroup = document.querySelector('[data-field-nome="ramal"]');
+      const medicaoGroup = document.querySelector('[data-field-nome="medicao"]');
+      expect(ramalGroup.classList.contains('flex-1')).toBe(true);
+      expect(medicaoGroup.classList.contains('flex-1')).toBe(true);
+    });
+  });
+
+  describe('UC Cortada - campo TOI condicional', () => {
+    it('should hide TOI field when aplicado-toi is not SIM', () => {
+      DOM.tipoOrdem.value = 'INSPECAO UC CORTADA I15';
+      renderRetorno();
+      const aplicadoToi = document.getElementById('aplicado-toi');
+      aplicadoToi.value = 'NAO';
+      aplicadoToi.dispatchEvent(new Event('change'));
+      const toiGroup = document.querySelector('[data-field-nome="toi"]');
+      expect(toiGroup.style.display).toBe('none');
+    });
+
+    it('should show TOI field when aplicado-toi is SIM', () => {
+      DOM.tipoOrdem.value = 'INSPECAO UC CORTADA I15';
+      renderRetorno();
+      const aplicadoToi = document.getElementById('aplicado-toi');
+      aplicadoToi.value = 'SIM';
+      aplicadoToi.dispatchEvent(new Event('change'));
+      const toiGroup = document.querySelector('[data-field-nome="toi"]');
+      expect(toiGroup.style.display).toBe('');
+    });
+
+    it('should initially hide TOI field on render (no value selected)', () => {
+      DOM.tipoOrdem.value = 'INSPECAO UC CORTADA I15';
+      renderRetorno();
+      const toiGroup = document.querySelector('[data-field-nome="toi"]');
+      expect(toiGroup.style.display).toBe('none');
+    });
+
+    it('should render same fields for I30 as for I15', () => {
+      DOM.tipoOrdem.value = 'INSPECAO UC CORTADA I30';
+      renderRetorno();
+      expect(document.getElementById('situacao-cliente')).toBeTruthy();
+      expect(document.getElementById('viavel-retirar')).toBeTruthy();
+      expect(document.getElementById('ramal')).toBeTruthy();
+      expect(document.getElementById('medicao')).toBeTruthy();
+      expect(document.getElementById('jump')).toBeTruthy();
+      expect(document.getElementById('chaves')).toBeTruthy();
+      expect(document.getElementById('aplicado-toi')).toBeTruthy();
+      expect(document.getElementById('toi')).toBeTruthy();
+      expect(document.getElementById('observacoes')).toBeTruthy();
+    });
+
+    it('should NOT render descricao field for UC Cortada', () => {
+      DOM.tipoOrdem.value = 'INSPECAO UC CORTADA I15';
+      renderRetorno();
+      const descricao = document.getElementById('descricao');
+      expect(descricao).toBeNull();
+    });
+
+    it('should collect all visible UC Cortada field values via getRetornoData', () => {
+      DOM.tipoOrdem.value = 'INSPECAO UC CORTADA I15';
+      renderRetorno();
+      document.getElementById('situacao-cliente').value = 'CORTADO';
+      document.getElementById('viavel-retirar').value = 'COM MUNK';
+      document.getElementById('ramal').value = 'COM RAMAL';
+      document.getElementById('medicao').value = 'COM MEDIÇÃO';
+      document.getElementById('jump').value = 'COM JUMP';
+      document.getElementById('chaves').value = 'COM CHAVE';
+      document.getElementById('aplicado-toi').value = 'NAO';
+      document.getElementById('observacoes').value = 'Teste obs';
+      const data = getRetornoData();
+      expect(data['situacao-cliente']).toBe('CORTADO');
+      expect(data['viavel-retirar']).toBe('COM MUNK');
+      expect(data['ramal']).toBe('COM RAMAL');
+      expect(data['medicao']).toBe('COM MEDIÇÃO');
+      expect(data['jump']).toBe('COM JUMP');
+      expect(data['chaves']).toBe('COM CHAVE');
+      expect(data['observacoes']).toBe('Teste obs');
+      expect(data['toi']).toBeUndefined();
+    });
+
+    it('should include TOI in getRetornoData when visible', () => {
+      DOM.tipoOrdem.value = 'INSPECAO UC CORTADA I15';
+      renderRetorno();
+      document.getElementById('aplicado-toi').value = 'SIM';
+      document.getElementById('aplicado-toi').dispatchEvent(new Event('change'));
+      document.getElementById('toi').value = 'TOI-123';
+      const data = getRetornoData();
+      expect(data['toi']).toBe('TOI-123');
     });
   });
 });

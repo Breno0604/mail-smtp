@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { iniciaisFields, retornoFields } from '../scripts/fields.js';
+import { iniciaisFields, retornoFields, getRetornoFields, retornoFieldsByTipo } from '../scripts/fields.js';
 
 describe('fields', () => {
   describe('iniciaisFields', () => {
@@ -122,6 +122,106 @@ describe('fields', () => {
       expect(field.label).toBe('Descrição');
       expect(field.type).toBe('textarea');
       expect(field.required).toBe(true);
+    });
+  });
+
+  describe('UC_CORTADA_FIELDS', () => {
+    const ucCortadaTipos = [
+      'INSPECAO UC CORTADA I15',
+      'INSPECAO UC CORTADA I30',
+      'INSPECAO UC CORTADA I90',
+      'INSPECAO UC CORTADA I180',
+    ];
+
+    it('should have exactly 9 fields for each UC Cortada tipo', () => {
+      ucCortadaTipos.forEach((tipo) => {
+        const fields = getRetornoFields(tipo);
+        expect(fields.length).toBe(9);
+      });
+    });
+
+    it('should return the same array reference for all 4 UC Cortada tipos', () => {
+      const fields15 = getRetornoFields('INSPECAO UC CORTADA I15');
+      const fields30 = getRetornoFields('INSPECAO UC CORTADA I30');
+      const fields90 = getRetornoFields('INSPECAO UC CORTADA I90');
+      const fields180 = getRetornoFields('INSPECAO UC CORTADA I180');
+      expect(fields15).toBe(fields30);
+      expect(fields30).toBe(fields90);
+      expect(fields90).toBe(fields180);
+    });
+
+    it('should have situacao-cliente as first field with correct options', () => {
+      const fields = getRetornoFields('INSPECAO UC CORTADA I15');
+      const situacao = fields[0];
+      expect(situacao.nome).toBe('situacao-cliente');
+      expect(situacao.tipo).toBe('select');
+      expect(situacao.opcoes).toEqual([
+        'CORTADO',
+        'AUTO RELIGADO CORTE EXECUTADO',
+        'AUTO RELIGADO',
+        'SOLICITOU RELIGACAO',
+        'NOVO CLIENTE NO LOCAL',
+      ]);
+    });
+
+    it('should have viavel-retirar as second field with correct options', () => {
+      const fields = getRetornoFields('INSPECAO UC CORTADA I15');
+      const viavel = fields[1];
+      expect(viavel.nome).toBe('viavel-retirar');
+      expect(viavel.tipo).toBe('select');
+      expect(viavel.opcoes).toEqual([
+        'COM MUNK OU GUINCHO',
+        'COM MUNK',
+        'COM LINHA VIVA',
+        'N/A',
+      ]);
+    });
+
+    it('should have ramal and medicao on same linha (3)', () => {
+      const fields = getRetornoFields('INSPECAO UC CORTADA I15');
+      const ramal = fields.find(f => f.nome === 'ramal');
+      const medicao = fields.find(f => f.nome === 'medicao');
+      expect(ramal.linha).toBe(3);
+      expect(medicao.linha).toBe(3);
+    });
+
+    it('should have jump and chaves on same linha (4)', () => {
+      const fields = getRetornoFields('INSPECAO UC CORTADA I15');
+      const jump = fields.find(f => f.nome === 'jump');
+      const chaves = fields.find(f => f.nome === 'chaves');
+      expect(jump.linha).toBe(4);
+      expect(chaves.linha).toBe(4);
+    });
+
+    it('should have aplicado-toi and toi on same linha (5)', () => {
+      const fields = getRetornoFields('INSPECAO UC CORTADA I15');
+      const aplicadoToi = fields.find(f => f.nome === 'aplicado-toi');
+      const toi = fields.find(f => f.nome === 'toi');
+      expect(aplicadoToi.linha).toBe(5);
+      expect(toi.linha).toBe(5);
+    });
+
+    it('should have TOI field with condicional on aplicado-toi = SIM', () => {
+      const fields = getRetornoFields('INSPECAO UC CORTADA I15');
+      const toi = fields.find(f => f.nome === 'toi');
+      expect(toi.condicional).toEqual({
+        campoRef: 'aplicado-toi',
+        valor: 'SIM',
+      });
+    });
+
+    it('should have observacoes as last field with tipo text', () => {
+      const fields = getRetornoFields('INSPECAO UC CORTADA I15');
+      const obs = fields[fields.length - 1];
+      expect(obs.nome).toBe('observacoes');
+      expect(obs.tipo).toBe('text');
+      expect(obs.linha).toBe(6);
+    });
+
+    it('should NOT have descricao field (uses observacoes instead)', () => {
+      const fields = getRetornoFields('INSPECAO UC CORTADA I15');
+      const descricao = fields.find(f => f.nome === 'descricao');
+      expect(descricao).toBeUndefined();
     });
   });
 });
