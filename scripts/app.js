@@ -1,6 +1,6 @@
 import { DOM, cacheDOM } from "./dom.js";
 import { state, debouncedSave, saveState, getCurrentUUID, clearCurrentUUID } from "./state.js";
-import { renderIniciais } from "./iniciais.js";
+import { renderIniciais, getIniciaisData } from "./iniciais.js";
 import { addEquip } from "./equipment.js";
 import { handleTipoChange } from "./retornos.js";
 import { handleUploadClick, handleFileChange, closeLightbox, updateFileCount, renderPreviews } from "./attachments.js";
@@ -47,6 +47,21 @@ function updateFilledClass(el) {
   }
 }
 
+/**
+ * Verifica se UC e OS estão preenchidos e habilita o auto-save inicial.
+ * Quando ambos estão preenchidos, seta iniciaisValido = true e dispara saveState().
+ */
+function checkInitialPersistence() {
+  const iniciaisData = getIniciaisData();
+  const ucPreenchido = iniciaisData.uc && iniciaisData.uc.trim() !== "";
+  const osPreenchido = iniciaisData.os && iniciaisData.os.trim() !== "";
+
+  if (ucPreenchido && osPreenchido && !state.iniciaisValido) {
+    state.iniciaisValido = true;
+    saveState();
+  }
+}
+
 export function updateAllFilledClasses() {
   document.querySelectorAll("input, select, textarea").forEach((el) => {
     updateFilledClass(el);
@@ -87,6 +102,10 @@ function initEvents() {
       updateFilledClass(e.target);
       debouncedSave();
       updateLivePreview();
+      // Check if UC and OS are now filled to enable initial persistence
+      if (e.target.id === "uc" || e.target.id === "os") {
+        checkInitialPersistence();
+      }
     }
   });
 
@@ -95,6 +114,10 @@ function initEvents() {
       updateFilledClass(e.target);
       debouncedSave();
       updateLivePreview();
+      // Check if UC and OS are now filled to enable initial persistence
+      if (e.target.id === "uc" || e.target.id === "os") {
+        checkInitialPersistence();
+      }
     }
   });
 

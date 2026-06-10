@@ -113,11 +113,11 @@ describe('state', () => {
   });
 
   describe('debouncedSave', () => {
-    it('should call saveState after 300ms delay', async () => {
+    it('should call saveState after 1000ms delay', async () => {
       vi.useFakeTimers();
       const spy = vi.spyOn(globalThis, 'setTimeout');
       debouncedSave();
-      expect(spy).toHaveBeenCalledWith(expect.any(Function), 300);
+      expect(spy).toHaveBeenCalledWith(expect.any(Function), 1000);
       spy.mockRestore();
       vi.useRealTimers();
     });

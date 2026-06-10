@@ -61,7 +61,7 @@ export async function saveState() {
 
 export function debouncedSave() {
   clearTimeout(saveTimer);
-  saveTimer = setTimeout(saveState, 300);
+  saveTimer = setTimeout(saveState, 1000);
 }
 
 // ── helpers privados ──────────────────────────────────────────────────────────
