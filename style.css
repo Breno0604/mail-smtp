@@ -12,6 +12,10 @@ body {
 html { scroll-behavior: smooth; }
 body { touch-action: manipulation; overflow-y: auto; }
 
+/* === Scrollbar oculta === */
+body::-webkit-scrollbar { display: none; }
+body { -ms-overflow-style: none; scrollbar-width: none; }
+
 /* === Section cards ──────────────────────────────────────────────────────── */
 .sec-card {
   background: #ffffff;
