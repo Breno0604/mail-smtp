@@ -1,83 +1,133 @@
 import { DOM } from "./dom.js";
 import { state, saveState, debouncedSave } from "./state.js";
 import { addBlurValidation } from "./validation.js";
-import { retornoFields } from "./fields.js";
+import { getRetornoFields } from "./fields.js";
+import { INPUT_CREATORS } from "./iniciais.js";
 import { INPUT_CLASS } from "./styles.js";
 
-export { retornoFields };
-
-// Helper privado: evita repetir a query do elemento de descrição
-const getDescricaoEl = () => document.getElementById("descricao-retorno");
-
 export function renderRetorno() {
-  const tipoLabel = DOM.tipoOrdem.options[DOM.tipoOrdem.selectedIndex]?.text || "—";
+  const tipo = DOM.tipoOrdem?.value || "";
+
+  const tipoLabel = DOM.tipoOrdem?.options[DOM.tipoOrdem.selectedIndex]?.text || "—";
   DOM.retornoDesc.innerHTML = `<span class="text-base font-bold text-slate-900">${tipoLabel}</span>`;
+
   DOM.retornoCampos.innerHTML = "";
 
-  retornoFields.forEach((field) => {
+  if (!tipo) {
+    DOM.retornoPlaceholder.style.display = "";
+    return;
+  }
+
+  DOM.retornoPlaceholder.style.display = "none";
+
+  const fields = getRetornoFields(tipo);
+
+  fields.forEach((field) => {
     const group = document.createElement("div");
     group.className = "mb-4";
+    group.dataset.fieldNome = field.nome;
+
+    if (field.condicional) {
+      group.dataset.condicionalRef = field.condicional.campoRef;
+      group.dataset.condicionalVal = field.condicional.valor;
+      group.style.display = "none";
+    }
 
     const label = document.createElement("label");
-    label.setAttribute("for", field.id);
+    label.setAttribute("for", field.nome);
     label.className = "block font-semibold text-[13px] text-slate-600 mb-1";
-    label.innerHTML = field.label + (field.required ? ' <span class="text-red-600">*</span>' : "");
+    label.textContent = field.label;
 
-    const input = document.createElement("textarea");
-    input.setAttribute("rows", "4");
-    input.id = field.id;
-    if (field.required) input.setAttribute("data-required", "");
+    const creator = INPUT_CREATORS[field.tipo] ?? INPUT_CREATORS.text;
+    const input = creator(field);
+    input.id = field.nome;
     input.placeholder = field.label;
-    input.className = INPUT_CLASS + " resize-y min-h-[80px]";
+    input.setAttribute("data-required", "");
 
-    const errorSpan = document.createElement("span");
-    errorSpan.className = "field-error";
     addBlurValidation(input);
     input.addEventListener("input", debouncedSave);
     input.addEventListener("change", debouncedSave);
+
+    if (hasConditionalDependents(field.nome, fields)) {
+      input.addEventListener("change", () => updateConditionalFields(fields));
+    }
+
+    const errorSpan = document.createElement("span");
+    errorSpan.className = "field-error";
+
     group.appendChild(label);
     group.appendChild(input);
     group.appendChild(errorSpan);
     DOM.retornoCampos.appendChild(group);
   });
+
+  updateConditionalFields(fields);
+}
+
+function hasConditionalDependents(nome, fields) {
+  return fields.some(f => f.condicional?.campoRef === nome);
+}
+
+function updateConditionalFields(fields) {
+  fields.forEach((field) => {
+    if (!field.condicional) return;
+
+    const group = DOM.retornoCampos.querySelector(`[data-field-nome="${field.nome}"]`);
+    if (!group) return;
+
+    const controlEl = document.getElementById(field.condicional.campoRef);
+    if (!controlEl) return;
+
+    if (controlEl.value === field.condicional.valor) {
+      group.style.display = "";
+    } else {
+      group.style.display = "none";
+      const input = group.querySelector("input, select, textarea");
+      if (input) input.value = "";
+    }
+  });
 }
 
 export function getRetornoData() {
-  const el = getDescricaoEl();
-  return { descricao: el?.value ?? "" };
+  const tipo = DOM.tipoOrdem?.value || "";
+  if (!tipo) return {};
+
+  const fields = getRetornoFields(tipo);
+  const data = {};
+
+  fields.forEach((field) => {
+    const group = DOM.retornoCampos.querySelector(`[data-field-nome="${field.nome}"]`);
+    if (!group || group.style.display === "none") return;
+
+    const el = document.getElementById(field.nome);
+    if (el) data[field.nome] = el.value;
+  });
+
+  return data;
 }
 
 export function setRetornoData(data) {
   if (!data) return;
-  const el = getDescricaoEl();
-  if (el && data.descricao) el.value = data.descricao;
-}
 
-let pendingTipoValue = null;
+  Object.entries(data).forEach(([nome, value]) => {
+    const el = document.getElementById(nome);
+    if (el) el.value = value;
+  });
 
-export function handleTipoChange() {
-  const sel = DOM.tipoOrdem;
-  if (sel.value === state.lastTipoOrdem) return;
-  if (state.lastTipoOrdem && state.visitedRetorno) {
-    pendingTipoValue = sel.value;
-    DOM.modalTipo.classList.remove("hidden");
-    sel.value = state.lastTipoOrdem;
-  } else {
-    state.lastTipoOrdem = sel.value;
-    saveState();
+  const tipo = DOM.tipoOrdem?.value || "";
+  if (tipo) {
+    updateConditionalFields(getRetornoFields(tipo));
   }
 }
 
-export function cancelTipoChange() {
-  DOM.modalTipo.classList.add("hidden");
-  pendingTipoValue = null;
-}
+export function handleTipoChange() {
+  const tipo = DOM.tipoOrdem?.value || "";
 
-export function confirmTipoChange() {
-  DOM.modalTipo.classList.add("hidden");
-  state.lastTipoOrdem = pendingTipoValue;
-  DOM.tipoOrdem.value = pendingTipoValue;
+  if (tipo === state.lastTipoOrdem) return;
+
+  state.lastTipoOrdem = tipo;
+  state.retorno = {};
   DOM.retornoCampos.innerHTML = "";
-  pendingTipoValue = null;
+  renderRetorno();
   saveState();
 }
