@@ -5,48 +5,67 @@
 const DOM = {};
 
 export function cacheDOM() {
-  DOM.sections = document.querySelectorAll(".section");
-  DOM.wrapper = document.getElementById("section-wrapper");
-  DOM.steps = document.querySelectorAll(".step-label");
-  DOM.btnAnterior = document.getElementById("btn-anterior");
-  DOM.btnProximo = document.getElementById("btn-proximo");
+  // Header
+  DOM.hamburger = document.getElementById("hamburger");
+  DOM.btnNovoForm = document.getElementById("btn-novo-form");
+
+  // Sections
+  DOM.secInicio = document.getElementById("sec-inicio");
+  DOM.secRetorno = document.getElementById("sec-retorno");
+  DOM.secEquipamentos = document.getElementById("sec-equipamentos");
+  DOM.secAnexos = document.getElementById("sec-anexos");
+  DOM.secRevisao = document.getElementById("sec-revisao");
+
+  // Error & Toast
   DOM.errorMsg = document.getElementById("error-msg");
+  DOM.toast = document.getElementById("toast");
+
+  // Início
   DOM.iniciaisCampos = document.getElementById("iniciais-campos");
   DOM.tipoOrdem = document.getElementById("tipo-ordem");
+
+  // Retorno
+  DOM.retornoDesc = document.getElementById("retorno-desc");
+  DOM.retornoPlaceholder = document.getElementById("retorno-placeholder");
+  DOM.retornoCampos = document.getElementById("retorno-campos");
+
+  // Equipamentos
   DOM.equipList = document.getElementById("equipamentos-list");
   DOM.btnAddEquip = document.getElementById("btn-add-equip");
-  DOM.retornoDesc = document.getElementById("retorno-desc");
-  DOM.retornoCampos = document.getElementById("retorno-campos");
+
+  // Anexos
   DOM.fileInput = document.getElementById("file-input");
   DOM.fileCount = document.getElementById("file-count");
   DOM.previewGrid = document.getElementById("preview-grid");
   DOM.fileUploadArea = document.getElementById("file-upload-area");
+
+  // Revisão
   DOM.previewCorpo = document.getElementById("preview-corpo");
   DOM.complementoCorpo = document.getElementById("complemento-corpo");
-  DOM.toast = document.getElementById("toast");
-  DOM.btnNovoForm = document.getElementById("btn-novo-form");
-  DOM.modalTipo = document.getElementById("modal-tipo");
-  DOM.modalCancel = document.getElementById("modal-cancel");
-  DOM.modalConfirm = document.getElementById("modal-confirm");
-  DOM.lightbox = document.getElementById("lightbox");
-  DOM.lightboxImg = document.getElementById("lightbox-img");
-  DOM.lightboxClose = document.getElementById("lightbox-close");
-  DOM.hamburger = document.getElementById("hamburger");
+
+  // Send
+  DOM.btnEnviar = document.getElementById("btn-enviar");
+
+  // Sidebar
   DOM.sidebar = document.getElementById("sidebar");
   DOM.sidebarOverlay = document.getElementById("sidebar-overlay");
   DOM.sidebarClose = document.getElementById("sidebar-close");
   DOM.sidebarList = document.getElementById("sidebar-list");
   DOM.sidebarFilter = document.getElementById("sidebar-filter");
+
+  // Modals
   DOM.dupModal = document.getElementById("dup-modal");
   DOM.dupModalTitle = document.getElementById("dup-modal-title");
   DOM.dupModalBody = document.getElementById("dup-modal-body");
   DOM.dupModalCancel = document.getElementById("dup-modal-cancel");
   DOM.dupModalConfirm = document.getElementById("dup-modal-confirm");
+  DOM.lightbox = document.getElementById("lightbox");
+  DOM.lightboxImg = document.getElementById("lightbox-img");
+  DOM.lightboxClose = document.getElementById("lightbox-close");
   DOM.confirmModal = document.getElementById("confirm-modal");
   DOM.confirmModalText = document.getElementById("confirm-modal-text");
   DOM.confirmModalOk = document.getElementById("confirm-modal-ok");
   DOM.confirmModalCancel = document.getElementById("confirm-modal-cancel");
-  DOM.stepCurrentText = document.getElementById("step-current-text");
 }
 
 export { DOM };
