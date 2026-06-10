@@ -62,6 +62,13 @@ function createTextInput() {
   return input;
 }
 
+function createTextareaInput() {
+  const input = document.createElement("textarea");
+  input.rows = 4;
+  input.className = INPUT_CLASS + " resize-y min-h-[80px]";
+  return input;
+}
+
 // Criador especial: widget de coordenadas com botão de refresh.
 // Retorna o group diretamente (já inclui o wrapper interno) e atualiza DOM.tipoOrdem se aplicável.
 function createCoordinatesGroup(field, label) {
@@ -115,12 +122,13 @@ function createCoordinatesGroup(field, label) {
 }
 
 // Tabela de criadores — evita if/else if encadeados em renderIniciais
-const INPUT_CREATORS = {
+export const INPUT_CREATORS = {
   select: createSelectInput,
   number: createNumberInput,
   date: createDateInput,
   time: createTimeInput,
   text: createTextInput,
+  textarea: createTextareaInput,
 };
 
 // ── funções exportadas ────────────────────────────────────────────────────────
