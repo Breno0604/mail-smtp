@@ -20,7 +20,7 @@ body { touch-action: manipulation; overflow-y: auto; }
   overflow: hidden;
 }
 .sec-head {
-  padding: 0.75rem 0.5rem;
+  padding: 0.75rem 1rem;
   font-weight: 700;
   font-size: 0.9rem;
   color: #0f172a;
@@ -42,7 +42,7 @@ body { touch-action: manipulation; overflow-y: auto; }
   font-weight: 700;
 }
 .sec-body {
-  padding: 1rem 0.5rem;
+  padding: 1rem 1rem;
 }
 
 /* ── Retorno placeholder ────────────────────────────────────────────────── */
