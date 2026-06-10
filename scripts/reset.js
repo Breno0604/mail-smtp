@@ -7,23 +7,29 @@ import { hideError } from "./ui.js";
 import { captureCoordinates } from "./utils.js";
 
 export function resetForm() {
-  renderIniciais();
-  captureCoordinates();
-  DOM.retornoCampos.innerHTML = "";
-  DOM.equipList.innerHTML = "";
-  DOM.complementoCorpo.value = "";
+  // Reset state
   state.equipamentos = [];
   state.attachments = [];
   state.iniciais = {};
   state.retorno = {};
   state.lastTipoOrdem = "";
-  state.visitedRetorno = false;
   state.currentUUID = "";
   state._createdAt = null;
+  state.iniciaisValido = false;
+
+  // Clear all sections
+  renderIniciais();
+  captureCoordinates();
+  DOM.retornoCampos.innerHTML = "";
+  DOM.retornoPlaceholder.style.display = "";
+  DOM.retornoDesc.innerHTML = "—";
+  DOM.equipList.innerHTML = "";
+  DOM.complementoCorpo.value = "";
   DOM.previewGrid.innerHTML = "";
+  DOM.previewCorpo.textContent = "—";
+
   showEmptyEquip();
   updateFileCount();
   hideError();
   clearCurrentUUID();
-  state.iniciaisValido = false;
 }
