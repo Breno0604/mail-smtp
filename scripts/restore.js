@@ -1,6 +1,9 @@
 import { DOM } from "./dom.js";
 import { state, setCurrentUUID } from "./state.js";
 import { renderIniciais, iniciaisFields } from "./iniciais.js";
+import { renderRetorno, setRetornoData } from "./retornos.js";
+import { renderEquipamentos } from "./equipment.js";
+import { renderPreviews } from "./attachments.js";
 import { base64ToBlob } from "./utils.js";
 
 export function applyRecord(record) {
@@ -9,7 +12,6 @@ export function applyRecord(record) {
 
   state.equipamentos = record.equipamentos || [];
   state.lastTipoOrdem = record.lastTipoOrdem || "";
-  state.visitedRetorno = record.visitedRetorno || false;
   state.iniciais = record.iniciais || {};
   state.retorno = record.retorno || {};
   state._createdAt = record.createdAt;
@@ -23,6 +25,7 @@ export function applyRecord(record) {
     state.attachments = [];
   }
 
+  // Render Início
   renderIniciais();
 
   if (record.tipoOrdem && DOM.tipoOrdem) {
@@ -37,9 +40,20 @@ export function applyRecord(record) {
     });
   }
 
+  // Render Retorno if tipo is set
+  if (record.tipoOrdem) {
+    renderRetorno();
+    setRetornoData(record.retorno);
+  }
+
+  // Render Equipamentos
+  renderEquipamentos();
+
+  // Render Anexos
+  renderPreviews();
+
+  // Restore complemento
   if (record.composicao?.complementoCorpo && DOM.complementoCorpo) {
     DOM.complementoCorpo.value = record.composicao.complementoCorpo;
   }
-
-  return record.currentSection || 1;
 }
