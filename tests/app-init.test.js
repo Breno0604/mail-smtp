@@ -29,24 +29,22 @@ describe('DOM readiness', () => {
     const ids = [
       'hamburger', 'btn-novo-form',
       'sidebar', 'sidebar-list', 'sidebar-overlay', 'sidebar-close', 'sidebar-filter',
-      'btn-anterior', 'btn-proximo', 'error-msg',
-      'iniciais-campos',
-      'equipamentos-list', 'btn-add-equip',
-      'retorno-desc', 'retorno-campos',
-      'file-input', 'file-count', 'preview-grid', 'file-upload-area',
-      'preview-corpo', 'complemento-corpo',
+      'error-msg',
+      'sec-inicio', 'iniciais-campos',
+      'sec-retorno', 'retorno-desc', 'retorno-placeholder', 'retorno-campos',
+      'sec-equipamentos', 'equipamentos-list', 'btn-add-equip',
+      'sec-anexos', 'file-input', 'file-count', 'preview-grid', 'file-upload-area',
+      'sec-revisao', 'preview-corpo', 'complemento-corpo',
+      'btn-enviar',
       'toast',
-      'modal-tipo', 'modal-cancel', 'modal-confirm',
       'lightbox', 'lightbox-img', 'lightbox-close',
       'dup-modal', 'dup-modal-title', 'dup-modal-body', 'dup-modal-cancel', 'dup-modal-confirm',
       'confirm-modal', 'confirm-modal-text', 'confirm-modal-cancel', 'confirm-modal-ok',
-      'step-current-text',
     ];
     ids.forEach((id) => {
       expect(document.getElementById(id), `Element #${id} not found in HTML`).toBeTruthy();
     });
-    expect(document.querySelectorAll('.section')).toHaveLength(5);
-    expect(document.querySelectorAll('.step-label')).toHaveLength(5);
+    expect(document.querySelectorAll('.sec-card')).toHaveLength(5);
   });
 
   it('should execute cacheDOM without errors', async () => {
