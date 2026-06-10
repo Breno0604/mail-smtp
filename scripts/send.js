@@ -4,19 +4,22 @@ import { updateRecordStatus } from "./db.js";
 import { showToast } from "./ui.js";
 import { checkDuplicate } from "./duplicate.js";
 import { compressAttachments } from "./compress.js";
+import { validateAll } from "./validation.js";
 
 export async function sendEmail() {
-  const canProceed = await checkDuplicate();
-  if (!canProceed) return;
+  if (!validateAll()) return false;
 
-  const btn = DOM.btnProximo;
+  const canProceed = await checkDuplicate();
+  if (!canProceed) return false;
+
+  const btn = DOM.btnEnviar;
   btn.disabled = true;
   btn.textContent = "Enviando...";
 
   try {
     const uc = state.iniciais?.uc || "—";
     const os = state.iniciais?.os || "—";
-    const tipoLabel = DOM.tipoOrdem.options[DOM.tipoOrdem.selectedIndex]?.text || "\u2014";
+    const tipoLabel = DOM.tipoOrdem?.options[DOM.tipoOrdem.selectedIndex]?.text || "\u2014";
     const subject = `OS #${os} - UC ${uc} - ${tipoLabel}`;
     const baseBody = DOM.previewCorpo.textContent;
     const compCorpo = DOM.complementoCorpo.value.trim();
@@ -48,6 +51,6 @@ export async function sendEmail() {
     return false;
   } finally {
     btn.disabled = false;
-    btn.textContent = "Enviar";
+    btn.textContent = "\uD83D\uDCE8 Enviar";
   }
 }
