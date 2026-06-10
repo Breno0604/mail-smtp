@@ -12,70 +12,68 @@ body {
 html { overflow: hidden; }
 body { touch-action: manipulation; }
 
-/* === Sections === */
-.section { display: none; }
-.section.active { display: block; }
-
-/* === Section Transitions === */
-@keyframes slideOutLeft {
-  from { transform: translateX(0); opacity: 1; }
-  to { transform: translateX(-30px); opacity: 0; }
+/* === Section cards ──────────────────────────────────────────────────────── */
+.sec-card {
+  background: #fff;
+  border: 2px solid #e2e8f0;
+  border-radius: 14px;
+  overflow: hidden;
 }
-@keyframes slideOutRight {
-  from { transform: translateX(0); opacity: 1; }
-  to { transform: translateX(30px); opacity: 0; }
+.sec-head {
+  padding: 0.75rem 1.25rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #0f172a;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
-@keyframes enterFromRight {
-  from { transform: translateX(30px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
-@keyframes enterFromLeft {
-  from { transform: translateX(-30px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
-
-.section.slide-out-left { animation: slideOutLeft 0.25s ease forwards; }
-.section.slide-out-right { animation: slideOutRight 0.25s ease forwards; }
-.section.section-enter-next { animation: enterFromRight 0.25s ease forwards; }
-.section.section-enter-prev { animation: enterFromLeft 0.25s ease forwards; }
-
-/* === Step Indicators (Pill Segments) === */
-.step-label {
-  flex: 1;
-  text-align: center;
-  padding: 8px 0;
-  border-radius: 10px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
-  color: #64748b;
-  background: #f1f5f9;
-  user-select: none;
-  transition: all 0.2s ease;
-  cursor: default;
-}
-.step-label.active {
+.sec-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
   background: #2563eb;
   color: #fff;
+  font-size: 0.7rem;
   font-weight: 700;
 }
-.step-label.completed {
-  background: #eff6ff;
-  color: #2563eb;
-  font-weight: 600;
+.sec-body {
+  padding: 1rem 1.25rem;
 }
 
-.step-current-text {
-  color: #1d4ed8;
-  font-size: 0.8125rem;
-  font-weight: 700;
+/* ── Retorno placeholder ────────────────────────────────────────────────── */
+.ret-placeholder {
   text-align: center;
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  padding: 1.5rem 1rem;
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+.ret-icon {
+  font-size: 1.5rem;
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* ── Send button ────────────────────────────────────────────────────────── */
+#btn-enviar {
+  background: linear-gradient(135deg, #059669, #047857);
+  color: #fff;
+  border: none;
+  padding: 0.85rem 3rem;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3);
+  transition: all 0.2s;
+}
+#btn-enviar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4);
 }
 
 /* === Container === */
@@ -85,14 +83,6 @@ body { touch-action: manipulation; }
   height: 100vh;
   height: 100dvh;
   padding-bottom: 0;
-}
-
-/* === Section Wrapper === */
-#section-wrapper {
-  flex: 1;
-  overflow-y: auto;
-  min-height: 0;
-  padding: 0 16px;
 }
 
 /* Espaço após último campo da seção 1 (Início) */
@@ -153,21 +143,6 @@ body { touch-action: manipulation; }
 .btn-secondary:active:not(:disabled) {
   transform: translateY(1px);
 }
-.btn-nav-back {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  color: #fff;
-  border: none;
-  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.2);
-}
-.btn-nav-back:hover:not(:disabled) {
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
-  transform: translateY(-1px);
-}
-.btn-nav-back:active:not(:disabled) {
-  transform: translateY(1px);
-  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.15);
-}
 .btn-success {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: #fff;
@@ -181,17 +156,6 @@ body { touch-action: manipulation; }
 .btn-success:active:not(:disabled) {
   transform: translateY(1px);
   box-shadow: 0 2px 6px rgba(5, 150, 105, 0.15);
-}
-
-#nav-buttons {
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 4px;
-  background: #f8fafc;
-}
-
-#nav-buttons .btn {
-  min-width: 100px;
 }
 
 /* === Field States === */
@@ -459,9 +423,7 @@ input.is-filled:hover, select.is-filled:hover, textarea.is-filled:hover {
 
 /* === Mobile Adjustments === */
 @media (max-width: 640px) {
-  .step-label { font-size: 10px !important; padding: 7px 0 !important; }
   .preview-grid { grid-template-columns: repeat(2, 1fr) !important; }
-  #nav-buttons .btn { min-width: 90px !important; padding: 8px 14px !important; font-size: 0.8125rem !important; }
 }
 
 /* === Outdoor / High Contrast (sol intenso) === */
@@ -477,7 +439,7 @@ label, .sidebar-title {
 }
 
 /* Títulos com máximo contraste */
-h1, h2, h3, .step-current-text {
+h1, h2, h3 {
   color: #000000 !important;
 }
 
@@ -492,20 +454,6 @@ h1, h2, h3, .step-current-text {
 }
 .btn-success {
   box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4) !important;
-}
-
-/* Step indicators com mais contraste */
-.step-label {
-  color: #334155 !important;
-  font-weight: 700 !important;
-}
-.step-label.active {
-  background: #1d4ed8 !important;
-  color: #ffffff !important;
-}
-.step-label.completed {
-  background: #dbeafe !important;
-  color: #1e40af !important;
 }
 
 /* Inputs com texto mais escuro */
