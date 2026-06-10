@@ -12,6 +12,8 @@ export function closeSidebar() {
 function getRecordSummary(record) {
   const uc = record.iniciais?.uc || "";
   const os = record.iniciais?.os || "";
+  const tipoOrdem = record.tipoOrdem || "";
+  if (uc && os && tipoOrdem) return `${uc}-${os}-${tipoOrdem}`;
   if (uc && os) return `${uc}-${os}`;
   if (os) return `OS #${os}`;
   if (uc) return `UC ${uc}`;
@@ -42,7 +44,8 @@ export async function renderSidebar(filterTerm = "") {
     records = records.filter((r) => {
       const uc = (r.iniciais?.uc ?? "").toString().toLowerCase();
       const os = (r.iniciais?.os ?? "").toLowerCase();
-      return uc.includes(term) || os.includes(term);
+      const tipoOrdem = (r.tipoOrdem ?? "").toLowerCase();
+      return uc.includes(term) || os.includes(term) || tipoOrdem.includes(term);
     });
     if (records.length === 0) {
       list.innerHTML = `<div class="sidebar-empty">Nenhum registro encontrado para "${filterTerm}".</div>`;

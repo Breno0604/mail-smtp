@@ -83,6 +83,7 @@ function createCoordinatesGroup(field, label) {
   input.readOnly = true;
   input.className = INPUT_CLASS + " bg-gray-100 cursor-not-allowed";
   input.style.paddingRight = "40px";
+  input.placeholder = "Coletando coordenadas...";
 
   const refreshBtn = document.createElement("button");
   refreshBtn.type = "button";
