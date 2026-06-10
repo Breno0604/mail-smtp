@@ -9,8 +9,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-html { overflow: hidden; }
-body { touch-action: manipulation; }
+html { scroll-behavior: smooth; }
+body { touch-action: manipulation; overflow-y: auto; }
 
 /* === Section cards ──────────────────────────────────────────────────────── */
 .sec-card {
@@ -58,6 +58,15 @@ body { touch-action: manipulation; }
   margin-bottom: 6px;
 }
 
+/* ── Conditional fields transition ──────────────────────────────────────── */
+.sec-body [data-condicional-ref] {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.sec-body [data-condicional-ref][style*="display: none"] {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
 /* ── Send button ────────────────────────────────────────────────────────── */
 #btn-enviar {
   background: linear-gradient(135deg, #059669, #047857);
@@ -78,11 +87,7 @@ body { touch-action: manipulation; }
 
 /* === Container === */
 .container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  height: 100dvh;
-  padding-bottom: 0;
+  padding-bottom: 2rem;
 }
 
 /* Espaço após último campo da seção 1 (Início) */
