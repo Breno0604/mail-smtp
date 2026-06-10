@@ -1,4 +1,4 @@
-const CACHE_NAME = 'retorno-v45';
+const CACHE_NAME = 'retorno-v46';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -7,7 +7,6 @@ const STATIC_ASSETS = [
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
-  '/scripts/animator.js',
   '/scripts/app.js',
   '/scripts/attachments.js',
   '/scripts/compress.js',
@@ -22,7 +21,6 @@ const STATIC_ASSETS = [
   '/scripts/reset.js',
   '/scripts/restore.js',
   '/scripts/retornos.js',
-  '/scripts/sectionManager.js',
   '/scripts/send.js',
   '/scripts/sidebar.js',
   '/scripts/state.js',
