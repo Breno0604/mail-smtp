@@ -284,7 +284,7 @@ export function collectSectionData(n) {
     }
   }
   if (n === 3) {
-    if (_validatedData[3] && typeof _validatedData[3] === 'object' && _validatedData[3].descricao !== undefined) {
+    if (_validatedData[3] && typeof _validatedData[3] === 'object') {
       state.retorno = _validatedData[3];
       delete _validatedData[3];
     } else {
