@@ -43,67 +43,41 @@
 - `fields.js` — field definitions (iniciaisFields, retornoFields) with hardcoded options
 - `styles.js` — dynamic CSS class injection
 
-## Sistema de Tipos de Ordem e Campos de Retorno
+## Sistema de Campos Dinâmicos por Tipo de Ordem
+
+### Conceito
+O formulário tem campos de retorno que variam conforme o "Tipo de Ordem" selecionado. Cada tipo pode ter campos diferentes, com lógica condicional complexa (campos que aparecem/desaparecem baseados em outros campos).
 
 ### Fonte de verdade
-- Planilha: `dados_projeto/tipos_ordem_template.xlsx`
-- Abas relevantes: `tipos_ordem`, `corte` (e outras conforme novos tipos forem adicionados)
-- Código: `scripts/fields.js` (objeto `retornoFieldsByTipo`)
+- Planilha Excel em `dados_projeto/` define os campos de cada tipo
+- Código em `scripts/fields.js` implementa as definições
+- Renderização dinâmica em `scripts/retornos.js`
 
-### Estrutura de um campo de retorno
-```js
-{
-  linha: 1,           // Agrupa campos na mesma linha (flex row)
-  nome: "nome_campo", // ID do input, usado para coletar dados
-  label: "Label",     // Texto exibido no label
-  tipo: "select",     // text | number | select | textarea | date | time
-  opcoes: [...],      // Para tipo "select"
-  condicional: {      // Campo só aparece quando...
-    campoRef: "outro_campo",
-    valor: "VALOR" | ["VALOR1", "VALOR2"],  // String ou array
-    negado: true      // Opcional: inverte a lógica
-  }
-}
-```
+### Padrões arquiteturais importantes
 
-### Sistema de condicionais (`scripts/retornos.js`)
-- **Valor único**: `valor: "SIM"` → aparece quando campoRef === "SIM"
-- **Array de valores**: `valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"]` → aparece quando campoRef é qualquer um dos valores
-- **Negação**: `negado: true` → inverte a lógica (aparece quando NÃO corresponde)
-- **Cascata**: Campos podem depender de outros campos condicionais (ex: `qtd_medidor_bt` depende de `medidor_bt` que depende de `retorno_ligacao`)
-- **Ordem importa**: Campos pais devem aparecer antes dos filhos no array para cascata funcionar corretamente
+**Campos condicionais**: Sistema suporta 3 modos:
+- Valor único (string)
+- Múltiplos valores (array)
+- Negação (inverter lógica)
 
-### Regras de negócio importantes
-1. **FIELD_DESCRICAO**: Nem todos os tipos têm campo "Descrição do Serviço". Verificar na planilha se deve incluir.
-2. **Campos ocultos não vão para o email**: `composeEmail()` só inclui campos presentes em `data.retorno` (campos com `display: none` não são coletados por `getRetornoData()`)
-3. **Validação de campos ocultos**: `validateSection3()` pula campos com `group.style.display === "none"`
-4. **Cache de validação**: `collectSectionData(3)` aceita qualquer objeto em `_validatedData[3]` (não verificar campo específico como `descricao`)
-5. **Tipos compartilhados**: Múltiplos tipos de ordem podem compartilhar o mesmo array de campos (ex: `LIGACAO NOVA MEDIA TENSAO` e `LIGACAO NOVA MT - CLIENTE LIVRE`)
-6. **Nomes exatos**: O nome do tipo em `retornoFieldsByTipo` deve ser idêntico ao valor no dropdown `tipo-ordem` (em `iniciaisFields`)
+**Cascata de dependências**: Campos podem depender de outros campos condicionais. A ordem no array importa — pais devem vir antes dos filhos.
 
-### Checklist para adicionar novo tipo de ordem
-1. Definir campos baseados na planilha Excel
-2. Adicionar entrada em `retornoFieldsByTipo` (chave = nome exato do dropdown)
-3. Se compartilhar campos com outro tipo, criar constante fora do objeto (ex: `LIGACAO_NOVA_MT_FIELDS`)
-4. Incluir `FIELD_DESCRICAO` apenas se a planilha indicar
-5. Para condicionais multi-valor, usar array: `valor: ["VALOR1", "VALOR2"]`
-6. Para lógica invertida, usar `negado: true`
-7. Adicionar testes em `tests/fields.test.js` (definições) e `tests/retornos.test.js` (renderização + condicionais)
-8. Atualizar `CACHE_NAME` em `sw.js`
-9. Testar restore (carregar registro salvo) para garantir que condicionais são reavaliados
+**Campos compartilhados**: Tipos diferentes podem compartilhar o mesmo array de campos quando têm lógica idêntica.
 
-### Exemplo: Tipo com condicionais complexos
-```js
-const MEU_TIPO_FIELDS = [
-  { linha: 1, nome: "executado", label: "Executado", tipo: "select", opcoes: ["VISTORIA", "LIGAÇÃO"] },
-  // Aparece quando executado = VISTORIA
-  { linha: 2, nome: "obra", label: "Obra", tipo: "select", opcoes: ["SIM", "NÃO"], condicional: { campoRef: "executado", valor: "VISTORIA" } },
-  // Aparece quando executado = LIGAÇÃO
-  { linha: 2, nome: "tombamento", label: "Tombamento", tipo: "text", condicional: { campoRef: "executado", valor: "LIGAÇÃO" } },
-  // Aparece quando executado ≠ "CANCELADO" (negação)
-  { linha: 3, nome: "obs", label: "Observação", tipo: "textarea", condicional: { campoRef: "executado", valor: "CANCELADO", negado: true } },
-];
-```
+### Armadilhas conhecidas
+
+**Campos ocultos não vão para o email**: A coleta de dados (`getRetornoData`) filtra campos com `display: none`. O `composeEmail` também verifica se o campo existe nos dados antes de incluir. Dupla proteção.
+
+**Validação pula campos ocultos**: `validateSection3` verifica `group.style.display === "none"` antes de validar.
+
+**Cache de validação genérico**: O cache `_validatedData[3]` aceita qualquer objeto válido, não verifica campos específicos. Isso permite tipos sem campos obrigatórios padrão (ex: sem "descrição").
+
+**Nomes exatos**: O nome do tipo no objeto de campos deve ser idêntico ao valor no dropdown de seleção.
+
+### Decisões de negócio
+- Nem todos os tipos têm campo "Descrição do Serviço" — verificar na planilha antes de incluir
+- Ao mudar o tipo de ordem, campos de retorno são limpos (com confirmação se já foram preenchidos)
+- Restore (carregar registro salvo) deve reavaliar condicionais para garantir visibilidade correta
 
 ## Image compression (`scripts/utils.js`)
 - `MAX_SIZE = 650 * 1024` — target size after compression
