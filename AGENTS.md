@@ -43,6 +43,68 @@
 - `fields.js` — field definitions (iniciaisFields, retornoFields) with hardcoded options
 - `styles.js` — dynamic CSS class injection
 
+## Sistema de Tipos de Ordem e Campos de Retorno
+
+### Fonte de verdade
+- Planilha: `dados_projeto/tipos_ordem_template.xlsx`
+- Abas relevantes: `tipos_ordem`, `corte` (e outras conforme novos tipos forem adicionados)
+- Código: `scripts/fields.js` (objeto `retornoFieldsByTipo`)
+
+### Estrutura de um campo de retorno
+```js
+{
+  linha: 1,           // Agrupa campos na mesma linha (flex row)
+  nome: "nome_campo", // ID do input, usado para coletar dados
+  label: "Label",     // Texto exibido no label
+  tipo: "select",     // text | number | select | textarea | date | time
+  opcoes: [...],      // Para tipo "select"
+  condicional: {      // Campo só aparece quando...
+    campoRef: "outro_campo",
+    valor: "VALOR" | ["VALOR1", "VALOR2"],  // String ou array
+    negado: true      // Opcional: inverte a lógica
+  }
+}
+```
+
+### Sistema de condicionais (`scripts/retornos.js`)
+- **Valor único**: `valor: "SIM"` → aparece quando campoRef === "SIM"
+- **Array de valores**: `valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"]` → aparece quando campoRef é qualquer um dos valores
+- **Negação**: `negado: true` → inverte a lógica (aparece quando NÃO corresponde)
+- **Cascata**: Campos podem depender de outros campos condicionais (ex: `qtd_medidor_bt` depende de `medidor_bt` que depende de `retorno_ligacao`)
+- **Ordem importa**: Campos pais devem aparecer antes dos filhos no array para cascata funcionar corretamente
+
+### Regras de negócio importantes
+1. **FIELD_DESCRICAO**: Nem todos os tipos têm campo "Descrição do Serviço". Verificar na planilha se deve incluir.
+2. **Campos ocultos não vão para o email**: `composeEmail()` só inclui campos presentes em `data.retorno` (campos com `display: none` não são coletados por `getRetornoData()`)
+3. **Validação de campos ocultos**: `validateSection3()` pula campos com `group.style.display === "none"`
+4. **Cache de validação**: `collectSectionData(3)` aceita qualquer objeto em `_validatedData[3]` (não verificar campo específico como `descricao`)
+5. **Tipos compartilhados**: Múltiplos tipos de ordem podem compartilhar o mesmo array de campos (ex: `LIGACAO NOVA MEDIA TENSAO` e `LIGACAO NOVA MT - CLIENTE LIVRE`)
+6. **Nomes exatos**: O nome do tipo em `retornoFieldsByTipo` deve ser idêntico ao valor no dropdown `tipo-ordem` (em `iniciaisFields`)
+
+### Checklist para adicionar novo tipo de ordem
+1. Definir campos baseados na planilha Excel
+2. Adicionar entrada em `retornoFieldsByTipo` (chave = nome exato do dropdown)
+3. Se compartilhar campos com outro tipo, criar constante fora do objeto (ex: `LIGACAO_NOVA_MT_FIELDS`)
+4. Incluir `FIELD_DESCRICAO` apenas se a planilha indicar
+5. Para condicionais multi-valor, usar array: `valor: ["VALOR1", "VALOR2"]`
+6. Para lógica invertida, usar `negado: true`
+7. Adicionar testes em `tests/fields.test.js` (definições) e `tests/retornos.test.js` (renderização + condicionais)
+8. Atualizar `CACHE_NAME` em `sw.js`
+9. Testar restore (carregar registro salvo) para garantir que condicionais são reavaliados
+
+### Exemplo: Tipo com condicionais complexos
+```js
+const MEU_TIPO_FIELDS = [
+  { linha: 1, nome: "executado", label: "Executado", tipo: "select", opcoes: ["VISTORIA", "LIGAÇÃO"] },
+  // Aparece quando executado = VISTORIA
+  { linha: 2, nome: "obra", label: "Obra", tipo: "select", opcoes: ["SIM", "NÃO"], condicional: { campoRef: "executado", valor: "VISTORIA" } },
+  // Aparece quando executado = LIGAÇÃO
+  { linha: 2, nome: "tombamento", label: "Tombamento", tipo: "text", condicional: { campoRef: "executado", valor: "LIGAÇÃO" } },
+  // Aparece quando executado ≠ "CANCELADO" (negação)
+  { linha: 3, nome: "obs", label: "Observação", tipo: "textarea", condicional: { campoRef: "executado", valor: "CANCELADO", negado: true } },
+];
+```
+
 ## Image compression (`scripts/utils.js`)
 - `MAX_SIZE = 650 * 1024` — target size after compression
 - `SKIP_SIZE = 670 * 1024` — files ≤ this skip compression, sent as-is
@@ -73,6 +135,6 @@
 ## Dev workflow
 - Local testing: `npx netlify dev` (ES6 modules require HTTP; no `file://`)
 - No dev server, no hot reload — static files served by Netlify Functions emulator
-- Tests: `npm test` (Vitest + jsdom, 301 tests covering all modules except `send.js`)
+- Tests: `npm test` (Vitest + jsdom, 334 tests covering all modules except `send.js`)
 - Single test: `npx vitest run tests/validation.test.js`
 - Deploy: `git add -A && git commit -m "msg" && git push`
