@@ -40,7 +40,8 @@ export function composeEmail(data) {
   const retornoFields = getRetornoFields(tipo);
 
   retornoFields.forEach((field) => {
-    const val = data.retorno?.[field.nome] || "";
+    if (!data.retorno || !(field.nome in data.retorno)) return;
+    const val = data.retorno[field.nome];
     body += `\n${normalizeText(field.label)}: ${normalizeText(val || "(nao preenchido)")}`;
   });
 

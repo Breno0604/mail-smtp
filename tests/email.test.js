@@ -135,5 +135,30 @@ describe('email', () => {
       expect(typeof body).toBe('string');
       expect(body.length).toBeGreaterThan(0);
     });
+
+    it('should exclude fields not present in data.retorno (hidden fields)', () => {
+      const data = {
+        iniciais: { ...sampleData.iniciais, 'tipo-ordem': 'LIGACAO NOVA MEDIA TENSAO' },
+        equipamentos: [],
+        retorno: { retorno_ligacao: 'VISTORIA' },
+      };
+      const body = composeEmail(data);
+      expect(body).toContain('EXECUTADO:');
+      expect(body).toContain('VISTORIA');
+      expect(body).not.toContain('OBRA:');
+      expect(body).not.toContain('LIGACAO:');
+      expect(body).not.toContain('TOMBAMENTO:');
+    });
+
+    it('should show visible but empty fields as "(NAO PREENCHIDO)"', () => {
+      const data = {
+        iniciais: { ...sampleData.iniciais, 'tipo-ordem': 'LIGACAO NOVA MEDIA TENSAO' },
+        equipamentos: [],
+        retorno: { retorno_ligacao: '', obra: '', tipo_medicao: '' },
+      };
+      const body = composeEmail(data);
+      expect(body).toContain('EXECUTADO:');
+      expect(body).toContain('(NAO PREENCHIDO)');
+    });
   });
 });
