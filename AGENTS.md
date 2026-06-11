@@ -3,6 +3,9 @@
 ## Always-on skills
 - **clean-code-principles** (`.opencode/skills/clean-code-principles/`): planning, modularity, dependencies and clean code — load **always** before any code change
 
+## Conditional skills
+- **retorno-fields-guide** (`.opencode/skills/retorno-fields-guide/`): load **before** any task involving adding, modifying, or creating retorno fields for Tipos de Ordem. Triggered by mentions of "campos de retorno", "novos campos", "Tipo de Ordem", or references to `dados_projeto/tipos_ordem_template.xlsx`. Full spec: `docs/superpowers/specs/2026-06-11-retorno-fields-guide-design.md`.
+
 ## Stack
 - Frontend: vanilla HTML/CSS/JS (ES6 modules), Tailwind CSS (static), no bundler
 - Backend: single Netlify Function at `netlify/functions/send.js` (Node.js + nodemailer)
