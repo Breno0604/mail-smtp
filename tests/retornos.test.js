@@ -13,8 +13,10 @@ describe('retornos', () => {
         <option value="">Selecione</option>
         <option value="ADEQUACAO SMF">ADEQUACAO SMF</option>
         <option value="CORTE POR FALTA DE PAGAMENTO">CORTE POR FALTA DE PAGAMENTO</option>
+        <option value="DESLIG.PROG.MANUTENÇÃO">DESLIG.PROG.MANUTENÇÃO</option>
         <option value="INSPECAO UC CORTADA I15">INSPECAO UC CORTADA I15</option>
         <option value="INSPECAO UC CORTADA I30">INSPECAO UC CORTADA I30</option>
+        <option value="LIGACAO NOVA MEDIA TENSAO">LIGACAO NOVA MEDIA TENSAO</option>
       </select>
       <div id="iniciais-campos"></div>
       <div id="equipamentos-list"></div>
@@ -327,6 +329,109 @@ describe('retornos', () => {
       document.getElementById('toi').value = 'TOI-123';
       const data = getRetornoData();
       expect(data['toi']).toBe('TOI-123');
+    });
+  });
+
+  describe('Condicionais multi-valor e negado', () => {
+    describe('DESLIG.PROG.MANUTENÇÃO - campo negado', () => {
+      it('should hide acesso_desligamento when desligamento is DESLIGAMENTO EXECUTADO', () => {
+        DOM.tipoOrdem.value = 'DESLIG.PROG.MANUTENÇÃO';
+        renderRetorno();
+        const deslig = document.getElementById('desligamento');
+        deslig.value = 'DESLIGAMENTO EXECUTADO';
+        deslig.dispatchEvent(new Event('change'));
+        const group = document.querySelector('[data-field-nome="acesso_desligamento"]');
+        expect(group.style.display).toBe('none');
+      });
+
+      it('should show acesso_desligamento when desligamento is SEM ACESSO', () => {
+        DOM.tipoOrdem.value = 'DESLIG.PROG.MANUTENÇÃO';
+        renderRetorno();
+        const deslig = document.getElementById('desligamento');
+        deslig.value = 'SEM ACESSO';
+        deslig.dispatchEvent(new Event('change'));
+        const group = document.querySelector('[data-field-nome="acesso_desligamento"]');
+        expect(group.style.display).toBe('');
+      });
+
+      it('should initially show acesso_desligamento (no value selected, negado matches)', () => {
+        DOM.tipoOrdem.value = 'DESLIG.PROG.MANUTENÇÃO';
+        renderRetorno();
+        const group = document.querySelector('[data-field-nome="acesso_desligamento"]');
+        expect(group.style.display).toBe('');
+      });
+    });
+
+    describe('LIGACAO NOVA MEDIA TENSAO - condicional multi-valor', () => {
+      it('should show obra when retorno_ligacao is VISTORIA', () => {
+        DOM.tipoOrdem.value = 'LIGACAO NOVA MEDIA TENSAO';
+        renderRetorno();
+        const retorno = document.getElementById('retorno_ligacao');
+        retorno.value = 'VISTORIA';
+        retorno.dispatchEvent(new Event('change'));
+        const group = document.querySelector('[data-field-nome="obra"]');
+        expect(group.style.display).toBe('');
+      });
+
+      it('should hide obra when retorno_ligacao is LIGAÇÃO', () => {
+        DOM.tipoOrdem.value = 'LIGACAO NOVA MEDIA TENSAO';
+        renderRetorno();
+        const retorno = document.getElementById('retorno_ligacao');
+        retorno.value = 'LIGAÇÃO';
+        retorno.dispatchEvent(new Event('change'));
+        const group = document.querySelector('[data-field-nome="obra"]');
+        expect(group.style.display).toBe('none');
+      });
+
+      it('should show ligacao when retorno_ligacao is LIGAÇÃO', () => {
+        DOM.tipoOrdem.value = 'LIGACAO NOVA MEDIA TENSAO';
+        renderRetorno();
+        const retorno = document.getElementById('retorno_ligacao');
+        retorno.value = 'LIGAÇÃO';
+        retorno.dispatchEvent(new Event('change'));
+        const group = document.querySelector('[data-field-nome="ligacao"]');
+        expect(group.style.display).toBe('');
+      });
+
+      it('should hide ligacao when retorno_ligacao is VISTORIA', () => {
+        DOM.tipoOrdem.value = 'LIGACAO NOVA MEDIA TENSAO';
+        renderRetorno();
+        const retorno = document.getElementById('retorno_ligacao');
+        retorno.value = 'VISTORIA';
+        retorno.dispatchEvent(new Event('change'));
+        const group = document.querySelector('[data-field-nome="ligacao"]');
+        expect(group.style.display).toBe('none');
+      });
+    });
+
+    describe('LIGACAO NOVA MEDIA TENSAO - condicional em cascata', () => {
+      it('should show qtd_medidor_bt when medidor_bt is COM MEDIDOR BT (after showing conditional parent)', () => {
+        DOM.tipoOrdem.value = 'LIGACAO NOVA MEDIA TENSAO';
+        renderRetorno();
+        // First make medidor_bt visible by selecting VISTORIA
+        const retorno = document.getElementById('retorno_ligacao');
+        retorno.value = 'VISTORIA';
+        retorno.dispatchEvent(new Event('change'));
+        // Then set medidor_bt
+        const medidor = document.getElementById('medidor_bt');
+        medidor.value = 'COM MEDIDOR BT';
+        medidor.dispatchEvent(new Event('change'));
+        const group = document.querySelector('[data-field-nome="qtd_medidor_bt"]');
+        expect(group.style.display).toBe('');
+      });
+
+      it('should hide qtd_medidor_bt when medidor_bt is SEM MEDIDOR BT', () => {
+        DOM.tipoOrdem.value = 'LIGACAO NOVA MEDIA TENSAO';
+        renderRetorno();
+        const retorno = document.getElementById('retorno_ligacao');
+        retorno.value = 'VISTORIA';
+        retorno.dispatchEvent(new Event('change'));
+        const medidor = document.getElementById('medidor_bt');
+        medidor.value = 'SEM MEDIDOR BT';
+        medidor.dispatchEvent(new Event('change'));
+        const group = document.querySelector('[data-field-nome="qtd_medidor_bt"]');
+        expect(group.style.display).toBe('none');
+      });
     });
   });
 });

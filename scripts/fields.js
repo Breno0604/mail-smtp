@@ -31,6 +31,21 @@ const UC_CORTADA_FIELDS = [
   { linha: 5, nome: "toi", label: "TOI", tipo: "text", condicional: { campoRef: "aplicado-toi", valor: "SIM" } },
 ];
 
+// Campos para Ligação Nova Média Tensão e MT Cliente Livre - mesmos campos
+const LIGACAO_NOVA_MT_FIELDS = [
+  { linha: 1, nome: "retorno_ligacao", label: "Executado", tipo: "select", opcoes: ["VISTORIA", "VISTORIA + LIGAÇÃO", "LIGAÇÃO"] },
+  { linha: 2, nome: "obra", label: "Obra", tipo: "select", opcoes: ["CONCLUIDA", "NAO CONCLUIDA"], condicional: { campoRef: "retorno_ligacao", valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"] } },
+  { linha: 2, nome: "tipo_medicao", label: "Medição", tipo: "select", opcoes: ["ACOPLADA", "CUBICULO", "SEMI-DIRETA", "DIRETA"], condicional: { campoRef: "retorno_ligacao", valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"] } },
+  { linha: 3, nome: "status_medicao", label: "Status Medição", tipo: "select", opcoes: ["COM MEDICAO", "SEM MEDICAO"], condicional: { campoRef: "retorno_ligacao", valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"] } },
+  { linha: 3, nome: "ponto_de_entrega", label: "Ponto de Entrega", tipo: "select", opcoes: ["DE ACORDO", "EM DESACORDO", "NÃO CONSTRUIDO"], condicional: { campoRef: "retorno_ligacao", valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"] } },
+  { linha: 4, nome: "medidor_bt", label: "Medidor de BT", tipo: "select", opcoes: ["COM MEDIDOR BT", "SEM MEDIDOR BT"], condicional: { campoRef: "retorno_ligacao", valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"] } },
+  { linha: 4, nome: "qtd_medidor_bt", label: "Quantidade", tipo: "number", condicional: { campoRef: "medidor_bt", valor: "COM MEDIDOR BT" } },
+  { linha: 5, nome: "acesso_medicao", label: "Acesso", tipo: "select", opcoes: ["REGULAR", "IRREGULAR", "SEM ACESSO"], condicional: { campoRef: "retorno_ligacao", valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"] } },
+  { linha: 5, nome: "acesso_ponto_de_entrega", label: "Descreva o Problema", tipo: "text", condicional: { campoRef: "acesso_medicao", valor: ["IRREGULAR", "SEM ACESSO"] } },
+  { linha: 2, nome: "ligacao", label: "Ligação", tipo: "select", opcoes: ["CONCLUIDA", "NAO CONCLUIDA"], condicional: { campoRef: "retorno_ligacao", valor: "LIGAÇÃO" } },
+  { linha: 3, nome: "tombamento", label: "Tombamento", tipo: "text", condicional: { campoRef: "retorno_ligacao", valor: "LIGAÇÃO" } },
+];
+
 export const retornoFieldsByTipo = {
   "default": [FIELD_DESCRICAO],
 
@@ -83,11 +98,16 @@ export const retornoFieldsByTipo = {
   ],
 
   "CORTE POR FALTA DE PAGAMENTO": [
-    FIELD_DESCRICAO,
-    { nome: "motivo-corte", label: "Motivo do Corte", tipo: "select", opcoes: ["Falta de Pagamento", "Irregularidade", "A Pedido do Cliente", "Outro"] },
-    { nome: "data-corte", label: "Data do Corte", tipo: "date" },
-    { nome: "religado", label: "Religado?", tipo: "select", opcoes: ["SIM", "NÃO"], condicional: { campoRef: "motivo-corte", valor: "Falta de Pagamento" } },
+    { linha: 1, nome: "situacao_corte", label: "Situação", tipo: "select", opcoes: ["CLIENTE CORTADO", "CLIENTE VISITADO CONTA PAGA", "CLIENTE NAO PERMITIU O CORTE", "SEM ACESSO PARA EXECUTAR O CORTE"] },
   ],
+
+  "DESLIG.PROG.MANUTENÇÃO": [
+    { linha: 1, nome: "desligamento", label: "Desligamento", tipo: "select", opcoes: ["DESLIGAMENTO EXECUTADO", "CLIENTE CANCELOU DESLIGAMENTO", "SEM ACESSO", "NAO EXECUTADO PENDENCIA CLIENTE", "NAO EXECUTADO PENDENCIA ENEL"] },
+    { linha: 2, nome: "acesso_desligamento", label: "Descreva o Problema", tipo: "text", condicional: { campoRef: "desligamento", valor: "DESLIGAMENTO EXECUTADO", negado: true } },
+  ],
+
+  "LIGACAO NOVA MEDIA TENSAO": LIGACAO_NOVA_MT_FIELDS,
+  "LIGACAO NOVA MT - CLIENTE LIVRE": LIGACAO_NOVA_MT_FIELDS,
 
   "TELEMEDIÇÃO MANUTENÇÃO": [
     FIELD_DESCRICAO,

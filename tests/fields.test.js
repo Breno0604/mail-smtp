@@ -234,4 +234,100 @@ describe('fields', () => {
       expect(fields.length).toBe(8);
     });
   });
+
+  describe('Campos da aba corte', () => {
+    describe('CORTE POR FALTA DE PAGAMENTO', () => {
+      it('should have exactly 1 field (situacao_corte)', () => {
+        const fields = getRetornoFields('CORTE POR FALTA DE PAGAMENTO');
+        expect(fields.length).toBe(1);
+      });
+
+      it('should have situacao_corte as select with 4 options', () => {
+        const fields = getRetornoFields('CORTE POR FALTA DE PAGAMENTO');
+        const field = fields[0];
+        expect(field.nome).toBe('situacao_corte');
+        expect(field.tipo).toBe('select');
+        expect(field.opcoes).toEqual(['CLIENTE CORTADO', 'CLIENTE VISITADO CONTA PAGA', 'CLIENTE NAO PERMITIU O CORTE', 'SEM ACESSO PARA EXECUTAR O CORTE']);
+      });
+
+      it('should NOT have descricao field', () => {
+        const fields = getRetornoFields('CORTE POR FALTA DE PAGAMENTO');
+        expect(fields.find(f => f.nome === 'descricao')).toBeUndefined();
+      });
+    });
+
+    describe('DESLIG.PROG.MANUTENÇÃO', () => {
+      it('should have exactly 2 fields', () => {
+        const fields = getRetornoFields('DESLIG.PROG.MANUTENÇÃO');
+        expect(fields.length).toBe(2);
+      });
+
+      it('should have desligamento as first field with 5 options', () => {
+        const fields = getRetornoFields('DESLIG.PROG.MANUTENÇÃO');
+        const field = fields[0];
+        expect(field.nome).toBe('desligamento');
+        expect(field.tipo).toBe('select');
+        expect(field.opcoes).toEqual(['DESLIGAMENTO EXECUTADO', 'CLIENTE CANCELOU DESLIGAMENTO', 'SEM ACESSO', 'NAO EXECUTADO PENDENCIA CLIENTE', 'NAO EXECUTADO PENDENCIA ENEL']);
+      });
+
+      it('should have acesso_desligamento with negated conditional', () => {
+        const fields = getRetornoFields('DESLIG.PROG.MANUTENÇÃO');
+        const field = fields[1];
+        expect(field.nome).toBe('acesso_desligamento');
+        expect(field.tipo).toBe('text');
+        expect(field.condicional).toEqual({ campoRef: 'desligamento', valor: 'DESLIGAMENTO EXECUTADO', negado: true });
+      });
+
+      it('should NOT have descricao field', () => {
+        const fields = getRetornoFields('DESLIG.PROG.MANUTENÇÃO');
+        expect(fields.find(f => f.nome === 'descricao')).toBeUndefined();
+      });
+    });
+
+    describe('LIGACAO NOVA MEDIA TENSAO', () => {
+      it('should have exactly 11 fields', () => {
+        const fields = getRetornoFields('LIGACAO NOVA MEDIA TENSAO');
+        expect(fields.length).toBe(11);
+      });
+
+      it('should have retorno_ligacao as first field with 3 options', () => {
+        const fields = getRetornoFields('LIGACAO NOVA MEDIA TENSAO');
+        const field = fields[0];
+        expect(field.nome).toBe('retorno_ligacao');
+        expect(field.tipo).toBe('select');
+        expect(field.opcoes).toEqual(['VISTORIA', 'VISTORIA + LIGAÇÃO', 'LIGAÇÃO']);
+      });
+
+      it('should have obra with multi-value conditional (array)', () => {
+        const fields = getRetornoFields('LIGACAO NOVA MEDIA TENSAO');
+        const field = fields.find(f => f.nome === 'obra');
+        expect(field.condicional).toEqual({ campoRef: 'retorno_ligacao', valor: ['VISTORIA', 'VISTORIA + LIGAÇÃO'] });
+      });
+
+      it('should have qtd_medidor_bt conditional on medidor_bt', () => {
+        const fields = getRetornoFields('LIGACAO NOVA MEDIA TENSAO');
+        const field = fields.find(f => f.nome === 'qtd_medidor_bt');
+        expect(field.condicional).toEqual({ campoRef: 'medidor_bt', valor: 'COM MEDIDOR BT' });
+      });
+
+      it('should have ligacao conditional on retorno_ligacao = LIGAÇÃO', () => {
+        const fields = getRetornoFields('LIGACAO NOVA MEDIA TENSAO');
+        const field = fields.find(f => f.nome === 'ligacao');
+        expect(field.condicional).toEqual({ campoRef: 'retorno_ligacao', valor: 'LIGAÇÃO' });
+      });
+
+      it('should NOT have descricao field', () => {
+        const fields = getRetornoFields('LIGACAO NOVA MEDIA TENSAO');
+        expect(fields.find(f => f.nome === 'descricao')).toBeUndefined();
+      });
+    });
+
+    describe('LIGACAO NOVA MT - CLIENTE LIVRE', () => {
+      it('should return the same array reference as LIGACAO NOVA MEDIA TENSAO', () => {
+        const fields1 = getRetornoFields('LIGACAO NOVA MEDIA TENSAO');
+        const fields2 = getRetornoFields('LIGACAO NOVA MT - CLIENTE LIVRE');
+        expect(fields1).toBe(fields2);
+      });
+    });
+  });
 });

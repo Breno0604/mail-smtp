@@ -1,4 +1,4 @@
-const CACHE_NAME = 'retorno-v56';
+const CACHE_NAME = 'retorno-v57';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -61,6 +61,8 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  if (!event.request.url.startsWith('http')) return;
+
   if (event.request.method !== 'GET') return;
 
   if (event.request.url.includes('/api/')) {

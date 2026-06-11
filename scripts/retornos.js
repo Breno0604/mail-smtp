@@ -103,7 +103,13 @@ function updateConditionalFields(fields) {
     const controlEl = document.getElementById(field.condicional.campoRef);
     if (!controlEl) return;
 
-    if (controlEl.value === field.condicional.valor) {
+    const valores = Array.isArray(field.condicional.valor)
+      ? field.condicional.valor
+      : [field.condicional.valor];
+    const match = valores.includes(controlEl.value);
+    const show = field.condicional.negado ? !match : match;
+
+    if (show) {
       group.style.display = "";
     } else {
       group.style.display = "none";
