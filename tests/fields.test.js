@@ -310,10 +310,10 @@ describe('fields', () => {
         expect(field.condicional).toEqual({ campoRef: 'medidor_bt', valor: 'COM MEDIDOR BT' });
       });
 
-      it('should have ligacao conditional on retorno_ligacao = LIGAÇÃO', () => {
+      it('should have ligacao conditional on retorno_ligacao = LIGAÇÃO or VISTORIA + LIGAÇÃO', () => {
         const fields = getRetornoFields('LIGACAO NOVA MEDIA TENSAO');
         const field = fields.find(f => f.nome === 'ligacao');
-        expect(field.condicional).toEqual({ campoRef: 'retorno_ligacao', valor: 'LIGAÇÃO' });
+        expect(field.condicional).toEqual({ campoRef: 'retorno_ligacao', valor: ['LIGAÇÃO', 'VISTORIA + LIGAÇÃO'] });
       });
 
       it('should NOT have descricao field', () => {
