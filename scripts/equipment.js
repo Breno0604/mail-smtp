@@ -2,7 +2,7 @@ import { DOM } from "./dom.js";
 import { state, saveState } from "./state.js";
 import { addBlurValidation } from "./validation.js";
 
-export function addEquip(data) {
+export function addEquip(data, silent = false) {
   const div = document.createElement("div");
   div.className = "equip-row flex gap-2 items-center mb-4 p-3 bg-slate-50/50 border border-slate-200/50 rounded-[10px]";
   div.innerHTML = `
@@ -37,7 +37,7 @@ export function addEquip(data) {
   DOM.equipList.appendChild(div);
   hideEmptyEquip();
   collectEquipamentos();
-  saveState();
+  if (!silent) saveState();
 }
 
 export function showEmptyEquip() {
@@ -71,6 +71,6 @@ export function renderEquipamentos() {
   if (state.equipamentos.length === 0) {
     showEmptyEquip();
   } else {
-    state.equipamentos.forEach((eq) => addEquip(eq));
+    state.equipamentos.forEach((eq) => addEquip(eq, true));
   }
 }

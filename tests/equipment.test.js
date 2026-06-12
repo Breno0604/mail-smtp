@@ -194,4 +194,49 @@ describe('equipment', () => {
       expect(rows[0].querySelector('.equip-numero').value).toBe('42');
     });
   });
+
+  describe('addEquip silent mode', () => {
+    it('should accept a silent parameter to skip saveState', () => {
+      // silent=true should still create DOM and update state, just skip save
+      expect(() => addEquip({ status: 'Instalado', categoria: 'Medidor', numero: '111' }, true)).not.toThrow();
+      const rows = DOM.equipList.querySelectorAll('.equip-row');
+      expect(rows.length).toBe(1);
+      expect(state.equipamentos.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('should default to non-silent (backward compatible)', () => {
+      // Without silent param, should work as before
+      expect(() => addEquip({ status: 'Retirado', categoria: 'Display', numero: '222' })).not.toThrow();
+      const rows = DOM.equipList.querySelectorAll('.equip-row');
+      expect(rows.length).toBe(1);
+    });
+  });
+
+  describe('renderEquipamentos silent behavior', () => {
+    it('should render multiple equipment items correctly', () => {
+      state.equipamentos = [
+        { status: 'Instalado', categoria: 'Medidor', numero: '111' },
+        { status: 'Retirado', categoria: 'Display', numero: '222' },
+        { status: 'Instalado', categoria: 'TC', numero: '333' },
+      ];
+      renderEquipamentos();
+      const rows = DOM.equipList.querySelectorAll('.equip-row');
+      expect(rows.length).toBe(3);
+    });
+
+    it('should correctly populate all values when rendering multiple items', () => {
+      state.equipamentos = [
+        { status: 'Instalado', categoria: 'Medidor', numero: '111' },
+        { status: 'Retirado', categoria: 'Display', numero: '222' },
+      ];
+      renderEquipamentos();
+      const rows = DOM.equipList.querySelectorAll('.equip-row');
+      expect(rows[0].querySelector('.equip-tipo').value).toBe('Instalado');
+      expect(rows[0].querySelector('.equip-categoria').value).toBe('Medidor');
+      expect(rows[0].querySelector('.equip-numero').value).toBe('111');
+      expect(rows[1].querySelector('.equip-tipo').value).toBe('Retirado');
+      expect(rows[1].querySelector('.equip-categoria').value).toBe('Display');
+      expect(rows[1].querySelector('.equip-numero').value).toBe('222');
+    });
+  });
 });

@@ -124,7 +124,13 @@ describe('restore', () => {
 
     it('should restore iniciais data', () => {
       applyRecord(sampleRecord);
-      expect(state.iniciais).toEqual(sampleRecord.iniciais);
+      // state.iniciais is now synced from DOM via getIniciaisData(),
+      // so it uses DOM field names (kebab-case) and includes all defined fields
+      expect(state.iniciais.uc).toBe('99999');
+      expect(state.iniciais.os).toBe('88888');
+      expect(state.iniciais.lider).toBe('ANDRE DE SOUSA CARVALHO');
+      expect(state.iniciais.municipio).toBe('FORTALEZA');
+      expect(state.iniciais['tipo-ordem']).toBe('ADEQUACAO SMF');
     });
 
     it('should restore retorno data', () => {
@@ -172,6 +178,36 @@ describe('restore', () => {
     it('should handle empty or missing composicao', () => {
       const recordWithoutComposicao = { ...sampleRecord, composicao: undefined };
       expect(() => applyRecord(recordWithoutComposicao)).not.toThrow();
+    });
+
+    // ── Bug 1: lastTipoOrdem must match record.tipoOrdem, not record.lastTipoOrdem ──
+
+    it('should set lastTipoOrdem to record.tipoOrdem (not record.lastTipoOrdem)', () => {
+      const record = {
+        ...sampleRecord,
+        tipoOrdem: 'CORTE POR FALTA DE PAGAMENTO',
+        lastTipoOrdem: 'ADEQUACAO SMF', // stale value from a previous session
+      };
+      applyRecord(record);
+      expect(state.lastTipoOrdem).toBe('CORTE POR FALTA DE PAGAMENTO');
+    });
+
+    it('should set lastTipoOrdem to empty string when record has no tipoOrdem', () => {
+      const record = {
+        ...sampleRecord,
+        tipoOrdem: '',
+        lastTipoOrdem: 'ADEQUACAO SMF',
+      };
+      applyRecord(record);
+      expect(state.lastTipoOrdem).toBe('');
+    });
+
+    // ── Bug 4: state.retorno must sync with DOM after restore ──
+
+    it('should synchronize state.retorno with DOM values after restore', () => {
+      applyRecord(sampleRecord);
+      // state.retorno must be consistent with what getRetornoData() returns from the DOM
+      expect(state.retorno).toEqual(sampleRecord.retorno);
     });
   });
 });
