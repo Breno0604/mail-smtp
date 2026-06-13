@@ -35,15 +35,15 @@ const UC_CORTADA_FIELDS = [
 const LIGACAO_NOVA_MT_FIELDS = [
   { linha: 1, nome: "retorno_ligacao", label: "Executado", tipo: "select", opcoes: ["VISTORIA", "VISTORIA + LIGAÇÃO", "LIGAÇÃO"] },
   { linha: 2, nome: "obra", label: "Obra", tipo: "select", opcoes: ["CONCLUIDA", "NAO CONCLUIDA"], condicional: { campoRef: "retorno_ligacao", valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"] } },
-  { linha: 2, nome: "tipo_medicao", label: "Medição", tipo: "select", opcoes: ["ACOPLADA", "CUBICULO", "SEMI-DIRETA", "DIRETA"], condicional: { campoRef: "retorno_ligacao", valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"] } },
-  { linha: 3, nome: "status_medicao", label: "Status Medição", tipo: "select", opcoes: ["COM MEDICAO", "SEM MEDICAO"], condicional: { campoRef: "retorno_ligacao", valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"] } },
-  { linha: 3, nome: "ponto_de_entrega", label: "Ponto de Entrega", tipo: "select", opcoes: ["DE ACORDO", "EM DESACORDO", "NÃO CONSTRUIDO"], condicional: { campoRef: "retorno_ligacao", valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"] } },
-  { linha: 4, nome: "medidor_bt", label: "Medidor de BT", tipo: "select", opcoes: ["COM MEDIDOR BT", "SEM MEDIDOR BT"], condicional: { campoRef: "retorno_ligacao", valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"] } },
-  { linha: 4, nome: "qtd_medidor_bt", label: "Quantidade", tipo: "number", condicional: { campoRef: "medidor_bt", valor: "COM MEDIDOR BT" } },
-  { linha: 5, nome: "acesso_medicao", label: "Acesso", tipo: "select", opcoes: ["REGULAR", "IRREGULAR", "SEM ACESSO"], condicional: { campoRef: "retorno_ligacao", valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"] } },
-  { linha: 5, nome: "acesso_ponto_de_entrega", label: "Descreva o Problema", tipo: "text", condicional: { campoRef: "acesso_medicao", valor: ["IRREGULAR", "SEM ACESSO"] } },
   { linha: 2, nome: "ligacao", label: "Ligação", tipo: "select", opcoes: ["CONCLUIDA", "NAO CONCLUIDA"], condicional: { campoRef: "retorno_ligacao", valor: ["LIGAÇÃO", "VISTORIA + LIGAÇÃO"] } },
-  { linha: 3, nome: "tombamento", label: "Tombamento", tipo: "text", condicional: { campoRef: "retorno_ligacao", valor: ["LIGAÇÃO", "VISTORIA + LIGAÇÃO"] } },
+  { linha: 3, nome: "tipo_medicao", label: "Medição", tipo: "select", opcoes: ["ACOPLADA", "CUBICULO", "SEMI-DIRETA", "DIRETA"], condicional: { campoRef: "retorno_ligacao", valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"] } },
+  { linha: 3, nome: "status_medicao", label: "Status Medição", tipo: "select", opcoes: ["COM MEDICAO", "SEM MEDICAO"], condicional: { campoRef: "retorno_ligacao", valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"] } },
+  { linha: 4, nome: "ponto_de_entrega", label: "Ponto de Entrega", tipo: "select", opcoes: ["DE ACORDO", "EM DESACORDO", "NÃO CONSTRUIDO"], condicional: { campoRef: "retorno_ligacao", valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"] } },
+  { linha: 4, nome: "tombamento", label: "Tombamento", tipo: "text", condicional: { campoRef: "retorno_ligacao", valor: ["LIGAÇÃO", "VISTORIA + LIGAÇÃO"] } },
+  { linha: 5, nome: "medidor_bt", label: "Medidor de BT", tipo: "select", opcoes: ["COM MEDIDOR BT", "SEM MEDIDOR BT"], condicional: { campoRef: "retorno_ligacao", valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"] } },
+  { linha: 5, nome: "qtd_medidor_bt", label: "Quantidade", tipo: "number", condicional: { campoRef: "medidor_bt", valor: "COM MEDIDOR BT" } },
+  { linha: 6, nome: "acesso_medicao", label: "Acesso", tipo: "select", opcoes: ["REGULAR", "IRREGULAR", "SEM ACESSO"], condicional: { campoRef: "retorno_ligacao", valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"] } },
+  { linha: 6, nome: "acesso_ponto_de_entrega", label: "Descreva o Problema", tipo: "text", condicional: { campoRef: "acesso_medicao", valor: ["IRREGULAR", "SEM ACESSO"] } },
 ];
 
 export const retornoFieldsByTipo = {
