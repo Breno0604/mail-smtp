@@ -66,6 +66,8 @@ export function cacheDOM() {
   DOM.confirmModalText = document.getElementById("confirm-modal-text");
   DOM.confirmModalOk = document.getElementById("confirm-modal-ok");
   DOM.confirmModalCancel = document.getElementById("confirm-modal-cancel");
+  DOM.updateModal = document.getElementById("update-modal");
+  DOM.updateModalOk = document.getElementById("update-modal-ok");
 }
 
 export { DOM };

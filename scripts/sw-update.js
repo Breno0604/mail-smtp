@@ -1,3 +1,5 @@
+import { DOM } from "./dom.js";
+
 export function initSW() {
   if (!('serviceWorker' in navigator)) return;
 
@@ -19,8 +21,8 @@ export function initSW() {
 }
 
 function showUpdateModal() {
-  const modal = document.getElementById('update-modal');
-  const okBtn = document.getElementById('update-modal-ok');
+  const modal = DOM.updateModal;
+  const okBtn = DOM.updateModalOk;
   if (!modal || !okBtn) return;
 
   modal.classList.remove('hidden');

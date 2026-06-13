@@ -3,3 +3,4 @@ node_modules
 .superpowers/
 
 deno.lock
+test-results/

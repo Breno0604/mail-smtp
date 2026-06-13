@@ -1,4 +1,4 @@
-const CACHE_NAME = 'retorno-v66';
+const CACHE_NAME = 'retorno-v67';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -24,7 +24,6 @@ const STATIC_ASSETS = [
   '/scripts/send.js',
   '/scripts/sidebar.js',
   '/scripts/state.js',
-  '/scripts/storage.js',
   '/scripts/styles.js',
   '/scripts/sw-update.js',
   '/scripts/ui.js',
