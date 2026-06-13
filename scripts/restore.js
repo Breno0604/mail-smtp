@@ -6,6 +6,7 @@ import { renderEquipamentos } from "./equipment.js";
 import { renderPreviews } from "./attachments.js";
 import { base64ToBlob } from "./utils.js";
 import { getAttachmentsByUuid } from "./db.js";
+import { updateLivePreview } from "./email.js";
 
 /**
  * Aplica um registro ao formulário, restaurando todos os campos.
@@ -92,4 +93,7 @@ export async function applyRecord(record) {
   // lê do DOM (não do state).
   state.iniciais = getIniciaisData();
   state.retorno = getRetornoData();
+
+  // ── Atualizar preview do email ────────────────────────────────────────────
+  updateLivePreview();
 }

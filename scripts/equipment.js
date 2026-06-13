@@ -1,5 +1,5 @@
 import { DOM } from "./dom.js";
-import { state, saveState } from "./state.js";
+import { state, saveState, debouncedSave } from "./state.js";
 import { addBlurValidation } from "./validation.js";
 
 export function addEquip(data, silent = false) {
@@ -26,6 +26,19 @@ export function addEquip(data, silent = false) {
   addBlurValidation(div.querySelector(".equip-tipo"));
   addBlurValidation(div.querySelector(".equip-categoria"));
   addBlurValidation(div.querySelector(".equip-numero"));
+
+  // Atualizar state.equipamentos quando usuário preenche os campos
+  const equipFields = div.querySelectorAll(".equip-tipo, .equip-categoria, .equip-numero");
+  equipFields.forEach((field) => {
+    field.addEventListener("input", () => {
+      collectEquipamentos();
+      debouncedSave();
+    });
+    field.addEventListener("change", () => {
+      collectEquipamentos();
+      debouncedSave();
+    });
+  });
 
   div.querySelector(".btn-remove").addEventListener("click", () => {
     div.remove();

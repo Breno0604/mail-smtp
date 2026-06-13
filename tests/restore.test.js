@@ -22,6 +22,7 @@ describe('restore', () => {
         <option value="CORTE POR FALTA DE PAGAMENTO">CORTE POR FALTA DE PAGAMENTO</option>
       </select>
       <div id="preview-grid"></div>
+      <div id="preview-corpo">—</div>
       <div id="file-count">0 / 12</div>
       <textarea id="complemento-corpo"></textarea>
       <div id="file-upload-area"></div>
