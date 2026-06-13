@@ -8,7 +8,8 @@ import { applyRecord } from '../scripts/restore.js';
 import { resetForm } from '../scripts/reset.js';
 import { renderIniciais, getIniciaisData } from '../scripts/iniciais.js';
 import { renderRetorno, setRetornoData, getRetornoData, handleTipoChange } from '../scripts/retornos.js';
-import { renderEquipamentos, addEquip, collectEquipamentos } from '../scripts/equipment.js';
+import { renderEquipamentos, addEquip } from '../scripts/equipment.js';
+import { collectEquipamentos } from '../scripts/collectors.js';
 import { updateLivePreview } from '../scripts/email.js';
 
 /**
@@ -143,7 +144,7 @@ describe('complete fill persistence', () => {
       document.getElementById('situacao_corte').value = 'CLIENTE VISITADO CONTA PAGA';
       
       // Add new equipment
-      addEquip({ status: 'Instalado', categoria: 'TC', numero: '333' }, true);
+      addEquip({ status: 'Instalado', categoria: 'TC', numero: '333' });
       collectEquipamentos();
       
       DOM.complementoCorpo.value = 'Complemento atualizado';
@@ -519,7 +520,7 @@ describe('advanced persistence scenarios', () => {
     // Restore and add equipment
     const record = await getRecord(uuid);
     await applyRecord(record);
-    addEquip({ status: 'Retirado', categoria: 'Display', numero: '222' }, true);
+    addEquip({ status: 'Retirado', categoria: 'Display', numero: '222' });
     collectEquipamentos();
     await saveState();
 

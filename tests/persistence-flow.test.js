@@ -8,7 +8,8 @@ import { applyRecord } from '../scripts/restore.js';
 import { resetForm } from '../scripts/reset.js';
 import { renderIniciais, getIniciaisData } from '../scripts/iniciais.js';
 import { renderRetorno, setRetornoData, getRetornoData, handleTipoChange } from '../scripts/retornos.js';
-import { renderEquipamentos, addEquip, collectEquipamentos } from '../scripts/equipment.js';
+import { renderEquipamentos, addEquip } from '../scripts/equipment.js';
+import { collectEquipamentos } from '../scripts/collectors.js';
 
 /**
  * Testes de fluxo de persistência — cenários realistas e adversários
@@ -381,7 +382,7 @@ describe('persistence flow: real-world scenarios', () => {
 
       // Add new equipment
       await applyRecord(record);
-      addEquip({ status: 'Instalado', categoria: 'TP', numero: '444' }, true);
+      addEquip({ status: 'Instalado', categoria: 'TP', numero: '444' });
       collectEquipamentos();
       await saveState();
 

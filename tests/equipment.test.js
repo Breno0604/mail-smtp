@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { addEquip, showEmptyEquip, hideEmptyEquip, renderEquipamentos } from '../scripts/equipment.js';
+import { addEquip, renderEquipRow, showEmptyEquip, hideEmptyEquip, renderEquipamentos } from '../scripts/equipment.js';
 import { cacheDOM, DOM } from '../scripts/dom.js';
 import { state } from '../scripts/state.js';
 
@@ -195,20 +195,24 @@ describe('equipment', () => {
     });
   });
 
-  describe('addEquip silent mode', () => {
-    it('should accept a silent parameter to skip saveState', () => {
-      // silent=true should still create DOM and update state, just skip save
-      expect(() => addEquip({ status: 'Instalado', categoria: 'Medidor', numero: '111' }, true)).not.toThrow();
-      const rows = DOM.equipList.querySelectorAll('.equip-row');
-      expect(rows.length).toBe(1);
-      expect(state.equipamentos.length).toBeGreaterThanOrEqual(1);
+  describe('renderEquipRow', () => {
+    it('should create a row element without appending to DOM', () => {
+      const row = renderEquipRow({ status: 'Instalado', categoria: 'Medidor', numero: '111' });
+      expect(row).toBeInstanceOf(HTMLElement);
+      expect(row.className).toContain('equip-row');
     });
 
-    it('should default to non-silent (backward compatible)', () => {
-      // Without silent param, should work as before
-      expect(() => addEquip({ status: 'Retirado', categoria: 'Display', numero: '222' })).not.toThrow();
-      const rows = DOM.equipList.querySelectorAll('.equip-row');
-      expect(rows.length).toBe(1);
+    it('should pre-fill values from data', () => {
+      const row = renderEquipRow({ status: 'Instalado', categoria: 'TC', numero: '333' });
+      expect(row.querySelector('.equip-tipo').value).toBe('Instalado');
+      expect(row.querySelector('.equip-categoria').value).toBe('TC');
+      expect(row.querySelector('.equip-numero').value).toBe('333');
+    });
+
+    it('should create remove button', () => {
+      const row = renderEquipRow();
+      const btn = row.querySelector('.btn-remove');
+      expect(btn).toBeTruthy();
     });
   });
 
