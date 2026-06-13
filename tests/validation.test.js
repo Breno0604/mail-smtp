@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { validateSection, addBlurValidation, collectSectionData, _resetValidationCache } from '../scripts/validation.js';
+import { validateSection, addBlurValidation } from '../scripts/validation.js';
 import { cacheDOM, DOM } from '../scripts/dom.js';
 import { state } from '../scripts/state.js';
 import { renderIniciais } from '../scripts/iniciais.js';
@@ -75,7 +75,6 @@ describe('validation', () => {
     state.iniciaisValido = false;
     state.retorno = {};
     state.equipamentos = [];
-    _resetValidationCache();
   });
 
   describe('validateSection(1) - Iniciais', () => {
@@ -613,58 +612,6 @@ describe('validation', () => {
       renderRetorno();
       validateSection(3);
       expect(state.retorno.descricao).toBeUndefined();
-    });
-  });
-
-  describe('collectSectionData', () => {
-    it('should collect iniciais data for section 1', () => {
-      renderIniciais();
-      DOM.tipoOrdem = document.getElementById('tipo-ordem');
-      const lider = document.getElementById('lider');
-      if (lider) lider.value = 'ANDRE DE SOUSA CARVALHO';
-      const uc = document.getElementById('uc');
-      if (uc) uc.value = '12345';
-      collectSectionData(1);
-      expect(state.iniciais.lider).toBe('ANDRE DE SOUSA CARVALHO');
-      expect(state.iniciais.uc).toBe('12345');
-    });
-
-    it('should collect equipamentos data for section 2', () => {
-      const row = document.createElement('div');
-      row.className = 'equip-row';
-      row.innerHTML = `
-        <select class="equip-tipo"><option value="Instalado">Instalado</option></select>
-        <select class="equip-categoria"><option value="Medidor">Medidor</option></select>
-        <input class="equip-numero" value="12345">
-      `;
-      DOM.equipList.appendChild(row);
-      collectSectionData(2);
-      expect(state.equipamentos).toHaveLength(1);
-      expect(state.equipamentos[0].status).toBe('Instalado');
-      expect(state.equipamentos[0].categoria).toBe('Medidor');
-      expect(state.equipamentos[0].numero).toBe('12345');
-    });
-
-    it('should collect retorno data for section 3', () => {
-      const select = document.createElement('select');
-      select.id = 'tipo-ordem';
-      select.innerHTML = '<option value="">Selecione</option><option value="ADEQUACAO SMF">ADEQUACAO SMF</option>';
-      document.body.appendChild(select);
-      DOM.tipoOrdem = select;
-      DOM.tipoOrdem.value = 'ADEQUACAO SMF';
-      
-      renderRetorno();
-      const textarea = document.getElementById('descricao');
-      textarea.value = 'test description';
-      collectSectionData(3);
-      expect(state.retorno.descricao).toBe('test description');
-    });
-
-    it('should clear equipamentos list when no rows exist', () => {
-      state.equipamentos = [{ status: 'Instalado', categoria: 'Medidor', numero: '123' }];
-      DOM.equipList.innerHTML = '';
-      collectSectionData(2);
-      expect(state.equipamentos).toEqual([]);
     });
   });
 });

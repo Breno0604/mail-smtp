@@ -1,19 +1,8 @@
 import { DOM } from "./dom.js";
 import { state } from "./state.js";
 import { showError, hideError, setFieldError, clearFieldError } from "./ui.js";
-import { getIniciaisData } from "./iniciais.js";
-import { getRetornoData } from "./retornos.js";
+import { collectIniciais, collectRetorno, collectEquipamentos } from "./collectors.js";
 import { iniciaisFields as fieldsIniciais } from "./fields.js";
-import { collectEquipamentos } from "./equipment.js";
-
-// Cache de uso único: validateSection popula, collectSectionData consome e limpa.
-// Isso evita a re-leitura do DOM quando collectSectionData segue validateSection.
-const _validatedData = {};
-
-// Limpa o cache (usado nos testes entre execuções)
-export function _resetValidationCache() {
-  Object.keys(_validatedData).forEach((k) => delete _validatedData[k]);
-}
 
 // ── helpers locais ────────────────────────────────────────────────────────────
 
@@ -93,9 +82,8 @@ function validateSection1() {
     return false;
   }
 
-  // Cache + state — collectSectionData usa o cache em vez de reler o DOM
+  // Update state
   state.iniciais = data;
-  _validatedData[1] = data;
   return true;
 }
 
@@ -134,8 +122,8 @@ function validateSection2() {
 
   if (hasError) return false;
 
+  // Update state
   collectEquipamentos();
-  _validatedData[2] = state.equipamentos;
   return true;
 }
 
@@ -165,8 +153,8 @@ function validateSection3() {
 
   if (!valid) return false;
 
-  state.retorno = getRetornoData();
-  _validatedData[3] = state.retorno;
+  // Update state
+  collectRetorno();
   return true;
 }
 
@@ -264,31 +252,4 @@ export function addBlurValidation(el) {
   el.addEventListener("change", () => {
     if (el.value && el.value.trim() !== "") clearError(el);
   });
-}
-
-export function collectSectionData(n) {
-  if (n === 1) {
-    if (_validatedData[1] && typeof _validatedData[1] === 'object' && _validatedData[1].lider) {
-      state.iniciais = _validatedData[1];
-      delete _validatedData[1];
-    } else {
-      state.iniciais = getIniciaisData();
-    }
-  }
-  if (n === 2) {
-    if (Array.isArray(_validatedData[2])) {
-      state.equipamentos = _validatedData[2];
-      delete _validatedData[2];
-    } else {
-      collectEquipamentos();
-    }
-  }
-  if (n === 3) {
-    if (_validatedData[3] && typeof _validatedData[3] === 'object') {
-      state.retorno = _validatedData[3];
-      delete _validatedData[3];
-    } else {
-      state.retorno = getRetornoData();
-    }
-  }
 }
