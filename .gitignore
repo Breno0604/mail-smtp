@@ -4,3 +4,6 @@ node_modules
 
 deno.lock
 test-results/
+
+# graphify generated artifacts
+graphify-out/

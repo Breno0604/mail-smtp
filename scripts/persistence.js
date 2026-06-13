@@ -22,12 +22,12 @@ export function markAttachmentsDirty() {
 export async function saveState() {
   if (!state.iniciaisValido) return;
 
-  // Collect data from DOM and update state (state remains single source of truth)
+  // Sync state from DOM as safety net (event listeners normally keep state in sync)
   collectIniciais();
   collectRetorno();
   collectEquipamentos();
-  
-  // Collect complementoCorpo
+  // Also sync complementoCorpo (not captured by the collectors above)
+  state.composicao = state.composicao || {};
   if (DOM.complementoCorpo) {
     state.composicao.complementoCorpo = DOM.complementoCorpo.value;
   }
@@ -37,7 +37,7 @@ export async function saveState() {
                   state.equipamentos.length > 0 ||
                   state.attachments.length > 0 ||
                   state.currentUUID;
-  
+
   if (!hasData) return;
 
   // Ensure UUID exists

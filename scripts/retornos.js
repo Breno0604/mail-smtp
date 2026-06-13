@@ -52,8 +52,14 @@ export function renderRetorno() {
       input.setAttribute("data-required", "");
 
       addBlurValidation(input);
-      input.addEventListener("input", debouncedSave);
-      input.addEventListener("change", debouncedSave);
+      input.addEventListener("input", () => {
+        state.retorno[field.nome] = input.value;
+        debouncedSave();
+      });
+      input.addEventListener("change", () => {
+        state.retorno[field.nome] = input.value;
+        debouncedSave();
+      });
 
       if (hasConditionalDependents(field.nome, fields)) {
         input.addEventListener("change", () => updateConditionalFields(fields));

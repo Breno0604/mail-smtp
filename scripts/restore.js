@@ -8,7 +8,7 @@ import { renderPreviews } from "./attachments.js";
 import { base64ToBlob } from "./utils.js";
 import { getAttachmentsByUuid } from "./db.js";
 import { updateLivePreview } from "./email.js";
-import { collectIniciais, collectRetorno, collectEquipamentos } from "./collectors.js";
+import { collectIniciais } from "./collectors.js";
 
 /**
  * Aplica um registro ao formulário, restaurando todos os campos.
@@ -85,15 +85,15 @@ export async function applyRecord(record) {
   renderPreviews();
 
   // ── Restore complemento ─────────────────────────────────────────────────
-  if (record.composicao?.complementoCorpo && DOM.complementoCorpo) {
-    DOM.complementoCorpo.value = record.composicao.complementoCorpo;
+  if (record.composicao) {
+    state.composicao = { ...state.composicao, ...record.composicao };
+    if (record.composicao.complementoCorpo && DOM.complementoCorpo) {
+      DOM.complementoCorpo.value = record.composicao.complementoCorpo;
+    }
   }
 
-  // ── Sincronizar state com DOM ─────────────────────────────────────────────
-  // Coleta dados do DOM e atualiza o state (state é a fonte única de verdade)
+  // ── Sync state from DOM to normalize field names ──────────────────────────
   collectIniciais();
-  collectRetorno();
-  collectEquipamentos();
 
   // ── Atualizar preview do email ────────────────────────────────────────────
   updateLivePreview();

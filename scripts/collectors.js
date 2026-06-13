@@ -62,24 +62,17 @@ export function collectEquipamentos() {
 }
 
 /**
- * Collect all form data and update state
+ * Collect all form data from state (single source of truth)
  * @returns {Object} Complete record data
  */
 export function collectAllData() {
-  const iniciais = collectIniciais();
-  const retorno = collectRetorno();
-  const equipamentos = collectEquipamentos();
-  
-  // Collect complementoCorpo
-  const complementoCorpo = DOM.complementoCorpo?.value || '';
-  state.composicao = { complementoCorpo };
-  
   return {
-    iniciais,
-    retorno,
-    equipamentos,
+    iniciais: state.iniciais,
+    retorno: state.retorno,
+    equipamentos: state.equipamentos,
     attachments: state.attachments,
-    tipoOrdem: DOM.tipoOrdem?.value || '',
-    complementoCorpo,
+    tipoOrdem: state.iniciais['tipo-ordem'] || '',
+    composicao: state.composicao,
+    complementoCorpo: state.composicao?.complementoCorpo || '',
   };
 }
