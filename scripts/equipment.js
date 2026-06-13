@@ -1,5 +1,6 @@
 import { DOM } from "./dom.js";
-import { state, saveState, debouncedSave } from "./state.js";
+import { state } from "./state.js";
+import { saveState, debouncedSave } from "./persistence.js";
 import { addBlurValidation } from "./validation.js";
 
 export function addEquip(data, silent = false) {

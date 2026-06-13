@@ -1,11 +1,13 @@
 import { DOM } from "./dom.js";
-import { state, clearCurrentUUID, markAttachmentsDirty } from "./state.js";
+import { state, clearCurrentUUID } from "./state.js";
+import { markAttachmentsDirty } from "./persistence.js";
 import { renderIniciais } from "./iniciais.js";
 import { renderRetorno, handleTipoChange } from "./retornos.js";
 import { showEmptyEquip } from "./equipment.js";
 import { updateFileCount } from "./attachments.js";
 import { hideError } from "./ui.js";
 import { captureCoordinates } from "./utils.js";
+import { updateLivePreview } from "./email.js";
 
 export function resetForm() {
   // Reset state
@@ -17,6 +19,7 @@ export function resetForm() {
   state.currentUUID = "";
   state._createdAt = null;
   state.iniciaisValido = false;
+  state.composicao = { complementoCorpo: "" };
 
   // Marcar anexos como dirty (força re-save vazio no próximo saveState)
   markAttachmentsDirty();
@@ -38,10 +41,10 @@ export function resetForm() {
   DOM.equipList.innerHTML = "";
   DOM.complementoCorpo.value = "";
   DOM.previewGrid.innerHTML = "";
-  DOM.previewCorpo.textContent = "—";
 
   showEmptyEquip();
   updateFileCount();
   hideError();
   clearCurrentUUID();
+  updateLivePreview();
 }

@@ -1,5 +1,6 @@
 import { DOM } from "./dom.js";
-import { state, saveState, debouncedSave } from "./state.js";
+import { state } from "./state.js";
+import { saveState, debouncedSave } from "./persistence.js";
 import { addBlurValidation } from "./validation.js";
 import { getRetornoFields } from "./fields.js";
 import { INPUT_CREATORS } from "./iniciais.js";

@@ -1,8 +1,8 @@
 import 'fake-indexeddb/auto';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { cacheDOM, DOM } from '../scripts/dom.js';
-import { state } from '../scripts/state.js';
-import { saveState, debouncedSave, clearCurrentUUID, setCurrentUUID } from '../scripts/persistence.js';
+import { state, clearCurrentUUID, setCurrentUUID } from '../scripts/state.js';
+import { saveState, debouncedSave } from '../scripts/persistence.js';
 import { getRecord, getAllRecords, deleteRecord } from '../scripts/db.js';
 import { applyRecord } from '../scripts/restore.js';
 import { resetForm } from '../scripts/reset.js';
@@ -447,8 +447,9 @@ describe('persistence flow: real-world scenarios', () => {
         DOM.tipoOrdem.value = 'CORTE POR FALTA DE PAGAMENTO';
         renderRetorno();
         document.getElementById('situacao_corte').value = 'CLIENTE CORTADO';
-        // saveState reads state.equipamentos directly (not from DOM)
-        state.equipamentos = [{ status: 'Instalado', categoria: 'Medidor', numero: `EQ-${i}` }];
+        // Set equipment in state and render to DOM
+        state.equipamentos = [{ status: 'Instalado', categoria: 'Medidor', numero: `${i}11` }];
+        renderEquipamentos();
         state.iniciaisValido = true;
         await saveState();
         uuids.push(state.currentUUID);
@@ -464,7 +465,7 @@ describe('persistence flow: real-world scenarios', () => {
         const record = await getRecord(uuids[i]);
         expect(record.iniciais.uc).toBe(`${i + 1}${i + 1}${i + 1}${i + 1}${i + 1}`);
         expect(record.iniciais.os).toBe(`OS-${i + 1}`);
-        expect(record.equipamentos[0].numero).toBe(`EQ-${i + 1}`);
+        expect(record.equipamentos[0].numero).toBe(`${i + 1}11`);
       }
 
       // Edit record 3 and verify others unchanged

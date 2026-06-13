@@ -1,7 +1,7 @@
 import { DOM } from "./dom.js";
+import { debouncedSave } from "./persistence.js";
 import { addBlurValidation } from "./validation.js";
 import { iniciaisFields } from "./fields.js";
-import { debouncedSave } from "./state.js";
 import { captureCoordinates } from "./utils.js";
 import { INPUT_CLASS, SELECT_CLASS } from "./styles.js";
 

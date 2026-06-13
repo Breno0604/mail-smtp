@@ -1,12 +1,14 @@
 import { DOM } from "./dom.js";
-import { state, setCurrentUUID, markAttachmentsDirty } from "./state.js";
-import { renderIniciais, iniciaisFields, getIniciaisData } from "./iniciais.js";
-import { renderRetorno, setRetornoData, handleTipoChange, getRetornoData } from "./retornos.js";
+import { state, setCurrentUUID } from "./state.js";
+import { markAttachmentsDirty } from "./persistence.js";
+import { renderIniciais, iniciaisFields } from "./iniciais.js";
+import { renderRetorno, setRetornoData, handleTipoChange } from "./retornos.js";
 import { renderEquipamentos } from "./equipment.js";
 import { renderPreviews } from "./attachments.js";
 import { base64ToBlob } from "./utils.js";
 import { getAttachmentsByUuid } from "./db.js";
 import { updateLivePreview } from "./email.js";
+import { collectIniciais, collectRetorno, collectEquipamentos } from "./collectors.js";
 
 /**
  * Aplica um registro ao formulário, restaurando todos os campos.
@@ -88,11 +90,10 @@ export async function applyRecord(record) {
   }
 
   // ── Sincronizar state com DOM ─────────────────────────────────────────────
-  // Garante que state.iniciais e state.retorno reflitam exatamente o que está
-  // no DOM após restauração, evitando dessincronização com saveState() que
-  // lê do DOM (não do state).
-  state.iniciais = getIniciaisData();
-  state.retorno = getRetornoData();
+  // Coleta dados do DOM e atualiza o state (state é a fonte única de verdade)
+  collectIniciais();
+  collectRetorno();
+  collectEquipamentos();
 
   // ── Atualizar preview do email ────────────────────────────────────────────
   updateLivePreview();

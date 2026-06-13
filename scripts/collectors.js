@@ -70,12 +70,16 @@ export function collectAllData() {
   const retorno = collectRetorno();
   const equipamentos = collectEquipamentos();
   
+  // Collect complementoCorpo
+  const complementoCorpo = DOM.complementoCorpo?.value || '';
+  state.composicao = { complementoCorpo };
+  
   return {
     iniciais,
     retorno,
     equipamentos,
     attachments: state.attachments,
     tipoOrdem: DOM.tipoOrdem?.value || '',
-    complementoCorpo: DOM.complementoCorpo?.value || '',
+    complementoCorpo,
   };
 }

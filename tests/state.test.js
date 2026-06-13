@@ -1,6 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import 'fake-indexeddb/auto';
-import { state, getCurrentUUID, setCurrentUUID, clearCurrentUUID, debouncedSave, saveState } from '../scripts/state.js';
+import { state, setCurrentUUID, clearCurrentUUID } from '../scripts/state.js';
+import { getCurrentUUID } from '../scripts/uuid.js';
+import { debouncedSave, saveState } from '../scripts/persistence.js';
 import { getRecord } from '../scripts/db.js';
 import { cacheDOM, DOM } from '../scripts/dom.js';
 
