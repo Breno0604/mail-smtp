@@ -124,7 +124,10 @@ describe('complete fill persistence', () => {
       // ═══ STEP 2: Simulate close (reset form) ═══
       resetForm();
       expect(state.currentUUID).toBe('');
-      expect(state.iniciais).toEqual({});
+      // updateLivePreview syncs state with DOM via collectAllData
+      expect(state.iniciais).not.toEqual({});
+      expect(state.iniciais.uc).toBe('');
+      expect(state.iniciais.os).toBe('');
 
       // ═══ STEP 3: Reopen (restore) ═══
       const record = await getRecord(uuid);

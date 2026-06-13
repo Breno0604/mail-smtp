@@ -1,8 +1,6 @@
 import { DOM } from "./dom.js";
-import { state } from "./state.js";
 import { iniciaisFields, getRetornoFields } from "./fields.js";
-import { getIniciaisData } from "./iniciais.js";
-import { getRetornoData } from "./retornos.js";
+import { collectAllData } from "./collectors.js";
 
 /**
  * Normaliza texto: remove acentos, substitui ç→c, converte para MAIÚSCULAS
@@ -49,10 +47,6 @@ export function composeEmail(data) {
 }
 
 export function updateLivePreview() {
-  const emailData = {
-    iniciais: getIniciaisData(),
-    equipamentos: state.equipamentos,
-    retorno: getRetornoData(),
-  };
-  DOM.previewCorpo.textContent = composeEmail(emailData);
+  const data = collectAllData();
+  DOM.previewCorpo.textContent = composeEmail(data);
 }

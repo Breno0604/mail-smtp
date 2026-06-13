@@ -193,10 +193,12 @@ describe('integration: full record lifecycle', () => {
     // Reset form (simulating what sidebar does when deleting current record)
     resetForm();
 
-    // Verify state was reset
+    // Verify state was reset (updateLivePreview syncs state with DOM via collectAllData)
     expect(state.currentUUID).toBe('');
     expect(state.iniciaisValido).toBe(false);
-    expect(state.iniciais).toEqual({});
+    expect(state.iniciais).not.toEqual({});
+    expect(state.iniciais.uc).toBe('');
+    expect(state.iniciais.os).toBe('');
     expect(state.retorno).toEqual({});
     expect(state.equipamentos).toEqual([]);
     expect(state.attachments).toEqual([]);

@@ -75,9 +75,15 @@ describe('reset', () => {
   });
 
   describe('resetForm', () => {
-    it('should clear state.iniciais', () => {
+    it('should populate state.iniciais with all field keys (empty values)', () => {
       resetForm();
-      expect(state.iniciais).toEqual({});
+      // updateLivePreview() now syncs state with DOM via collectAllData()
+      // After reset, state.iniciais has all field keys with empty/placeholder values
+      expect(state.iniciais).not.toEqual({});
+      expect(state.iniciais.uc).toBe('');
+      expect(state.iniciais.os).toBe('');
+      expect(state.iniciais.lider).toBe('');
+      expect(state.iniciais['tipo-ordem']).toBe('');
     });
 
     it('should clear state.equipamentos', () => {
