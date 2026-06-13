@@ -146,6 +146,7 @@ export function handleTipoChange() {
   if (tipo === state.lastTipoOrdem) return;
 
   state.lastTipoOrdem = tipo;
+  state.iniciais['tipo-ordem'] = tipo;
   state.retorno = {};
   DOM.retornoCampos.innerHTML = "";
   renderRetorno();
