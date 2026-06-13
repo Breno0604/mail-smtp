@@ -5,9 +5,10 @@ import { state } from '../scripts/state.js';
 import { saveDraft, getRecord, getAllRecords, deleteRecord } from '../scripts/db.js';
 import { applyRecord } from '../scripts/restore.js';
 import { resetForm } from '../scripts/reset.js';
-import { renderIniciais, getIniciaisData } from '../scripts/iniciais.js';
-import { renderRetorno, setRetornoData, getRetornoData } from '../scripts/retornos.js';
-import { renderEquipamentos, collectEquipamentos } from '../scripts/equipment.js';
+import { renderIniciais } from '../scripts/iniciais.js';
+import { renderRetorno, setRetornoData } from '../scripts/retornos.js';
+import { renderEquipamentos } from '../scripts/equipment.js';
+import { collectIniciais, collectRetorno } from '../scripts/collectors.js';
 
 /**
  * Teste de integração — fluxo completo do usuário:
@@ -131,8 +132,8 @@ describe('integration: full record lifecycle', () => {
       status: 'draft',
       createdAt: '2024-03-15T10:00:00.000Z',
       updatedAt: '2024-03-15T10:00:00.000Z',
-      iniciais: getIniciaisData(),
-      retorno: getRetornoData(),
+      iniciais: collectIniciais(),
+      retorno: collectRetorno(),
       tipoOrdem: DOM.tipoOrdem.value,
       equipamentos: state.equipamentos,
       composicao: { complementoCorpo: 'Test complement' },
@@ -230,8 +231,8 @@ describe('integration: full record lifecycle', () => {
       status: 'draft',
       createdAt: '2024-03-15T10:00:00.000Z',
       updatedAt: '2024-03-15T10:00:00.000Z',
-      iniciais: getIniciaisData(),
-      retorno: getRetornoData(),
+      iniciais: collectIniciais(),
+      retorno: collectRetorno(),
       tipoOrdem: 'VISTORIA DA UC',
       equipamentos: [{ status: 'Instalado', categoria: 'Medidor', numero: '111' }],
       composicao: { complementoCorpo: 'Complement A' },
@@ -256,8 +257,8 @@ describe('integration: full record lifecycle', () => {
       status: 'draft',
       createdAt: '2024-03-16T10:00:00.000Z',
       updatedAt: '2024-03-16T10:00:00.000Z',
-      iniciais: getIniciaisData(),
-      retorno: getRetornoData(),
+      iniciais: collectIniciais(),
+      retorno: collectRetorno(),
       tipoOrdem: 'CORTE POR FALTA DE PAGAMENTO',
       equipamentos: [{ status: 'Retirado', categoria: 'Display', numero: '222' }],
       composicao: { complementoCorpo: 'Complement B' },

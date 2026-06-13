@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { renderRetorno, getRetornoData, setRetornoData, handleTipoChange } from '../scripts/retornos.js';
+import { renderRetorno, setRetornoData, handleTipoChange } from '../scripts/retornos.js';
 import { cacheDOM, DOM } from '../scripts/dom.js';
 import { state } from '../scripts/state.js';
+import { collectRetorno } from '../scripts/collectors.js';
 
 describe('retornos', () => {
   beforeEach(() => {
@@ -110,10 +111,10 @@ describe('retornos', () => {
     });
   });
 
-  describe('getRetornoData', () => {
+  describe('collectRetorno', () => {
     it('should return empty object when no tipo is selected', () => {
       DOM.retornoCampos.innerHTML = '';
-      const data = getRetornoData();
+      const data = collectRetorno();
       expect(data).toEqual({});
     });
 
@@ -122,15 +123,24 @@ describe('retornos', () => {
       renderRetorno();
       const textarea = document.getElementById('descricao');
       textarea.value = 'Test description';
-      const data = getRetornoData();
+      const data = collectRetorno();
       expect(data.descricao).toBe('Test description');
     });
 
     it('should return empty string when textarea is empty', () => {
       DOM.tipoOrdem.value = 'ADEQUACAO SMF';
       renderRetorno();
-      const data = getRetornoData();
+      const data = collectRetorno();
       expect(data.descricao).toBe('');
+    });
+
+    it('should update state.retorno when collecting', () => {
+      DOM.tipoOrdem.value = 'ADEQUACAO SMF';
+      renderRetorno();
+      const textarea = document.getElementById('descricao');
+      textarea.value = 'Test description';
+      collectRetorno();
+      expect(state.retorno.descricao).toBe('Test description');
     });
   });
 
@@ -300,7 +310,7 @@ describe('retornos', () => {
       expect(descricao).toBeNull();
     });
 
-    it('should collect all visible UC Cortada field values via getRetornoData', () => {
+    it('should collect all visible UC Cortada field values via collectRetorno', () => {
       DOM.tipoOrdem.value = 'INSPECAO UC CORTADA I15';
       renderRetorno();
       document.getElementById('situacao-cliente').value = 'CORTADO';
@@ -310,7 +320,7 @@ describe('retornos', () => {
       document.getElementById('jump').value = 'COM JUMP';
       document.getElementById('chaves').value = 'COM CHAVE';
       document.getElementById('aplicado-toi').value = 'NAO';
-      const data = getRetornoData();
+      const data = collectRetorno();
       expect(data['situacao-cliente']).toBe('CORTADO');
       expect(data['viavel-retirar']).toBe('COM MUNK');
       expect(data['ramal']).toBe('COM RAMAL');
@@ -321,13 +331,13 @@ describe('retornos', () => {
       expect(data['toi']).toBeUndefined();
     });
 
-    it('should include TOI in getRetornoData when visible', () => {
+    it('should include TOI in collectRetorno when visible', () => {
       DOM.tipoOrdem.value = 'INSPECAO UC CORTADA I15';
       renderRetorno();
       document.getElementById('aplicado-toi').value = 'SIM';
       document.getElementById('aplicado-toi').dispatchEvent(new Event('change'));
       document.getElementById('toi').value = 'TOI-123';
-      const data = getRetornoData();
+      const data = collectRetorno();
       expect(data['toi']).toBe('TOI-123');
     });
   });

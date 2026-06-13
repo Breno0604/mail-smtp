@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { renderIniciais, getIniciaisData, iniciaisFields } from '../scripts/iniciais.js';
+import { renderIniciais, iniciaisFields } from '../scripts/iniciais.js';
 import { cacheDOM, DOM } from '../scripts/dom.js';
 import { state } from '../scripts/state.js';
+import { collectIniciais } from '../scripts/collectors.js';
 
 describe('iniciais', () => {
   beforeEach(() => {
@@ -193,7 +194,7 @@ describe('iniciais', () => {
     });
   });
 
-  describe('getIniciaisData', () => {
+  describe('collectIniciais', () => {
     it('should return all field values from DOM', () => {
       renderIniciais();
       // Fill some fields
@@ -202,14 +203,14 @@ describe('iniciais', () => {
       const uc = document.getElementById('uc');
       uc.value = '12345';
       
-      const data = getIniciaisData();
+      const data = collectIniciais();
       expect(data.lider).toBe('ANDRE DE SOUSA CARVALHO');
       expect(data.uc).toBe('12345');
     });
 
     it('should return empty strings for unfilled fields', () => {
       renderIniciais();
-      const data = getIniciaisData();
+      const data = collectIniciais();
       Object.values(data).forEach(val => {
         expect(val).toBe('');
       });
@@ -217,12 +218,20 @@ describe('iniciais', () => {
 
     it('should return object with all field names as keys', () => {
       renderIniciais();
-      const data = getIniciaisData();
+      const data = collectIniciais();
       const fieldNames = iniciaisFields.map(f => f.nome);
       fieldNames.forEach(name => {
         expect(data).toHaveProperty(name);
       });
       expect(Object.keys(data).length).toBe(fieldNames.length);
+    });
+
+    it('should update state.iniciais when collecting', () => {
+      renderIniciais();
+      const lider = document.getElementById('lider');
+      lider.value = 'ANDRE DE SOUSA CARVALHO';
+      collectIniciais();
+      expect(state.iniciais.lider).toBe('ANDRE DE SOUSA CARVALHO');
     });
   });
 

@@ -120,24 +120,6 @@ function updateConditionalFields(fields) {
   });
 }
 
-export function getRetornoData() {
-  const tipo = DOM.tipoOrdem?.value || "";
-  if (!tipo) return {};
-
-  const fields = getRetornoFields(tipo);
-  const data = {};
-
-  fields.forEach((field) => {
-    const group = DOM.retornoCampos.querySelector(`[data-field-nome="${field.nome}"]`);
-    if (!group || group.style.display === "none") return;
-
-    const el = document.getElementById(field.nome);
-    if (el) data[field.nome] = el.value;
-  });
-
-  return data;
-}
-
 export function setRetornoData(data) {
   if (!data) return;
 

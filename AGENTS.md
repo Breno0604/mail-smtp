@@ -10,7 +10,7 @@
 - Frontend: vanilla HTML/CSS/JS (ES6 modules), Tailwind CSS (static), no bundler
 - Backend: single Netlify Function at `netlify/functions/send.js` (Node.js + nodemailer)
 - Persistence: IndexedDB (`mail-mvp` DB, `records` store) + localStorage backup (`mail_form_estado`)
-- Tests: Vitest + jsdom, 334 tests
+- Tests: Vitest + jsdom, 394 tests
 - Deploy: `git push` → Netlify auto-deploys (`npm install` runs on build)
 
 ## Dev workflow
@@ -18,7 +18,7 @@
 - **No bundler, no hot reload** — edit files then refresh browser
 - **Test commands**: `npm test` (all), `npx vitest run tests/FILE.test.js` (single)
 - **Tests skip `send.js`** (SMTP not available in CI)
-- **Test setup** (`tests/setup.js`) mocks canvas, crypto, URL, and builds minimal DOM. Set `_resetValidationCache()` between test runs (validation.js).
+- **Test setup** (`tests/setup.js`) mocks canvas, crypto, URL, and builds minimal DOM.
 - **Deploy**: `git add -A && git commit -m "msg" && git push`
 
 ## Key conventions an agent might miss
@@ -26,7 +26,7 @@
 - **DOM.tipoOrdem is an exception**: It's created dynamically by `renderIniciais()`, so `iniciais.js` line 172 manually assigns `DOM.tipoOrdem = input` after `cacheDOM()` runs. Always re-attach event listeners after renderIniciais().
 - **CACHE_NAME** in `sw.js`: Bump this number every time static assets (HTML, CSS, JS) change. Backend-only changes skip this.
 - **Tipo de Ordem names** in `scripts/fields.js` must match **exactly** between `iniciaisFields` dropdown options and `retornoFieldsByTipo` keys.
-- **Hidden fields excluded from email**: `getRetornoData()` filters `display: none` fields. `composeEmail()` double-checks field exists in data. Both layers protect against sending hidden field values.
+- **Hidden fields excluded from email**: `collectRetorno()` and `collectAllData()` filter `display: none` fields. `composeEmail()` double-checks field exists in data. Both layers protect against sending hidden field values.
 - **Validation skips hidden fields**: `validateSection3` checks `group.style.display === "none"` before validating.
 - **Backend env vars (6 required)**: `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`, `SMTP_TO`. Recipients come from `SMTP_TO` only — not from form.
 - **SMTP TLS**: `rejectUnauthorized: false` is intentional (self-signed certs in production).
@@ -36,7 +36,7 @@
 - **IndexedDB schema** (`scripts/db.js`): DB `mail-mvp` v3, two stores — `records` (keyPath: uuid) and `attachments` (keyPath: id, index on uuid). Attachments stored separately since v3. Migration from v2 is transparent in `restore.js`.
 - **Attachments have dirty tracking** (`persistence.js`): Call `markAttachmentsDirty()` when changing attachments. Without this, new attachments won't persist.
 - **saveState guards**: Won't save until UC+OS fields filled (`state.iniciaisValido` flag). Won't save with no data at all.
-- **state.js re-exports from persistence.js**: Creates circular import risk (`state → persistence → state`). Broken via `storage.js` as intermediate. Be careful adding new imports.
+- **Collectors pattern** (`scripts/collectors.js`): Always use collectors.js to read form data into state (`collectIniciais()`, `collectRetorno()`, `collectEquipamentos()`). Never read DOM directly for data extraction. These are called automatically by `saveState()` and `updateLivePreview()`.
 - **Conditional field system** (`retornos.js`): Fields can depend on other fields. Supports string values, arrays, and negation. Parent fields must appear before children in the array (cascading order).
 - **Select inputs** get a "Selecione" placeholder `<option>` as first child (in `iniciais.js`).
 - **Date in email**: Dates are reversed from YYYY-MM-DD to DD-MM-YYYY in `composeEmail()` (line 27).

@@ -6,8 +6,8 @@ import { saveState, debouncedSave } from '../scripts/persistence.js';
 import { getRecord, getAllRecords, deleteRecord } from '../scripts/db.js';
 import { applyRecord } from '../scripts/restore.js';
 import { resetForm } from '../scripts/reset.js';
-import { renderIniciais, getIniciaisData } from '../scripts/iniciais.js';
-import { renderRetorno, setRetornoData, getRetornoData, handleTipoChange } from '../scripts/retornos.js';
+import { renderIniciais } from '../scripts/iniciais.js';
+import { renderRetorno, setRetornoData, handleTipoChange } from '../scripts/retornos.js';
 import { renderEquipamentos, addEquip } from '../scripts/equipment.js';
 import { collectEquipamentos } from '../scripts/collectors.js';
 

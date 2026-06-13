@@ -125,7 +125,7 @@ describe('restore', () => {
 
     it('should restore iniciais data', () => {
       applyRecord(sampleRecord);
-      // state.iniciais is now synced from DOM via getIniciaisData(),
+      // state.iniciais is now synced from DOM via collectIniciais(),
       // so it uses DOM field names (kebab-case) and includes all defined fields
       expect(state.iniciais.uc).toBe('99999');
       expect(state.iniciais.os).toBe('88888');

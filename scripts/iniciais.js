@@ -185,12 +185,3 @@ export function renderIniciais() {
     wrapper.appendChild(group);
   });
 }
-
-export function getIniciaisData() {
-  const data = {};
-  iniciaisFields.forEach((field) => {
-    const el = document.getElementById(field.nome);
-    data[field.nome] = el ? el.value : "";
-  });
-  return data;
-}
