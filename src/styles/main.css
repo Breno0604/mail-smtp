@@ -1,6 +1,10 @@
 @import "@fontsource/inter/400.css";
 @import "@fontsource/inter/600.css";
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .is-filled {
   background-color: #eff6ff;
 }
