@@ -21,6 +21,6 @@
     },
     "types": ["vite/client", "vitest/globals"]
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue", "tests/**/*.ts"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue", "tests/**/*.test.ts"],
   "references": [{ "path": "./tsconfig.test.json" }]
 }

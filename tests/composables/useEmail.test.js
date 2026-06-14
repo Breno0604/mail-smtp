@@ -38,7 +38,8 @@ describe('useEmail', () => {
     
     expect(email).toContain('UC: 123');
     expect(email).toContain('OS: 456');
-    expect(email).toContain('LÍDER: ANDRE DE SOUSA CARVALHO');
+    // normalizeText removes accents and converts to uppercase
+    expect(email).toContain('LIDER: ANDRE DE SOUSA CARVALHO');
   });
 
   it('composeEmail includes equipamentos', () => {
@@ -67,7 +68,8 @@ describe('useEmail', () => {
     
     expect(email).toContain('RETORNO:');
     expect(email).toContain('RESULTADO DA VISTORIA: REGULAR');
-    expect(email).toContain('DESCRIÇÃO DO SERVIÇO: TUDO OK');
+    // normalizeText removes accents and converts to uppercase
+    expect(email).toContain('DESCRICAO DO SERVICO: TUDO OK');
   });
 
   it('composeEmail handles empty retorno fields', () => {

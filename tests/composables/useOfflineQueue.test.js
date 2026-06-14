@@ -12,7 +12,7 @@ describe('useOfflineQueue', () => {
   });
 
   it('queueSend adds item to IndexedDB', async () => {
-    const { queueSend, loadQueue } = useOfflineQueue();
+    const { queue, queueSend, loadQueue } = useOfflineQueue();
     
     await queueSend('uuid-123', { test: 'data' });
     await loadQueue();
@@ -23,7 +23,7 @@ describe('useOfflineQueue', () => {
   });
 
   it('loadQueue loads pending items from IndexedDB', async () => {
-    const { loadQueue } = useOfflineQueue();
+    const { queue, loadQueue } = useOfflineQueue();
     
     await db.pendingSends.put({
       uuid: 'uuid-1',
@@ -37,7 +37,7 @@ describe('useOfflineQueue', () => {
   });
 
   it('flushQueue processes pending items', async () => {
-    const { queueSend, flushQueue, loadQueue } = useOfflineQueue();
+    const { queue, queueSend, flushQueue, loadQueue } = useOfflineQueue();
     
     await queueSend('uuid-123', { test: 'data' });
     
