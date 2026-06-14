@@ -13,9 +13,11 @@
     "build:css": "tailwindcss -i tailwind-input.css -o tailwind.css --minify"
   },
   "dependencies": {
+    "@types/uuid": "^10.0.0",
     "dexie": "^4.4.3",
     "nodemailer": "^6.9.0",
     "pinia": "^3.0.4",
+    "uuid": "^14.0.0",
     "vue": "^3.5.38",
     "vue-router": "^4.6.4"
   },

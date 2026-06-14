@@ -4,41 +4,60 @@
     "superpowers@git+https://github.com/obra/superpowers.git"
   ],
   "default_agent": "gerente",
-  "model": "opencode/qwen3.7-plus",
+  "model": "nvidia/nvidia/nemotron-3-ultra-550b-a55b",
   "small_model": "opencode/big-pickle",
+  "provider": {
+    "nvidia": {
+      "options": {
+        "baseURL": "https://integrate.api.nvidia.com/v1"
+      }
+    }
+  },
   "agent": {
     "gerente": {
       "description": "O organizador do projeto que analisa as tarefas e delega para os subagentes corretos",
       "mode": "primary",
-      "model": "opencode/qwen3.7-plus",
-      "prompt": "Você é o Gerente de Projeto. Sua função principal é planejar e coordenar. Não tente escrever códigos longos ou resolver tudo sozinho. Em vez disso, divida o problema e delegue as tarefas usando os subagentes disponíveis: se precisar de telas/visual use o 'designer'; se precisar de banco de dados/lógica use o 'arquiteto'; se precisar de testes use o 'testador' (que é gratuito); se precisar de documentações, explicações ou comentários de código use o 'revisor' (que também é gratuito); e se precisar investigar um erro use o 'detetive'."
+      "model": "nvidia/nvidia/nemotron-3-ultra-550b-a55b",
+      "prompt": "Você é o Gerente de Projeto. Sua função principal é planejar e coordenar. Não tente escrever códigos longos ou resolver tudo sozinho. Em vez disso, divida o problema e delegue as tarefas usando os subagentes disponíveis: se precisar de telas/visual use o 'designer'; se precisar de banco de dados/lógica use o 'arquiteto'; se precisar de testes use o 'testador' (que é gratuito); se precisar de documentações, explicações ou comentários de código use o 'revisor' (que também é gratuito); e se precisar investigar um erro use o 'detetive'. IMPORTANTE: se @arquiteto ou @detetive retornarem erro de timeout ou falha, tente @arquiteto-fb ou @detetive-fb respectivamente como fallback."
     },
     "designer": {
       "description": "Subagente de telas e visual (Frontend)",
       "mode": "subagent",
-      "model": "big-pickle",
+      "model": "opencode/big-pickle",
       "prompt": "Você é o designer visual. Foque apenas na parte estética e de interface (CSS, HTML, layouts)."
     },
     "arquiteto": {
-      "description": "Subagente de lógica e banco de dados (Backend)",
+      "description": "Subagente de lógica e banco de dados (Backend) - NVIDIA Nemotron 3 Ultra",
       "mode": "subagent",
-      "model": "opencode/qwen3.7-plus",
+      "model": "nvidia/nvidia/nemotron-3-ultra-550b-a55b",
       "prompt": "Você é o especialista em lógica de programação pura e organização de dados."
     },
-    "detetive": {
-      "description": "Subagente especialista em procurar bugs",
+    "arquiteto-fb": {
+      "description": "Subagente de lógica e banco de dados (Backend) - fallback big-pickle",
       "mode": "subagent",
-      "model": "opencode/qwen3.7-plus",
+      "model": "opencode/big-pickle",
+      "prompt": "Você é o especialista em lógica de programação pura e organização de dados. (fallback)"
+    },
+    "detetive": {
+      "description": "Subagente especialista em procurar bugs - NVIDIA Kimi K2.6",
+      "mode": "subagent",
+      "model": "nvidia/moonshotai/kimi-k2.6",
       "prompt": "Você é um investigador de erros. Analise logs e códigos para achar a causa do problema."
     },
+    "detetive-fb": {
+      "description": "Subagente especialista em procurar bugs - fallback big-pickle",
+      "mode": "subagent",
+      "model": "opencode/big-pickle",
+      "prompt": "Você é um investigador de erros. Analise logs e códigos para achar a causa do problema. (fallback)"
+    },
     "testador": {
-      "description": "Subagente focado em criar testes unitários (rodando no modelo gratuito)",
+      "description": "Subagente focado em criar testes unitários (rodando no modelo gratuito e rápido)",
       "mode": "subagent",
       "model": "opencode/big-pickle",
       "prompt": "Você escreve testes rápidos e simples para garantir que a aplicação funciona."
     },
     "revisor": {
-      "description": "Subagente para revisar a legibilidade do código e escrever documentações/READMEs (rodando no modelo gratuito)",
+      "description": "Subagente para revisar a legibilidade do código e escrever documentações/READMEs (rodando no modelo gratuito e rápido)",
       "mode": "subagent",
       "model": "opencode/big-pickle",
       "prompt": "Você analisa o código e cria documentações, explicações, comentários ou arquivos README claros e diretos."
