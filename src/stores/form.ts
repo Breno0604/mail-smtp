@@ -49,6 +49,7 @@ export const useFormStore = defineStore('form', () => {
 
   function setTipoOrdem(value: string) {
     tipoOrdem.value = value;
+    iniciais.value['tipo-ordem'] = value;
     // Clear retorno when tipo-ordem changes
     retorno.value = {};
   }
@@ -138,10 +139,23 @@ export const useFormStore = defineStore('form', () => {
     }
   }
 
+  function newRecord() {
+    // Save current draft if valid before creating new
+    if (iniciaisValido.value) {
+      saveDraft();
+    }
+    resetForm();
+    // Generate new UUID for the new record
+    currentUUID.value = uuidv4();
+    createdAt.value = new Date().toISOString();
+    updatedAt.value = createdAt.value;
+  }
+
   // ── Watchers ───────────────────────────────────────────────────────────
   watch(
     [iniciais, retorno, equipamentos, composicao, tipoOrdem],
     () => {
+      validateIniciais();
       debouncedSave();
     },
     { deep: true }
@@ -169,5 +183,6 @@ export const useFormStore = defineStore('form', () => {
     markAttachmentsDirty,
     saveDraft,
     loadRecord,
+    newRecord,
   };
 });

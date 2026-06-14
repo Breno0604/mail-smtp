@@ -1,14 +1,16 @@
 <!-- src/App.vue -->
 <script setup lang="ts">
 import { useUIStore } from '@/stores/ui';
+import { useFormStore } from '@/stores/form';
 import { onMounted } from 'vue';
 import Sidebar from '@/components/Sidebar.vue';
 import ConfirmModal from '@/components/ConfirmModal.vue';
 import UpdateModal from '@/components/UpdateModal.vue';
-import DuplicateModal from '@/components/DuplicateModal.vue';
+import DuplicateModal from '@/components/DuplicateModal.vue'
 import OrientationOverlay from '@/components/OrientationOverlay.vue';
 
 const ui = useUIStore();
+const form = useFormStore();
 
 onMounted(() => {
   // Register service worker for PWA
@@ -18,6 +20,10 @@ onMounted(() => {
     });
   }
 });
+
+function handleNewRecord() {
+  form.newRecord();
+}
 </script>
 
 <template>
@@ -59,6 +65,12 @@ onMounted(() => {
       <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         <h1 class="text-xl font-semibold">Retorno</h1>
         <div class="flex items-center gap-4">
+          <button 
+            @click="handleNewRecord"
+            class="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-white transition-colors font-medium"
+          >
+            + Novo Registro
+          </button>
           <Sidebar />
         </div>
       </div>
