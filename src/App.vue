@@ -2,6 +2,11 @@
 <script setup lang="ts">
 import { useUIStore } from '@/stores/ui';
 import { onMounted } from 'vue';
+import Sidebar from '@/components/Sidebar.vue';
+import ConfirmModal from '@/components/ConfirmModal.vue';
+import UpdateModal from '@/components/UpdateModal.vue';
+import DuplicateModal from '@/components/DuplicateModal.vue';
+import OrientationOverlay from '@/components/OrientationOverlay.vue';
 
 const ui = useUIStore();
 
@@ -43,38 +48,18 @@ onMounted(() => {
       </div>
     </Teleport>
 
-    <!-- Confirm modal -->
-    <Teleport to="body">
-      <div 
-        v-if="ui.confirmOpen" 
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-      >
-        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
-          <p class="text-lg mb-6">{{ ui.confirmMessage }}</p>
-          <div class="flex justify-end gap-3">
-            <button 
-              @click="ui.resolveConfirm(false)"
-              class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
-            >
-              Cancelar
-            </button>
-            <button 
-              @click="ui.resolveConfirm(true)"
-              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            >
-              Confirmar
-            </button>
-          </div>
-        </div>
-      </div>
-    </Teleport>
+    <!-- Global modals -->
+    <ConfirmModal />
+    <UpdateModal />
+    <DuplicateModal />
+    <OrientationOverlay />
 
     <!-- Main app layout -->
     <header class="bg-blue-600 text-white shadow-sm">
       <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         <h1 class="text-xl font-semibold">Retorno</h1>
         <div class="flex items-center gap-4">
-          <!-- Sidebar toggle will go here -->
+          <Sidebar />
         </div>
       </div>
     </header>
