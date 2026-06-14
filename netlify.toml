@@ -1,7 +1,17 @@
 [build]
-  command = "npm install"
+  command = "npm run build"
   functions = "netlify/functions"
-  publish = "."
+  publish = "dist"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/api/send"
+  to = "/.netlify/functions/send"
+  status = 200
 
 [[headers]]
   for = "/sw.js"
@@ -17,8 +27,3 @@
   for = "/icons/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
-
-[[redirects]]
-  from = "/api/send"
-  to = "/.netlify/functions/send"
-  status = 200
