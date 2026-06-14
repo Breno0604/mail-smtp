@@ -9,7 +9,8 @@ function checkOrientation() {
   const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   if (!isMobile) return;
   
-  showOverlay.value = window.innerHeight > window.innerWidth;
+  // Show overlay in LANDSCAPE (width > height), hide in PORTRAIT
+  showOverlay.value = window.innerWidth > window.innerHeight;
 }
 
 onMounted(() => {
