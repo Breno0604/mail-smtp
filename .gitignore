@@ -7,3 +7,7 @@ test-results/
 
 # graphify generated artifacts
 graphify-out/
+
+# Vite build output
+dist/
+.vite/
