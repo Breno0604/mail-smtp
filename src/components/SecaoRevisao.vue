@@ -33,7 +33,7 @@ async function handleSend() {
   const payload = {
     uuid: form.currentUUID,
     body: emailBody,
-    complemento: form.composicao.complementoCorpo,
+    complemento: form.composicao['complemento-corpo'],
   };
 
   if (isOnline.value) {
@@ -80,8 +80,8 @@ async function handleSend() {
     <div class="mb-6">
       <label for="complemento" class="block text-sm font-medium text-gray-700 mb-2">Complemento (opcional)</label>
       <textarea 
-        id="complemento"
-        v-model="form.composicao.complementoCorpo"
+        id="complemento-corpo"
+        v-model="form.composicao['complemento-corpo']"
         rows="3"
         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         placeholder="Texto adicional para o corpo do e-mail..."

@@ -43,7 +43,7 @@ export interface RecordData {
   retorno: RetornoData;
   tipoOrdem: string;
   equipamentos: EquipamentoData[];
-  composicao: { complementoCorpo: string };
+  composicao: { 'complemento-corpo': string };
   attachmentCount: number;
   sentData: SentData | null;
 }

@@ -11,7 +11,7 @@ export const useFormStore = defineStore('form', () => {
   const retorno = ref<Record<string, string>>({});
   const equipamentos = ref<EquipamentoData[]>([]);
   const attachments = ref<StoredAttachment[]>([]);
-  const composicao = ref({ complementoCorpo: '' });
+  const composicao = ref({ 'complemento-corpo': '' });
   const currentUUID = ref<string | null>(null);
   const status = ref<'draft' | 'sent'>('draft');
   const createdAt = ref<string>('');
@@ -31,7 +31,7 @@ export const useFormStore = defineStore('form', () => {
     retorno.value = {};
     equipamentos.value = [];
     attachments.value = [];
-    composicao.value = { complementoCorpo: '' };
+    composicao.value = { 'complemento-corpo': '' };
     currentUUID.value = null;
     status.value = 'draft';
     createdAt.value = '';
@@ -77,7 +77,7 @@ export const useFormStore = defineStore('form', () => {
       retorno: { ...retorno.value },
       tipoOrdem: tipoOrdem.value,
       equipamentos: [...equipamentos.value],
-      composicao: { ...composicao.value },
+      composicao: { 'complemento-corpo': composicao.value['complemento-corpo'] },
       attachmentCount: attachments.value.length,
       sentData: sentData.value,
     };
@@ -126,7 +126,7 @@ export const useFormStore = defineStore('form', () => {
       retorno.value = { ...record.retorno };
       tipoOrdem.value = record.tipoOrdem;
       equipamentos.value = [...record.equipamentos];
-      composicao.value = { ...record.composicao };
+      composicao.value = { 'complemento-corpo': record.composicao['complemento-corpo'] || '' };
       sentData.value = record.sentData;
 
       // Load attachments

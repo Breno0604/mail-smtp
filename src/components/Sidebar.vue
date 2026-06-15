@@ -36,6 +36,17 @@ const filteredRecords = computed(() => {
   );
 });
 
+function getRecordSummary(record: RecordData): string {
+  const uc = record.iniciais?.uc || '';
+  const os = record.iniciais?.os || '';
+  const tipoOrdem = record.tipoOrdem || '';
+  if (uc && os && tipoOrdem) return `${uc}-${os}-${tipoOrdem}`;
+  if (uc && os) return `${uc}-${os}`;
+  if (os) return `OS #${os}`;
+  if (uc) return `UC ${uc}`;
+  return '(rascunho vazio)';
+}
+
 function openSidebar() {
   isOpen.value = true;
   loadRecords();
@@ -103,7 +114,7 @@ onMounted(() => {
           <input 
             type="text"
             v-model="filter"
-            placeholder="Filtrar por UC, OS, Tipo..."
+            placeholder="Buscar por UC, OS, Tipo..."
             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
@@ -121,24 +132,36 @@ onMounted(() => {
             <li 
               v-for="record in filteredRecords" 
               :key="record.uuid"
-              class="p-3 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer flex justify-between items-center"
+              class="p-3 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
             >
-              <div @click="editRecord(record)">
-                <p class="font-medium text-sm">{{ record.tipoOrdem }}</p>
-                <p class="text-xs text-gray-500">
-                  UC: {{ record.iniciais.uc || '—' }} | OS: {{ record.iniciais.os || '—' }}
-                </p>
-                <p class="text-xs text-gray-400">
-                  {{ formatDate(record.updatedAt.split('T')[0]) }} | 
-                  {{ record.status === 'sent' ? '✓ Enviado' : '⏳ Rascunho' }}
+              <div @click="editRecord(record)" class="flex-1 min-w-0">
+                <p class="sidebar-item-title font-medium text-sm">{{ getRecordSummary(record) }}</p>
+                <p class="sidebar-item-meta text-xs text-gray-500">
+                  {{ formatDate(record.updatedAt.split('T')[0]) }}
                 </p>
               </div>
-              <button 
-                @click.stop="deleteRecord(record)"
-                class="text-red-500 hover:text-red-700 text-sm px-2 py-1"
-              >
-                Excluir
-              </button>
+              <div class="flex items-center gap-2">
+                <span 
+                  :class="record.status === 'sent' ? 'status-sent' : 'status-draft'"
+                  class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
+                >
+                  {{ record.status === 'sent' ? 'Enviado' : 'Rascunho' }}
+                </span>
+                <div class="flex gap-1">
+                  <button 
+                    @click.stop="editRecord(record)"
+                    class="sidebar-btn sidebar-btn-edit px-2 py-1 text-xs rounded"
+                  >
+                    ✏️ Editar
+                  </button>
+                  <button 
+                    @click.stop="deleteRecord(record)"
+                    class="sidebar-btn sidebar-btn-delete px-2 py-1 text-xs rounded"
+                  >
+                    🗑️ Excluir
+                  </button>
+                </div>
+              </div>
             </li>
           </ul>
         </div>
@@ -146,3 +169,27 @@ onMounted(() => {
     </div>
   </Teleport>
 </template>
+
+<style scoped>
+.sidebar-item-title {
+  @apply font-medium text-sm;
+}
+.sidebar-item-meta {
+  @apply text-xs text-gray-400;
+}
+.status-sent {
+  @apply bg-green-100 text-green-800;
+}
+.status-draft {
+  @apply bg-yellow-100 text-yellow-800;
+}
+.sidebar-btn {
+  @apply transition-colors;
+}
+.sidebar-btn-edit {
+  @apply bg-blue-100 text-blue-700 hover:bg-blue-200;
+}
+.sidebar-btn-delete {
+  @apply bg-red-100 text-red-700 hover:bg-red-200;
+}
+</style>

@@ -36,8 +36,8 @@ onUnmounted(() => {
         <svg class="w-24 h-24 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
         </svg>
-        <h2 class="text-2xl font-bold text-gray-900 mb-2">Gire o dispositivo</h2>
-        <p class="text-gray-600">Para uma melhor experiência, use o aplicativo em orientação retrato.</p>
+        <h2 class="text-2xl font-bold text-gray-900 mb-2">Gire o celular na vertical</h2>
+        <p class="text-gray-600">O formulário funciona melhor no modo retrato.</p>
       </div>
     </div>
   </Teleport>

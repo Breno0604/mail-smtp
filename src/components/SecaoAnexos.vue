@@ -3,10 +3,14 @@
 import { ref } from 'vue';
 import { useFormStore } from '@/stores/form';
 import { compressAttachment } from '@/utils/compress';
+import Lightbox from './Lightbox.vue';
 
 const form = useFormStore();
 const previews = ref<string[]>([]);
 const maxSize = 8 * 1024 * 1024; // 8MB
+
+const lightboxOpen = ref(false);
+const lightboxImage = ref<string | null>(null);
 
 function handleFileSelect(event: Event) {
   const input = event.target as HTMLInputElement;
@@ -62,6 +66,16 @@ function removeAttachment(index: number) {
   previews.value.splice(index, 1);
   form.markAttachmentsDirty();
 }
+
+function openLightbox(imageUrl: string) {
+  lightboxImage.value = imageUrl;
+  lightboxOpen.value = true;
+}
+
+function closeLightbox() {
+  lightboxOpen.value = false;
+  lightboxImage.value = null;
+}
 </script>
 
 <template>
@@ -74,6 +88,7 @@ function removeAttachment(index: number) {
       </label>
       <input 
         type="file" 
+        ref="fileInput"
         multiple 
         accept="image/*,application/pdf"
         @change="handleFileSelect"
@@ -96,7 +111,8 @@ function removeAttachment(index: number) {
             v-if="previews[index]" 
             :src="previews[index]" 
             alt="Preview"
-            class="w-full h-full object-cover"
+            class="w-full h-full object-cover cursor-zoom-in"
+            @click="openLightbox(previews[index])"
           />
           <div v-else class="w-full h-full flex items-center justify-center text-gray-400">
             <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -117,5 +133,17 @@ function removeAttachment(index: number) {
         <p class="mt-1 text-xs text-gray-500 truncate">{{ attachment.name }}</p>
       </div>
     </div>
+
+    <Lightbox 
+      v-model:isOpen="lightboxOpen" 
+      :imageUrl="lightboxImage || ''" 
+      @close="closeLightbox" 
+    />
   </section>
 </template>
+
+<style scoped>
+.lightbox-close:hover {
+  opacity: 0.7;
+}
+</style>

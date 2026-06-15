@@ -29,8 +29,9 @@ watch(() => form.iniciais['tipo-ordem'], (newVal) => {
   <section class="bg-white rounded-lg shadow-sm p-6" id="sec-retorno">
     <h2 class="text-lg font-semibold text-gray-900 mb-4">2. Retorno</h2>
     
-    <div v-if="activeRetornoFields.length === 0" class="text-gray-500 text-sm">
-      Selecione um Tipo de Ordem na seção Iniciais para ver os campos de retorno.
+    <div v-if="activeRetornoFields.length === 0" class="ret-placeholder">
+      <span class="ret-icon">👆</span>
+      Selecione o Tipo de Ordem na seção "Início" para exibir os campos de Retorno
     </div>
     
     <div v-else class="space-y-4">
@@ -73,7 +74,16 @@ watch(() => form.iniciais['tipo-ordem'], (newVal) => {
           :inputmode="field.tipo === 'number' ? 'numeric' : 'text'"
           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         />
+        </div>
       </div>
-    </div>
   </section>
 </template>
+
+<style scoped>
+.ret-placeholder {
+  @apply flex flex-col items-center justify-center py-12 px-4 text-center;
+}
+.ret-icon {
+  @apply text-4xl mb-2;
+}
+</style>
