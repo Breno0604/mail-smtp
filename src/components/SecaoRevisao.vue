@@ -6,6 +6,7 @@ import { useEmail } from '@/composables/useEmail';
 import { useValidation } from '@/composables/useValidation';
 import { useOnlineStatus } from '@/composables/useOnlineStatus';
 import { useOfflineQueue } from '@/composables/useOfflineQueue';
+import type { StoredAttachment } from '@/types';
 
 const form = useFormStore();
 const { composeEmail } = useEmail();
@@ -29,12 +30,21 @@ async function handleSend() {
   }
 
   const emailBody = composeEmail.value;
+
+  // Build payload matching send.js expectations: { subject, text, attachments }
+  const uc = form.iniciais.uc || '—';
+  const os = form.iniciais.os || '—';
+  const tipoOrdem = form.tipoOrdem || form.iniciais['tipo-ordem'] || '—';
+  const subject = `OS #${os} - UC ${uc} - ${tipoOrdem}`;
+  const compCorpo = (form.composicao['complemento-corpo'] || '').trim();
+  const text = compCorpo ? `${emailBody}\n\n${compCorpo}` : emailBody;
+  const attachments = form.attachments.map((att: StoredAttachment) => ({
+    filename: att.name,
+    content: att.data,
+    type: att.type,
+  }));
   
-  const payload = {
-    uuid: form.currentUUID,
-    body: emailBody,
-    complemento: form.composicao['complemento-corpo'],
-  };
+  const payload = { subject, text, attachments };
 
   if (!isOnline.value) {
     await queueSend(form.currentUUID!, payload);
@@ -51,13 +61,14 @@ async function handleSend() {
 
     if (response.ok) {
       form.status = 'sent';
-      form.sentData = { sentAt: new Date().toISOString() };
+      form.sentData = { sentAt: new Date().toISOString(), subject };
       await form.saveDraft();
       alert('E-mail enviado com sucesso!');
     } else {
       // Server returned an error (4xx, 5xx)
+      const errData = await response.json().catch(() => null);
       await queueSend(form.currentUUID!, payload);
-      alert('Erro no servidor ao enviar e-mail. Salvo para tentar novamente.');
+      alert(errData?.error || 'Erro no servidor ao enviar e-mail. Salvo para tentar novamente.');
     }
   } catch {
     // Network error - backend offline, proxy unavailable, CORS, etc.

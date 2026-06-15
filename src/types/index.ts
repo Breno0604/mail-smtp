@@ -51,6 +51,7 @@ export interface RecordData {
 /** Data stored when email is sent successfully */
 export interface SentData {
   sentAt: string;
+  subject?: string;
   response?: string;
 }
 

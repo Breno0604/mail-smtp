@@ -2,7 +2,7 @@
 import { defineStore } from 'pinia';
 import { ref, watch, computed } from 'vue';
 import { db } from '@/db';
-import type { RecordData, EquipamentoData, StoredAttachment } from '@/types';
+import type { RecordData, EquipamentoData, StoredAttachment, SentData } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
 import { captureCoordinates } from '@/utils/coordinates';
 import { useUIStore } from './ui';
@@ -18,7 +18,7 @@ export const useFormStore = defineStore('form', () => {
   const status = ref<'draft' | 'sent'>('draft');
   const createdAt = ref<string>('');
   const updatedAt = ref<string>('');
-  const sentData = ref<{ sentAt: string; response?: string } | null>(null);
+  const sentData = ref<SentData | null>(null);
   const tipoOrdem = ref<string>('');
   const iniciaisValido = ref(false);
   let saveDebounceTimer: ReturnType<typeof setTimeout> | null = null;

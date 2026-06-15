@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { useFormStore } from '@/stores/form';
 import { iniciaisFields, getRetornoFields } from '@/constants/fields';
+import type { EquipamentoData } from '@/types';
 
 /**
  * Normaliza texto: remove acentos, substitui ç→c, converte para MAIÚSCULAS
@@ -44,7 +45,7 @@ export function useEmail() {
     // Equipamentos
     if (form.equipamentos && form.equipamentos.length > 0) {
       body += '\n\nEQUIPAMENTOS:';
-      form.equipamentos.forEach((eq) => {
+      form.equipamentos.forEach((eq: EquipamentoData) => {
         body += `\n${normalizeText(eq.categoria)} ${normalizeText(eq.status)} N\u00BA ${normalizeText(eq.numero || '\u2014')}`;
       });
     }

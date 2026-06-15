@@ -1,6 +1,7 @@
 // src/composables/useValidation.ts
 import { useFormStore } from '@/stores/form';
 import { iniciaisFields, getRetornoFields } from '@/constants/fields';
+import type { EquipamentoData } from '@/types';
 
 export function useValidation() {
   const form = useFormStore();
@@ -75,7 +76,7 @@ export function useValidation() {
     const errors: string[] = [];
     const nums: string[] = [];
 
-    form.equipamentos.forEach((eq, index) => {
+    form.equipamentos.forEach((eq: EquipamentoData, index: number) => {
       if (!eq.status) {
         errors.push(`Equipamento ${index + 1}: selecione o status`);
       }
