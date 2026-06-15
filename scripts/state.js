@@ -1,17 +1,34 @@
-// state.js — objeto de estado global da aplicação.
-// Importa getRawUUID de storage.js para inicializar currentUUID,
-// quebrando o ciclo: state.js → persistence.js → state.js.
-import { getRawUUID } from "./storage.js";
+// scripts/state.js
+import { getCurrentUUID, setCurrentUUID as setUUID, clearCurrentUUID as clearUUID } from './uuid.js';
 
-export { setCurrentUUID, clearCurrentUUID, saveState, debouncedSave, getCurrentUUID, markAttachmentsDirty } from "./persistence.js";
-
+/**
+ * Global application state
+ */
 export const state = {
   iniciais: {},
   equipamentos: [],
   attachments: [],
-  lastTipoOrdem: "",
+  lastTipoOrdem: '',
   retorno: {},
-  currentUUID: getRawUUID(),
-  composicao: { complementoCorpo: "" },
+  currentUUID: getCurrentUUID(),
+  composicao: { complementoCorpo: '' },
   iniciaisValido: false,
+  _createdAt: null,
 };
+
+/**
+ * Set current UUID in both state and localStorage
+ * @param {string} uuid - UUID to set
+ */
+export function setCurrentUUID(uuid) {
+  state.currentUUID = uuid;
+  setUUID(uuid);
+}
+
+/**
+ * Clear current UUID from both state and localStorage
+ */
+export function clearCurrentUUID() {
+  state.currentUUID = '';
+  clearUUID();
+}

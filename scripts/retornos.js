@@ -1,5 +1,6 @@
 import { DOM } from "./dom.js";
-import { state, saveState, debouncedSave } from "./state.js";
+import { state } from "./state.js";
+import { saveState, debouncedSave } from "./persistence.js";
 import { addBlurValidation } from "./validation.js";
 import { getRetornoFields } from "./fields.js";
 import { INPUT_CREATORS } from "./iniciais.js";
@@ -51,8 +52,14 @@ export function renderRetorno() {
       input.setAttribute("data-required", "");
 
       addBlurValidation(input);
-      input.addEventListener("input", debouncedSave);
-      input.addEventListener("change", debouncedSave);
+      input.addEventListener("input", () => {
+        state.retorno[field.nome] = input.value;
+        debouncedSave();
+      });
+      input.addEventListener("change", () => {
+        state.retorno[field.nome] = input.value;
+        debouncedSave();
+      });
 
       if (hasConditionalDependents(field.nome, fields)) {
         input.addEventListener("change", () => updateConditionalFields(fields));
@@ -119,24 +126,6 @@ function updateConditionalFields(fields) {
   });
 }
 
-export function getRetornoData() {
-  const tipo = DOM.tipoOrdem?.value || "";
-  if (!tipo) return {};
-
-  const fields = getRetornoFields(tipo);
-  const data = {};
-
-  fields.forEach((field) => {
-    const group = DOM.retornoCampos.querySelector(`[data-field-nome="${field.nome}"]`);
-    if (!group || group.style.display === "none") return;
-
-    const el = document.getElementById(field.nome);
-    if (el) data[field.nome] = el.value;
-  });
-
-  return data;
-}
-
 export function setRetornoData(data) {
   if (!data) return;
 
@@ -157,6 +146,7 @@ export function handleTipoChange() {
   if (tipo === state.lastTipoOrdem) return;
 
   state.lastTipoOrdem = tipo;
+  state.iniciais['tipo-ordem'] = tipo;
   state.retorno = {};
   DOM.retornoCampos.innerHTML = "";
   renderRetorno();

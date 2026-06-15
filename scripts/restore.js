@@ -1,11 +1,14 @@
 import { DOM } from "./dom.js";
-import { state, setCurrentUUID, markAttachmentsDirty } from "./state.js";
+import { state, setCurrentUUID } from "./state.js";
+import { markAttachmentsDirty } from "./persistence.js";
 import { renderIniciais, iniciaisFields } from "./iniciais.js";
 import { renderRetorno, setRetornoData, handleTipoChange } from "./retornos.js";
 import { renderEquipamentos } from "./equipment.js";
 import { renderPreviews } from "./attachments.js";
 import { base64ToBlob } from "./utils.js";
 import { getAttachmentsByUuid } from "./db.js";
+import { updateLivePreview } from "./email.js";
+import { collectIniciais } from "./collectors.js";
 
 /**
  * Aplica um registro ao formulário, restaurando todos os campos.
@@ -18,7 +21,7 @@ export async function applyRecord(record) {
   state.iniciaisValido = true;
 
   state.equipamentos = record.equipamentos || [];
-  state.lastTipoOrdem = record.lastTipoOrdem || "";
+  state.lastTipoOrdem = record.tipoOrdem || "";
   state.iniciais = record.iniciais || {};
   state.retorno = record.retorno || {};
   state._createdAt = record.createdAt;
@@ -82,7 +85,16 @@ export async function applyRecord(record) {
   renderPreviews();
 
   // ── Restore complemento ─────────────────────────────────────────────────
-  if (record.composicao?.complementoCorpo && DOM.complementoCorpo) {
-    DOM.complementoCorpo.value = record.composicao.complementoCorpo;
+  if (record.composicao) {
+    state.composicao = { ...state.composicao, ...record.composicao };
+    if (record.composicao.complementoCorpo && DOM.complementoCorpo) {
+      DOM.complementoCorpo.value = record.composicao.complementoCorpo;
+    }
   }
+
+  // ── Sync state from DOM to normalize field names ──────────────────────────
+  collectIniciais();
+
+  // ── Atualizar preview do email ────────────────────────────────────────────
+  updateLivePreview();
 }

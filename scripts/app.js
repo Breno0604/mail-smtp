@@ -1,7 +1,10 @@
 import { DOM, cacheDOM } from "./dom.js";
-import { state, debouncedSave, saveState, clearCurrentUUID } from "./state.js";
-import { renderIniciais, getIniciaisData } from "./iniciais.js";
+import { state, clearCurrentUUID } from "./state.js";
+import { saveState, debouncedSave } from "./persistence.js";
+import { iniciaisFields } from "./fields.js";
+import { renderIniciais } from "./iniciais.js";
 import { addEquip } from "./equipment.js";
+import { collectEquipamentos } from "./collectors.js";
 import { handleTipoChange } from "./retornos.js";
 import { handleUploadClick, handleFileChange, closeLightbox, updateFileCount, renderPreviews } from "./attachments.js";
 import { resetForm } from "./reset.js";
@@ -23,9 +26,8 @@ function updateFilledClass(el) {
  * Quando ambos estão preenchidos, seta iniciaisValido = true e dispara saveState().
  */
 function checkInitialPersistence() {
-  const iniciaisData = getIniciaisData();
-  const ucPreenchido = iniciaisData.uc && iniciaisData.uc.trim() !== "";
-  const osPreenchido = iniciaisData.os && iniciaisData.os.trim() !== "";
+  const ucPreenchido = state.iniciais.uc && state.iniciais.uc.trim() !== "";
+  const osPreenchido = state.iniciais.os && state.iniciais.os.trim() !== "";
 
   if (ucPreenchido && osPreenchido && !state.iniciaisValido) {
     state.iniciaisValido = true;
@@ -68,9 +70,28 @@ function initEvents() {
   DOM.sidebarOverlay.addEventListener("click", closeSidebar);
   DOM.sidebarClose.addEventListener("click", closeSidebar);
 
+  /**
+   * Sync a DOM element's value to state.iniciais if it matches an iniciais field
+   */
+  function syncIniciaisField(el) {
+    const field = iniciaisFields.find(f => f.nome === el.id);
+    if (field) {
+      state.iniciais[field.nome] = el.value;
+    }
+  }
+
   document.addEventListener("input", (e) => {
     if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT" || e.target.tagName === "TEXTAREA") {
       updateFilledClass(e.target);
+      // Sync state (single source of truth) before save and preview
+      syncIniciaisField(e.target);
+      // Sync equipment state when an equipment field changes
+      if (e.target.closest('.equip-row')) {
+        collectEquipamentos();
+      }
+      if (e.target.id === "complemento-corpo") {
+        state.composicao.complementoCorpo = e.target.value;
+      }
       debouncedSave();
       updateLivePreview();
       // Check if UC and OS are now filled to enable initial persistence
@@ -83,6 +104,15 @@ function initEvents() {
   document.addEventListener("change", (e) => {
     if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT" || e.target.tagName === "TEXTAREA") {
       updateFilledClass(e.target);
+      // Sync state (single source of truth) before save and preview
+      syncIniciaisField(e.target);
+      // Sync equipment state when an equipment field changes
+      if (e.target.closest('.equip-row')) {
+        collectEquipamentos();
+      }
+      if (e.target.id === "complemento-corpo") {
+        state.composicao.complementoCorpo = e.target.value;
+      }
       debouncedSave();
       updateLivePreview();
       // Check if UC and OS are now filled to enable initial persistence

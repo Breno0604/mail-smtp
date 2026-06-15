@@ -1,8 +1,9 @@
 import { DOM } from "./dom.js";
-import { state, clearCurrentUUID } from "./state.js";
+import { state } from "./state.js";
 import { getAllRecords, deleteRecord, getRecord } from "./db.js";
 import { formatDate } from "./utils.js";
 import { applyRecord } from "./restore.js";
+import { resetForm } from "./reset.js";
 import { showConfirm } from "./ui.js";
 
 export function closeSidebar() {
@@ -101,7 +102,7 @@ export async function renderSidebar(filterTerm = "") {
       try {
         await deleteRecord(record.uuid);
         if (state.currentUUID === record.uuid) {
-          clearCurrentUUID();
+          resetForm();
         }
         renderSidebar(DOM.sidebarFilter.value);
       } catch (err) { /* ignore */ }

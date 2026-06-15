@@ -11,3 +11,8 @@ deno.lock
 
 # Dados
 dados_projeto/*.xlsx
+
+test-results/
+
+# graphify generated artifacts
+graphify-out/

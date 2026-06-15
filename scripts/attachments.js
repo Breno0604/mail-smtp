@@ -1,5 +1,6 @@
 import { DOM } from "./dom.js";
-import { state, saveState, markAttachmentsDirty } from "./state.js";
+import { state } from "./state.js";
+import { saveState, markAttachmentsDirty } from "./persistence.js";
 import { showError } from "./ui.js";
 
 // Array para rastrear Object URLs criadas para previews

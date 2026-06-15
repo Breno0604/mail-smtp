@@ -10,6 +10,15 @@ vi.mock('../scripts/restore.js', () => ({
   applyRecord: vi.fn(),
 }));
 
+// Mock reset to track calls
+const mockResetForm = vi.fn();
+vi.mock('../scripts/reset.js', () => ({
+  resetForm: (...args) => mockResetForm(...args),
+}));
+
+// Helper para aguardar microtasks assíncronas (promises pendentes)
+const flushPromises = () => new Promise((r) => setTimeout(r, 0));
+
 describe('sidebar', () => {
   async function clearDB() {
     const records = await getAllRecords();
@@ -30,9 +39,18 @@ describe('sidebar', () => {
       </div>
       <div class="sidebar-overlay" id="sidebar-overlay"></div>
       <div id="error-msg" style="display:none"></div>
+      <div class="modal-overlay hidden" id="confirm-modal">
+        <div class="modal">
+          <p id="confirm-modal-text"></p>
+          <button id="confirm-modal-cancel">Cancelar</button>
+          <button id="confirm-modal-ok">Confirmar</button>
+        </div>
+      </div>
     `;
     cacheDOM();
     state.currentUUID = '';
+    state.iniciaisValido = false;
+    mockResetForm.mockClear();
     await clearDB();
   });
 
@@ -202,6 +220,103 @@ describe('sidebar', () => {
       initSidebarFilter();
       expect(spy).toHaveBeenCalledWith('input', expect.any(Function));
       spy.mockRestore();
+    });
+  });
+
+  describe('delete record', () => {
+    it('should call resetForm when deleting the currently active record', async () => {
+      await saveDraft({
+        uuid: 'delete-me',
+        status: 'draft',
+        iniciais: { uc: '12345', os: '67890' },
+        updatedAt: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+        equipamentos: [],
+        attachments: [],
+        composicao: {},
+      });
+
+      // Set this as the current record
+      state.currentUUID = 'delete-me';
+      state.iniciaisValido = true;
+
+      await renderSidebar();
+
+      // Find and click the delete button
+      const deleteBtns = DOM.sidebarList.querySelectorAll('.sidebar-btn-delete');
+      expect(deleteBtns.length).toBe(1);
+
+      // Click delete — this triggers showConfirm which shows the modal
+      // We need to click OK on the confirm modal to proceed
+      const clickPromise = Promise.resolve(deleteBtns[0].click());
+
+      // showConfirm sets onclick handlers — simulate clicking OK
+      // Flush microtasks to let the click handler execute first
+      await flushPromises();
+      DOM.confirmModalOk.onclick();
+
+      await clickPromise;
+      // Flush microtasks for async operations (deleteRecord, renderSidebar)
+      await flushPromises();
+
+      // Record should be deleted from DB
+      const records = await getAllRecords();
+      expect(records.length).toBe(0);
+
+      // resetForm should have been called (not just clearCurrentUUID)
+      expect(mockResetForm).toHaveBeenCalled();
+    });
+
+    it('should NOT call resetForm when deleting a different record', async () => {
+      await saveDraft({
+        uuid: 'keep-me',
+        status: 'draft',
+        iniciais: { uc: '111', os: '222' },
+        updatedAt: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+        equipamentos: [],
+        attachments: [],
+        composicao: {},
+      });
+      await saveDraft({
+        uuid: 'delete-other',
+        status: 'draft',
+        iniciais: { uc: '333', os: '444' },
+        updatedAt: new Date(Date.now() - 10000).toISOString(), // older
+        createdAt: new Date().toISOString(),
+        equipamentos: [],
+        attachments: [],
+        composicao: {},
+      });
+
+      // Set current to 'keep-me'
+      state.currentUUID = 'keep-me';
+      state.iniciaisValido = true;
+
+      await renderSidebar();
+
+      // Find the delete button for 'delete-other' by looking at sidebar items
+      const items = DOM.sidebarList.querySelectorAll('.sidebar-item');
+      let deleteBtnForOther = null;
+      items.forEach((item) => {
+        const title = item.querySelector('.sidebar-item-title');
+        if (title && title.textContent.includes('333')) {
+          deleteBtnForOther = item.querySelector('.sidebar-btn-delete');
+        }
+      });
+      expect(deleteBtnForOther).toBeTruthy();
+
+      // Click delete on the other record
+      deleteBtnForOther.click();
+      await flushPromises();
+      DOM.confirmModalOk.onclick();
+      await flushPromises();
+
+      // resetForm should NOT have been called since we deleted a different record
+      expect(mockResetForm).not.toHaveBeenCalled();
+
+      // Current record should still be active
+      expect(state.currentUUID).toBe('keep-me');
     });
   });
 });
