@@ -3,6 +3,9 @@
   functions = "netlify/functions"
   publish = "dist"
 
+[build.environment]
+  NODE_VERSION = "20"
+
 [[headers]]
   for = "/sw.js"
   [headers.values]

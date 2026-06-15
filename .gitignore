@@ -16,3 +16,8 @@ test-results/
 
 # graphify generated artifacts
 graphify-out/
+
+# TypeScript composite project artifacts
+*.tsbuildinfo
+vite.config.d.ts
+vite.config.js
