@@ -2,36 +2,31 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 
-let registration: ServiceWorkerRegistration | null = null;
+const showUpdatePrompt = ref(false);
+let updateSW: ((reloadPage?: boolean) => Promise<void>) | null = null;
 
 onMounted(async () => {
-  if ('serviceWorker' in navigator) {
-    try {
-      registration = await navigator.serviceWorker.ready;
-      
-      registration.addEventListener('updatefound', () => {
-        const newWorker = registration!.installing;
-        if (newWorker) {
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              showUpdatePrompt.value = true;
-            }
-          });
-        }
-      });
-    } catch {
-      // SW not supported or failed
-    }
+  try {
+    const { registerSW } = await import('virtual:pwa-register');
+    updateSW = registerSW({
+      onNeedRefresh() {
+        showUpdatePrompt.value = true;
+      },
+      onOfflineReady() {
+        // App is ready for offline use — could show a toast here
+      },
+    });
+  } catch {
+    // virtual:pwa-register not available (dev mode)
   }
 });
 
-const showUpdatePrompt = ref(false);
-
 function applyUpdate() {
-  if (registration?.waiting) {
-    registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+  if (updateSW) {
+    updateSW();
+  } else {
+    window.location.reload();
   }
-  window.location.reload();
 }
 </script>
 
