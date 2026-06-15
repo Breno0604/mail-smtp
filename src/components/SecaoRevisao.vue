@@ -51,7 +51,8 @@ async function handleSend() {
   const attachments = form.attachments.map((att: StoredAttachment) => ({
     filename: att.name,
     content: att.data,
-    type: att.type,
+    encoding: 'base64',
+    contentType: att.type,
   }));
   
   const payload = { subject, text, attachments };
