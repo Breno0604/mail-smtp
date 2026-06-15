@@ -70,6 +70,56 @@ async function handleCoordinates() {
               <span v-if="field.obrigatorio" class="text-red-500 ml-0.5">*</span>
             </label>
             
+            <!-- Select -->
+            <select 
+              v-if="field.tipo === 'select'" 
+              :id="field.nome"
+              :value="form.iniciais[field.nome]"
+              @change="($event) => { const val = ($event.target as HTMLSelectElement).value; form.iniciais[field.nome] = val; if (field.nome === 'tipo-ordem') form.setTipoOrdem(val); }"
+              @blur="markTouched(field.nome)"
+              :class="['w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2.5 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10', getFieldStateClass(field.nome)]"
+              :disabled="field.readonly"
+            >
+              <option value="">Selecione</option>
+              <option v-for="opt in field.opcoes" :key="opt" :value="opt">{{ opt }}</option>
+            </select>
+            <span v-if="field.obrigatorio" class="field-error" :class="{ show: isFieldError(field.nome) }">
+              {{ field.label }} é obrigatório
+            </span>
+
+            <!-- Text/Number -->
+            <input 
+              v-else-if="field.tipo === 'text' || field.tipo === 'number'" 
+              :id="field.nome"
+              :type="field.tipo === 'number' ? 'number' : 'text'"
+              :value="form.iniciais[field.nome]"
+              @input="($event) => { form.iniciais[field.nome] = ($event.target as HTMLInputElement).value; }"
+              @blur="markTouched(field.nome)"
+              :disabled="field.readonly"
+              :inputmode="field.tipo === 'number' ? 'numeric' : 'text'"
+              :class="['w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2.5 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10', getFieldStateClass(field.nome)]"
+            />
+            <span v-if="field.obrigatorio" class="field-error" :class="{ show: isFieldError(field.nome) }">
+              {{ field.label }} é obrigatório
+            </span>
+          </div>
+        </div>
+
+        <!-- Linha 6: Data/Início/Fim - 3 column grid -->
+        <div 
+          v-else-if="linha === 6" 
+          class="linha-data"
+        >
+          <div 
+            v-for="field in fieldsByLinha[linha]" 
+            :key="field.nome"
+            class="px-1"
+          >
+            <label :for="field.nome" class="block text-xs mb-0.5">
+              {{ field.label }}
+              <span v-if="field.obrigatorio" class="text-red-500 ml-0.5">*</span>
+            </label>
+            
             <!-- Date -->
             <input 
               v-if="field.tipo === 'date'" 
@@ -102,8 +152,8 @@ async function handleCoordinates() {
             </span>
           </div>
         </div>
-        
-        <!-- Normal row (non-linha-4,5,6) -->
+
+        <!-- Normal row (other lines: 0, 1, 2, 3, 7) -->
         <div v-else class="flex flex-wrap gap-2">
           <div 
             v-for="field in fieldsByLinha[linha]" 
