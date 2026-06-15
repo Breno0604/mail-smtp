@@ -56,7 +56,10 @@ describe('getVisibleFields', () => {
   })
 
   it('retorna todos se nenhum condicional', () => {
-    const simple = [{ nome: 'a', label: 'A', tipo: 'text' }, { nome: 'b', label: 'B', tipo: 'text' }]
+    const simple: RetornoField[] = [
+      { nome: 'a', label: 'A', tipo: 'text' },
+      { nome: 'b', label: 'B', tipo: 'text' },
+    ]
     expect(getVisibleFields(simple, {})).toHaveLength(2)
   })
 })

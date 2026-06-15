@@ -18,7 +18,7 @@ const mockRecord: FormRecord = {
     horaInicio: '08:00',
     horaFim: '12:00',
     coordenadas: 'Nao disponivel',
-    notificado: 'NAO',
+    notificado: 'NÃO',
     complemento: '',
   },
   retorno: {},
@@ -32,7 +32,7 @@ const mockRecord: FormRecord = {
 
 vi.mock('@/entities/record', () => ({
   fetchAll: vi.fn(() => Promise.resolve([mockRecord])),
-  persist: vi.fn((r: FormRecord) => Promise.resolve()),
+  persist: vi.fn((_r: FormRecord) => Promise.resolve()),
   remove: vi.fn(() => Promise.resolve()),
   createEmpty: vi.fn((overrides?: Partial<FormRecord>) => {
     const now = '2024-01-15T10:00:00.000Z'
