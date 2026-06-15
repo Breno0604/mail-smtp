@@ -32,7 +32,13 @@ async function handleSend() {
 
   // Check duplicate (status = 'sent' means this record was already sent)
   if (form.status === 'sent') {
-    const confirm = await ui.showConfirm('Este registro já foi enviado. Deseja reenviar o e-mail?');
+    const os = form.iniciais.os || '—';
+    const sentDate = form.sentData?.sentAt
+      ? new Date(form.sentData.sentAt).toLocaleString('pt-BR')
+      : 'data desconhecida';
+    const confirm = await ui.showConfirm(
+      `Este registro (OS #${os}) já foi enviado com sucesso em ${sentDate}. Deseja reenviar o e-mail?`
+    );
     if (!confirm) return;
   }
 

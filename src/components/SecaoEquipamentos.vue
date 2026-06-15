@@ -1,8 +1,28 @@
 <!-- src/components/SecaoEquipamentos.vue -->
 <script setup lang="ts">
+import { reactive } from 'vue';
 import { useFormStore } from '@/stores/form';
+import type { EquipamentoData } from '@/types';
 
 const form = useFormStore();
+
+const touched = reactive<Record<string, boolean>>({});
+
+function getFieldState(index: number, field: keyof EquipamentoData): string {
+  const key = `${index}-${field}`;
+  const equip = form.equipamentos[index];
+  if (!equip) return '';
+  const value = equip[field];
+  if (!value || value.toString().trim() === '') {
+    if (touched[key]) return 'error';
+    return '';
+  }
+  return 'is-filled';
+}
+
+function markTouched(index: number, field: string) {
+  touched[`${index}-${field}`] = true;
+}
 
 function addEquipamento() {
   form.equipamentos.push({ status: '', categoria: '', numero: '' });
@@ -32,30 +52,40 @@ function removeEquipamento(index: number) {
           <div class="flex flex-wrap gap-2">
             <div class="flex-1 min-w-[120px]">
               <label class="block text-xs mb-0.5 font-bold">Status</label>
-              <input 
-                type="text"
+              <select 
                 v-model="form.equipamentos[index].status"
-                class="w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2 border-gray-300 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10"
-                placeholder="Ex: OK, FALHA"
-              />
+                @blur="markTouched(index, 'status')"
+                :class="['w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2.5 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10 equip-tipo', getFieldState(index, 'status')]"
+              >
+                <option value="">Selecione...</option>
+                <option value="Instalado">Instalado</option>
+                <option value="Retirado">Retirado</option>
+              </select>
             </div>
 
             <div class="flex-1 min-w-[120px]">
               <label class="block text-xs mb-0.5 font-bold">Categoria</label>
-              <input 
-                type="text"
+              <select 
                 v-model="form.equipamentos[index].categoria"
-                class="w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2 border-gray-300 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10"
-                placeholder="Ex: MEDIDOR, DISPLAY"
-              />
+                @blur="markTouched(index, 'categoria')"
+                :class="['w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2.5 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10 equip-categoria', getFieldState(index, 'categoria')]"
+              >
+                <option value="">Selecione...</option>
+                <option value="Medidor">Medidor</option>
+                <option value="Display">Display</option>
+                <option value="Conjunto">Conjunto</option>
+                <option value="TC">TC</option>
+                <option value="TP">TP</option>
+              </select>
             </div>
 
             <div class="flex-1 min-w-[120px]">
               <label class="block text-xs mb-0.5 font-bold">Número</label>
               <input 
-                type="text"
+                type="number"
                 v-model="form.equipamentos[index].numero"
-                class="w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2 border-gray-300 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10"
+                @blur="markTouched(index, 'numero')"
+                :class="['w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2.5 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10 equip-numero', getFieldState(index, 'numero')]"
                 placeholder="Ex: 12345"
               />
             </div>

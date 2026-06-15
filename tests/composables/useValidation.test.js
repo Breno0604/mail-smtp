@@ -70,7 +70,10 @@ describe('useValidation', () => {
     form.iniciais.hora_inicio = '08:00';
     form.iniciais.hora_fim = '12:00';
     form.iniciais['tipo-ordem'] = 'VISTORIA DA UC';
-    form.equipamentos = [{ status: 'OK', categoria: 'MEDIDOR', numero: '12345' }];
+    // Preencher campos de retorno visiveis (FIELD_DESCRICAO + resultado)
+    form.retorno['descricao'] = 'Vistoria realizada';
+    form.retorno['resultado'] = 'Regular';
+    form.equipamentos = [{ status: 'Instalado', categoria: 'Medidor', numero: '12345' }];
 
     const { validateAll } = useValidation();
     const result = validateAll();

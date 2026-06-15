@@ -1,7 +1,7 @@
 // src/composables/useValidation.ts
 import { useFormStore } from '@/stores/form';
 import { iniciaisFields, getRetornoFields } from '@/constants/fields';
-import type { EquipamentoData } from '@/types';
+import type { EquipamentoData, FieldDefinition } from '@/types';
 
 export function useValidation() {
   const form = useFormStore();
@@ -49,6 +49,18 @@ export function useValidation() {
     };
   };
 
+  // Replica a lógica de campos visíveis do SecaoRetorno.activeRetornoFields
+  function isFieldVisible(field: FieldDefinition): boolean {
+    if (!field.condicional) return true;
+    const controlValue = form.retorno[field.condicional.campoRef];
+    if (!controlValue) return false;
+    const valores = Array.isArray(field.condicional.valor)
+      ? field.condicional.valor
+      : [field.condicional.valor];
+    const match = valores.includes(controlValue);
+    return field.condicional.negado ? !match : match;
+  }
+
   const validateRetorno = (): { valid: boolean; errors: string[] } => {
     const errors: string[] = [];
     const tipo = form.iniciais['tipo-ordem'] || '';
@@ -58,9 +70,11 @@ export function useValidation() {
     const retornoFields = getRetornoFields(tipo);
 
     retornoFields.forEach((field) => {
-      if (!field.obrigatorio) return;
-      
+      // Skip hidden conditional fields (mesmo comportamento do original)
+      if (!isFieldVisible(field)) return;
+
       const value = form.retorno[field.nome];
+      // Original valida todo campo visível como obrigatório
       if (!value || value.trim() === '') {
         errors.push(`${field.label} é obrigatório`);
       }
