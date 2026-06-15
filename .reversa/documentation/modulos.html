@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa de Módulos | mail-mvp</title>
+<meta name="reversa-category" content="diagram">
+<meta name="reversa-producer-agent" content="reversa-docs-mapper">
+<meta name="reversa-template" content="modulos">
+<meta name="generated-at" content="2026-06-15T17:00:00-03:00">
+<script src="assets/vendor/d3.v7.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, sans-serif; overflow: hidden; background: #0a0a10; color: #eaeaea; }
+#sidebar { position: fixed; top: 0; right: 0; width: 240px; height: 100vh; background: rgba(15,15,22,0.92); padding: 16px; overflow-y: auto; z-index: 10; border-left: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(8px); }
+#sidebar h3 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 10px; }
+#sidebar label { display: block; font-size: 11px; color: #aaa; margin-bottom: 8px; }
+#sidebar input[type="range"] { width: 100%; margin-top: 3px; accent-color: #4a9eff; }
+#sidebar select { width: 100%; margin-top: 3px; padding: 3px 5px; background: #1a1a2a; color: #eaeaea; border: 1px solid #333; border-radius: 4px; font-size: 11px; }
+#sidebar .stats { margin-top: 12px; padding-top: 10px; border-top: 1px solid #222; font-size: 11px; color: #666; line-height: 1.6; }
+#sidebar button { width: 100%; padding: 6px; margin-top: 4px; border: none; border-radius: 4px; font-size: 11px; cursor: pointer; background: #2a2a3a; color: #eaeaea; }
+#sidebar button:hover { background: #3a3a4a; }
+#tooltip { position: fixed; display: none; background: rgba(0,0,0,0.85); color: #fff; padding: 6px 10px; border-radius: 4px; font-size: 11px; pointer-events: none; z-index: 20; max-width: 220px; line-height: 1.5; border: 1px solid rgba(255,255,255,0.1); }
+#info { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); padding: 6px 14px; border-radius: 16px; font-size: 11px; pointer-events: none; z-index: 5; }
+#loader { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: #0a0a10; color: #eaeaea; font-size: 16px; z-index: 100; }
+svg { position: fixed; inset: 0; }
+</style>
+</head>
+<body>
+<div id="loader">Carregando grafo de dependências...</div>
+<div id="info">Arraste nós | Scroll para zoom | Clique em um nó para ver detalhes</div>
+<div id="sidebar">
+  <h3>Grafo de Dependências</h3>
+  <label>Carga (LOC → raio)
+    <input type="range" min="0.5" max="3.0" step="0.1" value="1.2" id="charge-slider">
+  </label>
+  <label>Distância
+    <input type="range" min="30" max="300" step="10" value="120" id="dist-slider">
+  </label>
+  <label>Mostrar legendas
+    <select id="label-select">
+      <option value="all">Todas</option>
+      <option value="important">Importantes (LOC > 50)</option>
+      <option value="none">Nenhuma</option>
+    </select>
+  </label>
+  <button id="reset-sim">Reiniciar simulação</button>
+  <div class="stats">
+    <strong>mail-mvp</strong><br>
+    24 nós · 84 arestas · 0 ciclos<br>
+    1.889 LOC · 8.4 max complex.
+  </div>
+</div>
+<div id="tooltip"></div>
+
+<script src="assets/data/data-embedded.js"></script>
+<script>
+(function() {
+  if (!window.RV_DATA || !window.RV_DATA.deps) {
+    document.getElementById('loader').textContent = 'Nenhum dado disponível.';
+    return;
+  }
+
+  var width = window.innerWidth;
+  var height = window.innerHeight;
+
+  var tooltip = document.getElementById('tooltip');
+  var svg = d3.select('body').insert('svg', '#sidebar')
+    .attr('width', width)
+    .attr('height', height)
+    .style('position', 'fixed')
+    .style('inset', '0');
+
+  var defs = svg.append('defs');
+  defs.append('marker')
+    .attr('id', 'arrow')
+    .attr('viewBox', '0 -5 10 10')
+    .attr('refX', 20)
+    .attr('refY', 0)
+    .attr('markerWidth', 6)
+    .attr('markerHeight', 6)
+    .attr('orient', 'auto')
+    .append('path')
+    .attr('d', 'M0,-5L10,0L0,5')
+    .attr('fill', '#444');
+
+  // Background rect for zoom
+  var g = svg.append('g');
+
+  svg.call(d3.zoom()
+    .scaleExtent([0.2, 4])
+    .on('zoom', function() { g.attr('transform', d3.event.transform); }));
+
+  var data = window.RV_DATA.deps;
+  var modules = window.RV_DATA.modules;
+
+  var nameToLoc = {};
+  modules.forEach(function(m) { nameToLoc[m.name] = m.loc; });
+
+  var legend = svg.append('g')
+    .attr('transform', 'translate(16, 16)')
+    .style('pointer-events', 'none');
+
+  var legendData = [
+    { label: 'scripts (azul)', color: '#4a9eff' },
+    { label: 'functions (âmbar)', color: '#ffc857' },
+    { label: 'alta complex. (>7)', color: '#ff5a4f' }
+  ];
+  legend.selectAll('.legend-item').data(legendData).enter().append('g')
+    .attr('class', 'legend-item')
+    .attr('transform', function(d, i) { return 'translate(0, ' + (i * 18) + ')'; })
+    .each(function(d) {
+      var g = d3.select(this);
+      g.append('circle').attr('r', 5).attr('cx', 6).attr('cy', 6).attr('fill', d.color);
+      g.append('text').attr('x', 16).attr('y', 10).text(d.label).attr('fill', '#888').attr('font-size', '11px');
+    });
+
+  var nodes = data.nodes.map(function(n) { return Object.assign({}, n); });
+  var edges = data.edges.map(function(e) { return Object.assign({}, e); });
+
+  var simulation = d3.forceSimulation(nodes)
+    .force('link', d3.forceLink(edges).id(function(d) { return d.id; }).distance(120))
+    .force('charge', d3.forceManyBody().strength(-180))
+    .force('center', d3.forceCenter(width / 2, height / 2))
+    .force('collision', d3.forceCollide().radius(function(d) { return Math.max(8, Math.sqrt(d.loc || 10) * 2.2); }));
+
+  var link = g.append('g')
+    .attr('stroke', '#333')
+    .attr('stroke-width', 1)
+    .attr('stroke-opacity', 0.4)
+    .selectAll('line')
+    .data(edges)
+    .enter().append('line')
+    .attr('marker-end', 'url(#arrow)');
+
+  var nodeGroup = g.append('g')
+    .selectAll('g')
+    .data(nodes)
+    .enter().append('g')
+    .call(d3.drag()
+      .on('start', function(d) { if (!d3.event.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
+      .on('drag', function(d) { d.fx = d3.event.x; d.fy = d3.event.y; })
+      .on('end', function(d) { if (!d3.event.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; }));
+
+  var color = d3.scaleOrdinal()
+    .domain(['scripts', 'functions'])
+    .range(['#4a9eff', '#ffc857']);
+
+  var circles = nodeGroup.append('circle')
+    .attr('r', function(d) { return Math.max(5, Math.sqrt(d.loc || 10) * 1.5); })
+    .attr('fill', function(d) { return d.complexity > 7 ? '#ff5a4f' : color(d.group); })
+    .attr('stroke', 'rgba(255,255,255,0.15)')
+    .attr('stroke-width', 1)
+    .attr('opacity', 0.85)
+    .style('cursor', 'pointer');
+
+  nodeGroup.append('text')
+    .text(function(d) { return d.id; })
+    .attr('dx', function(d) { return Math.max(5, Math.sqrt(d.loc || 10) * 1.5) + 4; })
+    .attr('dy', 4)
+    .attr('fill', '#ccc')
+    .attr('font-size', '10px')
+    .attr('font-family', 'system-ui, sans-serif');
+
+  nodeGroup.on('mouseenter', function(d) {
+    tooltip.style.display = 'block';
+    tooltip.innerHTML = '<strong>' + d.id + '</strong><br>LOC: ' + d.loc + ' | Complexidade: ' + d.complexity + '<br>Grupo: ' + d.group;
+    d3.select(this).select('circle').attr('stroke', '#fff').attr('stroke-width', 2);
+  }).on('mousemove', function() {
+    tooltip.style.left = (d3.event.clientX + 12) + 'px';
+    tooltip.style.top = (d3.event.clientY - 8) + 'px';
+  }).on('mouseleave', function() {
+    tooltip.style.display = 'none';
+    d3.select(this).select('circle').attr('stroke', 'rgba(255,255,255,0.15)').attr('stroke-width', 1);
+  }).on('click', function(d) {
+    simulation.alphaTarget(0.3).restart();
+    var scale = 1.5;
+    svg.transition().duration(500).call(d3.zoom().transform, d3.zoomIdentity.translate(width / 2 - d.x * scale, height / 2 - d.y * scale).scale(scale));
+  });
+
+  simulation.on('tick', function() {
+    link
+      .attr('x1', function(d) { return d.source.x; })
+      .attr('y1', function(d) { return d.source.y; })
+      .attr('x2', function(d) { return d.target.x; })
+      .attr('y2', function(d) { return d.target.y; });
+    nodeGroup.attr('transform', function(d) { return 'translate(' + d.x + ',' + d.y + ')'; });
+  });
+
+  // ── Controls ──
+  document.getElementById('charge-slider').addEventListener('input', function() {
+    simulation.force('charge').strength(-parseFloat(this.value) * 150);
+    simulation.alpha(0.3).restart();
+  });
+
+  document.getElementById('dist-slider').addEventListener('input', function() {
+    simulation.force('link').distance(parseFloat(this.value));
+    simulation.alpha(0.3).restart();
+  });
+
+  document.getElementById('label-select').addEventListener('change', function() {
+    var val = this.value;
+    nodeGroup.selectAll('text').attr('display', function(d) {
+      if (val === 'all') return null;
+      if (val === 'none') return 'none';
+      if (val === 'important') return d.loc > 50 ? null : 'none';
+      return null;
+    });
+  });
+
+  document.getElementById('reset-sim').addEventListener('click', function() {
+    simulation.alpha(1).restart();
+  });
+
+  window.addEventListener('resize', function() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    svg.attr('width', width).attr('height', height);
+    simulation.force('center', d3.forceCenter(width / 2, height / 2));
+    simulation.alpha(0.3).restart();
+  });
+
+  document.getElementById('loader').style.display = 'none';
+})();
+</script>
+</body>
+</html>

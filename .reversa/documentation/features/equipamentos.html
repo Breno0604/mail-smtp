@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Equipamentos | mail-mvp</title>
+<meta name="reversa-category" content="feature">
+<meta name="reversa-producer-agent" content="reversa-docs-storyteller">
+<meta name="reversa-template" content="feature">
+<meta name="generated-at" content="2026-06-15T17:00:00-03:00">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, sans-serif; background: #0a0a10; color: #eaeaea; padding: 32px; max-width: 960px; margin: 0 auto; line-height: 1.6; }
+a { color: #4a9eff; text-decoration: none; }
+a:hover { text-decoration: underline; }
+h1 { font-size: 24px; font-weight: 300; letter-spacing: 0.5px; margin-bottom: 4px; }
+h2 { font-size: 18px; font-weight: 600; margin-top: 40px; margin-bottom: 16px; color: #eaeaea; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 8px; }
+h3 { font-size: 14px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; color: #ccc; }
+.subtitle { color: #666; font-size: 13px; margin-bottom: 8px; }
+.back-link { display: inline-block; margin-bottom: 20px; font-size: 13px; color: #4a9eff; }
+table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 13px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #888; font-weight: 600; }
+tr:hover td { background: rgba(255,255,255,0.02); }
+ul, ol { margin: 8px 0 16px; padding-left: 20px; font-size: 13px; }
+li { margin-bottom: 4px; }
+code { background: rgba(255,255,255,0.06); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+.section { background: rgba(15,15,22,0.6); border: 1px solid rgba(255,255,255,0.04); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+.module-tag { display: inline-block; background: rgba(74,158,255,0.1); color: #4a9eff; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin-right: 4px; }
+.task-checkbox { list-style: none; padding-left: 0; }
+.task-checkbox li::before { content: "☐ "; color: #666; }
+.pre-box { background:rgba(0,0,0,0.3);padding:12px;border-radius:6px;font-size:12px;overflow-x:auto;margin-bottom:16px;color:#aaa; }
+@media (max-width: 640px) { body { padding: 16px; } table { font-size: 12px; } }
+</style>
+</head>
+<body>
+<a href="../index.html" class="back-link">&larr; Voltar ao índice</a>
+<h1>Equipamentos</h1>
+<p class="subtitle">
+  <span class="module-tag">equipment.js</span>
+</p>
+
+<div class="section">
+  <h2>Requisitos</h2>
+
+  <h3>Visão Geral</h3>
+  <p style="font-size:13px;color:#ccc;margin-bottom:16px;">
+    Gerencia a adição, remoção e coleta de equipamentos instalados ou retirados durante a ordem de serviço. Cada equipamento possui tipo (Instalado/Retirado), categoria e número de série.
+  </p>
+
+  <h3>Regras de Negócio</h3>
+  <table>
+    <tr><th>ID</th><th>Regra</th><th>Confiança</th></tr>
+    <tr><td>RN01</td><td>Cada equipamento tem 3 campos: status (Instalado/Retirado), categoria (Medidor/Display/Conjunto/TC/TP) e número</td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN02</td><td>Número de equipamento não pode ser duplicado (validado externamente em <code>validation.js</code>)</td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN03</td><td>Seção de equipamentos é opcional — formulário pode ser enviado sem equipamentos</td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN04</td><td>Ao restaurar um registro, equipamentos são re-renderizados no DOM</td><td>🟢 CONFIRMADO</td></tr>
+  </table>
+
+  <h3>Requisitos Funcionais</h3>
+  <table>
+    <tr><th>ID</th><th>Requisito</th><th>Prioridade</th><th>Critério de Aceite</th></tr>
+    <tr><td>RF-01</td><td>Adicionar linha de equipamento com 3 campos</td><td><span class="badge badge-green">Must</span></td><td>Click "+Equipamento" cria row com selects (Tipo, Categoria) + input (Número) + botão ✕</td></tr>
+    <tr><td>RF-02</td><td>Remover equipamento individual</td><td><span class="badge badge-green">Must</span></td><td>Click no ✕ remove a linha e atualiza state</td></tr>
+    <tr><td>RF-03</td><td>Coletar dados de equipamentos do DOM para o state</td><td><span class="badge badge-green">Must</span></td><td><code>collectEquipamentos()</code> lê todas as rows e atualiza <code>state.equipamentos[]</code></td></tr>
+    <tr><td>RF-04</td><td>Exibir mensagem "Nenhum equipamento adicionado" quando vazio</td><td><span class="badge badge-green">Must</span></td><td>Estado vazio mostra mensagem cinza centralizada</td></tr>
+    <tr><td>RF-05</td><td>Esconder mensagem vazia quando há equipamentos</td><td><span class="badge badge-green">Must</span></td><td>Ao adicionar o primeiro, mensagem some</td></tr>
+    <tr><td>RF-06</td><td>Restaurar equipamentos ao carregar registro</td><td><span class="badge badge-green">Must</span></td><td><code>renderEquipamentos()</code> reconstrói rows a partir do state</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h2>Design Técnico</h2>
+
+  <h3>Estrutura de Dados</h3>
+  <div class="pre-box"><code>// Cada equipamento no array state.equipamentos[]
+{
+  tipo: "Instalado" | "Retirado",
+  categoria: "Medidor" | "Display" | "Conjunto" | "TC" | "TP",
+  numero: string       // número de série, unique no array
+}</code></div>
+
+  <h3>Layout da Linha</h3>
+  <div class="pre-box"><code>┌─────────────────────────────────────────────────────┐
+│  [Tipo ▼]        [Categoria ▼]        [Nº Série]  ✕ │
+│  Instalado        Medidor             123456        ✕ │
+└─────────────────────────────────────────────────────┘</code></div>
+  <p style="font-size:13px;color:#999;margin-bottom:16px;">
+    Tipo: <code>&lt;select&gt;</code> (Instalado/Retirado) · Categoria: <code>&lt;select&gt;</code> (Medidor/Display/Conjunto/TC/TP) · Número: <code>&lt;input type="text"&gt;</code> · Remover: botão ✕
+  </p>
+
+  <h3>Ciclo de Vida</h3>
+  <div class="pre-box"><code>init → DOM ready
+  │
+  ├─[click "+Equipamento"] → addEquip()
+  │   ├─ create row HTML
+  │   ├─ append to #equip-list
+  │   └─ hideEmptyEquip()
+  │
+  ├─[click ✕ na row] → remove row + showEmptyEquip() se vazio
+  │
+  ├─ collectEquipamentos() → percorre rows, monta array
+  │
+  └─ renderEquipamentos() → limpa lista, recria rows do state
+      └─ showEmptyEquip() se state.equipamentos estiver vazio</code></div>
+
+  <h3>Funções Exportadas</h3>
+  <table>
+    <tr><th>Função</th><th>Parâmetros</th><th>Retorno</th><th>Descrição</th></tr>
+    <tr><td><code>addEquip(tipo?, categoria?, numero?)</code></td><td>Opcionais para pré-preenchimento</td><td><code>void</code></td><td>Adiciona row ao DOM e ao state</td></tr>
+    <tr><td><code>collectEquipamentos()</code></td><td><code>void</code></td><td><code>Equipamento[]</code></td><td>Lê rows do DOM, retorna array</td></tr>
+    <tr><td><code>renderEquipamentos()</code></td><td><code>void</code></td><td><code>void</code></td><td>Reconstrói rows a partir do state</td></tr>
+    <tr><td><code>showEmptyEquip()</code></td><td><code>void</code></td><td><code>void</code></td><td>Exibe mensagem vazia</td></tr>
+    <tr><td><code>hideEmptyEquip()</code></td><td><code>void</code></td><td><code>void</code></td><td>Oculta mensagem vazia</td></tr>
+  </table>
+
+  <h3>Dependências</h3>
+  <table>
+    <tr><th>Componente</th><th>Como usa</th></tr>
+    <tr><td><code>dom.js</code></td><td><code>DOM.equipList</code>, <code>DOM.emptyEquipMsg</code></td></tr>
+    <tr><td><code>state.js</code></td><td><code>state.equipamentos[]</code>, <code>markDirty()</code></td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h2>Tarefas</h2>
+
+  <h3>Tarefas de Implementação</h3>
+  <ul class="task-checkbox">
+    <li>T-01, Implementar <code>addEquip(tipo?, categoria?, numero?)</code> — 🟢</li>
+    <li>T-02, Implementar <code>collectEquipamentos()</code> — 🟢</li>
+    <li>T-03, Implementar <code>renderEquipamentos()</code> — 🟢</li>
+    <li>T-04, Implementar <code>showEmptyEquip()</code> e <code>hideEmptyEquip()</code> — 🟢</li>
+    <li>T-05, Integrar <code>collectEquipamentos()</code> no fluxo de envio e salvamento — 🟢</li>
+    <li>T-06, Garantir empty state na inicialização — 🟢</li>
+  </ul>
+
+  <h3>Tarefas de Teste</h3>
+  <ul class="task-checkbox">
+    <li>TT-01, Testar <code>addEquip()</code> cria row com campos corretos</li>
+    <li>TT-02, Testar preenchimento de parâmetros opcionais em <code>addEquip()</code></li>
+    <li>TT-03, Testar <code>collectEquipamentos()</code> retorna dados corretos</li>
+    <li>TT-04, Testar <code>renderEquipamentos()</code> reconstrói rows do state</li>
+    <li>TT-05, Testar empty state (show/hide)</li>
+    <li>TT-06, Testar remoção de equipamento individual</li>
+    <li>TT-07, Testar que ao remover último equipamento, mensagem vazia aparece</li>
+  </ul>
+
+  <h3>Ordem Sugerida</h3>
+  <ol>
+    <li>T-04 (show/hide empty) — base</li>
+    <li>T-01 (addEquip) — funcionalidade principal</li>
+    <li>T-02 (collect) — leitura</li>
+    <li>T-03 (render) — restauração</li>
+    <li>T-05, T-06 — integração</li>
+    <li>Testes na ordem correspondente</li>
+  </ol>
+</div>
+
+<p style="margin-top:32px;font-size:12px;color:#444;text-align:center;">
+  Gerado pelo reversa-docs-storyteller · mail-mvp
+</p>
+</body>
+</html>

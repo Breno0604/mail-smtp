@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glossário | mail-mvp</title>
+<meta name="reversa-category" content="diagram">
+<meta name="reversa-producer-agent" content="reversa-docs-storyteller">
+<meta name="reversa-template" content="glossario">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, sans-serif; background: #0a0a10; color: #eaeaea; padding: 32px; max-width: 1200px; margin: 0 auto; }
+h1 { font-size: 22px; font-weight: 300; letter-spacing: 0.5px; margin-bottom: 4px; }
+.subtitle { color: #666; font-size: 13px; margin-bottom: 24px; }
+.search-box { margin-bottom: 24px; }
+.search-box input { width: 100%; padding: 10px 16px; background: #1a1a2a; border: 1px solid #333; border-radius: 8px; color: #eaeaea; font-size: 14px; outline: none; }
+.search-box input:focus { border-color: #4a9eff; }
+.filters { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+.filter-btn { padding: 4px 12px; border-radius: 14px; font-size: 11px; cursor: pointer; border: 1px solid #333; background: transparent; color: #888; transition: all .15s; }
+.filter-btn.active { background: rgba(74,158,255,0.15); color: #4a9eff; border-color: #4a9eff44; }
+.filter-btn:hover { border-color: #555; }
+.count { color: #555; font-size: 12px; margin-bottom: 16px; }
+.glossary-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
+.glossary-item { background: rgba(20,20,30,0.5); border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; padding: 16px; transition: border-color .2s; }
+.glossary-item:hover { border-color: rgba(255,255,255,0.1); }
+.glossary-item h3 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.glossary-item .cat { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 8px; margin-bottom: 6px; font-weight: 500; }
+.cat-tipo { background: #4a9eff22; color: #4a9eff; }
+.cat-campo { background: #ffc85722; color: #ffc857; }
+.cat-fluxo { background: #5f4aff22; color: #5f4aff; }
+.cat-infra { background: #88888822; color: #888; }
+.cat-regra { background: #ff5a4f22; color: #ff5a4f; }
+.cat-modulo { background: #22c55e22; color: #22c55e; }
+.glossary-item p { font-size: 12px; color: #aaa; line-height: 1.5; }
+.glossary-item .code-ref { font-size: 10px; color: #555; margin-top: 6px; font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace; }
+.hidden-item { display: none; }
+.no-results { text-align: center; padding: 40px; color: #555; font-size: 14px; grid-column: 1 / -1; }
+</style>
+</head>
+<body>
+<h1>Glossário</h1>
+<p class="subtitle">mail-mvp · 65 conceitos organizados por categoria</p>
+
+<div class="search-box">
+  <input type="text" id="search" placeholder="Buscar conceito..." autofocus>
+</div>
+
+<div class="filters" id="filters">
+  <button class="filter-btn active" data-cat="all">Todos</button>
+  <button class="filter-btn" data-cat="tipo">Tipos de Ordem</button>
+  <button class="filter-btn" data-cat="campo">Campos</button>
+  <button class="filter-btn" data-cat="fluxo">Fluxos</button>
+  <button class="filter-btn" data-cat="infra">Infraestrutura</button>
+  <button class="filter-btn" data-cat="regra">Regras de Negócio</button>
+  <button class="filter-btn" data-cat="modulo">Módulos</button>
+</div>
+
+<div class="count" id="count">65 conceitos</div>
+
+<div class="glossary-list" id="list">
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-adequacao-smf">ADEQUAÇÃO SMF</h3><p>Serviço de adequação de Subestação de Medição e Faturamento. Inclui ajustes em equipamentos de medição para clientes do Grupo A.</p><div class="code-ref">fields.js:15 · iniciaisFields.opcoes[0]</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-afericao-medidor">AFERIÇÃO DE MEDIDOR</h3><p>Serviço de aferição de medidor para verificar precisão. Possui campos de retorno: medidor-aferido (SIM/NÃO), resultado-afericao (texto condicional).</p><div class="code-ref">fields.js:94-98 · retornoFieldsByTipo["AFERIÇÃO DE MEDIDOR"]</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-afericao-medidor-cliente-livre">AFERIÇÃO MEDIDOR CLIENTE LIVRE</h3><p>Aferição de medidor para clientes do mercado livre de energia. Mesma estrutura de retorno que AFERIÇÃO DE MEDIDOR via fallback para default.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-colher-leitura">COLHER LEITURA</h3><p>Serviço de coleta de leitura de medidor em campo. Usa campos de retorno padrão (FIELD_DESCRICAO).</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-corte-uc-def-tecnico">CORTE DE UC POR DEF TÉCNICO</h3><p>Corte de Unidade Consumidora por determinação técnica. Usa campos de retorno padrão.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-corte-definitivo-pedido">CORTE DEFINITIVO A PEDIDO</h3><p>Corte definitivo solicitado pelo cliente. Desligamento permanente da unidade consumidora.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-corte-falta-pagamento">CORTE POR FALTA DE PAGAMENTO</h3><p>Corte por inadimplência. Possui campo de retorno situacao_corte com opções: CLIENTE CORTADO, CLIENTE VISITADO CONTA PAGA, CLIENTE NAO PERMITIU O CORTE, SEM ACESSO PARA EXECUTAR O CORTE.</p><div class="code-ref">fields.js:100-102</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-deslig-prog-manutencao">DESLIG.PROG.MANUTENÇÃO</h3><p>Desligamento programado para manutenção na rede. Campos de retorno: desligamento (select 5 opções) e acesso_desligamento (texto condicional quando não executado).</p><div class="code-ref">fields.js:104-107</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-deslocamento-subestacao">DESLOCAMENTO DE SUBESTAÇÃO</h3><p>Serviço de deslocamento físico de subestação. Usa campos de retorno padrão.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-dispon-saida-serial-medidor">DISPON. SAIDA SERIAL MEDIDOR</h3><p>Disponibilização de saída serial do medidor para telemedição. Usa campos de retorno padrão.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-exec-mudanca-tarifa">EXECUÇÃO DE MUDANÇA DE TARIFA</h3><p>Execução de alteração de grupo tarifário do cliente. Usa campos de retorno padrão.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-exec-acrescimo-potencia">EXECUCAO DO ACRESCIMO DE POTENCIA</h3><p>Aumento de potência disponível para o cliente. Usa campos de retorno padrão.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-exec-decrecimo-potencia">EXECUCAO DO DECRESCIMO DE POTENCIA</h3><p>Redução de potência contratada pelo cliente. Usa campos de retorno padrão.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-grandes-clientes-selo-rompido">GRANDES CLIENTES SELO ROMPIDO</h3><p>Vistoria de selo rompido em grandes clientes. Campos de retorno: selo-rompido (SIM/NÃO), medidor-substituido (condicional), num-novo-medidor (condicional).</p><div class="code-ref">fields.js:75-80</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-grandes-clientes-sem-medicao">GRANDES CLIENTES SEM MEDIÇÃO</h3><p>Vistoria em grandes clientes sem medição funcionando. Usa campos de retorno padrão.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-inspecao-uc-cortada-i15">INSPECAO UC CORTADA I15</h3><p>Inspeção de UC cortada há 15 dias. Compartilha UC_CORTADA_FIELDS com I30, I90, I180. Campos: situacao-cliente, viavel-retirar, ramal, medicao, jump, chaves, aplicado-toi, toi (condicional).</p><div class="code-ref">fields.js:23-32 · fields.js:52</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-inspecao-uc-cortada-i30">INSPECAO UC CORTADA I30</h3><p>Inspeção de UC cortada há 30 dias. Mesmo conjunto de campos que I15, I90, I180.</p><div class="code-ref">fields.js:23-32 · fields.js:53</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-inspecao-uc-cortada-i90">INSPECAO UC CORTADA I90</h3><p>Inspeção de UC cortada há 90 dias. Mesmo conjunto de campos que I15, I30, I180.</p><div class="code-ref">fields.js:23-32 · fields.js:54</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-inspecao-uc-cortada-i180">INSPECAO UC CORTADA I180</h3><p>Inspeção de UC cortada há 180 dias. Mesmo conjunto de campos que I15, I30, I90.</p><div class="code-ref">fields.js:23-32 · fields.js:55</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-instalacao-display">INSTALACAO DO DISPLAY</h3><p>Instalação de display em medidor. Campos: display-instalado (SIM/NÃO), motivo-nao-instalar (texto condicional).</p><div class="code-ref">fields.js:82-86</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-liberacao-pulso">LIBERAÇÃO DE PULSO</h3><p>Liberação de pulso do medidor para telemedição. Usa campos de retorno padrão.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-ligacao-nova-isolada">LIGAÇÃO NOVA ISOLADA</h3><p>Ligação nova para unidade consumidora isolada. Usa campos de retorno padrão.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-ligacao-nova-media-tensao">LIGACAO NOVA MEDIA TENSAO</h3><p>Ligação nova em média tensão. Campos complexos com condicionais em cascata: retorno_ligacao → obra, tipo_medicao, status_medicao, ponto_de_entrega, medidor_bt, acesso_medicao, ligacao, tombamento.</p><div class="code-ref">fields.js:35-47 · fields.js:109</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-ligacao-nova-mt-cliente-livre">LIGACAO NOVA MT - CLIENTE LIVRE</h3><p>Ligação nova em média tensão para cliente livre. Mesmo conjunto de campos que LIGACAO NOVA MEDIA TENSAO.</p><div class="code-ref">fields.js:35-47 · fields.js:110</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-ligacao-nova-simultanea">LIGAÇÃO NOVA SIMULTÂNEA</h3><p>Ligação nova simultânea (múltiplas unidades). Usa campos de retorno padrão.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-religacao-normal-rural">RELIGACAO NORMAL RURAL</h3><p>Religação de unidade consumidora na zona rural. Usa campos de retorno padrão.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-religacao-normal-urbana">RELIGAÇÃO NORMAL URBANA</h3><p>Religação de unidade consumidora na zona urbana. Usa campos de retorno padrão.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-reselar-medicao">RESELAR MEDICAO</h3><p>Re-selagem de medição após serviço. Usa campos de retorno padrão.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-resservico">RESSERVICO</h3><p>Re-execução de serviço anterior. Usa campos de retorno padrão.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-retirar-equipamentos">RETIRAR EQUIPAMENTOS</h3><p>Retirada de equipamentos da unidade consumidora. Usa campos de retorno padrão.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-retirar-ramal">RETIRAR RAMAL</h3><p>Retirada de ramal de ligação. Usa campos de retorno padrão.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-servico-especial-operacao-grupo-a">SERVIÇO ESPECIAL OPERAÇÃO GRUPO A</h3><p>Serviço especial para clientes do Grupo A (alta tensão). Usa campos de retorno padrão.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-subst-equipamento-medicao">SUBST. DE EQUIPAMENTO DE MEDICAO</h3><p>Substituição de equipamento de medição. Usa campos de retorno padrão.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-subst-medidor-pedido">SUBST. MEDIDOR A PEDIDO</h3><p>Troca de medidor solicitada pelo cliente. Campos: tipo-servico (Troca/Reparo/Aferição), medidor-antigo, medidor-novo, marca-medidor, leitura-anterior, leitura-atual. Condicionais em cascata.</p><div class="code-ref">fields.js:57-65</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-subst-medidor-iniciativa-coelce">SUBST. MEDIDOR INICIATIVA COELCE</h3><p>Troca de medidor por iniciativa da distribuidora. Usa campos de retorno padrão.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-substituicao-bateria-medidor">SUBSTITUIÇÃO DA BATERIA DO MEDIDOR</h3><p>Troca de bateria do medidor eletrônico. Usa campos de retorno padrão.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-substituicao-display">SUBSTITUIÇÃO DE DISPLAY</h3><p>Troca de display do medidor. Campos: motivo-subst (select 4 opções), display-funcionando (SIM/NÃO).</p><div class="code-ref">fields.js:88-92</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-telemedicao-manutencao">TELEMEDIÇÃO MANUTENÇÃO</h3><p>Manutenção de equipamento de telemedição. Campos: equipamento (select), defeito (text), num-serie (text).</p><div class="code-ref">fields.js:112-117</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-telemedicao-manutencao-cliente-livre">TELEMEDIÇÃO MANUTENÇÃO CLIENTE LIVRE</h3><p>Manutenção de telemedição para cliente livre. Usa campos de retorno padrão.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-telemedicao-manutencao-lote">TELEMEDIÇÃO MANUTENÇÃO LOTE</h3><p>Manutenção de telemedição em lote. Usa campos de retorno padrão.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-visita-tecnica-grupo-a">VISITA TECNICA GRUPO A</h3><p>Visita técnica a cliente do Grupo A. Usa campos de retorno padrão.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-vistoria-uc">VISTORIA DA UC</h3><p>Vistoria de unidade consumidora. Campos: resultado (select 6 opções), motivo-recusa, desc-irregularidade, desc-irregularidade-grave (condicionais).</p><div class="code-ref">fields.js:67-73</div></div>
+
+<div class="glossary-item" data-cats="tipo"><span class="cat cat-tipo">Tipo de Ordem</span><h3 id="concept-vistoria-geracao-distribuida">VISTORIA GERAÇÃO DISTRIBUIDA</h3><p>Vistoria de sistema de geração distribuída (energia solar, eólica). Usa campos de retorno padrão.</p><div class="code-ref">fields.js:15</div></div>
+
+<div class="glossary-item" data-cats="campo"><span class="cat cat-campo">Campo</span><h3 id="concept-uc">UC</h3><p>Unidade Consumidora. Número de identificação da unidade. Validação: apenas dígitos numéricos. Preenchimento obrigatório para ativar auto-save.</p><div class="code-ref">fields.js:8 · validation.js:57-65 · app.js:25-34</div></div>
+
+<div class="glossary-item" data-cats="campo"><span class="cat cat-campo">Campo</span><h3 id="concept-os">OS</h3><p>Ordem de Serviço. Identificador alfanumérico da ordem. Preenchimento obrigatório junto com UC para ativar auto-save.</p><div class="code-ref">fields.js:9 · app.js:25-34</div></div>
+
+<div class="glossary-item" data-cats="campo"><span class="cat cat-campo">Campo</span><h3 id="concept-coordenadas">Coordenadas</h3><p>Campo de geolocalização. Preenchido automaticamente via navigator.geolocation com botão de refresh. Read-only, formato "lat, lon" com 4 casas decimais.</p><div class="code-ref">fields.js:4 · utils.js:48-71 · iniciais.js:74-122</div></div>
+
+<div class="glossary-item" data-cats="campo"><span class="cat cat-campo">Campo</span><h3 id="concept-notificado">Notificado</h3><p>Indica se o cliente foi notificado sobre o serviço. Valores: SIM, NÃO.</p><div class="code-ref">fields.js:10</div></div>
+
+<div class="glossary-item" data-cats="campo"><span class="cat cat-campo">Campo</span><h3 id="concept-placa">Placa</h3><p>Placa do veículo utilizado na execução. Select com 12 opções de placas pré-cadastradas.</p><div class="code-ref">fields.js:11</div></div>
+
+<div class="glossary-item" data-cats="campo"><span class="cat cat-campo">Campo</span><h3 id="concept-lider">Líder</h3><p>Técnico líder da equipe em campo. Select com 12 nomes pré-cadastrados.</p><div class="code-ref">fields.js:1,5</div></div>
+
+<div class="glossary-item" data-cats="campo"><span class="cat cat-campo">Campo</span><h3 id="concept-parceiro">Parceiro</h3><p>Técnico parceiro da equipe em campo. Select com 12 nomes pré-cadastrados.</p><div class="code-ref">fields.js:6</div></div>
+
+<div class="glossary-item" data-cats="campo"><span class="cat cat-campo">Campo</span><h3 id="concept-municipio">Município</h3><p>Município de execução do serviço. Select com 29 municípios do Ceará.</p><div class="code-ref">fields.js:7</div></div>
+
+<div class="glossary-item" data-cats="campo"><span class="cat cat-campo">Campo</span><h3 id="concept-data">Data</h3><p>Data de execução do serviço. Validação: não pode ser futura em relação à data atual.</p><div class="code-ref">fields.js:12 · validation.js:67-78</div></div>
+
+<div class="glossary-item" data-cats="campo"><span class="cat cat-campo">Campo</span><h3 id="concept-hora-inicio">Hora Início</h3><p>Horário de início do serviço. Formato HH:MM, step 5 minutos.</p><div class="code-ref">fields.js:13 · iniciais.js:50-56</div></div>
+
+<div class="glossary-item" data-cats="campo"><span class="cat cat-campo">Campo</span><h3 id="concept-hora-fim">Hora Fim</h3><p>Horário de término do serviço. Validação: deve ser diferente de Hora Início. Permite overnight (ex: 23:00 → 01:00).</p><div class="code-ref">fields.js:14 · validation.js:80-90</div></div>
+
+<div class="glossary-item" data-cats="campo"><span class="cat cat-campo">Campo</span><h3 id="concept-tipo-ordem">Tipo de Ordem</h3><p>Campo select com 44 tipos de ordem. Determina quais campos de retorno serão exibidos. Criado dinamicamente por renderIniciais() após cacheDOM().</p><div class="code-ref">fields.js:15 · iniciais.js:172 · dom.js:25</div></div>
+
+<div class="glossary-item" data-cats="campo"><span class="cat cat-campo">Campo</span><h3 id="concept-field-descricao">FIELD_DESCRICAO</h3><p>Campo de texto "Descrição do Serviço" do tipo textarea. Constante compartilhada entre múltiplos tipos de ordem. Presente em todos os retornos exceto CORTE POR FALTA DE PAGAMENTO e DESLIG.PROG.MANUTENÇÃO.</p><div class="code-ref">fields.js:20 · fields.js:50</div></div>
+
+<div class="glossary-item" data-cats="campo"><span class="cat cat-campo">Campo</span><h3 id="concept-situacao-corte">situacao_corte</h3><p>Campo de retorno exclusivo de CORTE POR FALTA DE PAGAMENTO. Opções: CLIENTE CORTADO, CLIENTE VISITADO CONTA PAGA, CLIENTE NAO PERMITIU O CORTE, SEM ACESSO PARA EXECUTAR O CORTE.</p><div class="code-ref">fields.js:101</div></div>
+
+<div class="glossary-item" data-cats="campo"><span class="cat cat-campo">Campo</span><h3 id="concept-toi">TOI</h3><p>Termo de Ocorrência de Inspeção. Campo de texto exibido condicionalmente quando aplicado-toi = SIM nos tipos INSPECAO UC CORTADA.</p><div class="code-ref">fields.js:31</div></div>
+
+<div class="glossary-item" data-cats="campo"><span class="cat cat-campo">Campo</span><h3 id="concept-retorno-licacao">retorno_ligacao</h3><p>Campo de retorno para tipos de ligação MT. Valores: VISTORIA, VISTORIA + LIGAÇÃO, LIGAÇÃO. Controla a exibição de outros campos via condicionais em cascata.</p><div class="code-ref">fields.js:36</div></div>
+
+<div class="glossary-item" data-cats="campo"><span class="cat cat-campo">Campo</span><h3 id="concept-equipamentos">Equipamentos</h3><p>Seção de cadastro de equipamentos. Cada equipamento tem: status (Instalado/Retirado), categoria (Medidor/Display/Conjunto/TC/TP), número. Valida duplicidade de número.</p><div class="code-ref">equipment.js · validation.js:102-140</div></div>
+
+<div class="glossary-item" data-cats="fluxo"><span class="cat cat-fluxo">Fluxo</span><h3 id="concept-preenchimento-formulario">Preenchimento do Formulário</h3><p>Fluxo principal: usuário preenche dados iniciais (UC, OS, tipo-ordem etc.) → seleciona tipo de ordem → campos de retorno dinâmicos aparecem → opcional: adiciona equipamentos e anexos → revisa preview do email → envia. Auto-save a cada 1s após input.</p><div class="code-ref">app.js · iniciais.js · retornos.js</div></div>
+
+<div class="glossary-item" data-cats="fluxo"><span class="cat cat-fluxo">Fluxo</span><h3 id="concept-envio-email">Envio de Email</h3><p>Fluxo: valida todas as seções → verifica duplicidade → compõe assunto "OS #{os} - UC {uc} - {tipo}" → comprime anexos → envia POST /api/send → atualiza status no IndexedDB → mostra toast de sucesso/erro.</p><div class="code-ref">send.js · email.js · compress.js</div></div>
+
+<div class="glossary-item" data-cats="fluxo"><span class="cat cat-fluxo">Fluxo</span><h3 id="concept-restauracao-registro">Restauração de Registro</h3><p>Fluxo de restauração via sidebar: usuário clica em registro salvo → applyRecord() carrega dados do IndexedDB → renderIniciais(), renderRetorno(), renderEquipamentos(), renderPreviews() recriam todo o estado visual. Suporta migração v2→v3 de anexos.</p><div class="code-ref">restore.js · sidebar.js</div></div>
+
+<div class="glossary-item" data-cats="fluxo"><span class="cat cat-fluxo">Fluxo</span><h3 id="concept-campos-condicionais">Campos Condicionais</h3><p>Sistema que mostra/esconde campos de retorno com base no valor de outros campos. Suporta valores string, arrays (qualquer match) e negado (inverte lógica). Pais devem vir antes dos filhos no array (ordem em cascata).</p><div class="code-ref">retornos.js:96-120 · fields.js (field.condicional)</div></div>
+
+<div class="glossary-item" data-cats="fluxo"><span class="cat cat-fluxo">Fluxo</span><h3 id="concept-persistencia-automatica">Persistência Automática</h3><p>Auto-save com debounce de 1 segundo. Salva no IndexedDB (records + attachments stores) e localStorage (UUID). Ativado quando UC+OS estão preenchidos (state.iniciaisValido). Não salva se não houver dados.</p><div class="code-ref">persistence.js:40-90 · app.js:71-93</div></div>
+
+<div class="glossary-item" data-cats="infra"><span class="cat cat-infra">Infraestrutura</span><h3 id="concept-indexeddb-v3">IndexedDB v3</h3><p>Banco de dados no navegador. DB mail-mvp versão 3, duas stores: records (keyPath: uuid) e attachments (keyPath: id, índice em uuid). Migração v1→v2 remove store legado sent_emails. v3 separa anexos em store próprio.</p><div class="code-ref">db.js</div></div>
+
+<div class="glossary-item" data-cats="infra"><span class="cat cat-infra">Infraestrutura</span><h3 id="concept-localstorage-backup">localStorage Backup</h3><p>Armazenamento auxiliar via localStorage para chave currentUUID. Quebra o ciclo de importação circular entre state.js e persistence.js via storage.js como intermediário.</p><div class="code-ref">storage.js · state.js:6</div></div>
+
+<div class="glossary-item" data-cats="infra"><span class="cat cat-infra">Infraestrutura</span><h3 id="concept-dom-cache">DOM Cache (cacheDOM)</h3><p>Todas as referências a elementos DOM são obtidas uma única vez em cacheDOM() e armazenadas no objeto DOM. Nunca usar getElementById fora de dom.js. Exceção: DOM.tipoOrdem é criado dinamicamente e reatribuído em iniciais.js:172.</p><div class="code-ref">dom.js</div></div>
+
+<div class="glossary-item" data-cats="infra"><span class="cat cat-infra">Infraestrutura</span><h3 id="concept-netlify-function">Netlify Function (send)</h3><p>Função serverless em netlify/functions/send.js. Recebe POST com subject, text, attachments. Valida SMTP_FROM, SMTP_TO, tamanho anexos. Envia email via nodemailer com TLS e rejectUnauthorized: false.</p><div class="code-ref">netlify/functions/send.js</div></div>
+
+<div class="glossary-item" data-cats="infra"><span class="cat cat-infra">Infraestrutura</span><h3 id="concept-service-worker">Service Worker</h3><p>Registrado em sw.js para cache offline de assets estáticos. CACHE_NAME deve ser incrementado em toda alteração de HTML/CSS/JS. Mostra modal de atualização quando novo SW assume.</p><div class="code-ref">sw-update.js · sw.js</div></div>
+
+<div class="glossary-item" data-cats="infra"><span class="cat cat-infra">Infraestrutura</span><h3 id="concept-dirty-tracking">Dirty Tracking (Anexos)</h3><p>Mecanismo que evita re-serializar anexos no saveState() se não houve mudança. Marcar com markAttachmentsDirty() ao adicionar/remover/resetar anexos. Se o save falhar, a flag permanece true para retry.</p><div class="code-ref">persistence.js:26-36</div></div>
+
+<div class="glossary-item" data-cats="infra"><span class="cat cat-infra">Infraestrutura</span><h3 id="concept-compressao-progressiva">Compressão Progressiva</h3><p>Algoritmo de compressão de imagens: até 10 tentativas reduzindo 20% da largura (qualidade 0.9). Se ainda >650KB após 10 tentativas, fallback qualidade 0.7 sem reduzir escala. Imagens ≤670KB ou não-imagens são puladas.</p><div class="code-ref">compress.js · utils.js:1-2</div></div>
+
+<div class="glossary-item" data-cats="infra"><span class="cat cat-infra">Infraestrutura</span><h3 id="concept-ciclo-importacao">Ciclo de Importação (state.js)</h3><p>state.js re-exporta de persistence.js, que importa de state.js — ciclo quebrado via storage.js como intermediário para UUID puro. Cuidado ao adicionar novos imports.</p><div class="code-ref">state.js · persistence.js · storage.js · AGENTS.md</div></div>
+
+<div class="glossary-item" data-cats="infra"><span class="cat cat-infra">Infraestrutura</span><h3 id="concept-uuid">UUID</h3><p>Identificador único de registro. Gerado via crypto.randomUUID() com fallback para Date.now() + Math.random(). Armazenado em localStorage (chave currentUUID) e state.currentUUID. Usado como keyPath no IndexedDB.</p><div class="code-ref">persistence.js:94-101 · storage.js</div></div>
+
+<div class="glossary-item" data-cats="regra"><span class="cat cat-regra">Regra de Negócio</span><h3 id="concept-uc-apenas-digitos">UC apenas dígitos</h3><p>O campo UC deve conter apenas caracteres numéricos. Validado com regex /^\d+$/. Erro exibido: "UC deve conter apenas números".</p><div class="code-ref">validation.js:57-65</div></div>
+
+<div class="glossary-item" data-cats="regra"><span class="cat cat-regra">Regra de Negócio</span><h3 id="concept-data-nao-futura">Data não futura</h3><p>A data do serviço não pode ser posterior à data atual. Comparação ignora horário (setHours(0,0,0,0)).</p><div class="code-ref">validation.js:67-78</div></div>
+
+<div class="glossary-item" data-cats="regra"><span class="cat cat-regra">Regra de Negócio</span><h3 id="concept-hora-fim-diferente">Hora fim diferente de hora início</h3><p>Hora fim deve ser diferente de hora início. Permite virada de dia (overnight, ex: 23:00→01:00), mas impede duração zero (ex: 10:00→10:00).</p><div class="code-ref">validation.js:80-90</div></div>
+
+<div class="glossary-item" data-cats="regra"><span class="cat cat-regra">Regra de Negócio</span><h3 id="concept-max-12-anexos">Máximo 12 anexos</h3><p>O formulário permite no máximo 12 arquivos anexados. Validação no frontend (validation.js) e backend (send.js). Arquivos extras são ignorados com aviso.</p><div class="code-ref">validation.js:174-176 · send.js:46-48 · attachments.js:20-27</div></div>
+
+<div class="glossary-item" data-cats="regra"><span class="cat cat-regra">Regra de Negócio</span><h3 id="concept-max-8mb-anexo">Máximo 8MB por anexo</h3><p>Cada anexo individual não pode exceder 8 MB. Validado no frontend e no backend. Anexos com tamanho superior são rejeitados com mensagem de erro.</p><div class="code-ref">validation.js:178-186 · send.js:50-57</div></div>
+
+<div class="glossary-item" data-cats="regra"><span class="cat cat-regra">Regra de Negócio</span><h3 id="concept-compressao-650kb">Compressão até 650KB</h3><p>Imagens são comprimidas progressivamente até no máximo 650KB. Limiar de compressão: 670KB (SKIP_SIZE). Imagens abaixo deste tamanho não são comprimidas.</p><div class="code-ref">utils.js:1-2 · compress.js</div></div>
+
+<div class="glossary-item" data-cats="regra"><span class="cat cat-regra">Regra de Negócio</span><h3 id="concept-hidden-fields-excluidos">Hidden fields excluídos do email</h3><p>Campos de retorno ocultos (condicionais não atendidos) são excluídos do email. Dupla proteção: getRetornoData() filtra display:none; composeEmail() verifica field.nome em data.retorno.</p><div class="code-ref">retornos.js:122-138 · email.js:42-46 · AGENTS.md</div></div>
+
+<div class="glossary-item" data-cats="regra"><span class="cat cat-regra">Regra de Negócio</span><h3 id="concept-validacao-pula-hidden">Validação pula hidden fields</h3><p>validateSection3 verifica se group.style.display === "none" antes de validar cada campo de retorno. Campos condicionais ocultos não geram erro de obrigatoriedade.</p><div class="code-ref">validation.js:148-164</div></div>
+
+<div class="glossary-item" data-cats="regra"><span class="cat cat-regra">Regra de Negócio</span><h3 id="concept-save-guards">Guards do saveState</h3><p>saveState não executa se state.iniciaisValido for false (UC+OS não preenchidos) ou se não houver dados (todos os campos vazios, sem equipamentos, sem anexos, sem UUID).</p><div class="code-ref">persistence.js:41-45 · app.js:25-34</div></div>
+
+<div class="glossary-item" data-cats="regra"><span class="cat cat-regra">Regra de Negócio</span><h3 id="concept-composicao-email">Composição de Email</h3><p>Assunto: "OS #{os} - UC {uc} - {tipo}". Corpo: campos iniciais normalizados (sem acentos, MAIÚSCULAS) → equipamentos → retorno. Datas invertidas de YYYY-MM-DD para DD-MM-YYYY. Destinatários exclusivamente do SMTP_TO.</p><div class="code-ref">email.js · send.js:22-23 · AGENTS.md</div></div>
+
+<div class="glossary-item" data-cats="regra"><span class="cat cat-regra">Regra de Negócio</span><h3 id="concept-check-duplicidade">Verificação de Duplicidade</h3><p>Ao enviar, verifica se o registro já foi enviado antes (status === "sent"). Se sim, mostra modal de confirmação: "Registro já enviado em {data}. Deseja realizar um novo envio mesmo assim?"</p><div class="code-ref">duplicate.js</div></div>
+
+<div class="glossary-item" data-cats="regra"><span class="cat cat-regra">Regra de Negócio</span><h3 id="concept-tipo-ordem-match-exato">Tipo de Ordem match exato</h3><p>Nomes de Tipo de Ordem em iniciaisFields.opcoes devem corresponder exatamente às chaves em retornoFieldsByTipo. Qualquer diferença (acento, espaço, maiúscula) quebra o vínculo e usa fallback default.</p><div class="code-ref">fields.js:15 · fields.js:49-118 · AGENTS.md</div></div>
+
+<div class="glossary-item" data-cats="regra"><span class="cat cat-regra">Regra de Negócio</span><h3 id="concept-6-env-vars-backend">6 variáveis de ambiente no backend</h3><p>Netlify Function requer SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM, SMTP_TO. Validações: SMTP_FORMATO email regex, SMTP_TO lista separada por vírgulas, cada email validado.</p><div class="code-ref">netlify/functions/send.js:23-44</div></div>
+
+<div class="glossary-item" data-cats="regra"><span class="cat cat-regra">Regra de Negócio</span><h3 id="concept-scroll-suave-erro">Scroll suave para erro</h3><p>validateAll() identifica o primeiro elemento com erro (.error) e faz scrollIntoView({ behavior: "smooth", block: "center" }) para garantir visibilidade.</p><div class="code-ref">validation.js:244-247</div></div>
+
+<div class="glossary-item" data-cats="regra"><span class="cat cat-regra">Regra de Negócio</span><h3 id="concept-anexos-store-separado">Anexos em store separado (v3)</h3><p>Desde o schema v3, anexos são armazenados no store attachments, separado do record principal. Indexado por uuid. Migração transparente em restore.js: se detecta formato antigo (v2 com attachments inline), converte automaticamente.</p><div class="code-ref">db.js:26-30 · restore.js:27-47 · AGENTS.md</div></div>
+
+<div class="glossary-item" data-cats="modulo"><span class="cat cat-modulo">Módulo</span><h3 id="concept-appjs">app.js</h3><p>Entry point da aplicação. Inicializa cacheDOM, eventos, renders iniciais, geolocalização. 99 LOC, complexidade 3.3. Gerencia o ciclo de vida: DOMContentLoaded → initEvents → handlers globais de input/change.</p><div class="code-ref">scripts/app.js</div></div>
+
+<div class="glossary-item" data-cats="modulo"><span class="cat cat-modulo">Módulo</span><h3 id="concept-domjs">dom.js</h3><p>Cache centralizado de elementos DOM. cacheDOM() lê 28 elementos via getElementById. Objeto DOM exportado como singleton. 58 LOC, complexidade 1.9.</p><div class="code-ref">scripts/dom.js</div></div>
+
+<div class="glossary-item" data-cats="modulo"><span class="cat cat-modulo">Módulo</span><h3 id="concept-statejs">state.js</h3><p>Estado global da aplicação: iniciais, equipamentos, attachments, retorno, currentUUID, iniciaisValido. Re-exporta funções de persistence.js. 15 LOC, complexidade 0.5.</p><div class="code-ref">scripts/state.js</div></div>
+
+<div class="glossary-item" data-cats="modulo"><span class="cat cat-modulo">Módulo</span><h3 id="concept-persistencejs">persistence.js</h3><p>Camada de persistência: saveState(), debouncedSave(), dirty tracking. Gerencia UUID, serialização de anexos, resolução de createdAt. 114 LOC, complexidade 3.8.</p><div class="code-ref">scripts/persistence.js</div></div>
+
+<div class="glossary-item" data-cats="modulo"><span class="cat cat-modulo">Módulo</span><h3 id="concept-dbjs">db.js</h3><p>Camada de banco IndexedDB: openDB, CRUD records e attachments, transações atômicas. 179 LOC, complexidade 6.0 — módulo mais complexo.</p><div class="code-ref">scripts/db.js</div></div>
+
+<div class="glossary-item" data-cats="modulo"><span class="cat cat-modulo">Módulo</span><h3 id="concept-storagejs">storage.js</h3><p>Operações puras de localStorage sem dependências. Quebra ciclo state→persistence→state. 6 LOC, complexidade 0.2 — módulo mais simples.</p><div class="code-ref">scripts/storage.js</div></div>
+
+<div class="glossary-item" data-cats="modulo"><span class="cat cat-modulo">Módulo</span><h3 id="concept-fieldsjs">fields.js</h3><p>Definição de todos os campos: iniciaisFields (8 campos), retornoFieldsByTipo (12 tipos com campos especializados). 107 LOC, complexidade 3.6.</p><div class="code-ref">scripts/fields.js</div></div>
+
+<div class="glossary-item" data-cats="modulo"><span class="cat cat-modulo">Módulo</span><h3 id="concept-iniciaisjs">iniciais.js</h3><p>Renderiza campos da seção "Início" (UC, OS, tipo-ordem etc.). Tabela de criadores INPUT_CREATORS por tipo. 168 LOC, complexidade 5.6.</p><div class="code-ref">scripts/iniciais.js</div></div>
+
+<div class="glossary-item" data-cats="modulo"><span class="cat cat-modulo">Módulo</span><h3 id="concept-retornosjs">retornos.js</h3><p>Renderiza campos de retorno dinâmicos baseados no tipo de ordem. Sistema de condicionais, agrupamento por linha. 127 LOC, complexidade 4.2.</p><div class="code-ref">scripts/retornos.js</div></div>
+
+<div class="glossary-item" data-cats="modulo"><span class="cat cat-modulo">Módulo</span><h3 id="concept-validationjs">validation.js</h3><p>Sistema de validação por seção (Strategy pattern). Cache de dados validados entre validação e coleta. 251 LOC, complexidade 8.4 — módulo mais complexo.</p><div class="code-ref">scripts/validation.js</div></div>
+
+<div class="glossary-item" data-cats="modulo"><span class="cat cat-modulo">Módulo</span><h3 id="concept-emailjs">email.js</h3><p>Composição de email: corpo formatado com normalização (remove acentos, upper case). Inversão de data. Preview ao vivo. 50 LOC, complexidade 1.7.</p><div class="code-ref">scripts/email.js</div></div>
+
+<div class="glossary-item" data-cats="modulo"><span class="cat cat-modulo">Módulo</span><h3 id="concept-sendjs">send.js</h3><p>Função de envio: valida → verifica duplicidade → comprime → POST /api/send → atualiza status. 47 LOC, complexidade 1.6.</p><div class="code-ref">scripts/send.js</div></div>
+
+<div class="glossary-item" data-cats="modulo"><span class="cat cat-modulo">Módulo</span><h3 id="concept-attachmentsjs">attachments.js</h3><p>Gerencia upload, preview, remoção e lightbox de arquivos. Rastreia Object URLs para evitar memory leak. 73 LOC, complexidade 2.4.</p><div class="code-ref">scripts/attachments.js</div></div>
+
+<div class="glossary-item" data-cats="modulo"><span class="cat cat-modulo">Módulo</span><h3 id="concept-compressjs">compress.js</h3><p>Compressão progressiva de imagens via Canvas. Loop de até 10 tentativas com redução de 20% e qualidade 0.9/0.7. 44 LOC, complexidade 1.5.</p><div class="code-ref">scripts/compress.js</div></div>
+
+<div class="glossary-item" data-cats="modulo"><span class="cat cat-modulo">Módulo</span><h3 id="concept-equipmentjs">equipment.js</h3><p>Gerencia a seção de equipamentos: add, remove, collect, render. Valores: Instalado/Retirado, Medidor/Display/Conjunto/TC/TP. 68 LOC, complexidade 2.3.</p><div class="code-ref">scripts/equipment.js</div></div>
+
+<div class="glossary-item" data-cats="modulo"><span class="cat cat-modulo">Módulo</span><h3 id="concept-sidebarjs">sidebar.js</h3><p>Sidebar de histórico: lista registros salvos, filtra, deleta com confirmação, restaura. 110 LOC, complexidade 3.7.</p><div class="code-ref">scripts/sidebar.js</div></div>
+
+<div class="glossary-item" data-cats="modulo"><span class="cat cat-modulo">Módulo</span><h3 id="concept-ui-js">ui.js</h3><p>Utilitários de UI: showError, hideError, showToast, setFieldError, showConfirm. 51 LOC, complexidade 1.7.</p><div class="code-ref">scripts/ui.js</div></div>
+
+<div class="glossary-item" data-cats="modulo"><span class="cat cat-modulo">Módulo</span><h3 id="concept-utilsjs">utils.js</h3><p>Utilitários gerais: toBase64, blobToBase64, loadImage, formatDate, captureCoordinates, constantes MAX_SIZE/SKIP_SIZE. 62 LOC, complexidade 2.1.</p><div class="code-ref">scripts/utils.js</div></div>
+
+<div class="glossary-item" data-cats="modulo"><span class="cat cat-modulo">Módulo</span><h3 id="concept-restorejs">restore.js</h3><p>Restaura estado completo do formulário a partir de um registro do IndexedDB. Suporta migração v2→v3 de anexos. 76 LOC, complexidade 2.5.</p><div class="code-ref">scripts/restore.js</div></div>
+
+<div class="glossary-item" data-cats="modulo"><span class="cat cat-modulo">Módulo</span><h3 id="concept-resetjs">reset.js</h3><p>Reseta formulário ao estado inicial: limpa state, re-renderiza todas as seções, limpa UUID. 40 LOC, complexidade 1.3.</p><div class="code-ref">scripts/reset.js</div></div>
+
+<div class="glossary-item" data-cats="modulo"><span class="cat cat-modulo">Módulo</span><h3 id="concept-duplicatejs">duplicate.js</h3><p>Verifica duplicidade de envio: consulta status do registro no IndexedDB. Exibe modal confirmando reenvio se já enviado. 34 LOC, complexidade 1.1.</p><div class="code-ref">scripts/duplicate.js</div></div>
+
+<div class="glossary-item" data-cats="modulo"><span class="cat cat-modulo">Módulo</span><h3 id="concept-stylesjs">styles.js</h3><p>Constantes de classes CSS Tailwind compartilhadas: INPUT_CLASS e SELECT_CLASS. Evita duplicação de strings longas. 6 LOC, complexidade 0.2.</p><div class="code-ref">scripts/styles.js</div></div>
+
+<div class="glossary-item" data-cats="modulo"><span class="cat cat-modulo">Módulo</span><h3 id="concept-sw-updatejs">sw-update.js</h3><p>Registra Service Worker, monitora controllerchange para exibir modal de atualização. Auto-init na carga. 27 LOC, complexidade 0.9.</p><div class="code-ref">scripts/sw-update.js</div></div>
+
+<div class="glossary-item" data-cats="modulo"><span class="cat cat-modulo">Módulo</span><h3 id="concept-functions-send">functions-send.js</h3><p>Netlify Function serverless. Recebe POST, valida parâmetros, envia email via nodemailer. 77 LOC no backend, complexidade 2.6.</p><div class="code-ref">netlify/functions/send.js</div></div>
+
+</div>
+
+<script>
+(function() {
+  var search = document.getElementById('search');
+  var list = document.getElementById('list');
+  var count = document.getElementById('count');
+  var items = Array.from(list.querySelectorAll('.glossary-item'));
+  var filterBtns = Array.from(document.querySelectorAll('.filter-btn'));
+  var currentCat = 'all';
+
+  function update() {
+    var term = search.value.toLowerCase().trim();
+    var visible = 0;
+
+    items.forEach(function(item) {
+      var text = item.textContent.toLowerCase();
+      var cats = item.getAttribute('data-cats') || '';
+      var matchCat = (currentCat === 'all' || cats.indexOf(currentCat) !== -1);
+      var matchSearch = !term || text.indexOf(term) !== -1;
+
+      if (matchCat && matchSearch) {
+        item.classList.remove('hidden-item');
+        visible++;
+      } else {
+        item.classList.add('hidden-item');
+      }
+    });
+
+    count.textContent = visible + ' conceitos';
+  }
+
+  search.addEventListener('input', update);
+
+  filterBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      filterBtns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      currentCat = btn.getAttribute('data-cat');
+      update();
+    });
+  });
+
+  update();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Globais | mail-mvp</title>
+<meta name="reversa-category" content="feature">
+<meta name="reversa-producer-agent" content="reversa-docs-storyteller">
+<meta name="reversa-template" content="feature">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, sans-serif; background: #0a0a10; color: #eaeaea; padding: 32px; max-width: 960px; margin: 0 auto; }
+h1 { font-size: 22px; font-weight: 300; letter-spacing: 0.5px; margin-bottom: 4px; }
+.subtitle { color: #666; font-size: 13px; margin-bottom: 24px; }
+.back { display: inline-block; margin-bottom: 16px; color: #4a9eff; text-decoration: none; font-size: 13px; }
+.back:hover { text-decoration: underline; }
+h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-top: 32px; margin-bottom: 12px; }
+h3 { font-size: 14px; font-weight: 600; color: #ccc; margin-top: 20px; margin-bottom: 8px; }
+p, li { font-size: 14px; line-height: 1.6; color: #c0c0c0; }
+ul, ol { padding-left: 20px; margin-bottom: 12px; }
+li { margin-bottom: 4px; }
+table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px; }
+th { text-align: left; padding: 8px 10px; background: rgba(74,158,255,0.08); color: #4a9eff; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; border-bottom: 1px solid rgba(74,158,255,0.15); }
+td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); color: #c0c0c0; vertical-align: top; }
+td:first-child { font-weight: 500; color: #eaeaea; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.3px; }
+.badge-green { background: rgba(34,197,94,0.15); color: #22c55e; }
+.badge-blue { background: rgba(74,158,255,0.15); color: #4a9eff; }
+.tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 11px; background: rgba(255,255,255,0.06); color: #888; margin-right: 4px; }
+.modules { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+.module-tag { padding: 4px 12px; border-radius: 6px; font-size: 12px; background: rgba(74,158,255,0.1); color: #4a9eff; border: 1px solid rgba(74,158,255,0.2); }
+hr { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 24px 0; }
+code { font-size: 12px; background: rgba(255,255,255,0.05); padding: 1px 5px; border-radius: 3px; color: #eaeaea; }
+</style>
+</head>
+<body>
+<a href="../index.html" class="back">&larr; Voltar ao índice</a>
+<h1>Globais</h1>
+<p class="subtitle">Arquitetura central: DOM cache, state management, IndexedDB, storage e UI core</p>
+
+<div class="modules">
+  <span class="module-tag">dom.js</span>
+  <span class="module-tag">state.js</span>
+  <span class="module-tag">storage.js</span>
+  <span class="module-tag">persistence.js</span>
+  <span class="module-tag">db.js</span>
+  <span class="module-tag">ui.js</span>
+</div>
+
+<h2>1. Requisitos</h2>
+
+<table>
+  <tr><th style="width:40px">#</th><th style="width:100px">Prioridade</th><th>Descrição</th></tr>
+  <tr><td>REQ01</td><td><span class="badge badge-green">Must</span></td><td><code>cacheDOM()</code> deve ser chamada uma vez na inicialização para capturar todas as referências DOM</td></tr>
+  <tr><td>REQ02</td><td><span class="badge badge-green">Must</span></td><td>Nunca chamar <code>getElementById</code> fora de <code>cacheDOM()</code> — exceção: <code>DOM.tipoOrdem</code> (criado dinamicamente)</td></tr>
+  <tr><td>REQ03</td><td><span class="badge badge-green">Must</span></td><td>State global (<code>state</code>) contém: iniciais, equipamentos, attachments, retorno, currentUUID, composicao, iniciaisValido, lastTipoOrdem</td></tr>
+  <tr><td>REQ04</td><td><span class="badge badge-green">Must</span></td><td><code>saveState()</code> só persiste se <code>state.iniciaisValido</code> for true e houver dados mínimos</td></tr>
+  <tr><td>REQ05</td><td><span class="badge badge-green">Must</span></td><td>IndexedDB versão 3 com dois stores: <code>records</code> (keyPath: uuid) e <code>attachments</code> (keyPath: id, index on uuid)</td></tr>
+  <tr><td>REQ06</td><td><span class="badge badge-green">Must</span></td><td>Anexos salvos em store separado desde v3; store legado <code>sent_emails</code> removido na migração v1→v2</td></tr>
+  <tr><td>REQ07</td><td><span class="badge badge-green">Must</span></td><td>Dirty tracking de anexos: <code>markAttachmentsDirty()</code> deve ser chamado ao modificar anexos</td></tr>
+  <tr><td>REQ08</td><td><span class="badge badge-blue">Should</span></td><td>Circular import state.js → persistence.js → state.js quebrado via storage.js (intermediário puro)</td></tr>
+  <tr><td>REQ09</td><td><span class="badge badge-blue">Should</span></td><td><code>debouncedSave()</code> com delay de 1 segundo para evitar salvamentos frequentes</td></tr>
+  <tr><td>REQ10</td><td><span class="badge badge-blue">Should</span></td><td>UUID é gerado via <code>crypto.randomUUID()</code> com fallback para Date.now + Math.random</td></tr>
+</table>
+
+<h2>2. Design Técnico</h2>
+
+<h3>Funções da Interface</h3>
+<table>
+  <tr><th>Função</th><th>Módulo</th><th>Descrição</th></tr>
+  <tr><td><code>cacheDOM()</code></td><td>dom.js</td><td>Captura 30+ referências DOM em um objeto <code>DOM</code> exportado (seções, inputs, modais, sidebar)</td></tr>
+  <tr><td><code>saveState()</code></td><td>persistence.js</td><td>Persiste estado atual no IndexedDB: record + attachments (se dirty)</td></tr>
+  <tr><td><code>debouncedSave()</code></td><td>persistence.js</td><td>Agenda <code>saveState()</code> com debounce de 1000ms</td></tr>
+  <tr><td><code>setCurrentUUID(uuid)</code></td><td>persistence.js</td><td>Define UUID atual no state e localStorage</td></tr>
+  <tr><td><code>clearCurrentUUID()</code></td><td>persistence.js</td><td>Limpa UUID do state e localStorage, marca attachments dirty</td></tr>
+  <tr><td><code>markAttachmentsDirty()</code></td><td>persistence.js</td><td>Marca flag para re-serializar anexos no próximo save</td></tr>
+  <tr><td><code>getRawUUID()</code></td><td>storage.js</td><td>Lê UUID do localStorage (quebra ciclo de importação)</td></tr>
+  <tr><td><code>storeUUID(uuid)</code></td><td>storage.js</td><td>Persiste UUID no localStorage</td></tr>
+  <tr><td><code>removeUUID()</code></td><td>storage.js</td><td>Remove UUID do localStorage</td></tr>
+  <tr><td><code>showError(msg)</code></td><td>ui.js</td><td>Exibe mensagem de erro no <code>#error-msg</code></td></tr>
+  <tr><td><code>hideError()</code></td><td>ui.js</td><td>Esconde mensagem de erro</td></tr>
+  <tr><td><code>showToast(msg, success)</code></td><td>ui.js</td><td>Exibe toast por 3.5 segundos</td></tr>
+  <tr><td><code>setFieldError(el, msg)</code></td><td>ui.js</td><td>Define texto no <code>.field-error</code> irmão do elemento</td></tr>
+  <tr><td><code>clearFieldError(el)</code></td><td>ui.js</td><td>Limpa texto do <code>.field-error</code></td></tr>
+  <tr><td><code>showConfirm(msg)</code></td><td>ui.js</td><td>Exibe modal de confirmação, retorna Promise&lt;boolean&gt;</td></tr>
+</table>
+
+<h3>Diagrama de Dependências (Grafo Acíclico)</h3>
+<pre style="background:rgba(255,255,255,0.03);padding:12px;border-radius:8px;font-size:12px;color:#aaa;overflow-x:auto;">
+storage.js (puro, sem dependências)
+  └── state.js ──┬── persistence.js ──┬── db.js
+                 │                    └── iniciais.js, retornos.js, utils.js
+                 ├── dom.js (importado por quase todos)
+                 └── ui.js
+</pre>
+<p><strong>Nota:</strong> <code>state.js</code> importa de <code>persistence.js</code> e <code>persistence.js</code> importa de <code>state.js</code> — o ciclo é quebrado por <code>storage.js</code> (<code>state.js</code> importa <code>getRawUUID</code> de <code>storage.js</code>, não de <code>persistence.js</code> diretamente).</p>
+
+<h3>IndexedDB Schema (v3)</h3>
+<table>
+  <tr><th>Store</th><th>Key Path</th><th>Index</th><th>Descrição</th></tr>
+  <tr><td><code>records</code></td><td><code>uuid</code></td><td>—</td><td>Registros do formulário: iniciais, retorno, equipamentos, composição, status, timestamps</td></tr>
+  <tr><td><code>attachments</code></td><td><code>id</code></td><td><code>uuid</code> (non-unique)</td><td>Anexos serializados (name, type, data) vinculados ao UUID do registro pai</td></tr>
+</table>
+
+<h3>Dependências</h3>
+<table>
+  <tr><th>Módulo</th><th>Depende de</th><th>Uso</th></tr>
+  <tr><td>dom.js</td><td>(nenhum)</td><td>Cache DOM puro, sem dependências</td></tr>
+  <tr><td>state.js</td><td>storage.js, persistence.js</td><td>getRawUUID (quebra ciclo), re-exporta funções de persistence</td></tr>
+  <tr><td>persistence.js</td><td>state.js, storage.js, iniciais.js, retornos.js, db.js, utils.js, dom.js</td><td>Save/load completo do estado</td></tr>
+  <tr><td>storage.js</td><td>(nenhum)</td><td>Operações puras de localStorage</td></tr>
+  <tr><td>db.js</td><td>(nenhum — indexedDB nativo)</td><td>CRUD IndexedDB, transações atômicas, migração v1→v2→v3</td></tr>
+  <tr><td>ui.js</td><td>dom.js</td><td>Error, toast, field errors, confirm modal</td></tr>
+</table>
+
+<h3>Regras de Negócio</h3>
+<table>
+  <tr><th style="width:70px">ID</th><th style="width:90px">Confiança</th><th>Regra</th></tr>
+  <tr><td>RN01</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>DOM cache é populado uma vez via <code>cacheDOM()</code> na inicialização; referências nunca são reatribuídas</td></tr>
+  <tr><td>RN02</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td><code>DOM.tipoOrdem</code> é exceção: é atribuído manualmente em <code>renderIniciais()</code> porque o elemento é criado dinamicamente</td></tr>
+  <tr><td>RN03</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td><code>saveState()</code> não persiste se <code>state.iniciaisValido</code> for false (UC+OS não preenchidos)</td></tr>
+  <tr><td>RN04</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td><code>saveState()</code> não persiste se não houver dados (todos os campos vazios, sem equipamentos, sem anexos, sem UUID)</td></tr>
+  <tr><td>RN05</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Anexos têm dirty tracking: <code>attachmentsDirty</code> flag evita re-serialização desnecessária</td></tr>
+  <tr><td>RN06</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td><code>clearCurrentUUID()</code> marca attachments como dirty para forçar limpeza do store no próximo save</td></tr>
+  <tr><td>RN07</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Migração IndexedDB v1→v2 remove store <code>sent_emails</code>; v2→v3 adiciona store <code>attachments</code> separado</td></tr>
+  <tr><td>RN08</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td><code>deleteRecord()</code> usa transação atômica em dois stores (records + attachments) com cursor para deletar anexos</td></tr>
+</table>
+
+<h2>3. Tarefas</h2>
+<table>
+  <tr><th style="width:40px">#</th><th style="width:100px">Confiança</th><th>Tarefa</th></tr>
+  <tr><td>T01</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Criar <code>cacheDOM()</code> em dom.js — capturar 30+ referências DOM</td></tr>
+  <tr><td>T02</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Criar objeto <code>state</code> em state.js com todas as propriedades</td></tr>
+  <tr><td>T03</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Criar storage.js — <code>getRawUUID</code>, <code>storeUUID</code>, <code>removeUUID</code> (quebra ciclo)</td></tr>
+  <tr><td>T04</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Criar <code>saveState()</code> em persistence.js — salvar record + attachments no IndexedDB</td></tr>
+  <tr><td>T05</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Criar <code>debouncedSave()</code> — debounce de 1000ms para auto-save</td></tr>
+  <tr><td>T06</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Criar db.js — openDB, migração v1→v2→v3, CRUD records + attachments</td></tr>
+  <tr><td>T07</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Criar ui.js — showError, hideError, showToast, setFieldError, clearFieldError, showConfirm</td></tr>
+  <tr><td>T08</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Implementar dirty tracking de anexos (<code>attachmentsDirty</code> flag)</td></tr>
+  <tr><td>T09</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Implementar <code>_ensureUUID()</code> com <code>crypto.randomUUID()</code> e fallback</td></tr>
+  <tr><td>T10</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Implementar <code>deleteRecord()</code> com transação atômica em dois stores</td></tr>
+</table>
+
+<hr>
+<p style="font-size:12px;color:#555;">Gerado automaticamente pelo Time Reversa Docs — mail-mvp</p>
+</body>
+</html>

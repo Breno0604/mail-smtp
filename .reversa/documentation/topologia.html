@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topologia | mail-mvp</title>
+<meta name="reversa-category" content="diagram">
+<meta name="reversa-producer-agent" content="reversa-docs-mapper">
+<meta name="reversa-template" content="topologia">
+<meta name="generated-at" content="2026-06-15T17:00:00-03:00">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, sans-serif; background: #0a0a10; color: #eaeaea; padding: 32px; }
+h1 { font-size: 22px; font-weight: 300; letter-spacing: 0.5px; margin-bottom: 8px; }
+h2 { font-size: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 20px; }
+.subtitle { color: #666; font-size: 13px; margin-bottom: 32px; }
+.columns { display: flex; gap: 32px; margin-bottom: 48px; }
+.column { flex: 1; background: rgba(20,20,30,0.5); border-radius: 12px; padding: 24px; border: 1px solid rgba(255,255,255,0.05); }
+.column h3 { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+.column .tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; margin-bottom: 16px; }
+.tag.current { background: #4a9eff22; color: #4a9eff; border: 1px solid #4a9eff44; }
+.tag.modern { background: #ffc85722; color: #ffc857; border: 1px solid #ffc85744; }
+.tag.hybrid { background: #5f4aff22; color: #5f4aff; border: 1px solid #5f4aff44; }
+.layer-group { margin-bottom: 20px; }
+.layer-group h4 { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.layer-item { display: flex; align-items: center; gap: 8px; padding: 6px 10px; margin-bottom: 4px; border-radius: 6px; font-size: 12px; }
+.layer-item .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.layer-item.scripts .dot { background: #4a9eff; }
+.layer-item.functions .dot { background: #ffc857; }
+.layer-item.html .dot { background: #5f4aff; }
+.layer-item.vue .dot { background: #42b883; }
+.layer-item.api .dot { background: #ff5a4f; }
+.layer-item.infra .dot { background: #888; }
+.layer-item { background: rgba(255,255,255,0.03); }
+.layer-item:hover { background: rgba(255,255,255,0.06); }
+.layer-item .loc { margin-left: auto; font-size: 11px; color: #555; }
+.layer-item.group-title { background: none; font-weight: 600; color: #aaa; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; padding-left: 0; }
+.arrow-hint { text-align: center; color: #444; font-size: 24px; line-height: 1; padding-top: 60px; }
+.metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 48px; }
+.metric-card { background: rgba(20,20,30,0.5); border-radius: 10px; padding: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+.metric-card .value { font-size: 28px; font-weight: 300; color: #4a9eff; }
+.metric-card .label { font-size: 12px; color: #888; margin-top: 4px; }
+.metric-card .delta { font-size: 11px; margin-top: 2px; }
+.delta.positive { color: #4caf50; }
+.delta.neutral { color: #888; }
+.comparison-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 24px; }
+.comparison-table th { text-align: left; color: #888; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 12px; border-bottom: 1px solid #222; }
+.comparison-table td { padding: 10px 12px; border-bottom: 1px solid #181822; }
+.comparison-table tr:hover td { background: rgba(255,255,255,0.02); }
+.comparison-table .yes { color: #4caf50; }
+.comparison-table .no { color: #f44336; }
+.comparison-table .partial { color: #ffc107; }
+</style>
+</head>
+<body>
+<h1>Topologia</h1>
+<h2>mail-mvp</h2>
+<p class="subtitle">Comparação lado a lado: arquitetura atual (legado) vs. proposta moderna (Vue + Vite + TypeScript)</p>
+
+<div class="columns">
+  <div class="column">
+    <span class="tag current">▸ ATUAL</span>
+    <h3>Vanilla JS + Netlify Functions</h3>
+    <p style="font-size:12px;color:#666;margin-bottom:16px;">23 módulos frontend · 1 função backend · 1.889 LOC</p>
+
+    <div class="layer-group">
+      <h4>Frontend (scripts/)</h4>
+      <div class="layer-item scripts"><span class="dot"></span> app.js <span class="loc">99 LOC</span></div>
+      <div class="layer-item scripts"><span class="dot"></span> dom.js <span class="loc">58 LOC</span></div>
+      <div class="layer-item scripts"><span class="dot"></span> state.js <span class="loc">15 LOC</span></div>
+      <div class="layer-item scripts"><span class="dot"></span> storage.js <span class="loc">6 LOC</span></div>
+      <div class="layer-item scripts"><span class="dot"></span> db.js <span class="loc">179 LOC</span></div>
+      <div class="layer-item scripts"><span class="dot"></span> fields.js <span class="loc">107 LOC</span></div>
+      <div class="layer-item scripts"><span class="dot"></span> iniciais.js <span class="loc">168 LOC</span></div>
+      <div class="layer-item scripts"><span class="dot"></span> retornos.js <span class="loc">127 LOC</span></div>
+      <div class="layer-item scripts"><span class="dot"></span> equipment.js <span class="loc">68 LOC</span></div>
+      <div class="layer-item scripts"><span class="dot"></span> attachments.js <span class="loc">73 LOC</span></div>
+      <div class="layer-item scripts"><span class="dot"></span> email.js <span class="loc">50 LOC</span></div>
+      <div class="layer-item scripts"><span class="dot"></span> validation.js <span class="loc">251 LOC</span></div>
+      <div class="layer-item scripts"><span class="dot"></span> persistence.js <span class="loc">114 LOC</span></div>
+      <div class="layer-item scripts"><span class="dot"></span> sidebar.js <span class="loc">110 LOC</span></div>
+      <div class="layer-item scripts"><span class="dot"></span> send.js <span class="loc">47 LOC</span></div>
+      <div class="layer-item scripts"><span class="dot"></span> restore.js <span class="loc">76 LOC</span></div>
+      <div class="layer-item scripts"><span class="dot"></span> reset.js <span class="loc">40 LOC</span></div>
+      <div class="layer-item scripts"><span class="dot"></span> utils.js <span class="loc">62 LOC</span></div>
+      <div class="layer-item scripts"><span class="dot"></span> compress.js <span class="loc">44 LOC</span></div>
+      <div class="layer-item scripts"><span class="dot"></span> duplicate.js <span class="loc">34 LOC</span></div>
+      <div class="layer-item scripts"><span class="dot"></span> ui.js <span class="loc">51 LOC</span></div>
+      <div class="layer-item scripts"><span class="dot"></span> styles.js <span class="loc">6 LOC</span></div>
+      <div class="layer-item scripts"><span class="dot"></span> sw-update.js <span class="loc">27 LOC</span></div>
+    </div>
+
+    <div class="layer-group">
+      <h4>Backend</h4>
+      <div class="layer-item functions"><span class="dot"></span> send.js (Netlify Function) <span class="loc">77 LOC</span></div>
+    </div>
+
+    <div class="layer-group">
+      <h4>Infra</h4>
+      <div class="layer-item infra"><span class="dot"></span> index.html (single-page)</div>
+      <div class="layer-item infra"><span class="dot"></span> netlify.toml</div>
+      <div class="layer-item infra"><span class="dot"></span> sw.js (Service Worker)</div>
+      <div class="layer-item infra"><span class="dot"></span> IndexedDB (mail-mvp v3)</div>
+    </div>
+  </div>
+
+  <div class="arrow-hint">→→→</div>
+
+  <div class="column">
+    <span class="tag modern">▸ PROPOSTA</span>
+    <h3>Vue 3 + Vite + TypeScript + Supabase</h3>
+    <p style="font-size:12px;color:#666;margin-bottom:16px;">Estimativa: ~12 componentes · 2 stores · 1 API route · 0 ciclos</p>
+
+    <div class="layer-group">
+      <h4>Frontend (src/)</h4>
+      <div class="layer-item vue"><span class="dot"></span> App.vue <span class="loc">~30 LOC</span></div>
+      <div class="layer-item vue"><span class="dot"></span> FormIniciais.vue <span class="loc">~120 LOC</span></div>
+      <div class="layer-item vue"><span class="dot"></span> FormRetorno.vue <span class="loc">~90 LOC</span></div>
+      <div class="layer-item vue"><span class="dot"></span> FormEquipamentos.vue <span class="loc">~50 LOC</span></div>
+      <div class="layer-item vue"><span class="dot"></span> FormAnexos.vue <span class="loc">~60 LOC</span></div>
+      <div class="layer-item vue"><span class="dot"></span> SecaoRevisao.vue <span class="loc">~50 LOC</span></div>
+      <div class="layer-item vue"><span class="dot"></span> SidebarRegistros.vue <span class="loc">~80 LOC</span></div>
+      <div class="layer-item vue"><span class="dot"></span> CamposDinamicos.vue <span class="loc">~70 LOC</span></div>
+      <div class="layer-item vue"><span class="dot"></span> ValidadorForm.vue <span class="loc">~180 LOC</span></div>
+      <div class="layer-item vue"><span class="dot"></span> Composables (useForm, useIndexedDB) <span class="loc">~60 LOC</span></div>
+      <div class="layer-item vue"><span class="dot"></span> Stores (Pinia: formStore, recordsStore) <span class="loc">~80 LOC</span></div>
+    </div>
+
+    <div class="layer-group">
+      <h4>Backend / API</h4>
+      <div class="layer-item api"><span class="dot"></span> POST /api/send (Supabase Edge Function) <span class="loc">~60 LOC</span></div>
+      <div class="layer-item api"><span class="dot"></span> GET /api/records (listagem) <span class="loc">~30 LOC</span></div>
+    </div>
+
+    <div class="layer-group">
+      <h4>Infra</h4>
+      <div class="layer-item infra"><span class="dot"></span> Vite + Vue Router</div>
+      <div class="layer-item infra"><span class="dot"></span> Tailwind CSS (utility-first)</div>
+      <div class="layer-item infra"><span class="dot"></span> Supabase + IndexedDB fallback</div>
+      <div class="layer-item infra"><span class="dot"></span> Vitest + @testing-library/vue</div>
+    </div>
+  </div>
+</div>
+
+<h2 style="margin-bottom:16px;">Comparação de Métricas</h2>
+
+<div class="metrics-grid">
+  <div class="metric-card">
+    <div class="value">1.889</div>
+    <div class="label">LOC (atual)</div>
+    <div class="delta neutral">→ estimado ~870 LOC ⇓ 54%</div>
+  </div>
+  <div class="metric-card">
+    <div class="value">23</div>
+    <div class="label">Módulos FE (atual)</div>
+    <div class="delta neutral">→ 11 componentes ⇓ 52%</div>
+  </div>
+  <div class="metric-card">
+    <div class="value">0</div>
+    <div class="label">Ciclos de dependência</div>
+    <div class="delta positive">✓ mantido em proposta</div>
+  </div>
+  <div class="metric-card">
+    <div class="value">84</div>
+    <div class="label">Arestas de dependência</div>
+    <div class="delta neutral">→ estimado ~40 ⇓ 52%</div>
+  </div>
+  <div class="metric-card">
+    <div class="value">8.4</div>
+    <div class="label">Complexidade máxima</div>
+    <div class="delta neutral">(validation.js) → ~5.0 estimado</div>
+  </div>
+  <div class="metric-card">
+    <div class="value">334</div>
+    <div class="label">Testes unitários</div>
+    <div class="delta neutral">→ manter cobertura com VTL</div>
+  </div>
+</div>
+
+<h2 style="margin-bottom:16px;">Matriz de Comparação</h2>
+
+<table class="comparison-table">
+  <thead>
+    <tr><th>Característica</th><th>Atual (Vanilla)</th><th>Proposta (Vue)</th><th>Ganho</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Framework</td>
+      <td>Vanilla JS (ES6 modules)</td>
+      <td>Vue 3 + Composition API</td>
+      <td class="yes">Reatividade declarativa</td>
+    </tr>
+    <tr>
+      <td>Bundler</td>
+      <td>Nenhum (ES6 nativo)</td>
+      <td>Vite (esbuild + Rollup)</td>
+      <td class="yes">Hot reload, tree-shaking</td>
+    </tr>
+    <tr>
+      <td>Linguagem</td>
+      <td>JavaScript (ES2022)</td>
+      <td>TypeScript strict</td>
+      <td class="yes">Type safety, autocomplete</td>
+    </tr>
+    <tr>
+      <td>Template</td>
+      <td>innerHTML + template strings</td>
+      <td>Vue SFC (template + script + style)</td>
+      <td class="yes">Colocation, DX superior</td>
+    </tr>
+    <tr>
+      <td>Estado</td>
+      <td>state.js + persistence.js manual</td>
+      <td>Pinia stores + localStorage plugin</td>
+      <td class="yes">Gerenciamento dedicado</td>
+    </tr>
+    <tr>
+      <td>Validação</td>
+      <td>validation.js (251 LOC)</td>
+      <td>VeeValidate + Zod schemas</td>
+      <td class="yes">Biblioteca testada</td>
+    </tr>
+    <tr>
+      <td>DOM Cache</td>
+      <td>dom.js manual (58 LOC)</td>
+      <td>Vue refs + template refs</td>
+      <td class="yes">Nativo do framework</td>
+    </tr>
+    <tr>
+      <td>CSS</td>
+      <td>Tailwind via CDN + inline</td>
+      <td>Tailwind via PostCSS + purge</td>
+      <td class="yes">Build-time, menor bundle</td>
+    </tr>
+    <tr>
+      <td>Persistência</td>
+      <td>IndexedDB (v3) + localStorage</td>
+      <td>IndexedDB + Supabase remoto</td>
+      <td class="yes">Cloud sync opcional</td>
+    </tr>
+    <tr>
+      <td>Email</td>
+      <td>Netlify Function + nodemailer</td>
+      <td>Supabase Edge Function + nodemailer</td>
+      <td class="partial">Equivalente funcional</td>
+    </tr>
+    <tr>
+      <td>Service Worker</td>
+      <td>sw.js manual (CACHE_NAME)</td>
+      <td>vite-plugin-pwa + Workbox</td>
+      <td class="yes">PWA padronizado</td>
+    </tr>
+    <tr>
+      <td>Testes</td>
+      <td>Vitest + jsdom</td>
+      <td>Vitest + @testing-library/vue</td>
+      <td class="yes">Testes de componente nativos</td>
+    </tr>
+    <tr>
+      <td>Deploy</td>
+      <td>git push → Netlify</td>
+      <td>git push → Netlify + Supabase</td>
+      <td class="partial">Paradigma similar</td>
+    </tr>
+    <tr>
+      <td>Acessibilidade</td>
+      <td>Manual (aria-* esparsos)</td>
+      <td>Vue Aria + testes a11y</td>
+      <td class="yes">Acessibilidade nativa</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 style="margin:32px 0 16px;">Roadmap de Migração (Fases)</h2>
+
+<table class="comparison-table">
+  <thead>
+    <tr><th>Fase</th><th>Atividades</th><th>Duração est.</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1 — Scaffold</td><td>Vite + Vue 3 + TS + Pinia + Router + Tailwind; configurar Supabase</td><td>2 dias</td></tr>
+    <tr><td>2 — Data Layer</td><td>Migrar IndexedDB schema v3; criar stores Pinia; adaptador Supabase</td><td>3 dias</td></tr>
+    <tr><td>3 — Form Core</td><td>Criar componentes FormIniciais, FormRetorno, FormEquipamentos, FormAnexos, SecaoRevisao</td><td>5 dias</td></tr>
+    <tr><td>4 — Validação</td><td>Zod schemas + VeeValidate; portar regras de validation.js (51 regras)</td><td>2 dias</td></tr>
+    <tr><td>5 — Email & Upload</td><td>Migrar send() para Edge Function; portar compress.js; anexos via Supabase Storage</td><td>2 dias</td></tr>
+    <tr><td>6 — Sidebar & Histórico</td><td>Portar sidebar.js; listagem, restauração, duplicação de registros</td><td>2 dias</td></tr>
+    <tr><td>7 — PWA & Offline</td><td>vite-plugin-pwa; Workbox; fallback IndexedDB quando offline</td><td>1 dia</td></tr>
+    <tr><td>8 — Testes</td><td>Migrar 334+ testes; @testing-library/vue; testes E2E (Playwright)</td><td>3 dias</td></tr>
+    <tr><td>9 — Deploy & CI</td><td>Netlify + Supabase deploy; GitHub Actions; preview deploys</td><td>1 dia</td></tr>
+    <tr><td colspan="2" style="text-align:right;font-weight:600;">Total estimado</td><td><strong>21 dias úteis</strong></td></tr>
+  </tbody>
+</table>
+
+<p style="text-align:center;color:#444;font-size:12px;margin-top:48px;">
+  Gerado em 2026-06-15 · mail-mvp · Reversa Docs
+</p>
+</body>
+</html>

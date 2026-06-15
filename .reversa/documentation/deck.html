@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deck | mail-mvp</title>
+<meta name="reversa-category" content="diagram">
+<meta name="reversa-producer-agent" content="reversa-docs-storyteller">
+<meta name="reversa-template" content="deck">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: system-ui, -apple-system, sans-serif; background: #0a0a10; color: #eaeaea; overflow: hidden; height: 100vh; }
+.slide { display: none; width: 100vw; height: 100vh; padding: 60px 80px; position: relative; }
+.slide.active { display: flex; flex-direction: column; justify-content: center; }
+h1 { font-size: 42px; font-weight: 200; letter-spacing: 1px; margin-bottom: 12px; }
+h2 { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #4a9eff; margin-bottom: 24px; }
+h3 { font-size: 20px; font-weight: 300; margin-bottom: 16px; }
+p { font-size: 15px; color: #aaa; line-height: 1.7; max-width: 700px; margin-bottom: 12px; }
+ul { list-style: none; margin-bottom: 16px; }
+li { font-size: 14px; color: #bbb; line-height: 1.8; padding-left: 16px; position: relative; }
+li::before { content: "—"; position: absolute; left: 0; color: #4a9eff; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+.stat-card { background: rgba(20,20,30,0.5); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 24px; text-align: center; }
+.stat-card .num { font-size: 36px; font-weight: 200; color: #4a9eff; display: block; }
+.stat-card .lbl { font-size: 12px; color: #666; margin-top: 4px; }
+.feature-tag { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; margin: 3px; background: rgba(74,158,255,0.1); color: #4a9eff; border: 1px solid rgba(74,158,255,0.15); }
+.slide-num { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); font-size: 12px; color: #444; z-index: 10; }
+.nav { position: fixed; bottom: 24px; right: 32px; display: flex; gap: 8px; z-index: 10; }
+.nav button { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #333; background: transparent; color: #888; cursor: pointer; font-size: 14px; transition: all .15s; }
+.nav button:hover { border-color: #4a9eff; color: #4a9eff; }
+.nav button:disabled { opacity: 0.3; cursor: default; border-color: #222; color: #333; }
+.hero { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.hero h1 { font-size: 56px; font-weight: 100; margin-bottom: 16px; }
+.hero .tagline { font-size: 16px; color: #666; letter-spacing: 2px; text-transform: uppercase; }
+.hero .sub { font-size: 13px; color: #444; margin-top: 24px; }
+.cta-link { color: #4a9eff; text-decoration: none; border: 1px solid rgba(74,158,255,0.3); padding: 8px 20px; border-radius: 8px; font-size: 13px; display: inline-block; margin-top: 8px; transition: all .15s; }
+.cta-link:hover { background: rgba(74,158,255,0.1); border-color: #4a9eff; }
+.rule-list { columns: 2; column-gap: 32px; }
+.rule-list li { break-inside: avoid; font-size: 13px; }
+a { color: #4a9eff; }
+</style>
+</head>
+<body>
+
+<div class="slide active" data-slide="0">
+  <div class="hero" style="flex:1">
+    <h1>mail-mvp</h1>
+    <div class="tagline">Engenharia Reversa Completa</div>
+    <div class="sub">Formulário de Ordem de Serviço com envio por email · 24 módulos · 1.889 LOC</div>
+  </div>
+</div>
+
+<div class="slide" data-slide="1">
+  <h2>Visão Geral</h2>
+  <h3>Sistema de formulário de OS com envio por email</h3>
+  <p>Aplicação web single-page para técnicos de campo registrarem ordens de serviço, anexarem fotos/equipamentos e enviarem relatórios por email. Funciona offline-first com persistência local.</p>
+  <div class="grid-3" style="margin-top:24px">
+    <div class="stat-card"><span class="num">24</span><span class="lbl">Módulos</span></div>
+    <div class="stat-card"><span class="num">0</span><span class="lbl">Ciclos de dependência</span></div>
+    <div class="stat-card"><span class="num">1.889</span><span class="lbl">Linhas de código</span></div>
+  </div>
+  <p style="margin-top:16px;font-size:13px;color:#555">Single-user · offline-first · 5 seções no formulário · tipos de ordem dinâmicos</p>
+</div>
+
+<div class="slide" data-slide="2">
+  <h2>Stack</h2>
+  <h3>Tecnologias utilizadas</h3>
+  <div class="grid-2">
+    <div>
+      <p style="font-weight:600;color:#ddd;margin-bottom:8px">Frontend</p>
+      <ul>
+        <li>Vanilla HTML/CSS/JS (ES6 modules)</li>
+        <li>Tailwind CSS (estático, sem bundler)</li>
+        <li>IndexedDB v3 (persistência local)</li>
+        <li>localStorage (UUID backup)</li>
+        <li>Service Worker (offline cache)</li>
+      </ul>
+    </div>
+    <div>
+      <p style="font-weight:600;color:#ddd;margin-bottom:8px">Backend</p>
+      <ul>
+        <li>Netlify Function (serverless)</li>
+        <li>Node.js + nodemailer</li>
+        <li>6 env vars: HOST, PORT, USER, PASS, FROM, TO</li>
+        <li>TLS com rejectUnauthorized: false</li>
+      </ul>
+      <div style="margin-top:16px">
+        <p style="font-weight:600;color:#ddd;margin-bottom:8px">Testes</p>
+        <ul>
+          <li>Vitest + jsdom, 334 testes</li>
+          <li>Setup mocka canvas, crypto, URL</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="3">
+  <h2>Arquitetura</h2>
+  <h3>23 módulos frontend + 1 backend</h3>
+  <p style="margin-bottom:16px">Grafo de dependências acíclico (0 ciclos). 24 nós, 84 arestas de importação.</p>
+  <div class="grid-2">
+    <div>
+      <ul>
+        <li><strong>app.js</strong> — entry point, eventos globais</li>
+        <li><strong>dom.js</strong> — cache centralizado de 28 elementos</li>
+        <li><strong>state.js</strong> — estado global, re-exporta persistence</li>
+        <li><strong>fields.js</strong> — definição de campos e tipos</li>
+        <li><strong>iniciais.js</strong> — render da seção Início</li>
+        <li><strong>retornos.js</strong> — campos dinâmicos + condicionais</li>
+        <li><strong>validation.js</strong> — validação por Strategy pattern</li>
+        <li><strong>db.js</strong> — IndexedDB CRUD (179 LOC)</li>
+      </ul>
+    </div>
+    <div>
+      <ul>
+        <li><strong>persistence.js</strong> — saveState, dirty tracking</li>
+        <li><strong>email.js</strong> — composição e preview</li>
+        <li><strong>send.js</strong> — orquestrador de envio</li>
+        <li><strong>compress.js</strong> — compressão progressiva</li>
+        <li><strong>attachments.js</strong> — upload, preview, lightbox</li>
+        <li><strong>equipment.js</strong> — gestão de equipamentos</li>
+        <li><strong>sidebar.js</strong> — histórico e restauração</li>
+        <li><strong>storage.js</strong> — localStorage puro (6 LOC)</li>
+      </ul>
+    </div>
+  </div>
+  <a href="arquitetura.html" class="cta-link">Ver Code City 3D →</a>
+  <a href="modulos.html" style="margin-left:8px" class="cta-link">Ver Module Map →</a>
+</div>
+
+<div class="slide" data-slide="4">
+  <h2>Métricas</h2>
+  <h3>Análise quantitativa do código-fonte</h3>
+  <div class="grid-3" style="margin-bottom:24px">
+    <div class="stat-card"><span class="num">1.889</span><span class="lbl">LOC total</span></div>
+    <div class="stat-card"><span class="num">84</span><span class="lbl">Dependências</span></div>
+    <div class="stat-card"><span class="num">8.4</span><span class="lbl">Maior complexidade (validation.js)</span></div>
+  </div>
+  <div class="grid-2">
+    <div>
+      <ul>
+        <li>validation.js: 251 LOC, complexidade 8.4</li>
+        <li>db.js: 179 LOC, complexidade 6.0</li>
+        <li>iniciais.js: 168 LOC, complexidade 5.6</li>
+        <li>retornos.js: 127 LOC, complexidade 4.2</li>
+      </ul>
+    </div>
+    <div>
+      <ul>
+        <li>persistence.js: 114 LOC, complexidade 3.8</li>
+        <li>sidebar.js: 110 LOC, complexidade 3.7</li>
+        <li>fields.js: 107 LOC, complexidade 3.6</li>
+        <li>Módulo mais simples: storage.js (6 LOC, 0.2)</li>
+      </ul>
+    </div>
+  </div>
+  <a href="metricas.html" class="cta-link">Dashboard completo →</a>
+</div>
+
+<div class="slide" data-slide="5">
+  <h2>Features</h2>
+  <h3>9 features principais extraídas do código</h3>
+  <div style="max-width:100%">
+    <div style="margin-bottom:12px">
+      <span class="feature-tag">Formulário</span><span class="feature-tag">Anexos</span><span class="feature-tag">Equipamentos</span><span class="feature-tag">Email</span><span class="feature-tag">Persistência</span>
+      <span class="feature-tag">Sidebar</span><span class="feature-tag">Validação</span><span class="feature-tag">Ferramentas</span><span class="feature-tag">Globais</span>
+    </div>
+    <div class="grid-3">
+      <div class="stat-card"><span class="num">44</span><span class="lbl">Tipos de Ordem</span></div>
+      <div class="stat-card"><span class="num">12</span><span class="lbl">Tipos com campos especializados</span></div>
+      <div class="stat-card"><span class="num">41</span><span class="lbl">Campos de retorno condicionais</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-slide="6">
+  <h2>Regras de Negócio</h2>
+  <h3>Principais regras do sistema</h3>
+  <div class="rule-list">
+    <ul>
+      <li>UC deve conter apenas dígitos numéricos</li>
+      <li>Data do serviço não pode ser futura</li>
+      <li>Hora fim deve ser diferente da hora início</li>
+      <li>Máximo de 12 anexos por formulário</li>
+      <li>Cada anexo limitado a 8 MB</li>
+      <li>Compressão progressiva de imagens até 650KB</li>
+      <li>Auto-save debounced a cada 1 segundo</li>
+    </ul>
+    <ul>
+      <li>Campos condicionais ocultos são excluídos do email</li>
+      <li>Validação pula campos hidden (display:none)</li>
+      <li>saveState só ativa com UC+OS preenchidos</li>
+      <li>Nomes de tipo-ordem devem casar exatamente com chaves de retorno</li>
+      <li>Destinatários exclusivamente de SMTP_TO (não do formulário)</li>
+      <li>Datas invertidas no email: YYYY-MM-DD → DD-MM-YYYY</li>
+      <li>Verificação de duplicidade antes de reenvio</li>
+    </ul>
+  </div>
+  <p style="font-size:12px;color:#555;margin-top:12px">90 regras extraídas · 100% de confiança nas regras documentadas</p>
+</div>
+
+<div class="slide" data-slide="7">
+  <h2>Topologia</h2>
+  <h3>Arquitetura atual</h3>
+  <div class="grid-2">
+    <div>
+      <p style="font-weight:600;color:#ddd;margin-bottom:8px">Cliente (navegador)</p>
+      <ul>
+        <li>HTML estático + Tailwind CSS</li>
+        <li>23 módulos ES6 (sem bundler)</li>
+        <li>IndexedDB v3 (records + attachments)</li>
+        <li>Service Worker para cache offline</li>
+      </ul>
+    </div>
+    <div>
+      <p style="font-weight:600;color:#ddd;margin-bottom:8px">Servidor (Netlify)</p>
+      <ul>
+        <li>1 função serverless (send.js)</li>
+        <li>nodemailer para envio SMTP</li>
+        <li>6 variáveis de ambiente</li>
+        <li>Deploy automático via git push</li>
+      </ul>
+    </div>
+  </div>
+  <a href="topologia.html" class="cta-link">Ver comparação lado a lado →</a>
+</div>
+
+<div class="slide" data-slide="8">
+  <h2>Migração</h2>
+  <h3>Proposta de modernização</h3>
+  <div class="grid-2">
+    <div>
+      <p style="font-weight:600;color:#ddd;margin-bottom:8px">Stack atual</p>
+      <ul>
+        <li>Vanilla JS + Tailwind estático</li>
+        <li>IndexedDB direto</li>
+        <li>Netlify Functions</li>
+      </ul>
+    </div>
+    <div>
+      <p style="font-weight:600;color:#ddd;margin-bottom:8px">Stack proposta</p>
+      <ul>
+        <li>Vue 3 + Vite + TypeScript</li>
+        <li>Supabase (postgres + storage)</li>
+        <li>Auth, multi-usuário</li>
+        <li>Redução estimada de 54% LOC</li>
+      </ul>
+    </div>
+  </div>
+  <p style="margin-top:16px;font-size:13px;color:#666">9 fases de migração · 21 dias estimados · 1.889 LOC → ~870 LOC</p>
+</div>
+
+<div class="slide" data-slide="9">
+  <h2>Encaminhamento</h2>
+  <h3>Próximos passos</h3>
+  <div class="grid-3" style="margin-bottom:24px">
+    <div class="stat-card">
+      <span class="num" style="font-size:24px">9 fases</span>
+      <span class="lbl">Roadmap de migração</span>
+    </div>
+    <div class="stat-card">
+      <span class="num" style="font-size:24px">21</span>
+      <span class="lbl">Dias estimados</span>
+    </div>
+    <div class="stat-card">
+      <span class="num" style="font-size:24px">54%</span>
+      <span class="lbl">Redução de LOC</span>
+    </div>
+  </div>
+  <ul>
+    <li>Fase 1: Setup Vue 3 + Vite + TypeScript</li>
+    <li>Fase 2: Migrar formulário e campos</li>
+    <li>Fase 3: Sistema de validação reativo</li>
+    <li>Fase 4: Upload e compressão de anexos</li>
+    <li>Fase 5: Equipamentos</li>
+    <li>Fase 6: Persistência Supabase</li>
+    <li>Fase 7: Sidebar e histórico</li>
+    <li>Fase 8: Envio de email</li>
+    <li>Fase 9: Ferramentas e globais</li>
+  </ul>
+  <p style="margin-top:16px;font-size:12px;color:#555">Relatório completo de migração disponível na documentação</p>
+</div>
+
+<div class="slide" data-slide="10">
+  <div class="hero" style="flex:1">
+    <h1 style="font-size:48px">documentação</h1>
+    <div class="tagline">Explore todos os aspectos do sistema</div>
+    <div style="margin-top:32px;display:flex;gap:16px;flex-wrap:wrap;justify-content:center">
+      <a href="arquitetura.html" class="cta-link">Arquitetura 3D</a>
+      <a href="modulos.html" class="cta-link">Mapa de Módulos</a>
+      <a href="metricas.html" class="cta-link">Dashboard</a>
+      <a href="topologia.html" class="cta-link">Topologia</a>
+      <a href="glossario.html" class="cta-link">Glossário</a>
+    </div>
+    <div class="sub" style="margin-top:32px">mail-mvp · Engenharia Reversa · 2026</div>
+  </div>
+</div>
+
+<div class="slide-num" id="slideNum">1 / 11</div>
+<div class="nav">
+  <button id="prevBtn" disabled>←</button>
+  <button id="nextBtn">→</button>
+</div>
+
+<script>
+(function() {
+  var slides = Array.from(document.querySelectorAll('.slide'));
+  var total = slides.length;
+  var current = 0;
+  var slideNum = document.getElementById('slideNum');
+  var prevBtn = document.getElementById('prevBtn');
+  var nextBtn = document.getElementById('nextBtn');
+
+  function goTo(index) {
+    slides[current].classList.remove('active');
+    current = index;
+    slides[current].classList.add('active');
+    slideNum.textContent = (current + 1) + ' / ' + total;
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === total - 1;
+  }
+
+  prevBtn.addEventListener('click', function() { if (current > 0) goTo(current - 1); });
+  nextBtn.addEventListener('click', function() { if (current < total - 1) goTo(current + 1); });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { if (current < total - 1) { e.preventDefault(); goTo(current + 1); } }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { if (current > 0) { e.preventDefault(); goTo(current - 1); } }
+    if (e.key === 'f' || e.key === 'F') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+
+  document.addEventListener('click', function(e) {
+    if (e.target.closest('.nav') || e.target.closest('.cta-link') || e.target.closest('a')) return;
+    if (current < total - 1) goTo(current + 1);
+  });
+})();
+</script>
+</body>
+</html>

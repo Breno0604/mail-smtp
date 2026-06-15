@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Persistência | mail-mvp</title>
+<meta name="reversa-category" content="feature">
+<meta name="reversa-producer-agent" content="reversa-docs-storyteller">
+<meta name="reversa-template" content="feature">
+<meta name="generated-at" content="2026-06-15T17:00:00-03:00">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, sans-serif; background: #0a0a10; color: #eaeaea; padding: 32px; max-width: 960px; margin: 0 auto; line-height: 1.6; }
+a { color: #4a9eff; text-decoration: none; }
+a:hover { text-decoration: underline; }
+h1 { font-size: 24px; font-weight: 300; letter-spacing: 0.5px; margin-bottom: 4px; }
+h2 { font-size: 18px; font-weight: 600; margin-top: 40px; margin-bottom: 16px; color: #eaeaea; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 8px; }
+h3 { font-size: 14px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; color: #ccc; }
+.subtitle { color: #666; font-size: 13px; margin-bottom: 8px; }
+.back-link { display: inline-block; margin-bottom: 20px; font-size: 13px; color: #4a9eff; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+.badge-green { background: rgba(34,197,94,0.15); color: #22c55e; }
+.badge-yellow { background: rgba(234,179,8,0.15); color: #eab308; }
+table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 13px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #888; font-weight: 600; }
+tr:hover td { background: rgba(255,255,255,0.02); }
+ul, ol { margin: 8px 0 16px; padding-left: 20px; font-size: 13px; }
+li { margin-bottom: 4px; }
+code { background: rgba(255,255,255,0.06); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+.section { background: rgba(15,15,22,0.6); border: 1px solid rgba(255,255,255,0.04); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+.module-tag { display: inline-block; background: rgba(74,158,255,0.1); color: #4a9eff; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin-right: 4px; }
+.task-checkbox { list-style: none; padding-left: 0; }
+.task-checkbox li::before { content: "☐ "; color: #666; }
+.pre-box { background:rgba(0,0,0,0.3);padding:12px;border-radius:6px;font-size:12px;overflow-x:auto;margin-bottom:16px;color:#aaa; }
+@media (max-width: 640px) { body { padding: 16px; } table { font-size: 12px; } }
+</style>
+</head>
+<body>
+<a href="../index.html" class="back-link">&larr; Voltar ao índice</a>
+<h1>Persistência</h1>
+<p class="subtitle">
+  <span class="module-tag">persistence.js</span>
+  <span class="module-tag">db.js</span>
+  <span class="module-tag">storage.js</span>
+  <span class="module-tag">restore.js</span>
+  <span class="module-tag">state.js</span>
+</p>
+
+<div class="section">
+  <h2>Requisitos</h2>
+
+  <h3>Visão Geral</h3>
+  <p style="font-size:13px;color:#ccc;margin-bottom:16px;">
+    Sistema de persistência em duas camadas: localStorage (para UUID ativo e backup de estado) e IndexedDB (para registros completos e anexos). A persistência é automática (debounced) e reage a mudanças no formulário.
+  </p>
+
+  <h3>Regras de Negócio</h3>
+  <table>
+    <tr><th>ID</th><th>Regra</th><th>Confiança</th></tr>
+    <tr><td>RN01</td><td>Salvamento automático só ocorre se <code>state.iniciaisValido === true</code></td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN02</td><td>Salvamento não ocorre se não houver dados (UUID vazio, sem iniciais, sem equipamentos, sem attachments)</td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN03</td><td>Anexos são salvos em store separado (<code>attachments</code>) com chave composta <code>{uuid}_{index}</code></td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN04</td><td><code>markAttachmentsDirty()</code> evita re-serialização quando anexos não mudaram</td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN05</td><td>Se falha ao salvar anexos, <code>attachmentsDirty</code> retorna a <code>true</code> para retry</td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN06</td><td>Save é debounced em 1000ms</td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN07</td><td>Ao restaurar, migração de v2→v3 é transparente: se <code>record.attachments</code> inline existir, usa ele; senão, busca do store separado</td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN08</td><td><code>state.js</code> re-exporta de <code>persistence.js</code> — ciclo de importação quebrado via <code>storage.js</code></td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN09</td><td>UUID é gerado via <code>crypto.randomUUID()</code> com fallback para <code>Date.now() + Math.random()</code></td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN10</td><td>Registros são keyPath <code>uuid</code> no store <code>records</code>; anexos são keyPath <code>id</code> com index em <code>uuid</code></td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN11</td><td>Ao deletar um registro, também deleta seus anexos na mesma transação atômica</td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN12</td><td>QuotaExceededError dispara toast de erro</td><td>🟢 CONFIRMADO</td></tr>
+  </table>
+
+  <h3>Requisitos Funcionais</h3>
+  <table>
+    <tr><th>ID</th><th>Requisito</th><th>Prioridade</th><th>Critério de Aceite</th></tr>
+    <tr><td>RF-01</td><td>Salvar estado automaticamente (debounced)</td><td><span class="badge badge-green">Must</span></td><td>Após 1s de inatividade, <code>saveState()</code> persiste no IndexedDB</td></tr>
+    <tr><td>RF-02</td><td>Gerar UUID único</td><td><span class="badge badge-green">Must</span></td><td><code>_ensureUUID()</code> gera via crypto.randomUUID() ou fallback</td></tr>
+    <tr><td>RF-03</td><td>Marcar anexos como dirty</td><td><span class="badge badge-green">Must</span></td><td><code>markAttachmentsDirty()</code> seta flag; <code>saveState()</code> só re-serializa se dirty</td></tr>
+    <tr><td>RF-04</td><td>Restaurar registro completo</td><td><span class="badge badge-green">Must</span></td><td><code>applyRecord()</code> preenche formulário com dados do registro</td></tr>
+    <tr><td>RF-05</td><td>Migrar anexos v2→v3 transparentemente</td><td><span class="badge badge-green">Must</span></td><td>Ao restaurar registro v2, anexos inline são convertidos a File[]</td></tr>
+    <tr><td>RF-06</td><td>Deletar registro + anexos atomicamente</td><td><span class="badge badge-green">Must</span></td><td><code>deleteRecord()</code> remove em transação com 2 stores</td></tr>
+    <tr><td>RF-07</td><td>Atualizar status para "sent" após envio</td><td><span class="badge badge-green">Must</span></td><td><code>updateRecordStatus()</code> muda status draft→sent e registra sentData</td></tr>
+    <tr><td>RF-08</td><td>Exibir toast de erro em QuotaExceededError</td><td><span class="badge badge-yellow">Should</span></td><td>UI mostra aviso de espaço insuficiente</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h2>Design Técnico</h2>
+
+  <h3>Arquitetura de Persistência</h3>
+  <div class="pre-box"><code>┌─────────────────────────────────────────────────────────────────────┐
+│  state.js                                                           │
+│  state = { iniciais, equipamentos, attachments,                    │
+│            lastTipoOrdem, retorno, currentUUID, composicao,         │
+│            iniciaisValido }                                         │
+│  Re-exporta: saveState, debouncedSave, markAttachmentsDirty,        │
+│              setCurrentUUID, clearCurrentUUID, getCurrentUUID        │
+└──────────────────┬──────────────────────────────────────────────────┘
+                   │ importa
+                   ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│  persistence.js                                                       │
+│  - saveState() — salva no IndexedDB (se iniciaisValido e tem dados)  │
+│  - debouncedSave() — setTimeout 1000ms → saveState()                 │
+│  - markAttachmentsDirty() — flag para re-serializar anexos           │
+│  - _ensureUUID() — gera UUID via crypto ou fallback timestamp        │
+│  - _resolveCreatedAt() — preserva createdAt entre saves              │
+│  - _serializeAndSaveAttachments() — toBase64 + saveAttachments()     │
+└──────────────────┬────────────────────────────────────────────────────┘
+                   │ importa
+                   ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│  db.js (IndexedDB)                                                    │
+│  DB: mail-mvp v3                                                      │
+│  ┌─────────────────────────┐  ┌─────────────────────────────┐        │
+│  │ records (keyPath: uuid) │  │ attachments (keyPath: id)   │        │
+│  │ status: "draft"|"sent"  │  │ id: "{uuid}_{index}"       │        │
+│  │ createdAt               │  │ uuid: string (index)        │        │
+│  │ updatedAt               │  │ index: number               │        │
+│  │ iniciais: object        │  │ name: string                │        │
+│  │ retorno: object         │  │ type: string                │        │
+│  │ tipoOrdem: string       │  │ data: string (base64)       │        │
+│  │ equipamentos: array     │  └─────────────────────────────┘        │
+│  │ attachmentCount: number │                                         │
+│  │ composicao: object      │                                         │
+│  │ sentData: object|null   │                                         │
+│  └─────────────────────────┘                                         │
+└──────────────────┬────────────────────────────────────────────────────┘
+                   │ importa
+                   ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│  storage.js (localStorage)                                           │
+│  Chave: currentUUID → string UUID                                    │
+│  Propósito: quebrar ciclo state→persistence→state                    │
+└──────────────────────────────────────────────────────────────────────┘</code></div>
+
+  <h3>Ciclo de Salvamento</h3>
+  <div class="pre-box"><code>[Usuário modifica campo no formulário]
+         │
+         ▼
+  debouncedSave()  ← chamado via event listeners (input, change)
+         │
+         ├─ clearTimeout(saveTimer)
+         └─ saveTimer = setTimeout(saveState, 1000)
+                                  │
+                                  ▼
+                          saveState()
+                                  │
+                                  ├─ if (!state.iniciaisValido) return
+                                  ├─ if (sem dados) return
+                                  │
+                                  ├─ _ensureUUID()
+                                  │   ├─ if currentUUID existe → ok
+                                  │   └─ senão → crypto.randomUUID()
+                                  │              ou fallback Date.now()
+                                  │
+                                  ├─ _resolveCreatedAt()
+                                  │   ├─ if _createdAt existe → usa
+                                  │   ├─ senão busca do IndexedDB
+                                  │   └─ senão → new Date().toISOString()
+                                  │
+                                  ├─ saveDraft(data) → IndexedDB.records
+                                  │   └─ catch QuotaExceededError → toast
+                                  │
+                                  └─ if (attachmentsDirty)
+                                      ├─ attachmentsDirty = false
+                                      ├─ _serializeAndSaveAttachments()
+                                      │   └─ toBase64 cada file
+                                      │      └─ saveAttachments() → IndexedDB.attachments
+                                      └─ catch → attachmentsDirty = true</code></div>
+
+  <h3>Ciclo de Restauração</h3>
+  <div class="pre-box"><code>applyRecord(record)
+  ├─ setCurrentUUID(record.uuid)
+  ├─ state.iniciaisValido = true
+  ├─ state.equipamentos = record.equipamentos || []
+  ├─ state.lastTipoOrdem = record.lastTipoOrdem
+  ├─ state.iniciais = record.iniciais
+  ├─ state.retorno = record.retorno
+  │
+  ├─ Restaurar anexos:
+  │   ├─ se record.attachments (v2) → map + base64ToBlob → File[]
+  │   ├─ se record.attachmentCount > 0 → getAttachmentsByUuid → File[]
+  │   └─ senão → []
+  │
+  ├─ markAttachmentsDirty()
+  ├─ renderIniciais() + re-attach listener tipoOrdem
+  ├─ set tipoOrdem.value e iniciaisFields
+  ├─ renderRetorno() + setRetornoData()
+  ├─ renderEquipamentos()
+  ├─ renderPreviews()
+  └─ restore complementoCorpo</code></div>
+
+  <h3>Migração IndexedDB</h3>
+  <div class="pre-box"><code>v1 (original)          v2                    v3 (atual)
+┌──────────────┐     ┌──────────────┐      ┌──────────────┐
+│ records      │     │ records      │      │ records      │
+│ sent_emails  │ →   │ records      │  →   │ attachments  │
+└──────────────┘     └──────────────┘      └──────────────┘
+                         (remove         (cria store
+                       sent_emails)     attachments com
+                                        index em uuid)</code></div>
+
+  <h3>Ciclo de Importação</h3>
+  <div class="pre-box"><code>state.js ──import──▶ persistence.js ──import──▶ db.js
+     │                                            │
+     └──import──▶ storage.js ◀────import──────────┘
+                    (sem imports)</code></div>
+  <p style="font-size:13px;color:#999;margin-bottom:16px;">
+    <code>storage.js</code> não importa nada — quebra o ciclo <code>state → persistence → state</code>.
+  </p>
+
+  <h3>Funções Exportadas</h3>
+  <table>
+    <tr><th>Módulo</th><th>Função</th><th>Descrição</th></tr>
+    <tr><td><code>persistence.js</code></td><td><code>saveState()</code></td><td>Salva estado no IndexedDB</td></tr>
+    <tr><td><code>persistence.js</code></td><td><code>debouncedSave()</code></td><td>Agenda save em 1s</td></tr>
+    <tr><td><code>persistence.js</code></td><td><code>markAttachmentsDirty()</code></td><td>Marca anexos para re-serializar</td></tr>
+    <tr><td><code>persistence.js</code></td><td><code>getCurrentUUID()</code></td><td>Retorna UUID atual</td></tr>
+    <tr><td><code>persistence.js</code></td><td><code>setCurrentUUID(uuid)</code></td><td>Seta UUID + localStorage</td></tr>
+    <tr><td><code>persistence.js</code></td><td><code>clearCurrentUUID()</code></td><td>Limpa UUID + localStorage</td></tr>
+    <tr><td><code>db.js</code></td><td><code>saveDraft(record)</code></td><td>Persiste registro</td></tr>
+    <tr><td><code>db.js</code></td><td><code>getRecord(uuid)</code></td><td>Busca registro</td></tr>
+    <tr><td><code>db.js</code></td><td><code>getAllRecords()</code></td><td>Lista todos registros</td></tr>
+    <tr><td><code>db.js</code></td><td><code>deleteRecord(uuid)</code></td><td>Deleta registro + anexos</td></tr>
+    <tr><td><code>db.js</code></td><td><code>updateRecordStatus(uuid, sentData)</code></td><td>Marca como sent</td></tr>
+    <tr><td><code>db.js</code></td><td><code>saveAttachments(uuid, attachments)</code></td><td>Salva anexos (substitui)</td></tr>
+    <tr><td><code>db.js</code></td><td><code>getAttachmentsByUuid(uuid)</code></td><td>Busca anexos</td></tr>
+    <tr><td><code>db.js</code></td><td><code>deleteAttachmentsByUuid(uuid)</code></td><td>Deleta anexos</td></tr>
+    <tr><td><code>storage.js</code></td><td><code>getRawUUID()</code></td><td>Lê UUID do localStorage</td></tr>
+    <tr><td><code>storage.js</code></td><td><code>storeUUID(uuid)</code></td><td>Salva UUID no localStorage</td></tr>
+    <tr><td><code>storage.js</code></td><td><code>removeUUID()</code></td><td>Remove UUID do localStorage</td></tr>
+    <tr><td><code>restore.js</code></td><td><code>applyRecord(record)</code></td><td>Restaura formulário</td></tr>
+  </table>
+
+  <h3>Dependências</h3>
+  <table>
+    <tr><th>Componente</th><th>Como usa</th></tr>
+    <tr><td><code>dom.js</code></td><td><code>DOM.tipoOrdem</code>, <code>DOM.complementoCorpo</code></td></tr>
+    <tr><td><code>iniciais.js</code></td><td><code>getIniciaisData()</code></td></tr>
+    <tr><td><code>retornos.js</code></td><td><code>getRetornoData()</code></td></tr>
+    <tr><td><code>utils.js</code></td><td><code>toBase64()</code>, <code>base64ToBlob()</code></td></tr>
+    <tr><td><code>attachments.js</code></td><td><code>renderPreviews()</code></td></tr>
+    <tr><td><code>equipment.js</code></td><td><code>renderEquipamentos()</code></td></tr>
+    <tr><td><code>ui.js</code></td><td><code>showToast()</code></td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h2>Tarefas</h2>
+
+  <h3>Tarefas de Implementação</h3>
+  <ul class="task-checkbox">
+    <li>T-01, Implementar <code>storage.js</code> — operações puras de localStorage — 🟢</li>
+    <li>T-02, Implementar <code>state.js</code> — objeto de estado global + re-exports — 🟢</li>
+    <li>T-03, Implementar <code>openDB()</code> com migração v1→v2→v3 — 🟢</li>
+    <li>T-04, Implementar helpers genéricos <code>withTransaction()</code>, <code>withStore()</code>, <code>readFromStore()</code> — 🟢</li>
+    <li>T-05, Implementar CRUD de records (<code>saveDraft</code>, <code>getRecord</code>, <code>getAllRecords</code>, <code>deleteRecord</code>) — 🟢</li>
+    <li>T-06, Implementar <code>updateRecordStatus(uuid, sentData)</code> — 🟢</li>
+    <li>T-07, Implementar CRUD de anexos (<code>saveAttachments</code>, <code>getAttachmentsByUuid</code>, <code>deleteAttachmentsByUuid</code>) — 🟢</li>
+    <li>T-08, Implementar <code>_ensureUUID()</code> com crypto.randomUUID() e fallback — 🟢</li>
+    <li>T-09, Implementar <code>_resolveCreatedAt()</code> preservando createdAt entre saves — 🟢</li>
+    <li>T-10, Implementar <code>saveState()</code> com guards e dirty tracking — 🟢</li>
+    <li>T-11, Implementar <code>debouncedSave()</code> com setTimeout 1000ms — 🟢</li>
+    <li>T-12, Implementar <code>_serializeAndSaveAttachments()</code> com toBase64 — 🟢</li>
+    <li>T-13, Implementar <code>applyRecord()</code> com migração v2→v3 — 🟢</li>
+  </ul>
+
+  <h3>Tarefas de Teste</h3>
+  <ul class="task-checkbox">
+    <li>TT-01, Testar storage.js (get/set/remove no localStorage)</li>
+    <li>TT-02, Testar state.js (valores iniciais corretos)</li>
+    <li>TT-03, Testar openDB() com cria stores</li>
+    <li>TT-04, Testar saveDraft + getRecord (round-trip)</li>
+    <li>TT-05, Testar getAllRecords (lista vazia e com registros)</li>
+    <li>TT-06, Testar deleteRecord (remove registro + anexos)</li>
+    <li>TT-07, Testar updateRecordStatus</li>
+    <li>TT-08, Testar saveAttachments + getAttachmentsByUuid</li>
+    <li>TT-09, Testar _ensureUUID() gera UUID</li>
+    <li>TT-10, Testar saveState guards (iniciaisValido false, sem dados)</li>
+    <li>TT-11, Testar debouncedSave (só salva após 1s)</li>
+    <li>TT-12, Testar dirty tracking (anexos não re-serializados se não dirty)</li>
+    <li>TT-13, Testar applyRecord com v3 (store separado)</li>
+    <li>TT-14, Testar applyRecord com v2 (anexos inline)</li>
+    <li>TT-15, Testar applyRecord com tipo-ordem trigger retorno</li>
+  </ul>
+
+  <h3>Ordem Sugerida</h3>
+  <ol>
+    <li>T-01, T-02 (storage + state) — fundação</li>
+    <li>T-03, T-04, T-05 (db.js base) — CRUD records</li>
+    <li>T-07 (db.js attachments) — CRUD anexos</li>
+    <li>T-08, T-09, T-10, T-11, T-12 (persistence.js) — salvamento automático</li>
+    <li>T-13 (restore.js) — restauração</li>
+    <li>T-06 (updateRecordStatus) — atualização de status</li>
+    <li>Testes na ordem correspondente</li>
+  </ol>
+</div>
+
+<p style="margin-top:32px;font-size:12px;color:#444;text-align:center;">
+  Gerado pelo reversa-docs-storyteller · mail-mvp
+</p>
+</body>
+</html>

@@ -3,3 +3,6 @@ node_modules
 .superpowers/
 
 deno.lock
+
+# Reversa
+.reversa/config.user.toml

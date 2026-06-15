@@ -1,0 +1,332 @@
+{
+  "generated_at": "2026-06-15T12:58:00-03:00",
+  "modules": [
+    {
+      "name": "app",
+      "path": "scripts/",
+      "purpose": "Orquestração da aplicação, cache DOM e inicialização",
+      "primary_files": ["scripts/app.js", "scripts/dom.js", "scripts/styles.js"],
+      "functions": [
+        { "name": "initEvents", "file": "scripts/app.js", "params": [], "returns": "void", "confidence": "confirmed" },
+        { "name": "checkInitialPersistence", "file": "scripts/app.js", "params": [], "returns": "void", "confidence": "confirmed" },
+        { "name": "updateAllFilledClasses", "file": "scripts/app.js", "params": [], "returns": "void", "confidence": "confirmed" },
+        { "name": "updateFilledClass", "file": "scripts/app.js", "params": ["el: Element"], "returns": "void", "confidence": "confirmed" },
+        { "name": "cacheDOM", "file": "scripts/dom.js", "params": [], "returns": "void", "confidence": "confirmed" }
+      ],
+      "entities": [
+        { "name": "DOM", "fields": [
+          { "name": "hamburger", "type": "Element", "required": true, "confidence": "confirmed" },
+          { "name": "btnNovoForm", "type": "Element", "required": true, "confidence": "confirmed" },
+          { "name": "secInicio", "type": "Element", "required": true, "confidence": "confirmed" },
+          { "name": "secRetorno", "type": "Element", "required": true, "confidence": "confirmed" },
+          { "name": "iniciaisCampos", "type": "Element", "required": true, "confidence": "confirmed" },
+          { "name": "tipoOrdem", "type": "Element", "required": true, "confidence": "confirmed" },
+          { "name": "retornoCampos", "type": "Element", "required": true, "confidence": "confirmed" },
+          { "name": "equipList", "type": "Element", "required": true, "confidence": "confirmed" },
+          { "name": "btnAddEquip", "type": "Element", "required": true, "confidence": "confirmed" },
+          { "name": "fileInput", "type": "Element", "required": true, "confidence": "confirmed" },
+          { "name": "previewGrid", "type": "Element", "required": true, "confidence": "confirmed" },
+          { "name": "previewCorpo", "type": "Element", "required": true, "confidence": "confirmed" },
+          { "name": "btnEnviar", "type": "Element", "required": true, "confidence": "confirmed" },
+          { "name": "sidebar", "type": "Element", "required": true, "confidence": "confirmed" },
+          { "name": "sidebarList", "type": "Element", "required": true, "confidence": "confirmed" },
+          { "name": "sidebarFilter", "type": "Element", "required": true, "confidence": "confirmed" },
+          { "name": "dupModal", "type": "Element", "required": true, "confidence": "confirmed" },
+          { "name": "lightbox", "type": "Element", "required": true, "confidence": "confirmed" },
+          { "name": "confirmModal", "type": "Element", "required": true, "confidence": "confirmed" }
+        ], "confidence": "confirmed" }
+      ],
+      "business_rules": [
+        { "description": "Auto-save só ativa quando UC e OS estão preenchidos", "location": "scripts/app.js:30-33", "confidence": "confirmed" },
+        { "description": "Event delegation para input/change evita memory leaks em campos dinâmicos", "location": "scripts/app.js:71-93", "confidence": "confirmed" }
+      ],
+      "dependencies": ["form", "email", "attachments", "equipment", "sidebar", "persistence", "tools"],
+      "algorithms": [],
+      "complexity": "low"
+    },
+    {
+      "name": "form",
+      "path": "scripts/",
+      "purpose": "Renderização dinâmica dos formulários de Início e Retorno, validação",
+      "primary_files": ["scripts/iniciais.js", "scripts/retornos.js", "scripts/fields.js", "scripts/validation.js"],
+      "functions": [
+        { "name": "renderIniciais", "file": "scripts/iniciais.js", "params": [], "returns": "void", "confidence": "confirmed" },
+        { "name": "getIniciaisData", "file": "scripts/iniciais.js", "params": [], "returns": "object", "confidence": "confirmed" },
+        { "name": "renderRetorno", "file": "scripts/retornos.js", "params": [], "returns": "void", "confidence": "confirmed" },
+        { "name": "handleTipoChange", "file": "scripts/retornos.js", "params": [], "returns": "void", "confidence": "confirmed" },
+        { "name": "updateConditionalFields", "file": "scripts/retornos.js", "params": ["fields: array"], "returns": "void", "confidence": "confirmed" },
+        { "name": "getRetornoData", "file": "scripts/retornos.js", "params": [], "returns": "object", "confidence": "confirmed" },
+        { "name": "setRetornoData", "file": "scripts/retornos.js", "params": ["data: object"], "returns": "void", "confidence": "confirmed" },
+        { "name": "getRetornoFields", "file": "scripts/fields.js", "params": ["tipo: string"], "returns": "array", "confidence": "confirmed" },
+        { "name": "validateAll", "file": "scripts/validation.js", "params": [], "returns": "boolean", "confidence": "confirmed" },
+        { "name": "validateSection", "file": "scripts/validation.js", "params": ["n: number"], "returns": "boolean", "confidence": "confirmed" },
+        { "name": "addBlurValidation", "file": "scripts/validation.js", "params": ["el: Element"], "returns": "void", "confidence": "confirmed" }
+      ],
+      "entities": [
+        { "name": "iniciaisFields", "fields": [
+          { "name": "linha", "type": "number", "required": true, "description": "Agrupamento horizontal", "confidence": "confirmed" },
+          { "name": "nome", "type": "string", "required": true, "description": "ID do campo (kebab-case)", "confidence": "confirmed" },
+          { "name": "label", "type": "string", "required": true, "confidence": "confirmed" },
+          { "name": "tipo", "type": "string", "required": true, "description": "select|number|date|time|text|textarea|coordinates", "confidence": "confirmed" },
+          { "name": "obrigatorio", "type": "boolean", "required": false, "confidence": "confirmed" },
+          { "name": "opcoes", "type": "string[]", "required": false, "confidence": "confirmed" }
+        ], "confidence": "confirmed" },
+        { "name": "retornoFieldsByTipo", "fields": [
+          { "name": "linha", "type": "number", "required": false, "confidence": "confirmed" },
+          { "name": "nome", "type": "string", "required": true, "description": "ID do campo (snake_case ou kebab)", "confidence": "confirmed" },
+          { "name": "label", "type": "string", "required": true, "confidence": "confirmed" },
+          { "name": "tipo", "type": "string", "required": true, "confidence": "confirmed" },
+          { "name": "opcoes", "type": "string[]", "required": false, "confidence": "confirmed" },
+          { "name": "condicional", "type": "object", "required": false, "description": "{ campoRef, valor, negado }", "confidence": "confirmed" }
+        ], "confidence": "confirmed" }
+      ],
+      "business_rules": [
+        { "description": "UC deve conter apenas números", "location": "scripts/validation.js:59", "confidence": "confirmed" },
+        { "description": "Data não pode ser futura", "location": "scripts/validation.js:72-74", "confidence": "confirmed" },
+        { "description": "Hora fim deve ser diferente da hora início", "location": "scripts/validation.js:84-86", "confidence": "confirmed" },
+        { "description": "Campos de retorno ocultos são ignorados na validação", "location": "scripts/validation.js:153", "confidence": "confirmed" },
+        { "description": "Campos de retorno ocultos são excluídos do email e dados", "location": "scripts/retornos.js:131", "confidence": "confirmed" },
+        { "description": "Máximo 12 anexos e 8 MB por anexo", "location": "scripts/validation.js:174-186", "confidence": "confirmed" },
+        { "description": "Equipamentos não permitem número duplicado", "location": "scripts/validation.js:124-127", "confidence": "confirmed" }
+      ],
+      "dependencies": ["persistence", "tools"],
+      "algorithms": [
+        {
+          "name": "Agrupamento por linha",
+          "description": "Agrupa campos pela propriedade 'linha' usando Map para renderização horizontal",
+          "location": "scripts/retornos.js:76-90",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "Campos condicionais em cascata",
+          "description": "Campos dependentes são mostrados/ocultados baseado no valor de outro campo. Suporta valores únicos, arrays e negação.",
+          "location": "scripts/retornos.js:96-120",
+          "confidence": "confirmed"
+        }
+      ],
+      "complexity": "high"
+    },
+    {
+      "name": "email",
+      "path": "scripts/",
+      "purpose": "Composição do email e envio via Netlify Function",
+      "primary_files": ["scripts/email.js", "scripts/send.js"],
+      "functions": [
+        { "name": "composeEmail", "file": "scripts/email.js", "params": ["data: object"], "returns": "string", "confidence": "confirmed" },
+        { "name": "updateLivePreview", "file": "scripts/email.js", "params": [], "returns": "void", "confidence": "confirmed" },
+        { "name": "normalizeText", "file": "scripts/email.js", "params": ["str: string"], "returns": "string", "confidence": "confirmed" },
+        { "name": "sendEmail", "file": "scripts/send.js", "params": [], "returns": "Promise<boolean>", "confidence": "confirmed" }
+      ],
+      "entities": [],
+      "business_rules": [
+        { "description": "Assunto do email: 'OS #{os} - UC {uc} - {tipoLabel}'", "location": "scripts/send.js:23", "confidence": "confirmed" },
+        { "description": "Datas invertidas de YYYY-MM-DD para DD-MM-YYYY no email", "location": "scripts/email.js:25-26", "confidence": "confirmed" },
+        { "description": "Texto normalizado: sem acentos, ç→c, MAIÚSCULAS", "location": "scripts/email.js:10-18", "confidence": "confirmed" },
+        { "description": "Destinatários vem apenas de SMTP_TO (env var), não do formulário", "location": "netlify/functions/send.js:32-33", "confidence": "confirmed" }
+      ],
+      "dependencies": ["form", "persistence", "tools"],
+      "algorithms": [],
+      "complexity": "medium"
+    },
+    {
+      "name": "attachments",
+      "path": "scripts/",
+      "purpose": "Upload, preview, compressão e gerenciamento de anexos de imagem",
+      "primary_files": ["scripts/attachments.js", "scripts/compress.js"],
+      "functions": [
+        { "name": "handleUploadClick", "file": "scripts/attachments.js", "params": [], "returns": "void", "confidence": "confirmed" },
+        { "name": "handleFileChange", "file": "scripts/attachments.js", "params": ["e: Event"], "returns": "void", "confidence": "confirmed" },
+        { "name": "renderPreviews", "file": "scripts/attachments.js", "params": [], "returns": "void", "confidence": "confirmed" },
+        { "name": "removeFile", "file": "scripts/attachments.js", "params": ["index: number"], "returns": "void", "confidence": "confirmed" },
+        { "name": "compressAttachments", "file": "scripts/compress.js", "params": ["files: File[]"], "returns": "Promise<Array>", "confidence": "confirmed" }
+      ],
+      "entities": [
+        { "name": "CompressedAttachment", "fields": [
+          { "name": "filename", "type": "string", "required": true, "description": "Nome com sufixo _red.jpg", "confidence": "confirmed" },
+          { "name": "content", "type": "string", "required": true, "description": "Base64 da imagem", "confidence": "confirmed" },
+          { "name": "encoding", "type": "string", "required": true, "value": "base64", "confidence": "confirmed" }
+        ], "confidence": "confirmed" }
+      ],
+      "business_rules": [
+        { "description": "Máximo 12 anexos por formulário", "location": "scripts/attachments.js:20", "confidence": "confirmed" },
+        { "description": "Imagens ≤ 670KB não são comprimidas", "location": "scripts/compress.js:16", "confidence": "confirmed" },
+        { "description": "Compressão progressiva até 650KB com qualidade 0.9 e redução de 80% da largura", "location": "scripts/compress.js:33-39", "confidence": "confirmed" },
+        { "description": "Fallback de qualidade 0.7 na 11ª tentativa sem redução adicional", "location": "scripts/compress.js:34-35", "confidence": "confirmed" },
+        { "description": "Anexo renomeado para {basename}_red.jpg após compressão", "location": "scripts/compress.js:44", "confidence": "confirmed" }
+      ],
+      "dependencies": ["tools"],
+      "algorithms": [
+        {
+          "name": "Compressão progressiva de imagem",
+          "description": "Reduz dimensões iterativamente (80% da largura a cada tentativa, max 10) com qualidade JPEG 0.9, fallback para 0.7",
+          "location": "scripts/compress.js:12-49",
+          "confidence": "confirmed"
+        }
+      ],
+      "complexity": "medium"
+    },
+    {
+      "name": "equipment",
+      "path": "scripts/",
+      "purpose": "Gerenciamento de equipamentos instalados/retirados",
+      "primary_files": ["scripts/equipment.js"],
+      "functions": [
+        { "name": "addEquip", "file": "scripts/equipment.js", "params": ["data: object?"], "returns": "void", "confidence": "confirmed" },
+        { "name": "collectEquipamentos", "file": "scripts/equipment.js", "params": [], "returns": "void", "confidence": "confirmed" },
+        { "name": "renderEquipamentos", "file": "scripts/equipment.js", "params": [], "returns": "void", "confidence": "confirmed" },
+        { "name": "showEmptyEquip", "file": "scripts/equipment.js", "params": [], "returns": "void", "confidence": "confirmed" },
+        { "name": "hideEmptyEquip", "file": "scripts/equipment.js", "params": [], "returns": "void", "confidence": "confirmed" }
+      ],
+      "entities": [
+        { "name": "Equipamento", "fields": [
+          { "name": "status", "type": "string", "required": true, "domain": "Instalado|Retirado", "confidence": "confirmed" },
+          { "name": "categoria", "type": "string", "required": true, "domain": "Medidor|Display|Conjunto|TC|TP", "confidence": "confirmed" },
+          { "name": "numero", "type": "string", "required": true, "confidence": "confirmed" }
+        ], "confidence": "confirmed" }
+      ],
+      "business_rules": [
+        { "description": "Número de equipamento não pode ser duplicado (normalizado)", "location": "scripts/validation.js:124", "confidence": "confirmed" }
+      ],
+      "dependencies": ["persistence"],
+      "algorithms": [],
+      "complexity": "low"
+    },
+    {
+      "name": "persistence",
+      "path": "scripts/",
+      "purpose": "Persistência IndexedDB + localStorage, save/restore do estado",
+      "primary_files": ["scripts/persistence.js", "scripts/restore.js", "scripts/db.js", "scripts/storage.js", "scripts/state.js"],
+      "functions": [
+        { "name": "saveState", "file": "scripts/persistence.js", "params": [], "returns": "Promise<void>", "confidence": "confirmed" },
+        { "name": "debouncedSave", "file": "scripts/persistence.js", "params": [], "returns": "void", "confidence": "confirmed" },
+        { "name": "markAttachmentsDirty", "file": "scripts/persistence.js", "params": [], "returns": "void", "confidence": "confirmed" },
+        { "name": "applyRecord", "file": "scripts/restore.js", "params": ["record: object"], "returns": "Promise<void>", "confidence": "confirmed" },
+        { "name": "saveDraft", "file": "scripts/db.js", "params": ["record: object"], "returns": "Promise", "confidence": "confirmed" },
+        { "name": "getRecord", "file": "scripts/db.js", "params": ["uuid: string"], "returns": "Promise<object?>", "confidence": "confirmed" },
+        { "name": "getAllRecords", "file": "scripts/db.js", "params": [], "returns": "Promise<array>", "confidence": "confirmed" },
+        { "name": "deleteRecord", "file": "scripts/db.js", "params": ["uuid: string"], "returns": "Promise", "confidence": "confirmed" },
+        { "name": "updateRecordStatus", "file": "scripts/db.js", "params": ["uuid: string", "sentData: object"], "returns": "Promise", "confidence": "confirmed" },
+        { "name": "saveAttachments", "file": "scripts/db.js", "params": ["uuid: string", "attachments: array"], "returns": "Promise", "confidence": "confirmed" },
+        { "name": "getAttachmentsByUuid", "file": "scripts/db.js", "params": ["uuid: string"], "returns": "Promise<array>", "confidence": "confirmed" }
+      ],
+      "entities": [
+        { "name": "Record", "fields": [
+          { "name": "uuid", "type": "string", "required": true, "confidence": "confirmed" },
+          { "name": "status", "type": "string", "required": true, "domain": "draft|sent", "confidence": "confirmed" },
+          { "name": "createdAt", "type": "string (ISO)", "required": true, "confidence": "confirmed" },
+          { "name": "updatedAt", "type": "string (ISO)", "required": true, "confidence": "confirmed" },
+          { "name": "iniciais", "type": "object", "required": true, "confidence": "confirmed" },
+          { "name": "retorno", "type": "object", "required": false, "confidence": "confirmed" },
+          { "name": "tipoOrdem", "type": "string", "required": false, "confidence": "confirmed" },
+          { "name": "equipamentos", "type": "array", "required": false, "confidence": "confirmed" },
+          { "name": "composicao", "type": "object", "required": false, "confidence": "confirmed" },
+          { "name": "attachmentCount", "type": "number", "required": false, "confidence": "confirmed" },
+          { "name": "sentData", "type": "object?", "required": false, "confidence": "confirmed" }
+        ], "confidence": "confirmed" },
+        { "name": "Attachment", "fields": [
+          { "name": "id", "type": "string", "required": true, "confidence": "confirmed" },
+          { "name": "uuid", "type": "string", "required": true, "confidence": "confirmed" },
+          { "name": "index", "type": "number", "required": true, "confidence": "confirmed" },
+          { "name": "name", "type": "string", "required": true, "confidence": "confirmed" },
+          { "name": "type", "type": "string", "required": true, "confidence": "confirmed" },
+          { "name": "data", "type": "string (base64)", "required": true, "confidence": "confirmed" }
+        ], "confidence": "confirmed" }
+      ],
+      "business_rules": [
+        { "description": "Auto-save só persiste quando iniciaisValido = true (UC+OS preenchidos)", "location": "scripts/persistence.js:41", "confidence": "confirmed" },
+        { "description": "Não salva se não houver dados mínimos", "location": "scripts/persistence.js:44-45", "confidence": "confirmed" },
+        { "description": "Anexos têm dirty tracking para evitar re-serialização desnecessária", "location": "scripts/persistence.js:28-35", "confidence": "confirmed" },
+        { "description": "Debounce de 1000ms no save automático", "location": "scripts/persistence.js:89", "confidence": "confirmed" },
+        { "description": "Migração transparente v2→v3: anexos inline vs store separado", "location": "scripts/restore.js:27-47", "confidence": "confirmed" },
+        { "description": "DeleteRecord é atômico (2 stores na mesma transação)", "location": "scripts/db.js:88-107", "confidence": "confirmed" },
+        { "description": "UUID gerado via crypto.randomUUID() com fallback manual", "location": "scripts/persistence.js:96-100", "confidence": "confirmed" }
+      ],
+      "dependencies": ["form"],
+      "algorithms": [],
+      "complexity": "high"
+    },
+    {
+      "name": "sidebar",
+      "path": "scripts/",
+      "purpose": "Sidebar de histórico de registros com filtro e ações",
+      "primary_files": ["scripts/sidebar.js"],
+      "functions": [
+        { "name": "renderSidebar", "file": "scripts/sidebar.js", "params": ["filterTerm: string?"], "returns": "Promise<void>", "confidence": "confirmed" },
+        { "name": "closeSidebar", "file": "scripts/sidebar.js", "params": [], "returns": "void", "confidence": "confirmed" },
+        { "name": "initSidebarFilter", "file": "scripts/sidebar.js", "params": [], "returns": "void", "confidence": "confirmed" },
+        { "name": "getRecordSummary", "file": "scripts/sidebar.js", "params": ["record: object"], "returns": "string", "confidence": "confirmed" }
+      ],
+      "entities": [],
+      "business_rules": [
+        { "description": "Registros ordenados por updatedAt decrescente", "location": "scripts/sidebar.js:40", "confidence": "confirmed" },
+        { "description": "Filtro case-insensitive por UC, OS ou tipo de ordem", "location": "scripts/sidebar.js:43-49", "confidence": "confirmed" },
+        { "description": "Resumo do registro: UC-OS-tipo > UC-OS > OS > UC > '(rascunho vazio)'", "location": "scripts/sidebar.js:12-21", "confidence": "confirmed" }
+      ],
+      "dependencies": ["persistence"],
+      "algorithms": [],
+      "complexity": "low"
+    },
+    {
+      "name": "duplicate",
+      "path": "scripts/",
+      "purpose": "Prevenção de reenvio acidental de registros já enviados",
+      "primary_files": ["scripts/duplicate.js"],
+      "functions": [
+        { "name": "checkDuplicate", "file": "scripts/duplicate.js", "params": [], "returns": "Promise<boolean>", "confidence": "confirmed" }
+      ],
+      "entities": [],
+      "business_rules": [
+        { "description": "Se registro já foi enviado (status=sent), exibe modal de confirmação", "location": "scripts/duplicate.js:14-35", "confidence": "confirmed" }
+      ],
+      "dependencies": ["persistence"],
+      "algorithms": [],
+      "complexity": "low"
+    },
+    {
+      "name": "tools",
+      "path": "scripts/",
+      "purpose": "Utilitários diversos: reset, UI helpers, base64, geolocation, SW update",
+      "primary_files": ["scripts/reset.js", "scripts/ui.js", "scripts/utils.js", "scripts/sw-update.js"],
+      "functions": [
+        { "name": "resetForm", "file": "scripts/reset.js", "params": [], "returns": "void", "confidence": "confirmed" },
+        { "name": "showError", "file": "scripts/ui.js", "params": ["msg: string"], "returns": "void", "confidence": "confirmed" },
+        { "name": "hideError", "file": "scripts/ui.js", "params": [], "returns": "void", "confidence": "confirmed" },
+        { "name": "showToast", "file": "scripts/ui.js", "params": ["msg: string", "success: boolean"], "returns": "void", "confidence": "confirmed" },
+        { "name": "showConfirm", "file": "scripts/ui.js", "params": ["msg: string"], "returns": "Promise<boolean>", "confidence": "confirmed" },
+        { "name": "toBase64", "file": "scripts/utils.js", "params": ["file: File"], "returns": "Promise<string>", "confidence": "confirmed" },
+        { "name": "captureCoordinates", "file": "scripts/utils.js", "params": [], "returns": "Promise<void>", "confidence": "confirmed" },
+        { "name": "formatDate", "file": "scripts/utils.js", "params": ["iso: string"], "returns": "string", "confidence": "confirmed" },
+        { "name": "initSW", "file": "scripts/sw-update.js", "params": [], "returns": "void", "confidence": "confirmed" }
+      ],
+      "entities": [],
+      "business_rules": [
+        { "description": "Toast desaparece após 3500ms", "location": "scripts/ui.js:21", "confidence": "confirmed" },
+        { "description": "Geolocalização com timeout de 10s e baixa precisão", "location": "scripts/utils.js:60-62", "confidence": "confirmed" }
+      ],
+      "dependencies": [],
+      "algorithms": [],
+      "complexity": "low"
+    },
+    {
+      "name": "backend",
+      "path": "netlify/functions/",
+      "purpose": "Netlify Function de envio SMTP com nodemailer",
+      "primary_files": ["netlify/functions/send.js"],
+      "functions": [
+        { "name": "handler", "file": "netlify/functions/send.js", "params": ["event: object"], "returns": "Promise<object>", "confidence": "confirmed" }
+      ],
+      "entities": [],
+      "business_rules": [
+        { "description": "Apenas método POST é aceito", "location": "netlify/functions/send.js:4", "confidence": "confirmed" },
+        { "description": "Subject e text são obrigatórios", "location": "netlify/functions/send.js:12-20", "confidence": "confirmed" },
+        { "description": "SMTP_FROM é validado por regex de email", "location": "netlify/functions/send.js:24", "confidence": "confirmed" },
+        { "description": "SMTP_TO: lista separada por vírgula, cada email validado", "location": "netlify/functions/send.js:32-44", "confidence": "confirmed" },
+        { "description": "Máximo 12 anexos e 8MB por anexo", "location": "netlify/functions/send.js:46-57", "confidence": "confirmed" },
+        { "description": "TLS com rejectUnauthorized: false (certificados auto-assinados)", "location": "netlify/functions/send.js:67", "confidence": "confirmed" }
+      ],
+      "dependencies": [],
+      "algorithms": [],
+      "complexity": "low"
+    }
+  ]
+}

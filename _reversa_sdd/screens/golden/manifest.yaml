@@ -1,0 +1,22 @@
+# Golden Files Manifest
+# Gerado pelo Screen Translator em 2026-06-15
+# Modo: modernizado — golden files são opcionais
+
+schemaVersion: 1
+generatedAt: 2026-06-15T18:25:00-03:00
+mode: modernized
+sourcePlatform: html-legacy
+targetPlatform: web-spa
+
+goldenFiles: []
+
+# Nota: Em modo modernizado com plataforma alvo web, golden files não são
+# obrigatórios. O oráculo legado (aplicação web atual rodando em browser) não
+# é executável em pipeline automatizado. Screenshots existentes em `screnns/`
+# servem como referência visual para o codificador.
+# 
+# Para captura manual (opcional):
+# 1. Abrir a aplicação legada em localhost
+# 2. Capturar screenshot de cada seção
+# 3. Salvar em _reversa_sdd/screens/golden/SCR-XX.png
+# 4. Adicionar entrada neste manifest

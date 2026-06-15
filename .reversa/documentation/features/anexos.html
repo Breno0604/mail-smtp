@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anexos | mail-mvp</title>
+<meta name="reversa-category" content="feature">
+<meta name="reversa-producer-agent" content="reversa-docs-storyteller">
+<meta name="reversa-template" content="feature">
+<meta name="generated-at" content="2026-06-15T17:00:00-03:00">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, sans-serif; background: #0a0a10; color: #eaeaea; padding: 32px; max-width: 960px; margin: 0 auto; line-height: 1.6; }
+a { color: #4a9eff; text-decoration: none; }
+a:hover { text-decoration: underline; }
+h1 { font-size: 24px; font-weight: 300; letter-spacing: 0.5px; margin-bottom: 4px; }
+h2 { font-size: 18px; font-weight: 600; margin-top: 40px; margin-bottom: 16px; color: #eaeaea; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 8px; }
+h3 { font-size: 14px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; color: #ccc; }
+.subtitle { color: #666; font-size: 13px; margin-bottom: 8px; }
+.back-link { display: inline-block; margin-bottom: 20px; font-size: 13px; color: #4a9eff; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+.badge-green { background: rgba(34,197,94,0.15); color: #22c55e; }
+.badge-yellow { background: rgba(234,179,8,0.15); color: #eab308; }
+table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 13px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #888; font-weight: 600; }
+tr:hover td { background: rgba(255,255,255,0.02); }
+ul, ol { margin: 8px 0 16px; padding-left: 20px; font-size: 13px; }
+li { margin-bottom: 4px; }
+code { background: rgba(255,255,255,0.06); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+.section { background: rgba(15,15,22,0.6); border: 1px solid rgba(255,255,255,0.04); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+.module-tag { display: inline-block; background: rgba(74,158,255,0.1); color: #4a9eff; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin-right: 4px; }
+.task-checkbox { list-style: none; padding-left: 0; }
+.task-checkbox li::before { content: "☐ "; color: #666; }
+.pre-box { background:rgba(0,0,0,0.3);padding:12px;border-radius:6px;font-size:12px;overflow-x:auto;margin-bottom:16px;color:#aaa; }
+@media (max-width: 640px) { body { padding: 16px; } table { font-size: 12px; } }
+</style>
+</head>
+<body>
+<a href="../index.html" class="back-link">&larr; Voltar ao índice</a>
+<h1>Anexos</h1>
+<p class="subtitle">
+  <span class="module-tag">attachments.js</span>
+  <span class="module-tag">compress.js</span>
+</p>
+
+<div class="section">
+  <h2>Requisitos</h2>
+
+  <h3>Visão Geral</h3>
+  <p style="font-size:13px;color:#ccc;margin-bottom:16px;">
+    Gerencia o upload, preview, compressão e remoção de arquivos anexados ao formulário de OS. Suporta compressão progressiva de imagens para reduzir o tamanho antes do envio por email.
+  </p>
+
+  <h3>Regras de Negócio</h3>
+  <table>
+    <tr><th>ID</th><th>Regra</th><th>Confiança</th></tr>
+    <tr><td>RN01</td><td>Máximo de 12 anexos por formulário (excedente descartado com warning)</td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN02</td><td>Cada anexo no máximo 8 MB (validado no envio, não no upload)</td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN03</td><td>Imagens ≤ 670KB (SKIP_SIZE) não são comprimidas — apenas convertidas para base64</td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN04</td><td>Compressão progressiva: até 10 tentativas reduzindo largura em 80%, qualidade JPEG 0.9</td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN05</td><td>11ª tentativa (fallback): qualidade 0.7 sem redução adicional de largura</td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN06</td><td>Anexos comprimidos são renomeados para <code>{basename}_red.jpg</code></td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN07</td><td>Anexos com dirty tracking — <code>markAttachmentsDirty()</code> deve ser chamada após mudanças</td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN08</td><td>Object URLs antigas são revogadas antes de renderizar novos previews (memory leak prevention)</td><td>🟢 CONFIRMADO</td></tr>
+  </table>
+
+  <h3>Requisitos Funcionais</h3>
+  <table>
+    <tr><th>ID</th><th>Requisito</th><th>Prioridade</th><th>Critério de Aceite</th></tr>
+    <tr><td>RF-01</td><td>Upload de arquivos via input file</td><td><span class="badge badge-green">Must</span></td><td>Click no botão/file area abre seletor de arquivos</td></tr>
+    <tr><td>RF-02</td><td>Upload via drag & drop na área designada</td><td><span class="badge badge-yellow">Should</span></td><td>Arrastar arquivo para a área de upload adiciona ao state</td></tr>
+    <tr><td>RF-03</td><td>Limitar a 12 anexos</td><td><span class="badge badge-green">Must</span></td><td>Ao tentar adicionar o 13º, exibe warning e descarta excesso</td></tr>
+    <tr><td>RF-04</td><td>Renderizar preview grid com thumbnails</td><td><span class="badge badge-green">Must</span></td><td>Grid de imagens com thumbnail, nome do arquivo e botão ✕</td></tr>
+    <tr><td>RF-05</td><td>Remover anexo individual</td><td><span class="badge badge-green">Must</span></td><td>Click no ✕ remove o anexo e re-renderiza grid</td></tr>
+    <tr><td>RF-06</td><td>Lightbox para visualização ampliada</td><td><span class="badge badge-yellow">Could</span></td><td>Click na thumbnail abre imagem em tela cheia (overlay)</td></tr>
+    <tr><td>RF-07</td><td>Comprimir imagens > 670KB para ≤ 650KB</td><td><span class="badge badge-green">Must</span></td><td>Algoritmo progressivo reduz tamanho até limite</td></tr>
+    <tr><td>RF-08</td><td>Fallback de compressão na 11ª tentativa</td><td><span class="badge badge-green">Must</span></td><td>Se após 10 tentativas não atingiu limite, qualidade 0.7</td></tr>
+    <tr><td>RF-09</td><td>Manter arquivos não-imagem inalterados</td><td><span class="badge badge-green">Must</span></td><td>PDFs, DOCX etc. não passam pelo compressor</td></tr>
+    <tr><td>RF-10</td><td>Marcar dirty tracking ao modificar anexos</td><td><span class="badge badge-green">Must</span></td><td><code>markAttachmentsDirty()</code> é chamada após add/remove/reset</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h2>Design Técnico</h2>
+
+  <h3>Estrutura de Dados</h3>
+  <div class="pre-box"><code>// State interno
+state.attachments: File[]  // Array de File objects do navegador
+
+// Saída da compressão
+interface CompressedAttachment {
+  filename: string;   // "{basename}_red.jpg"
+  content: string;    // Base64 sem header data:
+  encoding: "base64";
+}
+
+// Store no IndexedDB
+interface DBAttachment {
+  id: string;         // "{uuid}_{index}"
+  uuid: string;       // FK para records
+  index: number;
+  name: string;
+  type: string;       // MIME type
+  data: string;       // Base64
+}</code></div>
+
+  <h3>Funções Exportadas</h3>
+  <table>
+    <tr><th>Símbolo</th><th>Assinatura</th><th>Retorno</th><th>Descrição</th></tr>
+    <tr><td><code>handleUploadClick()</code></td><td><code>()</code></td><td><code>void</code></td><td>Dispara click no input file oculto</td></tr>
+    <tr><td><code>handleFileChange(e)</code></td><td><code>(e: Event)</code></td><td><code>void</code></td><td>Processa FileList, limita a 12, adiciona ao state</td></tr>
+    <tr><td><code>renderPreviews()</code></td><td><code>()</code></td><td><code>void</code></td><td>Reconstrói grid de previews com thumbnails</td></tr>
+    <tr><td><code>removeFile(index)</code></td><td><code>(index: number)</code></td><td><code>void</code></td><td>Remove do state.attachments, marca dirty, re-renderiza</td></tr>
+    <tr><td><code>compressAttachments(files)</code></td><td><code>(files: File[])</code></td><td><code>Promise&lt;CompressedAttachment[]&gt;</code></td><td>Comprime imagens, retorna base64</td></tr>
+  </table>
+
+  <h3>Algoritmo de Compressão Progressiva</h3>
+  <div class="pre-box"><code>compressAttachments(files):
+  por cada file:
+    se file.size <= SKIP_SIZE (670KB) ou não é imagem:
+      → apenas toBase64(file), retorna { filename, content, encoding }
+
+    se é imagem e > SKIP_SIZE:
+      largura = img.naturalWidth
+      qualidade = 0.9
+
+      para tentativa = 0..10:
+        canvas = drawImage(img, 0, 0, largura)
+        blob = canvas.toBlob("image/jpeg", qualidade)
+
+        se blob.size <= MAX_SIZE (650KB):
+          break  // sucesso
+
+        se tentativa < 10:
+          largura *= 0.8  // reduz 80% da largura
+        senão:
+          qualidade = 0.7  // fallback: reduz qualidade
+
+      retorna { filename: "{basename}_red.jpg", content: blobToBase64(blob), encoding: "base64" }</code></div>
+
+  <h3>Decisões de Design</h3>
+  <table>
+    <tr><th>Decisão</th><th>Confiança</th></tr>
+    <tr><td>Compressão no cliente (canvas API) — sem envio para servidor</td><td>🟢</td></tr>
+    <tr><td>Compressão progressiva: itera reduzindo largura até atingir limite</td><td>🟢</td></tr>
+    <tr><td>Skip para arquivos pequenos (≤ 670KB)</td><td>🟢</td></tr>
+    <tr><td>Fallback de qualidade 0.7 na 11ª tentativa</td><td>🟢</td></tr>
+    <tr><td>Object URL revogação entre renders</td><td>🟢</td></tr>
+    <tr><td>Dirty tracking para evitar re-serialização</td><td>🟢</td></tr>
+  </table>
+
+  <h3>Dependências</h3>
+  <table>
+    <tr><th>Componente</th><th>Como usa</th></tr>
+    <tr><td><code>state.js</code></td><td><code>state.attachments</code>, <code>markAttachmentsDirty()</code>, <code>debouncedSave()</code></td></tr>
+    <tr><td><code>dom.js</code></td><td><code>DOM.fileInput</code>, <code>DOM.fileCount</code>, <code>DOM.previewGrid</code>, <code>DOM.fileUploadArea</code>, <code>DOM.lightbox</code></td></tr>
+    <tr><td><code>utils.js</code></td><td><code>toBase64()</code>, <code>blobToBase64()</code>, <code>loadImage()</code></td></tr>
+    <tr><td><code>ui.js</code></td><td>Mostra toast para feedback</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h2>Tarefas</h2>
+
+  <h3>Tarefas de Implementação</h3>
+  <ul class="task-checkbox">
+    <li>T-01, Implementar <code>handleFileChange(e)</code> com limite de 12 anexos — 🟢</li>
+    <li>T-02, Implementar <code>renderPreviews()</code> com grid de thumbnails — 🟢</li>
+    <li>T-03, Implementar <code>removeFile(index)</code> com re-renderização — 🟢</li>
+    <li>T-04, Implementar lightbox para visualização ampliada — 🟢</li>
+    <li>T-05, Implementar <code>compressAttachments(files)</code> com algoritmo progressivo — 🟢</li>
+    <li>T-06, Implementar skip de compressão para arquivos pequenos e não-imagem — 🟢</li>
+    <li>T-07, Garantir renomeação de arquivo comprimido para <code>{basename}_red.jpg</code> — 🟢</li>
+    <li>T-08, Garantir dirty tracking após qualquer modificação nos anexos — 🟢</li>
+  </ul>
+
+  <h3>Tarefas de Teste</h3>
+  <ul class="task-checkbox">
+    <li>TT-01, Testar upload de arquivos (limite de 12, warning no excesso)</li>
+    <li>TT-02, Testar renderização de preview grid (imagens e não-imagens)</li>
+    <li>TT-03, Testar remoção de anexo individual</li>
+    <li>TT-04, Testar lightbox (abrir, fechar)</li>
+    <li>TT-05, Testar compressão progressiva (imagem > 670KB → ≤ 650KB)</li>
+    <li>TT-06, Testar skip para arquivos pequenos e não-imagem</li>
+    <li>TT-07, Testar fallback de qualidade 0.7 na 11ª tentativa</li>
+    <li>TT-08, Testar dirty tracking (flag é setada corretamente)</li>
+  </ul>
+
+  <h3>Ordem Sugerida</h3>
+  <ol>
+    <li>T-01, T-02, T-03 (upload + preview + remove) — funcionalidade base</li>
+    <li>T-08 (dirty tracking) — integração com persistência</li>
+    <li>T-05, T-06, T-07 (compressão) — processamento de imagem</li>
+    <li>T-04 (lightbox) — UX, independente</li>
+    <li>Testes na ordem correspondente</li>
+  </ol>
+</div>
+
+<p style="margin-top:32px;font-size:12px;color:#444;text-align:center;">
+  Gerado pelo reversa-docs-storyteller · mail-mvp
+</p>
+</body>
+</html>

@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-15T17:20:00-03:00",
+  "reversa": {
+    "version": "1.2.43"
+  },
+  "projectName": "mail-mvp",
+  "interview": {
+    "readerProfile": "other",
+    "readerProfileFreeform": "IA geradora de código (refatoração Vue+Vite+TypeScript)",
+    "depth": "full",
+    "selectedFeatures": [],
+    "visualStyle": "sober",
+    "visualStyleFreeform": ""
+  },
+  "seed": {
+    "hash": "sha256:9b9c60b2a209b5e0e81ec0b4d224c8da4e0dd9187f6873bbe5a451d57e3ee499",
+    "source": "project_name",
+    "explicitOverride": null
+  },
+  "knowledgeSources": {
+    "soul": false,
+    "chronicle": false,
+    "topology": true,
+    "sddSpecs": [
+      "formulario",
+      "anexos",
+      "equipamentos",
+      "email",
+      "persistencia",
+      "sidebar",
+      "validacao",
+      "ferramentas",
+      "globals"
+    ],
+    "sourceCode": true
+  },
+  "pagesPlanned": [
+    "index.html",
+    "arquitetura.html",
+    "modulos.html",
+    "topologia.html",
+    "metricas.html",
+    "glossario.html",
+    "deck.html",
+    "features/formulario.html",
+    "features/anexos.html",
+    "features/equipamentos.html",
+    "features/email.html",
+    "features/persistencia.html",
+    "features/sidebar.html",
+    "features/validacao.html",
+    "features/ferramentas.html",
+    "features/globals.html"
+  ],
+  "pagesGenerated": [
+    "index.html",
+    "arquitetura.html",
+    "modulos.html",
+    "topologia.html",
+    "metricas.html",
+    "glossario.html",
+    "deck.html",
+    "features/formulario.html",
+    "features/anexos.html",
+    "features/equipamentos.html",
+    "features/email.html",
+    "features/persistencia.html",
+    "features/sidebar.html",
+    "features/validacao.html",
+    "features/ferramentas.html",
+    "features/globals.html"
+  ],
+  "pagesOmitted": [
+    {"page": "timeline.html", "reason": "chronicle.md não disponível"}
+  ],
+  "pagesBroken": []
+}

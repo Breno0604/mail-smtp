@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formulário | mail-mvp</title>
+<meta name="reversa-category" content="feature">
+<meta name="reversa-producer-agent" content="reversa-docs-storyteller">
+<meta name="reversa-template" content="feature">
+<meta name="generated-at" content="2026-06-15T17:00:00-03:00">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, sans-serif; background: #0a0a10; color: #eaeaea; padding: 32px; max-width: 960px; margin: 0 auto; line-height: 1.6; }
+a { color: #4a9eff; text-decoration: none; }
+a:hover { text-decoration: underline; }
+h1 { font-size: 24px; font-weight: 300; letter-spacing: 0.5px; margin-bottom: 4px; }
+h2 { font-size: 18px; font-weight: 600; margin-top: 40px; margin-bottom: 16px; color: #eaeaea; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 8px; }
+h3 { font-size: 14px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; color: #ccc; }
+.subtitle { color: #666; font-size: 13px; margin-bottom: 8px; }
+.back-link { display: inline-block; margin-bottom: 20px; font-size: 13px; color: #4a9eff; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+.badge-green { background: rgba(34,197,94,0.15); color: #22c55e; }
+.badge-yellow { background: rgba(234,179,8,0.15); color: #eab308; }
+table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 13px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #888; font-weight: 600; }
+tr:hover td { background: rgba(255,255,255,0.02); }
+ul, ol { margin: 8px 0 16px; padding-left: 20px; font-size: 13px; }
+li { margin-bottom: 4px; }
+code { background: rgba(255,255,255,0.06); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+.section { background: rgba(15,15,22,0.6); border: 1px solid rgba(255,255,255,0.04); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+.module-tag { display: inline-block; background: rgba(74,158,255,0.1); color: #4a9eff; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin-right: 4px; }
+.task-checkbox { list-style: none; padding-left: 0; }
+.task-checkbox li::before { content: "☐ "; color: #666; }
+.task-checkbox li.done::before { content: "☑ "; color: #22c55e; }
+.confidence { font-size: 13px; }
+@media (max-width: 640px) { body { padding: 16px; } table { font-size: 12px; } }
+</style>
+</head>
+<body>
+<a href="../index.html" class="back-link">&larr; Voltar ao índice</a>
+<h1>Formulário</h1>
+<p class="subtitle">
+  <span class="module-tag">iniciais.js</span>
+  <span class="module-tag">retornos.js</span>
+  <span class="module-tag">fields.js</span>
+</p>
+
+<div class="section">
+  <h2>Requisitos</h2>
+
+  <h3>Visão Geral</h3>
+  <p style="font-size:13px;color:#ccc;margin-bottom:16px;">
+    Renderiza dinamicamente os formulários de "Início" (12 campos fixos) e "Retorno" (campos variáveis conforme o tipo de ordem selecionado). Fornece a definição de schema para todos os 41 tipos de ordem suportados, com suporte a campos condicionais em cascata.
+  </p>
+
+  <h3>Regras de Negócio</h3>
+  <table>
+    <tr><th>ID</th><th>Regra</th><th>Confiança</th></tr>
+    <tr><td>RD01</td><td>Ao mudar o tipo de ordem, os dados de retorno anteriores são descartados (<code>state.retorno = {}</code>)</td><td><span class="confidence">🟢 CONFIRMADO</span></td></tr>
+    <tr><td>RD02</td><td>Campos condicionais quando ocultos têm seu valor zerado (<code>input.value = ""</code>)</td><td><span class="confidence">🟢 CONFIRMADO</span></td></tr>
+    <tr><td>RD03</td><td>Campos de retorno ocultos (condicionais não atendidos) são excluídos dos dados coletados</td><td><span class="confidence">🟢 CONFIRMADO</span></td></tr>
+    <tr><td>RD04</td><td>O campo UC é do tipo <code>text</code> com <code>inputMode=numeric</code> — aceita apenas dígitos mas é string</td><td><span class="confidence">🟢 CONFIRMADO</span></td></tr>
+    <tr><td>RD05</td><td>Selects recebem um placeholder "Selecione" como primeira opção</td><td><span class="confidence">🟢 CONFIRMADO</span></td></tr>
+    <tr><td>RD06</td><td>O campo coordenadas tem um botão de refresh que chama <code>captureCoordinates()</code></td><td><span class="confidence">🟢 CONFIRMADO</span></td></tr>
+    <tr><td>RD07</td><td>O campo tipo-ordem é criado dinamicamente e deve ter seu event listener re-attachado após renderIniciais()</td><td><span class="confidence">🟢 CONFIRMADO</span></td></tr>
+    <tr><td>RD08</td><td>Cada campo obrigatório recebe atributo <code>data-required</code> para validação no blur</td><td><span class="confidence">🟢 CONFIRMADO</span></td></tr>
+    <tr><td>RD09</td><td>A renderização agrupa campos por <code>linha</code> (mesma linha = mesma flex row / grid column)</td><td><span class="confidence">🟢 CONFIRMADO</span></td></tr>
+  </table>
+
+  <h3>Requisitos Funcionais</h3>
+  <table>
+    <tr><th>ID</th><th>Requisito</th><th>Prioridade</th><th>Critério de Aceite</th></tr>
+    <tr><td>RF-01</td><td>Renderizar 12 campos iniciais com tipos corretos (select, number, date, time, text, textarea, coordinates)</td><td><span class="badge badge-green">Must</span></td><td>Cada campo tem o elemento HTML correto e classes CSS</td></tr>
+    <tr><td>RF-02</td><td>Renderizar campos de retorno ao selecionar tipo de ordem</td><td><span class="badge badge-green">Must</span></td><td>Ao selecionar tipo, os campos específicos aparecem; ao limpar, voltam ao placeholder</td></tr>
+    <tr><td>RF-03</td><td>Ocultar/mostrar campos condicionais baseado no valor do campo de referência</td><td><span class="badge badge-green">Must</span></td><td>Campo condicional some quando referência muda de valor, reaparece quando valor condiz</td></tr>
+    <tr><td>RF-04</td><td>Zerar valor de campos condicionais ao ocultá-los</td><td><span class="badge badge-green">Must</span></td><td>Campo oculto tem <code>value=""</code></td></tr>
+    <tr><td>RF-05</td><td>Coletar dados apenas de campos visíveis no retorno</td><td><span class="badge badge-green">Must</span></td><td><code>getRetornoData()</code> não inclui campos com <code>display:none</code></td></tr>
+    <tr><td>RF-06</td><td>Detectar mudança de tipo de ordem e descartar dados anteriores</td><td><span class="badge badge-green">Must</span></td><td>Ao mudar tipo, <code>state.retorno</code> é zerado e campos re-renderizados</td></tr>
+    <tr><td>RF-07</td><td>Campo coordenadas com botão de refresh geolocalização</td><td><span class="badge badge-yellow">Could</span></td><td>Botão de refresh ao lado do input readonly</td></tr>
+    <tr><td>RF-08</td><td>Agrupar campos por linha no layout</td><td><span class="badge badge-green">Must</span></td><td>Campos com mesma <code>linha</code> aparecem na mesma fileira flex/grid</td></tr>
+    <tr><td>RF-09</td><td>Suportar 41 tipos de ordem no select</td><td><span class="badge badge-green">Must</span></td><td>Select de tipo-ordem lista todos os 41 tipos</td></tr>
+    <tr><td>RF-10</td><td>Suportar condicionais com valor único, array (any match) e negação</td><td><span class="badge badge-green">Must</span></td><td><code>condicional.valor</code> pode ser string ou array; <code>condicional.negado</code> inverte lógica</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h2>Design Técnico</h2>
+
+  <h3>Estrutura de Dados — Field Definition</h3>
+  <pre style="background:rgba(0,0,0,0.3);padding:12px;border-radius:6px;font-size:12px;overflow-x:auto;margin-bottom:16px;color:#aaa;"><code>interface FieldDef {
+  linha?: number;              // Agrupamento horizontal
+  nome: string;                // ID do campo (kebab-case ou snake_case)
+  label: string;               // Label do campo
+  tipo: "select"|"number"|"date"|"time"|"text"|"textarea"|"coordinates";
+  obrigatorio?: boolean;       // true → data-required + asterisco
+  opcoes?: string[];           // Para selects
+  condicional?: {
+    campoRef: string;          // Campo de referência
+    valor: string | string[];  // Valor(es) que ativam (array = any match)
+    negado?: boolean;          // true → inverte lógica
+  };
+  readonly?: boolean;
+}</code></pre>
+
+  <h3>Funções Exportadas</h3>
+  <table>
+    <tr><th>Símbolo</th><th>Assinatura</th><th>Retorno</th><th>Observação</th></tr>
+    <tr><td><code>renderIniciais()</code></td><td><code>()</code></td><td><code>void</code></td><td>Reconstrói todo o DOM de <code>DOM.iniciaisCampos</code></td></tr>
+    <tr><td><code>getIniciaisData()</code></td><td><code>()</code></td><td><code>Record&lt;string, string&gt;</code></td><td>Lê valores do DOM via getElementById</td></tr>
+    <tr><td><code>renderRetorno()</code></td><td><code>()</code></td><td><code>void</code></td><td>Renderiza campos conforme <code>DOM.tipoOrdem.value</code></td></tr>
+    <tr><td><code>handleTipoChange()</code></td><td><code>()</code></td><td><code>void</code></td><td>Guarda <code>lastTipoOrdem</code>, zera <code>state.retorno</code>, chama <code>renderRetorno()</code></td></tr>
+    <tr><td><code>getRetornoData()</code></td><td><code>()</code></td><td><code>Record&lt;string, string&gt;</code></td><td>Lê apenas campos visíveis (filtra <code>display: none</code>)</td></tr>
+    <tr><td><code>setRetornoData(data)</code></td><td><code>(data: object)</code></td><td><code>void</code></td><td>Preenche valores + reavalia condicionais</td></tr>
+    <tr><td><code>updateConditionalFields(fields)</code></td><td><code>(fields: array)</code></td><td><code>void</code></td><td>Avalia condições e mostra/esconde campos</td></tr>
+    <tr><td><code>getRetornoFields(tipo)</code></td><td><code>(tipo: string)</code></td><td><code>FieldDef[]</code></td><td>Busca schema do tipo ou retorna <code>default</code></td></tr>
+  </table>
+
+  <h3>Exemplo de Schema</h3>
+  <pre style="background:rgba(0,0,0,0.3);padding:12px;border-radius:6px;font-size:12px;overflow-x:auto;margin-bottom:16px;color:#aaa;"><code>// Campo de início
+{ linha: 4, nome: "uc", label: "UC", tipo: "number", obrigatorio: true }
+
+// Campo de retorno condicional
+{ linha: 5, nome: "toi", label: "TOI", tipo: "text",
+  condicional: { campoRef: "aplicado-toi", valor: "SIM" } }
+
+// Campo condicional com array (any match)
+{ linha: 2, nome: "obra", label: "Obra", tipo: "select",
+  condicional: { campoRef: "retorno_ligacao", valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"] } }
+
+// Campo condicional com negação
+{ linha: 2, nome: "acesso_desligamento", label: "Descreva o Problema", tipo: "text",
+  condicional: { campoRef: "desligamento", valor: "DESLIGAMENTO EXECUTADO", negado: true } }</code></pre>
+
+  <h3>Decisões de Design</h3>
+  <table>
+    <tr><th>Decisão</th><th>Confiança</th></tr>
+    <tr><td><code>INPUT_CREATORS</code> como factory (Strategy Pattern)</td><td>🟢</td></tr>
+    <tr><td>Agrupamento por linha via Map</td><td>🟢</td></tr>
+    <tr><td>Campos condicionais: dataset no group + CSS display</td><td>🟢</td></tr>
+    <tr><td><code>hasConditionalDependents</code> para attach de listeners</td><td>🟢</td></tr>
+    <tr><td><code>DOM.tipoOrdem</code> cacheado manualmente (exceção à regra do dom.js)</td><td>🟢</td></tr>
+    <tr><td>Valores zerados ao ocultar campo condicional</td><td>🟢</td></tr>
+  </table>
+
+  <h3>Dependências</h3>
+  <table>
+    <tr><th>Componente</th><th>Como usa</th></tr>
+    <tr><td><code>dom.js</code></td><td><code>DOM.iniciaisCampos</code>, <code>DOM.retornoCampos</code>, <code>DOM.tipoOrdem</code>, <code>DOM.retornoDesc</code></td></tr>
+    <tr><td><code>state.js</code></td><td><code>state.lastTipoOrdem</code>, <code>state.retorno</code>; chama <code>debouncedSave()</code></td></tr>
+    <tr><td><code>validation.js</code></td><td><code>addBlurValidation()</code> em cada input</td></tr>
+    <tr><td><code>styles.js</code></td><td><code>INPUT_CLASS</code>, <code>SELECT_CLASS</code> para classes CSS</td></tr>
+    <tr><td><code>utils.js</code></td><td><code>captureCoordinates()</code> para refresh</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h2>Tarefas</h2>
+
+  <h3>Tarefas de Implementação</h3>
+  <ul class="task-checkbox">
+    <li>T-01, Criar schema <code>iniciaisFields[]</code> com 12 campos fixos — 🟢</li>
+    <li>T-02, Criar schema <code>retornoFieldsByTipo</code> para 41 tipos de ordem — 🟢</li>
+    <li>T-03, Criar <code>INPUT_CREATORS</code> (factory de elementos HTML) — 🟢</li>
+    <li>T-04, Implementar <code>renderIniciais()</code> com agrupamento por linha — 🟢</li>
+    <li>T-05, Implementar widget de coordenadas com botão de refresh — 🟢</li>
+    <li>T-06, Implementar <code>getIniciaisData()</code> para leitura do DOM — 🟢</li>
+    <li>T-07, Implementar <code>renderRetorno()</code> com renderização dinâmica — 🟢</li>
+    <li>T-08, Implementar <code>handleTipoChange()</code> com detecção de mudança — 🟢</li>
+    <li>T-09, Implementar <code>updateConditionalFields()</code> c/ string, array e negação — 🟢</li>
+    <li>T-10, Implementar <code>getRetornoData()</code> filtrando campos ocultos — 🟢</li>
+    <li>T-11, Implementar <code>setRetornoData()</code> com reavaliação de condicionais — 🟢</li>
+    <li>T-12, Garantir que <code>DOM.tipoOrdem</code> seja cacheado após <code>renderIniciais()</code> — 🟢</li>
+  </ul>
+
+  <h3>Tarefas de Teste</h3>
+  <ul class="task-checkbox">
+    <li>TT-01, Testar renderização dos 12 campos iniciais com tipos corretos</li>
+    <li>TT-02, Testar agrupamento por linha</li>
+    <li>TT-03, Testar renderRetorno para cada um dos 41 tipos de ordem</li>
+    <li>TT-04, Testar condicionais: valor único, array (any match) e negação</li>
+    <li>TT-05, Testar que campos ocultos têm valor zerado</li>
+    <li>TT-06, Testar que getRetornoData exclui campos ocultos</li>
+    <li>TT-07, Testar handleTipoChange descarta dados anteriores</li>
+    <li>TT-08, Testar setRetornoData + updateConditionalFields</li>
+    <li>TT-09, Testar widget de coordenadas</li>
+  </ul>
+
+  <h3>Ordem Sugerida</h3>
+  <ol>
+    <li>T-01 e T-02 (schemas) — base para tudo</li>
+    <li>T-03 (INPUT_CREATORS) — factory de elementos</li>
+    <li>T-04 e T-05 (renderIniciais + coordenadas) — formulário base</li>
+    <li>T-07, T-08, T-09 (retorno dinâmico + condicionais) — formulário avançado</li>
+    <li>T-06, T-10, T-11 (coleta de dados) — leitura/escrita</li>
+    <li>T-12 (cache DOM.tipoOrdem) — integração</li>
+    <li>TT-01 a TT-09 (testes)</li>
+  </ol>
+</div>
+
+<p style="margin-top:32px;font-size:12px;color:#444;text-align:center;">
+  Gerado pelo reversa-docs-storyteller · mail-mvp
+</p>
+</body>
+</html>

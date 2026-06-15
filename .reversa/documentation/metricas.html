@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Métricas | mail-mvp</title>
+<meta name="reversa-category" content="diagram">
+<meta name="reversa-producer-agent" content="reversa-docs-analyst">
+<meta name="reversa-template" content="metricas">
+<meta name="generated-at" content="2026-06-15T17:00:00-03:00">
+<script src="assets/vendor/highcharts.js"></script>
+<script src="assets/vendor/highcharts-more.js"></script>
+<script src="assets/vendor/highcharts-3d.js"></script>
+<script src="assets/vendor/modules/treemap.js"></script>
+<script src="assets/vendor/modules/sankey.js"></script>
+<script src="assets/vendor/modules/exporting.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, sans-serif; background: #0a0a10; color: #eaeaea; padding: 24px; }
+h1 { font-size: 22px; font-weight: 300; letter-spacing: 0.5px; margin-bottom: 4px; }
+h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 16px; }
+.subtitle { color: #666; font-size: 13px; margin-bottom: 24px; }
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px; }
+.grid .full { grid-column: 1 / -1; }
+.chart-box { background: rgba(15,15,22,0.8); border-radius: 12px; padding: 16px; border: 1px solid rgba(255,255,255,0.04); }
+.chart-box h3 { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+#loader { text-align: center; padding: 60px; color: #666; }
+</style>
+</head>
+<body>
+<h1>Métricas &amp; Dashboard</h1>
+<p class="subtitle">mail-mvp · Análise quantitativa do código-fonte</p>
+<div id="loader">Carregando gráficos...</div>
+
+<div class="grid" id="charts" style="display:none">
+  <div class="chart-box">
+    <h3>Treemap: LOC por Módulo</h3>
+    <div id="chart-treemap" style="height:320px"></div>
+  </div>
+  <div class="chart-box">
+    <h3>Histograma: Distribuição de Complexidade</h3>
+    <div id="chart-histogram" style="height:320px"></div>
+  </div>
+  <div class="chart-box full">
+    <h3>Sankey: Fluxo de Dependências (scripts → scripts)</h3>
+    <div id="chart-sankey" style="height:360px"></div>
+  </div>
+  <div class="chart-box">
+    <h3>LOC por Grupo</h3>
+    <div id="chart-group" style="height:280px"></div>
+  </div>
+  <div class="chart-box">
+    <h3>Top 10: Complexidade Ciclomática</h3>
+    <div id="chart-complex" style="height:280px"></div>
+  </div>
+</div>
+
+<script src="assets/data/data-embedded.js"></script>
+<script>
+(function() {
+  var data = window.RV_DATA;
+  if (!data || !data.modules) { document.getElementById('loader').textContent = 'Nenhum dado disponível.'; return; }
+
+  var modules = data.modules;
+  var deps = data.deps;
+  var edges = deps.edges;
+  var stats = deps.stats;
+
+  Highcharts.setOptions({
+    chart: { backgroundColor: 'transparent', style: { fontFamily: 'system-ui, sans-serif' } },
+    title: { style: { color: '#888', fontSize: '13px' } },
+    legend: { itemStyle: { color: '#aaa' }, itemHoverStyle: { color: '#eaeaea' } },
+    tooltip: { backgroundColor: 'rgba(0,0,0,0.85)', style: { color: '#eaeaea', fontSize: '12px' }, borderColor: '#333' },
+    xAxis: { labels: { style: { color: '#666' } }, lineColor: '#222', tickColor: '#222' },
+    yAxis: { labels: { style: { color: '#666' } }, gridLineColor: '#181822', title: { style: { color: '#888' } } },
+    plotOptions: { series: { dataLabels: { style: { color: '#ccc', fontSize: '11px' } } } },
+    credits: { enabled: false }
+  });
+
+  document.getElementById('loader').style.display = 'none';
+  document.getElementById('charts').style.display = 'grid';
+
+  // ── 1. Treemap ──
+  var treemapData = modules.map(function(m) {
+    return { name: m.name, value: m.loc, colorValue: m.complexity, path: m.path };
+  });
+  Highcharts.chart('chart-treemap', {
+    chart: { type: 'treemap' },
+    colorAxis: { minColor: '#1a2a4a', maxColor: '#4a9eff' },
+    series: [{
+      type: 'treemap',
+      layoutAlgorithm: 'squarified',
+      allowDrillToNode: true,
+      dataLabels: { enabled: true, format: '{point.name}<br>{point.value} LOC' },
+      data: treemapData
+    }],
+    tooltip: { pointFormat: '<strong>{point.name}</strong><br>LOC: {point.value}<br>Complexidade: {point.colorValue}<br>Caminho: {point.path}' }
+  });
+
+  // ── 2. Histograma ──
+  var complexities = modules.map(function(m) { return m.complexity; });
+  var bins = [];
+  for (var i = 0; i <= 9; i += 1) bins.push({ from: i, to: i + 1, count: 0 });
+  bins[bins.length-1].to = 10;
+  complexities.forEach(function(c) {
+    for (var b = 0; b < bins.length; b++) {
+      if (c >= bins[b].from && c < bins[b].to) { bins[b].count++; break; }
+    }
+  });
+  // Adjust last bin to include exactly 8.4
+  bins[bins.length-1].count = complexities.filter(function(c) { return c >= 8; }).length;
+
+  Highcharts.chart('chart-histogram', {
+    chart: { type: 'column' },
+    title: { text: null },
+    xAxis: { categories: bins.map(function(b) { return b.from + '-' + b.to; }), title: { text: 'Complexidade', style: { color: '#666' } } },
+    yAxis: { title: { text: 'Qtd. módulos' }, min: 0 },
+    series: [{
+      name: 'Módulos',
+      data: bins.map(function(b) { return b.count; }),
+      color: '#4a9eff',
+      borderRadius: 2
+    }],
+    tooltip: { pointFormat: '{point.y} módulo(s)' }
+  });
+
+  // ── 3. Sankey ──
+  var folderOrder = ['scripts', 'functions'];
+  var flowData = {};
+  edges.forEach(function(e) {
+    var sourceNode = deps.nodes.find(function(n) { return n.id === e.source; });
+    var targetNode = deps.nodes.find(function(n) { return n.id === e.target; });
+    if (!sourceNode || !targetNode) return;
+    var from = sourceNode.group;
+    var to = targetNode.group;
+    var key = from + '|' + to;
+    flowData[key] = (flowData[key] || 0) + 1;
+  });
+  var sankeySeries = Object.keys(flowData).map(function(k) {
+    var parts = k.split('|');
+    return { from: parts[0], to: parts[1], weight: flowData[k] };
+  });
+
+  Highcharts.chart('chart-sankey', {
+    chart: { type: 'sankey' },
+    title: { text: null },
+    series: [{
+      keys: ['from', 'to', 'weight'],
+      data: sankeySeries,
+      nodes: deps.nodes.filter(function(n) { return folderOrder.indexOf(n.group) >= 0; }).map(function(n) {
+        return { id: n.id, color: n.group === 'scripts' ? '#4a9eff' : '#ffc857' };
+      }),
+      dataLabels: { enabled: false }
+    }],
+    tooltip: { pointFormat: '{point.from} → {point.to}: {point.weight}' }
+  });
+
+  // ── 4. LOC por Grupo ──
+  var groupLocs = {};
+  modules.forEach(function(m) {
+    var g = m.folder || 'root';
+    groupLocs[g] = (groupLocs[g] || 0) + m.loc;
+  });
+  var groupData = Object.keys(groupLocs).map(function(g) {
+    var colors = { scripts: '#4a9eff', functions: '#ffc857' };
+    return { name: g, y: groupLocs[g], color: colors[g] || '#555' };
+  });
+
+  Highcharts.chart('chart-group', {
+    chart: { type: 'pie' },
+    title: { text: null },
+    plotOptions: { pie: { innerSize: '40%', dataLabels: { format: '{point.name}: {point.y} LOC ({point.percentage:.1f}%)' } } },
+    series: [{ name: 'LOC', data: groupData }]
+  });
+
+  // ── 5. Top 10 Complexidade ──
+  var sorted = modules.slice().sort(function(a, b) { return b.complexity - a.complexity; }).slice(0, 10);
+  Highcharts.chart('chart-complex', {
+    chart: { type: 'bar' },
+    title: { text: null },
+    xAxis: { categories: sorted.map(function(m) { return m.name; }), title: null },
+    yAxis: { title: { text: 'Complexidade' } },
+    series: [{
+      name: 'Complexidade',
+      data: sorted.map(function(m) { return { y: m.complexity, color: m.complexity > 7 ? '#ff5a4f' : '#4a9eff' }; }),
+      borderRadius: 2
+    }],
+    tooltip: { pointFormat: 'Complexidade: {point.y}<br>LOC: {point.loc}', pointFormatter: function() { var m = sorted[this.index]; return 'Complexidade: ' + m.complexity + '<br>LOC: ' + m.loc + '<br>Pasta: ' + (m.folder || 'root'); } }
+  });
+
+})();
+</script>
+</body>
+</html>

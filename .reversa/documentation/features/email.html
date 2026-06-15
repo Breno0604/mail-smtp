@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Email | mail-mvp</title>
+<meta name="reversa-category" content="feature">
+<meta name="reversa-producer-agent" content="reversa-docs-storyteller">
+<meta name="reversa-template" content="feature">
+<meta name="generated-at" content="2026-06-15T17:00:00-03:00">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, sans-serif; background: #0a0a10; color: #eaeaea; padding: 32px; max-width: 960px; margin: 0 auto; line-height: 1.6; }
+a { color: #4a9eff; text-decoration: none; }
+a:hover { text-decoration: underline; }
+h1 { font-size: 24px; font-weight: 300; letter-spacing: 0.5px; margin-bottom: 4px; }
+h2 { font-size: 18px; font-weight: 600; margin-top: 40px; margin-bottom: 16px; color: #eaeaea; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 8px; }
+h3 { font-size: 14px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; color: #ccc; }
+.subtitle { color: #666; font-size: 13px; margin-bottom: 8px; }
+.back-link { display: inline-block; margin-bottom: 20px; font-size: 13px; color: #4a9eff; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+.badge-green { background: rgba(34,197,94,0.15); color: #22c55e; }
+.badge-yellow { background: rgba(234,179,8,0.15); color: #eab308; }
+table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 13px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #888; font-weight: 600; }
+tr:hover td { background: rgba(255,255,255,0.02); }
+ul, ol { margin: 8px 0 16px; padding-left: 20px; font-size: 13px; }
+li { margin-bottom: 4px; }
+code { background: rgba(255,255,255,0.06); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+.section { background: rgba(15,15,22,0.6); border: 1px solid rgba(255,255,255,0.04); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+.module-tag { display: inline-block; background: rgba(74,158,255,0.1); color: #4a9eff; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin-right: 4px; }
+.task-checkbox { list-style: none; padding-left: 0; }
+.task-checkbox li::before { content: "☐ "; color: #666; }
+.pre-box { background:rgba(0,0,0,0.3);padding:12px;border-radius:6px;font-size:12px;overflow-x:auto;margin-bottom:16px;color:#aaa; }
+@media (max-width: 640px) { body { padding: 16px; } table { font-size: 12px; } }
+</style>
+</head>
+<body>
+<a href="../index.html" class="back-link">&larr; Voltar ao índice</a>
+<h1>Email</h1>
+<p class="subtitle">
+  <span class="module-tag">email.js</span>
+  <span class="module-tag">send.js (Netlify Function)</span>
+  <span class="module-tag">contracts/</span>
+</p>
+
+<div class="section">
+  <h2>Requisitos</h2>
+
+  <h3>Visão Geral</h3>
+  <p style="font-size:13px;color:#ccc;margin-bottom:16px;">
+    Sistema de composição e envio de email com SMTP. Opera em duas camadas: frontend compõe o corpo textual a partir dos dados do formulário, backend (Netlify Function) recebe e despacha via nodemailer.
+  </p>
+
+  <h3>Regras de Negócio</h3>
+  <table>
+    <tr><th>ID</th><th>Regra</th><th>Confiança</th></tr>
+    <tr><td>RN01</td><td>Data é invertida de YYYY-MM-DD para DD-MM-YYYY no corpo do email</td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN02</td><td>Apenas campos de retorno preenchidos (existentes em <code>data.retorno</code>) são incluídos no email</td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN03</td><td>Hidden fields (<code>display:none</code>) são filtrados por <code>getRetornoData()</code> e não aparecem no email</td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN04</td><td><code>composeEmail()</code> duplamente protege — verifica <code>field.nome in data.retorno</code> antes de incluir</td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN05</td><td>Equipamentos são incluídos se <code>data.equipamentos.length > 0</code>; se vazio, seção omitida</td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN06</td><td>Destinatários vêm exclusivamente de <code>SMTP_TO</code> (env var), não do formulário</td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN07</td><td>Anexos são validados no backend (máx 12, máx 8MB cada)</td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN08</td><td>Backend rejeita se <code>SMTP_FROM</code> está ausente ou em formato inválido</td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN09</td><td>Backend rejeita se <code>SMTP_TO</code> não está configurado ou contém emails inválidos</td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN10</td><td>TLS <code>rejectUnauthorized: false</code> é intencional para certs auto-assinados em produção</td><td>🟢 CONFIRMADO</td></tr>
+    <tr><td>RN11</td><td>Campos vazios são substituídos por "—" (em dash) no email; campos de retorno vazios mostram "(nao preenchido)"</td><td>🟢 CONFIRMADO</td></tr>
+  </table>
+
+  <h3>Requisitos Funcionais</h3>
+  <table>
+    <tr><th>ID</th><th>Requisito</th><th>Prioridade</th><th>Critério de Aceite</th></tr>
+    <tr><td>RF-01</td><td>Compor corpo do email com dados do formulário</td><td><span class="badge badge-green">Must</span></td><td><code>composeEmail()</code> gera string com iniciais, equipamentos e retorno</td></tr>
+    <tr><td>RF-02</td><td>Exibir prévia ao vivo do email</td><td><span class="badge badge-green">Must</span></td><td><code>updateLivePreview()</code> atualiza <code>DOM.previewCorpo</code> a cada alteração</td></tr>
+    <tr><td>RF-03</td><td>Enviar email via POST para Netlify Function</td><td><span class="badge badge-green">Must</span></td><td>Click em "Enviar" faz POST para <code>/api/send</code> com subject, text, attachments</td></tr>
+    <tr><td>RF-04</td><td>Validar anexos no backend (limite 12, 8MB)</td><td><span class="badge badge-green">Must</span></td><td>Backend rejeita 400 se exceder</td></tr>
+    <tr><td>RF-05</td><td>Validar SMTP_FROM e SMTP_TO no backend</td><td><span class="badge badge-green">Must</span></td><td>Backend retorna 500 com mensagem descritiva</td></tr>
+    <tr><td>RF-06</td><td>Normalizar texto (maiúsculas, sem acentos)</td><td><span class="badge badge-yellow">Should</span></td><td><code>normalizeText()</code> aplica NFD + replace ç + toUpperCase</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h2>Design Técnico</h2>
+
+  <h3>Arquitetura</h3>
+  <div class="pre-box"><code>┌──────────────────────┐     POST /api/send      ┌─────────────────────────┐
+│   Frontend (SPA)     │ ──────────────────────>  │  Netlify Function       │
+│                      │   { subject, text,       │  (netlify/functions/    │
+│  composeEmail(data)  │     attachments }        │       send.js)          │
+│  updateLivePreview() │                          │                         │
+│                      │  <─────────────────────  │  nodemailer → SMTP     │
+│  DOM.previewCorpo    │     { success, to }      │                         │
+└──────────────────────┘                          └─────────────────────────┘</code></div>
+
+  <h3>Fluxo de Composição (<code>composeEmail</code>)</h3>
+  <div class="pre-box"><code>composeEmail(data)
+  │
+  ├─ iniciaisFields.forEach(field)
+  │   ├─ raw = data.iniciais[field.nome] || ""
+  │   ├─ if date → reverse ("2026-06-15" → "15-06-2026")
+  │   └─ normalizeText(label) + ": " + normalizeText(val) + "\n"
+  │
+  ├─ if data.equipamentos.length > 0
+  │   ├─ "\n\nEQUIPAMENTOS:"
+  │   └─ forEach eq → "CATEGORIA STATUS Nº NUMERO\n"
+  │
+  └─ retornoFields.forEach(field)
+      ├─ if !(field.nome in data.retorno) → skip
+      └─ normalizeText(label) + ": " + normalizeText(val || "(nao preenchido)") + "\n"</code></div>
+
+  <h3>Exemplo de Saída</h3>
+  <div class="pre-box"><code>ORDEM DE SERVICO: 2026-06-001
+TIPO DE ORDEM: LIGACAO NOVA
+DATA: 15-06-2026
+TECNICO: JOAO SILVA
+MUNICIPIO: SOBRAL
+[...]
+
+EQUIPAMENTOS:
+MEDIDOR INSTALADO Nº 123456
+DISPLAY INSTALADO Nº 789012
+
+RETORNO:
+SITUACAO DO SERVICO: LIGADO
+LEITURA: 04521
+MEDIDOR INSTALADO: SIM</code></div>
+
+  <h3>Normalização de Texto</h3>
+  <div class="pre-box"><code>normalizeText(str) → str
+  .normalize("NFD")
+  .replace(/[\u0300-\u036f]/g, "")
+  .replace(/ç/g, "c")
+  .replace(/Ç/g, "C")
+  .toUpperCase()</code></div>
+
+  <h3>Funções Exportadas (Frontend)</h3>
+  <table>
+    <tr><th>Função</th><th>Parâmetros</th><th>Retorno</th><th>Descrição</th></tr>
+    <tr><td><code>composeEmail(data)</code></td><td><code>{ iniciais, equipamentos, retorno }</code></td><td><code>string</code></td><td>Gera corpo do email</td></tr>
+    <tr><td><code>updateLivePreview()</code></td><td><code>void</code></td><td><code>void</code></td><td>Atualiza preview no DOM</td></tr>
+    <tr><td><code>normalizeText(str)</code></td><td><code>string</code></td><td><code>string</code></td><td>Normaliza para uppercase sem acentos</td></tr>
+  </table>
+
+  <h3>Configuração SMTP (Backend)</h3>
+  <table>
+    <tr><th>Variável</th><th>Exemplo</th><th>Obrigatória</th></tr>
+    <tr><td><code>SMTP_HOST</code></td><td><code>smtp.gmail.com</code></td><td>Sim</td></tr>
+    <tr><td><code>SMTP_PORT</code></td><td><code>465</code></td><td>Sim</td></tr>
+    <tr><td><code>SMTP_USER</code></td><td><code>user@domain.com</code></td><td>Sim</td></tr>
+    <tr><td><code>SMTP_PASS</code></td><td><code>app-password-123</code></td><td>Sim</td></tr>
+    <tr><td><code>SMTP_FROM</code></td><td><code>noreply@domain.com</code></td><td>Sim (validado regex)</td></tr>
+    <tr><td><code>SMTP_TO</code></td><td><code>tech@domain.com,admin@domain.com</code></td><td>Sim (split por vírgula)</td></tr>
+  </table>
+
+  <h3>Contrato da API</h3>
+  <table>
+    <tr><th>Método</th><th>Rota</th><th>Request Body</th><th>Response 200</th></tr>
+    <tr><td>POST</td><td><code>/api/send</code></td><td><code>{ subject, text, attachments? }</code></td><td><code>{ success: true, to: string[] }</code></td></tr>
+  </table>
+
+  <h3>Validações do Backend</h3>
+  <table>
+    <tr><th>Condição</th><th>HTTP</th><th>Mensagem</th></tr>
+    <tr><td>Method != POST</td><td>405</td><td>"Method not allowed"</td></tr>
+    <tr><td>Sem <code>subject</code></td><td>400</td><td>"Campo 'assunto' é obrigatório."</td></tr>
+    <tr><td>Sem <code>text</code></td><td>400</td><td>"Campo 'text' é obrigatório."</td></tr>
+    <tr><td>SMTP_FROM ausente/inválido</td><td>500</td><td>"SMTP_FROM inválido ou não configurado."</td></tr>
+    <tr><td>SMTP_TO não configurado</td><td>500</td><td>"SMTP_TO não configurado."</td></tr>
+    <tr><td>SMTP_TO com emails inválidos</td><td>500</td><td>"Emails inválidos em SMTP_TO: ..."</td></tr>
+    <tr><td>Anexos > 12</td><td>400</td><td>"Máximo de 12 anexos permitido."</td></tr>
+    <tr><td>Anexo > 8MB</td><td>400</td><td>"Anexo '...' excede 8 MB."</td></tr>
+  </table>
+
+  <h3>Dependências</h3>
+  <table>
+    <tr><th>Componente</th><th>Como usa</th></tr>
+    <tr><td><code>nodemailer</code> (npm)</td><td>Transporte SMTP no backend</td></tr>
+    <tr><td><code>fields.js</code></td><td><code>iniciaisFields</code>, <code>getRetornoFields()</code></td></tr>
+    <tr><td><code>iniciais.js</code></td><td><code>getIniciaisData()</code></td></tr>
+    <tr><td><code>retornos.js</code></td><td><code>getRetornoData()</code></td></tr>
+    <tr><td><code>dom.js</code></td><td><code>DOM.previewCorpo</code></td></tr>
+    <tr><td><code>state.js</code></td><td><code>state.equipamentos</code></td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h2>Tarefas</h2>
+
+  <h3>Tarefas de Implementação</h3>
+  <ul class="task-checkbox">
+    <li>T-01, Implementar <code>normalizeText(str)</code> — 🟢</li>
+    <li>T-02, Implementar <code>composeEmail(data)</code> — 🟢</li>
+    <li>T-03, Implementar <code>updateLivePreview()</code> — 🟢</li>
+    <li>T-04, Implementar rotas da Netlify Function (<code>send.js</code>) — 🟢</li>
+    <li>T-05, Configurar 6 env vars no netlify.toml / Netlify UI — 🟢</li>
+    <li>T-06, Implementar validação de SMTP_FROM no backend — 🟢</li>
+    <li>T-07, Implementar validação de anexos no backend (max 12, max 8MB) — 🟢</li>
+    <li>T-08, Garantir TLS <code>rejectUnauthorized: false</code> — 🟢</li>
+  </ul>
+
+  <h3>Tarefas de Teste</h3>
+  <ul class="task-checkbox">
+    <li>TT-01, Testar <code>normalizeText()</code> com acentos, ç, maiúsculas</li>
+    <li>TT-02, Testar <code>composeEmail()</code> inverte datas</li>
+    <li>TT-03, Testar <code>composeEmail()</code> pula campos de retorno não existentes</li>
+    <li>TT-04, Testar <code>composeEmail()</code> omite seção EQUIPAMENTOS se vazia</li>
+    <li>TT-05, Testar <code>updateLivePreview()</code> atualiza DOM</li>
+  </ul>
+
+  <h3>Ordem Sugerida</h3>
+  <ol>
+    <li>T-01 (normalizeText) — utilidade base</li>
+    <li>T-02 (composeEmail) — composição</li>
+    <li>T-03 (updateLivePreview) — preview</li>
+    <li>T-04, T-06, T-07, T-08 (send.js) — backend</li>
+    <li>T-05 (env vars) — configuração</li>
+    <li>Testes frontend na ordem</li>
+  </ol>
+</div>
+
+<p style="margin-top:32px;font-size:12px;color:#444;text-align:center;">
+  Gerado pelo reversa-docs-storyteller · mail-mvp
+</p>
+</body>
+</html>

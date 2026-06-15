@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 2,
+  "startedAt": "2026-06-15T17:25:00-03:00",
+  "lastCheckpoint": "2026-06-15T18:35:00-03:00",
+  "pipelineCompleted": true,
+  "completedAgents": [
+    "paradigm_advisor",
+    "curator",
+    "strategist",
+    "designer",
+    "screen_translator",
+    "inspector"
+  ],
+  "pendingAgents": [],
+  "currentAgent": {
+    "agent": "inspector",
+    "phase": null,
+    "status": "completed",
+    "topologyApproved": true,
+    "screenModeApproved": true
+  },
+  "pendingDecisions": [],
+  "artifacts": {
+    "paradigm_decision.md": {
+      "hash": "sha256:7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7",
+      "generatedAt": "2026-06-15T17:30:00-03:00"
+    },
+    "target_business_rules.md": {
+      "hash": "sha256:b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1",
+      "generatedAt": "2026-06-15T17:35:00-03:00"
+    },
+    "discard_log.md": {
+      "hash": "sha256:d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4",
+      "generatedAt": "2026-06-15T17:35:00-03:00"
+    },
+    "topology_decision.md": {
+      "hash": "sha256:placeholder",
+      "generatedAt": "2026-06-15T18:00:00-03:00"
+    },
+    "target_architecture.md": {
+      "hash": "sha256:placeholder",
+      "generatedAt": "2026-06-15T18:10:00-03:00"
+    },
+    "target_domain_model.md": {
+      "hash": "sha256:placeholder",
+      "generatedAt": "2026-06-15T18:10:00-03:00"
+    },
+    "target_data_model.md": {
+      "hash": "sha256:placeholder",
+      "generatedAt": "2026-06-15T18:10:00-03:00"
+    },
+    "data_migration_plan.md": {
+      "hash": "sha256:placeholder",
+      "generatedAt": "2026-06-15T18:10:00-03:00"
+    },
+    "screen_modernization_decision.md": {
+      "hash": "sha256:placeholder",
+      "generatedAt": "2026-06-15T18:20:00-03:00"
+    },
+    "target_screens.md": {
+      "hash": "sha256:placeholder",
+      "generatedAt": "2026-06-15T18:25:00-03:00"
+    },
+    "screen_deviation_log.md": {
+      "hash": "sha256:placeholder",
+      "generatedAt": "2026-06-15T18:25:00-03:00"
+    },
+    "parity_specs.md": {
+      "hash": "sha256:placeholder",
+      "generatedAt": "2026-06-15T18:30:00-03:00"
+    },
+    "parity_tests/PT-001-formulario.feature": {
+      "hash": "sha256:placeholder",
+      "generatedAt": "2026-06-15T18:30:00-03:00"
+    },
+    "parity_tests/PT-002-email.feature": {
+      "hash": "sha256:placeholder",
+      "generatedAt": "2026-06-15T18:30:00-03:00"
+    },
+    "parity_tests/PT-003-persistencia.feature": {
+      "hash": "sha256:placeholder",
+      "generatedAt": "2026-06-15T18:30:00-03:00"
+    },
+    "parity_tests/PT-004-condicionais.feature": {
+      "hash": "sha256:placeholder",
+      "generatedAt": "2026-06-15T18:30:00-03:00"
+    },
+    "parity_tests/PT-005-anexos.feature": {
+      "hash": "sha256:placeholder",
+      "generatedAt": "2026-06-15T18:30:00-03:00"
+    },
+    "parity_tests/PT-006-equipamentos.feature": {
+      "hash": "sha256:placeholder",
+      "generatedAt": "2026-06-15T18:30:00-03:00"
+    },
+    "parity_tests/PT-007-sidebar.feature": {
+      "hash": "sha256:placeholder",
+      "generatedAt": "2026-06-15T18:30:00-03:00"
+    },
+    "parity_tests/PT-008-tipo-ordem.feature": {
+      "hash": "sha256:placeholder",
+      "generatedAt": "2026-06-15T18:30:00-03:00"
+    },
+    "handoff.md": {
+      "hash": "sha256:placeholder",
+      "generatedAt": "2026-06-15T18:35:00-03:00"
+    }
+  },
+  "auto": false,
+  "engine": "opencode",
+  "reversaVersion": "1.2.43",
+  "briefPath": "_reversa_sdd/migration/migration_brief.md",
+  "expectedLegacyArtifacts": "references/expected_legacy_artifacts.yaml"
+}

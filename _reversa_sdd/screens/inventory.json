@@ -1,0 +1,73 @@
+{
+  "$schema": "inventory.schema.json",
+  "generatedAt": "2026-06-15T18:20:00-03:00",
+  "sourcePlatform": "html-legacy",
+  "targetPlatform": "web-spa",
+  "screens": [
+    {
+      "id": "SCR-01",
+      "name": "sidebar",
+      "type": "component",
+      "legacyOrigin": "scripts/sidebar.js",
+      "legacyScreenshot": "screnns/aba_lateral.jpeg",
+      "description": "Painel lateral esquerdo com lista de registros, busca textual, filtro por período (manhã/tarde/noite), botões de duplicar e excluir, e restauração ao clicar"
+    },
+    {
+      "id": "SCR-02",
+      "name": "sec-inicio",
+      "type": "form-section",
+      "legacyOrigin": "scripts/iniciais.js",
+      "legacyScreenshot": "screnns/etapa_iniciais.jpeg",
+      "description": "Seção de formulário com 12 campos: UC, OS, tipo-ordem, parceiro-lider, municipio, placa, data, hora-inicio, hora-fim, coordenadas, notificado, complemento"
+    },
+    {
+      "id": "SCR-03",
+      "name": "sec-retorno",
+      "type": "form-section",
+      "legacyOrigin": "scripts/retornos.js",
+      "description": "Seção dinâmica com campos específicos do tipo de ordem selecionado (~41 tipos, ~200+ campos possíveis). Campos condicionais com v-if"
+    },
+    {
+      "id": "SCR-04",
+      "name": "sec-equipamentos",
+      "type": "form-section",
+      "legacyOrigin": "scripts/equipment.js",
+      "description": "Seção de equipamentos: lista de rows com status (Instalado/Retirado), categoria (Medidor/Display/Conjunto/TC/TP) e número. Botões adicionar/remover"
+    },
+    {
+      "id": "SCR-05",
+      "name": "sec-anexos",
+      "type": "form-section",
+      "legacyOrigin": "scripts/attachments.js",
+      "description": "Seção de anexos: upload de arquivos (máx 12, 8MB cada), preview de imagens, barra de progresso de compressão, botão de remover"
+    },
+    {
+      "id": "SCR-06",
+      "name": "sec-revisao",
+      "type": "form-section",
+      "legacyOrigin": "index.html #sec-revisao",
+      "description": "Seção de revisão pré-envio: exibe resumo dos dados preenchidos em modo read-only, botão de enviar"
+    },
+    {
+      "id": "SCR-07",
+      "name": "modal-duplicata",
+      "type": "modal",
+      "legacyOrigin": "scripts/duplicate.js",
+      "description": "Modal de confirmação ao reenviar um registro já enviado: exibe OS e data do envio anterior, botões confirmar/cancelar"
+    },
+    {
+      "id": "SCR-08",
+      "name": "toast",
+      "type": "component",
+      "legacyOrigin": "scripts/ui.js",
+      "description": "Toast de notificação no canto superior direito: sucesso (verde), erro (vermelho), aviso (âmbar). Desaparece em 3500ms"
+    },
+    {
+      "id": "SCR-09",
+      "name": "modal-sw-update",
+      "type": "modal",
+      "legacyOrigin": "scripts/sw-update.js",
+      "description": "Modal de atualização do Service Worker: avisa que nova versão está disponível, botão para recarregar"
+    }
+  ]
+}

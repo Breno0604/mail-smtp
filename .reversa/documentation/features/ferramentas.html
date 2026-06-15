@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ferramentas | mail-mvp</title>
+<meta name="reversa-category" content="feature">
+<meta name="reversa-producer-agent" content="reversa-docs-storyteller">
+<meta name="reversa-template" content="feature">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, sans-serif; background: #0a0a10; color: #eaeaea; padding: 32px; max-width: 960px; margin: 0 auto; }
+h1 { font-size: 22px; font-weight: 300; letter-spacing: 0.5px; margin-bottom: 4px; }
+.subtitle { color: #666; font-size: 13px; margin-bottom: 24px; }
+.back { display: inline-block; margin-bottom: 16px; color: #4a9eff; text-decoration: none; font-size: 13px; }
+.back:hover { text-decoration: underline; }
+h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-top: 32px; margin-bottom: 12px; }
+h3 { font-size: 14px; font-weight: 600; color: #ccc; margin-top: 20px; margin-bottom: 8px; }
+p, li { font-size: 14px; line-height: 1.6; color: #c0c0c0; }
+ul, ol { padding-left: 20px; margin-bottom: 12px; }
+li { margin-bottom: 4px; }
+table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px; }
+th { text-align: left; padding: 8px 10px; background: rgba(74,158,255,0.08); color: #4a9eff; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; border-bottom: 1px solid rgba(74,158,255,0.15); }
+td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); color: #c0c0c0; vertical-align: top; }
+td:first-child { font-weight: 500; color: #eaeaea; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.3px; }
+.badge-green { background: rgba(34,197,94,0.15); color: #22c55e; }
+.badge-blue { background: rgba(74,158,255,0.15); color: #4a9eff; }
+.tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 11px; background: rgba(255,255,255,0.06); color: #888; margin-right: 4px; }
+.modules { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+.module-tag { padding: 4px 12px; border-radius: 6px; font-size: 12px; background: rgba(74,158,255,0.1); color: #4a9eff; border: 1px solid rgba(74,158,255,0.2); }
+hr { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 24px 0; }
+code { font-size: 12px; background: rgba(255,255,255,0.05); padding: 1px 5px; border-radius: 3px; color: #eaeaea; }
+</style>
+</head>
+<body>
+<a href="../index.html" class="back">&larr; Voltar ao índice</a>
+<h1>Ferramentas</h1>
+<p class="subtitle">Utilitários de suporte: reset, compressão, duplicação, estilos e service worker</p>
+
+<div class="modules">
+  <span class="module-tag">reset.js</span>
+  <span class="module-tag">compress.js</span>
+  <span class="module-tag">duplicate.js</span>
+  <span class="module-tag">utils.js</span>
+  <span class="module-tag">styles.js</span>
+  <span class="module-tag">sw-update.js</span>
+</div>
+
+<h2>1. Requisitos</h2>
+
+<table>
+  <tr><th style="width:40px">#</th><th style="width:100px">Prioridade</th><th>Descrição</th></tr>
+  <tr><td>REQ01</td><td><span class="badge badge-green">Must</span></td><td><code>resetForm()</code> limpa estado, formulário, anexos, UUID e re-renderiza todas as seções</td></tr>
+  <tr><td>REQ02</td><td><span class="badge badge-green">Must</span></td><td><code>compressAttachments()</code> comprime imagens progressivamente (até 10 tentativas + fallback)</td></tr>
+  <tr><td>REQ03</td><td><span class="badge badge-green">Must</span></td><td>Imagens menores que <code>SKIP_SIZE</code> (670KB) pulam compressão; alvo final <code>MAX_SIZE</code> (650KB)</td></tr>
+  <tr><td>REQ04</td><td><span class="badge badge-green">Must</span></td><td><code>checkDuplicate()</code> exibe modal se registro atual já foi enviado</td></tr>
+  <tr><td>REQ05</td><td><span class="badge badge-green">Must</span></td><td><code>initSW()</code> registra service worker e exibe modal de atualização quando novo SW assume</td></tr>
+  <tr><td>REQ06</td><td><span class="badge badge-blue">Should</span></td><td>Constantes CSS compartilhadas (<code>INPUT_CLASS</code>, <code>SELECT_CLASS</code>) centralizadas em styles.js</td></tr>
+  <tr><td>REQ07</td><td><span class="badge badge-blue">Should</span></td><td><code>captureCoordinates()</code> obtém coordenadas via Geolocation API, fallback "Não disponível"</td></tr>
+  <tr><td>REQ08</td><td><span class="badge badge-blue">Should</span></td><td><code>formatDate()</code> converte ISO para formato DD/MM/YYYY HH:mm</td></tr>
+</table>
+
+<h2>2. Design Técnico</h2>
+
+<h3>Funções da Interface</h3>
+<table>
+  <tr><th>Função</th><th>Módulo</th><th>Descrição</th></tr>
+  <tr><td><code>resetForm()</code></td><td>reset.js</td><td>Reset completo: estado, DOM, UUID, re-renderiza iniciais/retorno/equipamentos, limpa anexos</td></tr>
+  <tr><td><code>compressAttachments(files)</code></td><td>compress.js</td><td>Comprime imagens JPEG progressivamente; não-imagens passam inalteradas como base64</td></tr>
+  <tr><td><code>checkDuplicate()</code></td><td>duplicate.js</td><td>Verifica se registro atual já foi enviado; retorna Promise&lt;boolean&gt;</td></tr>
+  <tr><td><code>initSW()</code></td><td>sw-update.js</td><td>Registra <code>/sw.js</code>, escuta <code>controllerchange</code>, exibe modal de atualização</td></tr>
+  <tr><td><code>toBase64(file)</code></td><td>utils.js</td><td>Converte File para string base64 (sem prefixo dataURL)</td></tr>
+  <tr><td><code>blobToBase64(blob)</code></td><td>utils.js</td><td>Converte Blob para string base64</td></tr>
+  <tr><td><code>loadImage(file)</code></td><td>utils.js</td><td>Carrega imagem em HTMLImageElement a partir de File</td></tr>
+  <tr><td><code>formatDate(iso)</code></td><td>utils.js</td><td>Formata ISO string para DD/MM/YYYY HH:mm</td></tr>
+  <tr><td><code>base64ToBlob(base64, type)</code></td><td>utils.js</td><td>Converte base64 para Blob</td></tr>
+  <tr><td><code>captureCoordinates()</code></td><td>utils.js</td><td>Popula campo <code>#coordenadas</code> com lat/lon via Geolocation API</td></tr>
+</table>
+
+<h3>Algoritmo de Compressão (compress.js)</h3>
+<p>O loop de compressão progressiva funciona em até 11 tentativas:</p>
+<ol>
+  <li>Tentativas 0–9: qualidade 0.9, reduz largura em 20% a cada iteração se o blob exceder <code>MAX_SIZE</code> (650KB)</li>
+  <li>Tentativa 10 (fallback): qualidade 0.7, sem redução adicional de escala</li>
+  <li>Imagens já abaixo de <code>SKIP_SIZE</code> (670KB) ou não-imagens não passam pelo loop</li>
+  <li>Arquivos comprimidos são renomeados para <code>_red.jpg</code></li>
+</ol>
+
+<h3>Dependências</h3>
+<table>
+  <tr><th>Módulo</th><th>Depende de</th><th>Uso</th></tr>
+  <tr><td>reset.js</td><td>dom.js, state.js, iniciais.js, retornos.js, equipment.js, attachments.js, ui.js, utils.js</td><td>Reset completo de formulário, estado e DOM</td></tr>
+  <tr><td>compress.js</td><td>utils.js</td><td>toBase64, blobToBase64, loadImage, MAX_SIZE, SKIP_SIZE</td></tr>
+  <tr><td>duplicate.js</td><td>dom.js, state.js, db.js, utils.js</td><td>Modal DOM, state, getRecord, formatDate</td></tr>
+  <tr><td>sw-update.js</td><td>(nenhum)</td><td>Autônomo: registra SW e gerencia modal de atualização</td></tr>
+  <tr><td>styles.js</td><td>(nenhum)</td><td>Constantes CSS exportadas</td></tr>
+  <tr><td>utils.js</td><td>(nenhum)</td><td>Funções puras utilitárias</td></tr>
+</table>
+
+<h3>Regras de Negócio</h3>
+<table>
+  <tr><th style="width:70px">ID</th><th style="width:90px">Confiança</th><th>Regra</th></tr>
+  <tr><td>RN01</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td><code>resetForm()</code> limpa estado (<code>state.iniciais</code>, <code>state.equipamentos</code>, <code>state.attachments</code>, <code>state.retorno</code>, <code>state.lastTipoOrdem</code>, <code>state.currentUUID</code>, <code>state.iniciaisValido</code>) e re-renderiza todas as seções</td></tr>
+  <tr><td>RN02</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Após reset, <code>markAttachmentsDirty()</code> é chamado para forçar re-save vazio de anexos</td></tr>
+  <tr><td>RN03</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Compressão usa canvas com <code>drawImage</code> redimensionado proporcionalmente; saída sempre JPEG</td></tr>
+  <tr><td>RN04</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Aquivos comprimidos recebem sufixo <code>_red.jpg</code> (ex: <code>foto.jpg</code> → <code>foto_red.jpg</code>)</td></tr>
+  <tr><td>RN05</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Service worker só registra se <code>navigator.serviceWorker</code> estiver disponível</td></tr>
+  <tr><td>RN06</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Modal de atualização do SW exibe botão que recarrega a página ao clicar</td></tr>
+</table>
+
+<h2>3. Tarefas</h2>
+<table>
+  <tr><th style="width:40px">#</th><th style="width:100px">Confiança</th><th>Tarefa</th></tr>
+  <tr><td>T01</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Criar <code>resetForm()</code> — limpar estado, DOM, UUID, re-renderizar seções</td></tr>
+  <tr><td>T02</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Criar <code>compressAttachments()</code> — compressão progressiva de imagens</td></tr>
+  <tr><td>T03</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Criar helper <code>drawAndBlob()</code> — desenha canvas e retorna blob JPEG</td></tr>
+  <tr><td>T04</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Criar <code>checkDuplicate()</code> — modal de confirmação para reenvio</td></tr>
+  <tr><td>T05</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Criar <code>initSW()</code> — registro do service worker com modal de atualização</td></tr>
+  <tr><td>T06</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Criar <code>captureCoordinates()</code> — geolocalização com fallback</td></tr>
+  <tr><td>T07</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Criar utilitários <code>toBase64</code>, <code>blobToBase64</code>, <code>loadImage</code>, <code>formatDate</code>, <code>base64ToBlob</code></td></tr>
+  <tr><td>T08</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Criar constantes <code>INPUT_CLASS</code> e <code>SELECT_CLASS</code> em styles.js</td></tr>
+</table>
+
+<hr>
+<p style="font-size:12px;color:#555;">Gerado automaticamente pelo Time Reversa Docs — mail-mvp</p>
+</body>
+</html>

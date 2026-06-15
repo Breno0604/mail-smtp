@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arquitetura 3D | mail-mvp</title>
+<meta name="reversa-category" content="diagram">
+<meta name="reversa-producer-agent" content="reversa-docs-mapper">
+<meta name="reversa-template" content="arquitetura">
+<meta name="generated-at" content="2026-06-15T16:40:00-03:00">
+<script src="assets/vendor/three.min.js"></script>
+<script src="assets/vendor/OrbitControls.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, sans-serif; overflow: hidden; background: #0a0a10; color: #eaeaea; }
+#info { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); padding: 8px 18px; border-radius: 20px; font-size: 13px; pointer-events: none; z-index: 5; }
+#sidebar { position: fixed; top: 0; right: 0; width: 260px; height: 100vh; background: rgba(15,15,22,0.92); padding: 20px 16px; overflow-y: auto; z-index: 10; border-left: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(8px); }
+#sidebar h3 { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 16px; }
+#sidebar label { display: block; font-size: 12px; color: #aaa; margin-bottom: 12px; }
+#sidebar input[type="range"] { width: 100%; margin-top: 4px; accent-color: #4a9eff; }
+#sidebar input[type="checkbox"] { margin-right: 6px; accent-color: #4a9eff; }
+#sidebar select { width: 100%; margin-top: 4px; padding: 4px 6px; background: #1a1a2a; color: #eaeaea; border: 1px solid #333; border-radius: 4px; font-size: 12px; }
+#sidebar button { width: 100%; padding: 8px; margin-top: 6px; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; background: #2a2a3a; color: #eaeaea; }
+#sidebar button:hover { background: #3a3a4a; }
+#sidebar .stats { margin-top: 16px; padding-top: 12px; border-top: 1px solid #222; font-size: 11px; color: #666; line-height: 1.6; }
+#tooltip { position: fixed; display: none; background: rgba(0,0,0,0.85); color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 12px; pointer-events: none; z-index: 20; max-width: 260px; line-height: 1.5; border: 1px solid rgba(255,255,255,0.1); }
+#loader { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: #0a0a10; color: #eaeaea; font-size: 18px; z-index: 100; }
+</style>
+</head>
+<body data-style="sober">
+<div id="loader">Carregando cena 3D...</div>
+<div id="info">Arraste para rotacionar | Scroll para zoom | Clique em um prédio para focar</div>
+<div id="sidebar">
+  <h3>Code City</h3>
+  <label>Altura (LOC)
+    <input type="range" min="0.1" max="2.0" step="0.1" value="0.4" data-param="locScale">
+  </label>
+  <label>Base (complexidade)
+    <input type="range" min="0.2" max="2.0" step="0.1" value="0.8" data-param="complexityScale">
+  </label>
+  <label><input type="checkbox" data-param="showLabels" checked> Labels visíveis</label>
+  <label><input type="checkbox" data-param="showDistricts" checked> Mostrar distritos</label>
+  <label>Filtrar pasta
+    <select data-param="folderFilter">
+      <option value="all">Todas</option>
+      <option value="scripts">scripts</option>
+      <option value="functions">functions</option>
+    </select>
+  </label>
+  <button id="reset-view">Resetar visão</button>
+  <button id="export-png">Exportar PNG</button>
+  <div class="stats">
+    <strong>mail-mvp</strong><br>
+    24 módulos · 84 dependências<br>
+    0 ciclos · 1.889 LOC
+  </div>
+</div>
+<div id="tooltip"></div>
+
+<script src="assets/data/data-embedded.js"></script>
+<script>
+(function() {
+  const SRC = window.RV_DATA;
+  if (!SRC || !SRC.modules || !SRC.deps) { document.getElementById('loader').textContent = 'Nenhum dado disponível.'; return; }
+
+  const modules = SRC.modules;
+  const deps = SRC.deps;
+
+  // ── Config ──
+  const CELL = 4;
+  const GAP = 2;
+  const MIN_H = 0.3;
+  const COLORS = {
+    scripts: 0x4a9eff,
+    functions: 0xffc857,
+    hot: 0xff5a4f
+  };
+
+  // ── City layout ──
+  const DISTRICTS = {};
+  modules.forEach(function(m) {
+    var folder = m.folder || 'root';
+    if (!DISTRICTS[folder]) DISTRICTS[folder] = [];
+    DISTRICTS[folder].push(m);
+  });
+
+  var folders = Object.keys(DISTRICTS);
+  var gridCols = Math.ceil(Math.sqrt(folders.length));
+  var offsetX = 0, offsetZ = 0;
+  var districtPos = {};
+  folders.forEach(function(folder, i) {
+    var size = Math.sqrt(DISTRICTS[folder].length) * CELL * 1.5 + GAP * 2;
+    districtPos[folder] = { x: offsetX, z: offsetZ, size: size };
+    offsetX += size + GAP * 2;
+    if ((i + 1) % gridCols === 0) { offsetX = 0; offsetZ += size + GAP * 2; }
+  });
+
+  modules.forEach(function(m) {
+    var folder = m.folder || 'root';
+    var d = districtPos[folder];
+    var list = DISTRICTS[folder];
+    var idx = list.indexOf(m);
+    var cols = Math.ceil(Math.sqrt(list.length));
+    var col = idx % cols;
+    var row = Math.floor(idx / cols);
+    m._x = d.x + col * CELL + CELL/2;
+    m._z = d.z + row * CELL + CELL/2;
+  });
+
+  // ── Three.js setup ──
+  var scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0a0a10);
+
+  var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+  var totalW = offsetX || 40;
+  var totalZ = (offsetZ + districtPos[folders[folders.length-1]]?.size) || 40;
+  camera.position.set(totalW * 0.8, totalW * 0.7, totalZ * 0.8);
+  camera.lookAt(totalW / 2, 0, totalZ / 2);
+
+  var renderer = new THREE.WebGLRenderer({ antialias: true, canvas: document.createElement('canvas') });
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.setClearColor(0x0a0a10);
+  document.body.prepend(renderer.domElement);
+  renderer.domElement.style.position = 'fixed';
+  renderer.domElement.style.inset = '0';
+
+  var controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+  controls.target.set(totalW / 2, 0, totalZ / 2);
+  controls.maxPolarAngle = Math.PI / 2.1;
+  controls.update();
+
+  // ── Lighting ──
+  var ambient = new THREE.AmbientLight(0x404060, 0.6);
+  scene.add(ambient);
+  var hemi = new THREE.HemisphereLight(0x4a9eff, 0x14141a, 0.8);
+  scene.add(hemi);
+  var dir = new THREE.DirectionalLight(0xffffff, 1.2);
+  dir.position.set(30, 50, 20);
+  dir.castShadow = true;
+  dir.shadow.mapSize.set(2048, 2048);
+  scene.add(dir);
+
+  // ── Ground ──
+  var ground = new THREE.Mesh(
+    new THREE.PlaneGeometry(200, 200),
+    new THREE.MeshStandardMaterial({ color: 0x12121a, roughness: 1 })
+  );
+  ground.rotation.x = -Math.PI / 2;
+  ground.position.set(totalW / 2, -0.1, totalZ / 2);
+  ground.receiveShadow = true;
+  scene.add(ground);
+
+  // ── District planes ──
+  var districtMeshes = [];
+  folders.forEach(function(folder) {
+    var d = districtPos[folder];
+    var color = COLORS[folder] || 0x555555;
+    var plane = new THREE.Mesh(
+      new THREE.PlaneGeometry(d.size, d.size),
+      new THREE.MeshStandardMaterial({ color: color, transparent: true, opacity: 0.1, side: THREE.DoubleSide })
+    );
+    plane.rotation.x = -Math.PI / 2;
+    plane.position.set(d.x + d.size/2, 0.01, d.z + d.size/2);
+    scene.add(plane);
+    districtMeshes.push(plane);
+
+    // Label sprite
+    var canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 64;
+    var ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#888';
+    ctx.font = 'bold 28px system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(folder, 256, 44);
+    var tex = new THREE.CanvasTexture(canvas);
+    var spriteMat = new THREE.SpriteMaterial({ map: tex, transparent: true, opacity: 0.6 });
+    var sprite = new THREE.Sprite(spriteMat);
+    sprite.position.set(d.x + d.size/2, 0.2, d.z + d.size/2);
+    sprite.scale.set(d.size * 0.8, 0.5, 1);
+    scene.add(sprite);
+  });
+
+  // ── Buildings ──
+  var LOC_TO_HEIGHT = 0.4;
+  var COMPLEXITY_TO_WIDTH = 0.8;
+  var MIN_W = 1.5;
+
+  modules.forEach(function(m) {
+    var h = Math.max(MIN_H, m.loc * LOC_TO_HEIGHT);
+    var baseW = Math.max(MIN_W, Math.sqrt(m.complexity) * COMPLEXITY_TO_WIDTH);
+    m._h = h;
+    m._w = baseW;
+  });
+
+  var boxGeo = new THREE.BoxGeometry(1, 1, 1);
+  boxGeo.translate(0, 0.5, 0);
+  var buildingMat = new THREE.MeshStandardMaterial({ roughness: 0.5, metalness: 0.1 });
+  var buildings = new THREE.InstancedMesh(boxGeo, buildingMat, modules.length);
+  buildings.castShadow = true;
+  buildings.receiveShadow = true;
+
+  var dummy = new THREE.Object3D();
+  var color = new THREE.Color();
+
+  modules.forEach(function(m, i) {
+    var folder = m.folder || 'root';
+    var baseColor = COLORS[folder] || 0x555555;
+    if (m.complexity > 7) baseColor = COLORS.hot;
+    dummy.position.set(m._x, 0, m._z);
+    dummy.scale.set(m._w, m._h, m._w);
+    dummy.updateMatrix();
+    buildings.setMatrixAt(i, dummy.matrix);
+    color.set(baseColor);
+    buildings.setColorAt(i, color);
+  });
+  buildings.instanceMatrix.needsUpdate = true;
+  buildings.instanceColor.needsUpdate = true;
+  scene.add(buildings);
+
+  // ── Raycaster for hover/click ──
+  var raycaster = new THREE.Raycaster();
+  var pointer = new THREE.Vector2();
+  var tooltip = document.getElementById('tooltip');
+  var hovered = -1;
+
+  function getIntersects(event) {
+    var rect = renderer.domElement.getBoundingClientRect();
+    pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(pointer, camera);
+    return raycaster.intersectObject(buildings);
+  }
+
+  renderer.domElement.addEventListener('pointermove', function(e) {
+    var hits = getIntersects(e);
+    if (hits.length > 0) {
+      var idx = hits[0].instanceId;
+      var m = modules[idx];
+      if (idx !== hovered) {
+        renderer.domElement.style.cursor = 'pointer';
+        hovered = idx;
+      }
+      tooltip.style.display = 'block';
+      tooltip.style.left = (e.clientX + 14) + 'px';
+      tooltip.style.top = (e.clientY - 10) + 'px';
+      tooltip.innerHTML = '<strong>' + m.name + '</strong> (' + m.path + ')<br>' +
+        'LOC: ' + m.loc + ' | Complexidade: ' + m.complexity + '<br>' +
+        'Pasta: ' + (m.folder || 'root');
+    } else {
+      if (hovered !== -1) { renderer.domElement.style.cursor = 'default'; hovered = -1; }
+      tooltip.style.display = 'none';
+    }
+  });
+
+  renderer.domElement.addEventListener('click', function(e) {
+    var hits = getIntersects(e);
+    if (hits.length > 0) {
+      var idx = hits[0].instanceId;
+      var m = modules[idx];
+      controls.target.set(m._x, m._h / 2, m._z);
+    }
+  });
+
+  // ── Sidebar controls ──
+  document.querySelectorAll('[data-param]').forEach(function(el) {
+    el.addEventListener('change', function() {
+      var param = el.getAttribute('data-param');
+      if (param === 'locScale') {
+        LOC_TO_HEIGHT = parseFloat(el.value);
+        modules.forEach(function(m, i) {
+          m._h = Math.max(MIN_H, m.loc * LOC_TO_HEIGHT);
+          dummy.position.set(m._x, 0, m._z);
+          dummy.scale.set(m._w, m._h, m._w);
+          dummy.updateMatrix();
+          buildings.setMatrixAt(i, dummy.matrix);
+        });
+        buildings.instanceMatrix.needsUpdate = true;
+      }
+      if (param === 'complexityScale') {
+        COMPLEXITY_TO_WIDTH = parseFloat(el.value);
+        modules.forEach(function(m, i) {
+          m._w = Math.max(MIN_W, Math.sqrt(m.complexity) * COMPLEXITY_TO_WIDTH);
+          dummy.position.set(m._x, 0, m._z);
+          dummy.scale.set(m._w, m._h, m._w);
+          dummy.updateMatrix();
+          buildings.setMatrixAt(i, dummy.matrix);
+        });
+        buildings.instanceMatrix.needsUpdate = true;
+      }
+      if (param === 'showDistricts') {
+        districtMeshes.forEach(function(p) { p.visible = el.checked; });
+      }
+      if (param === 'folderFilter') {
+        var val = el.value;
+        modules.forEach(function(m, i) {
+          var visible = (val === 'all' || m.folder === val || (!m.folder && val === 'root'));
+          dummy.position.set(m._x, visible ? 0 : -999, m._z);
+          dummy.scale.set(m._w, m._h, m._w);
+          dummy.updateMatrix();
+          buildings.setMatrixAt(i, dummy.matrix);
+        });
+        buildings.instanceMatrix.needsUpdate = true;
+      }
+    });
+    // Trigger for range (live update)
+    if (el.type === 'range') {
+      el.addEventListener('input', function() { el.dispatchEvent(new Event('change')); });
+    }
+  });
+
+  document.getElementById('reset-view').addEventListener('click', function() {
+    controls.target.set(totalW / 2, 0, totalZ / 2);
+    camera.position.set(totalW * 0.8, totalW * 0.7, totalZ * 0.8);
+    controls.update();
+  });
+
+  document.getElementById('export-png').addEventListener('click', function() {
+    renderer.render(scene, camera);
+    renderer.domElement.toBlob(function(blob) {
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'code-city.png';
+      a.click();
+    });
+  });
+
+  // ── Resize ──
+  window.addEventListener('resize', function() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  // ── Hide loader ──
+  document.getElementById('loader').style.display = 'none';
+
+  // ── Render loop ──
+  function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+</script>
+</body>
+</html>

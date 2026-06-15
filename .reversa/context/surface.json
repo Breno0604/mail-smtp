@@ -1,0 +1,83 @@
+{
+  "generated_at": "2026-06-15T12:58:00-03:00",
+  "project_root": "C:\\Projetos\\mail\\mail-smtp",
+  "languages": [
+    { "name": "JavaScript", "extensions": [".js", ".mjs"], "file_count": 48 },
+    { "name": "HTML", "extensions": [".html"], "file_count": 2 },
+    { "name": "CSS", "extensions": [".css"], "file_count": 3 },
+    { "name": "JSON", "extensions": [".json"], "file_count": 4 }
+  ],
+  "primary_language": "JavaScript",
+  "frameworks": [
+    { "name": "Tailwind CSS", "version": "3.4.19", "source": "package.json" },
+    { "name": "nodemailer", "version": "^6.9.0", "source": "package.json" },
+    { "name": "Vitest", "version": "^4.1.8", "source": "package.json" },
+    { "name": "jsdom", "version": "^29.1.1", "source": "package.json" }
+  ],
+  "package_manager": "npm",
+  "entry_points": [
+    { "path": "index.html", "type": "app_entry" },
+    { "path": "scripts/app.js", "type": "app_entry_js" },
+    { "path": "netlify/functions/send.js", "type": "serverless_function" },
+    { "path": "sw.js", "type": "service_worker" }
+  ],
+  "config_files": [
+    "netlify.toml",
+    "tailwind.config.js",
+    "postcss.config.js",
+    "vitest.config.js",
+    "manifest.json",
+    "package.json"
+  ],
+  "ci_cd": [
+    "netlify.toml"
+  ],
+  "docker": null,
+  "database_hints": [
+    { "path": "scripts/db.js", "type": "indexeddb_schema" }
+  ],
+  "test_framework": "Vitest",
+  "test_file_count": 17,
+  "modules": [
+    "app",
+    "dom",
+    "state",
+    "iniciais",
+    "retornos",
+    "fields",
+    "validation",
+    "email",
+    "send",
+    "attachments",
+    "equipment",
+    "persistence",
+    "restore",
+    "db",
+    "sidebar",
+    "duplicate",
+    "reset",
+    "ui",
+    "utils",
+    "styles"
+  ],
+  "total_files": 57,
+  "organization_suggestion": {
+    "granularity": "feature",
+    "rationale": "Não há roteamento centralizado, pastas por domínio ou specs BDD. O projeto é um SPA de formulário único; a organização por features é o fallback natural.",
+    "signals": [
+      { "type": "no_routing", "evidence": ["index.html", "scripts/app.js"] },
+      { "type": "no_domain_folders", "evidence": ["scripts/"] },
+      { "type": "no_bdd_specs", "evidence": ["tests/"] }
+    ],
+    "features": [
+      "form",
+      "attachments",
+      "equipment",
+      "email",
+      "records",
+      "sidebar",
+      "validation",
+      "persistence"
+    ]
+  }
+}

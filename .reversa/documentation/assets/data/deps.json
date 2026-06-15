@@ -1,0 +1,581 @@
+﻿{
+    "cycles":  [
+
+               ],
+    "nodes":  [
+                  {
+                      "group":  "scripts",
+                      "loc":  99,
+                      "id":  "app",
+                      "complexity":  3.3
+                  },
+                  {
+                      "group":  "scripts",
+                      "loc":  73,
+                      "id":  "attachments",
+                      "complexity":  2.4
+                  },
+                  {
+                      "group":  "scripts",
+                      "loc":  44,
+                      "id":  "compress",
+                      "complexity":  1.5
+                  },
+                  {
+                      "group":  "scripts",
+                      "loc":  179,
+                      "id":  "db",
+                      "complexity":  6
+                  },
+                  {
+                      "group":  "scripts",
+                      "loc":  58,
+                      "id":  "dom",
+                      "complexity":  1.9
+                  },
+                  {
+                      "group":  "scripts",
+                      "loc":  34,
+                      "id":  "duplicate",
+                      "complexity":  1.1
+                  },
+                  {
+                      "group":  "scripts",
+                      "loc":  50,
+                      "id":  "email",
+                      "complexity":  1.7
+                  },
+                  {
+                      "group":  "scripts",
+                      "loc":  68,
+                      "id":  "equipment",
+                      "complexity":  2.3
+                  },
+                  {
+                      "group":  "scripts",
+                      "loc":  107,
+                      "id":  "fields",
+                      "complexity":  3.6
+                  },
+                  {
+                      "group":  "scripts",
+                      "loc":  168,
+                      "id":  "iniciais",
+                      "complexity":  5.6
+                  },
+                  {
+                      "group":  "scripts",
+                      "loc":  114,
+                      "id":  "persistence",
+                      "complexity":  3.8
+                  },
+                  {
+                      "group":  "scripts",
+                      "loc":  40,
+                      "id":  "reset",
+                      "complexity":  1.3
+                  },
+                  {
+                      "group":  "scripts",
+                      "loc":  76,
+                      "id":  "restore",
+                      "complexity":  2.5
+                  },
+                  {
+                      "group":  "scripts",
+                      "loc":  127,
+                      "id":  "retornos",
+                      "complexity":  4.2
+                  },
+                  {
+                      "group":  "scripts",
+                      "loc":  47,
+                      "id":  "send",
+                      "complexity":  1.6
+                  },
+                  {
+                      "group":  "scripts",
+                      "loc":  110,
+                      "id":  "sidebar",
+                      "complexity":  3.7
+                  },
+                  {
+                      "group":  "scripts",
+                      "loc":  15,
+                      "id":  "state",
+                      "complexity":  0.5
+                  },
+                  {
+                      "group":  "scripts",
+                      "loc":  6,
+                      "id":  "storage",
+                      "complexity":  0.2
+                  },
+                  {
+                      "group":  "scripts",
+                      "loc":  6,
+                      "id":  "styles",
+                      "complexity":  0.2
+                  },
+                  {
+                      "group":  "scripts",
+                      "loc":  27,
+                      "id":  "sw-update",
+                      "complexity":  0.9
+                  },
+                  {
+                      "group":  "scripts",
+                      "loc":  51,
+                      "id":  "ui",
+                      "complexity":  1.7
+                  },
+                  {
+                      "group":  "scripts",
+                      "loc":  62,
+                      "id":  "utils",
+                      "complexity":  2.1
+                  },
+                  {
+                      "group":  "scripts",
+                      "loc":  251,
+                      "id":  "validation",
+                      "complexity":  8.4
+                  },
+                  {
+                      "group":  "functions",
+                      "loc":  77,
+                      "id":  "functions-send",
+                      "complexity":  2.6
+                  }
+              ],
+    "stats":  {
+                  "cyclesDetected":  0,
+                  "totalNodes":  24,
+                  "totalEdges":  84,
+                  "totalLoc":  1889
+              },
+    "edges":  [
+                  {
+                      "target":  "dom",
+                      "source":  "app",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "state",
+                      "source":  "app",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "iniciais",
+                      "source":  "app",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "equipment",
+                      "source":  "app",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "retornos",
+                      "source":  "app",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "attachments",
+                      "source":  "app",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "reset",
+                      "source":  "app",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "sidebar",
+                      "source":  "app",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "utils",
+                      "source":  "app",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "send",
+                      "source":  "app",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "email",
+                      "source":  "app",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "dom",
+                      "source":  "attachments",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "state",
+                      "source":  "attachments",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "ui",
+                      "source":  "attachments",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "utils",
+                      "source":  "compress",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "dom",
+                      "source":  "duplicate",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "state",
+                      "source":  "duplicate",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "db",
+                      "source":  "duplicate",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "utils",
+                      "source":  "duplicate",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "dom",
+                      "source":  "email",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "state",
+                      "source":  "email",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "fields",
+                      "source":  "email",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "iniciais",
+                      "source":  "email",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "retornos",
+                      "source":  "email",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "dom",
+                      "source":  "equipment",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "state",
+                      "source":  "equipment",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "validation",
+                      "source":  "equipment",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "dom",
+                      "source":  "iniciais",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "validation",
+                      "source":  "iniciais",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "fields",
+                      "source":  "iniciais",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "state",
+                      "source":  "iniciais",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "utils",
+                      "source":  "iniciais",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "styles",
+                      "source":  "iniciais",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "state",
+                      "source":  "persistence",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "storage",
+                      "source":  "persistence",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "iniciais",
+                      "source":  "persistence",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "retornos",
+                      "source":  "persistence",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "db",
+                      "source":  "persistence",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "utils",
+                      "source":  "persistence",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "dom",
+                      "source":  "persistence",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "dom",
+                      "source":  "reset",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "state",
+                      "source":  "reset",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "iniciais",
+                      "source":  "reset",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "retornos",
+                      "source":  "reset",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "equipment",
+                      "source":  "reset",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "attachments",
+                      "source":  "reset",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "ui",
+                      "source":  "reset",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "utils",
+                      "source":  "reset",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "dom",
+                      "source":  "restore",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "state",
+                      "source":  "restore",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "iniciais",
+                      "source":  "restore",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "retornos",
+                      "source":  "restore",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "equipment",
+                      "source":  "restore",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "attachments",
+                      "source":  "restore",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "utils",
+                      "source":  "restore",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "db",
+                      "source":  "restore",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "dom",
+                      "source":  "retornos",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "state",
+                      "source":  "retornos",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "validation",
+                      "source":  "retornos",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "fields",
+                      "source":  "retornos",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "iniciais",
+                      "source":  "retornos",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "styles",
+                      "source":  "retornos",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "dom",
+                      "source":  "send",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "state",
+                      "source":  "send",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "db",
+                      "source":  "send",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "ui",
+                      "source":  "send",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "duplicate",
+                      "source":  "send",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "compress",
+                      "source":  "send",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "validation",
+                      "source":  "send",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "dom",
+                      "source":  "sidebar",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "state",
+                      "source":  "sidebar",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "db",
+                      "source":  "sidebar",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "utils",
+                      "source":  "sidebar",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "restore",
+                      "source":  "sidebar",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "ui",
+                      "source":  "sidebar",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "storage",
+                      "source":  "state",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "dom",
+                      "source":  "ui",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "dom",
+                      "source":  "validation",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "state",
+                      "source":  "validation",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "ui",
+                      "source":  "validation",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "iniciais",
+                      "source":  "validation",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "retornos",
+                      "source":  "validation",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "fields",
+                      "source":  "validation",
+                      "type":  "import"
+                  },
+                  {
+                      "target":  "equipment",
+                      "source":  "validation",
+                      "type":  "import"
+                  }
+              ],
+    "generatedAt":  "2026-06-15T13:39:50.8956768-03:00",
+    "schemaVersion":  1
+}

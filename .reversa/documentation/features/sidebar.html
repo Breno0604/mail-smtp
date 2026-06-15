@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sidebar & Histórico | mail-mvp</title>
+<meta name="reversa-category" content="feature">
+<meta name="reversa-producer-agent" content="reversa-docs-storyteller">
+<meta name="reversa-template" content="feature">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, sans-serif; background: #0a0a10; color: #eaeaea; padding: 32px; max-width: 960px; margin: 0 auto; }
+h1 { font-size: 22px; font-weight: 300; letter-spacing: 0.5px; margin-bottom: 4px; }
+.subtitle { color: #666; font-size: 13px; margin-bottom: 24px; }
+.back { display: inline-block; margin-bottom: 16px; color: #4a9eff; text-decoration: none; font-size: 13px; }
+.back:hover { text-decoration: underline; }
+h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-top: 32px; margin-bottom: 12px; }
+h3 { font-size: 14px; font-weight: 600; color: #ccc; margin-top: 20px; margin-bottom: 8px; }
+p, li { font-size: 14px; line-height: 1.6; color: #c0c0c0; }
+ul, ol { padding-left: 20px; margin-bottom: 12px; }
+li { margin-bottom: 4px; }
+table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px; }
+th { text-align: left; padding: 8px 10px; background: rgba(74,158,255,0.08); color: #4a9eff; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; border-bottom: 1px solid rgba(74,158,255,0.15); }
+td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); color: #c0c0c0; vertical-align: top; }
+td:first-child { font-weight: 500; color: #eaeaea; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.3px; }
+.badge-green { background: rgba(34,197,94,0.15); color: #22c55e; }
+.badge-blue { background: rgba(74,158,255,0.15); color: #4a9eff; }
+.badge-yellow { background: rgba(234,179,8,0.15); color: #eab308; }
+.tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 11px; background: rgba(255,255,255,0.06); color: #888; margin-right: 4px; }
+.modules { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+.module-tag { padding: 4px 12px; border-radius: 6px; font-size: 12px; background: rgba(74,158,255,0.1); color: #4a9eff; border: 1px solid rgba(74,158,255,0.2); }
+hr { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 24px 0; }
+</style>
+</head>
+<body>
+<a href="../index.html" class="back">&larr; Voltar ao índice</a>
+<h1>Sidebar &amp; Histórico</h1>
+<p class="subtitle">Listagem, busca, filtro, duplicação e exclusão de registros</p>
+
+<div class="modules">
+  <span class="module-tag">sidebar.js</span>
+  <span class="module-tag">duplicate.js</span>
+</div>
+
+<h2>1. Requisitos</h2>
+
+<table>
+  <tr><th style="width:40px">#</th><th style="width:100px">Prioridade</th><th>Descrição</th></tr>
+  <tr><td>REQ01</td><td><span class="badge badge-green">Must</span></td><td>Sidebar deve listar todos os registros ordenados por <code>updatedAt</code> decrescente</td></tr>
+  <tr><td>REQ02</td><td><span class="badge badge-green">Must</span></td><td>Cada item deve exibir resumo (UC-OS-TipoOrdem), status (Enviado/Rascunho) e data de atualização</td></tr>
+  <tr><td>REQ03</td><td><span class="badge badge-green">Must</span></td><td>Campo de busca filtra registros por UC, OS ou Tipo de Ordem (case-insensitive)</td></tr>
+  <tr><td>REQ04</td><td><span class="badge badge-green">Must</span></td><td>Botão "Editar" carrega registro completo no formulário via <code>applyRecord()</code></td></tr>
+  <tr><td>REQ05</td><td><span class="badge badge-green">Must</span></td><td>Botão "Excluir" mostra confirmação antes de deletar via <code>deleteRecord()</code></td></tr>
+  <tr><td>REQ06</td><td><span class="badge badge-green">Must</span></td><td>Exclusão limpa <code>currentUUID</code> se o registro excluído estiver ativo</td></tr>
+  <tr><td>REQ07</td><td><span class="badge badge-blue">Should</span></td><td>Sidebar fecha ao carregar um registro ou ao clicar no overlay/fechar</td></tr>
+  <tr><td>REQ08</td><td><span class="badge badge-blue">Should</span></td><td>Mensagem "Nenhum registro encontrado" exibida quando não há dados</td></tr>
+  <tr><td>REQ09</td><td><span class="badge badge-blue">Should</span></td><td>Mensagem com termo de busca exibida quando filtro não encontra resultados</td></tr>
+  <tr><td>REQ10</td><td><span class="badge badge-green">Must</span></td><td>Ao editar, scroll suave para o topo da página é disparado</td></tr>
+</table>
+
+<h2>2. Design Técnico</h2>
+
+<h3>Funções da Interface</h3>
+<table>
+  <tr><th>Função</th><th>Módulo</th><th>Descrição</th></tr>
+  <tr><td><code>renderSidebar(filterTerm)</code></td><td>sidebar.js</td><td>Renderiza lista de registros, aplica filtro opcional, ordena por data</td></tr>
+  <tr><td><code>closeSidebar()</code></td><td>sidebar.js</td><td>Remove classe <code>sidebar-open</code> do body</td></tr>
+  <tr><td><code>initSidebarFilter()</code></td><td>sidebar.js</td><td>Ativa listener <code>input</code> no campo de filtro</td></tr>
+  <tr><td><code>checkDuplicate()</code></td><td>duplicate.js</td><td>Verifica se registro atual já foi enviado e exibe modal de confirmação</td></tr>
+</table>
+
+<h3>Dependências</h3>
+<table>
+  <tr><th>Módulo</th><th>Depende de</th><th>Uso</th></tr>
+  <tr><td>sidebar.js</td><td>dom.js, state.js, db.js, utils.js, restore.js, ui.js</td><td>DOM cache, estado global, IndexedDB CRUD, formatação de data, applyRecord, showConfirm</td></tr>
+  <tr><td>duplicate.js</td><td>dom.js, state.js, db.js, utils.js</td><td>Modal de duplicação, getRecord, formatDate</td></tr>
+</table>
+
+<h3>Regras de Negócio</h3>
+<table>
+  <tr><th style="width:70px">ID</th><th style="width:90px">Confiança</th><th>Regra</th></tr>
+  <tr><td>RN01</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Registros são ordenados por <code>updatedAt</code> do mais recente para o mais antigo</td></tr>
+  <tr><td>RN02</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>O resumo do registro segue o formato: <code>UC-OS-TipoOrdem</code> quando todos presentes; <code>UC-OS</code> quando só esses; <code>OS #N</code> quando só OS; <code>UC N</code> quando só UC; <code>(rascunho vazio)</code> quando nenhum</td></tr>
+  <tr><td>RN03</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Busca na sidebar filtra por UC, OS ou Tipo de Ordem com <code>includes()</code> case-insensitive</td></tr>
+  <tr><td>RN04</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Ao editar um registro, o formulário é populado via <code>applyRecord()</code> e a sidebar é fechada</td></tr>
+  <tr><td>RN05</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Exclusão requer confirmação do usuário via <code>showConfirm()</code></td></tr>
+  <tr><td>RN06</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Se o registro excluído é o ativo (<code>currentUUID</code>), o UUID é limpo via <code>clearCurrentUUID()</code></td></tr>
+  <tr><td>RN07</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Exclusão é atômica: deleta registro e anexos associados na mesma transação IndexedDB</td></tr>
+  <tr><td>RN08</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Registros já enviados (<code>status === "sent"</code>) disparam modal de confirmação antes de novo envio</td></tr>
+  <tr><td>RN09</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td><code>getRecord()</code> busca o registro completo por UUID no IndexedDB</td></tr>
+  <tr><td>RN10</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Sidebar é fechada ao clicar no overlay, botão fechar, ou ao editar um registro</td></tr>
+  <tr><td>RN11</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Lista vazia exibe mensagem "Nenhum registro encontrado"; filtro sem resultados exibe "Nenhum registro encontrado para TERMO"</td></tr>
+  <tr><td>RN12</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Erro ao carregar do IndexedDB exibe "Erro ao carregar registros" na sidebar</td></tr>
+  <tr><td>RN13</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Modal de duplicação exibe OS do registro e data de envio; oferece opções "Cancelar" e "Enviar mesmo assim"</td></tr>
+  <tr><td>RN14</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Ao editar, scroll suave <code>window.scrollTo({ top: 0, behavior: "smooth" })</code> é executado</td></tr>
+</table>
+
+<h2>3. Tarefas</h2>
+<table>
+  <tr><th style="width:40px">#</th><th style="width:100px">Confiança</th><th>Tarefa</th></tr>
+  <tr><td>T01</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Criar função <code>closeSidebar()</code> — remove classe <code>sidebar-open</code> do body</td></tr>
+  <tr><td>T02</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Criar <code>getRecordSummary()</code> — gera string de resumo do registro</td></tr>
+  <tr><td>T03</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Criar <code>renderSidebar()</code> — buscar registros, ordenar, filtrar, renderizar DOM</td></tr>
+  <tr><td>T04</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Criar <code>loadRecord()</code> — aplicar registro no formulário e fechar sidebar</td></tr>
+  <tr><td>T05</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Criar <code>initSidebarFilter()</code> — listener input no campo de busca</td></tr>
+  <tr><td>T06</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Criar <code>checkDuplicate()</code> — verificar status "sent" e exibir modal</td></tr>
+  <tr><td>T07</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Integrar <code>deleteRecord()</code> com transação atômica (registro + anexos)</td></tr>
+  <tr><td>T08</td><td><span class="badge badge-green">🟢 CONFIRMADO</span></td><td>Garantir scroll suave ao carregar registro</td></tr>
+</table>
+
+<hr>
+<p style="font-size:12px;color:#555;">Gerado automaticamente pelo Time Reversa Docs — mail-mvp</p>
+</body>
+</html>
