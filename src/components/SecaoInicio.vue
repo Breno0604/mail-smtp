@@ -57,7 +57,7 @@ async function handleCoordinates() {
     <div class="sec-body" id="iniciais-campos">
       <div v-for="linha in linhas" :key="linha" class="mb-4">
         <div 
-          v-if="linha === 8" 
+          v-if="linha === 6" 
           class="linha-data"
         >
           <div 

@@ -4,6 +4,7 @@ import { ref, watch, computed } from 'vue';
 import { db } from '@/db';
 import type { RecordData, EquipamentoData, StoredAttachment } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
+import { captureCoordinates } from '@/utils/coordinates';
 
 export const useFormStore = defineStore('form', () => {
   // ── State ──────────────────────────────────────────────────────────────
@@ -139,16 +140,24 @@ export const useFormStore = defineStore('form', () => {
     }
   }
 
-  function newRecord() {
+  async function newRecord() {
     // Save current draft if valid before creating new
     if (iniciaisValido.value) {
-      saveDraft();
+      await saveDraft();
     }
     resetForm();
     // Generate new UUID for the new record
     currentUUID.value = uuidv4();
     createdAt.value = new Date().toISOString();
     updatedAt.value = createdAt.value;
+    
+    // Auto-capture coordinates for new record
+    try {
+      const coords = await captureCoordinates();
+      iniciais.value.coordenadas = coords;
+    } catch {
+      // Ignore geolocation errors
+    }
   }
 
   // ── Watchers ───────────────────────────────────────────────────────────

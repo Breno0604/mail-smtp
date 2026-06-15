@@ -6,10 +6,28 @@ import { getRetornoFields } from '@/constants/fields';
 
 const form = useFormStore();
 
-const activeRetornoFields = computed(() => {
+// Get all fields for the current tipo (including conditional ones)
+const allRetornoFields = computed(() => {
   const tipo = form.tipoOrdem || form.iniciais['tipo-ordem'] || '';
   if (!tipo) return [];
   return getRetornoFields(tipo);
+});
+
+// Filter fields based on conditional visibility
+const activeRetornoFields = computed(() => {
+  const fields = allRetornoFields.value;
+  return fields.filter(field => {
+    if (!field.condicional) return true;
+    
+    const controlValue = form.retorno[field.condicional.campoRef];
+    if (!controlValue) return false;
+    
+    const valores = Array.isArray(field.condicional.valor)
+      ? field.condicional.valor
+      : [field.condicional.valor];
+    const match = valores.includes(controlValue);
+    return field.condicional.negado ? !match : match;
+  });
 });
 
 // Blur validation tracking
@@ -20,7 +38,7 @@ function markTouched(fieldName: string) {
 }
 
 function isFieldError(fieldName: string): boolean {
-  const field = activeRetornoFields.value.find(f => f.nome === fieldName);
+  const field = allRetornoFields.value.find(f => f.nome === fieldName);
   if (!field?.obrigatorio) return false;
   if (!touched[fieldName]) return false;
   const value = form.retorno[fieldName];
@@ -28,7 +46,7 @@ function isFieldError(fieldName: string): boolean {
 }
 
 function getFieldStateClass(fieldName: string): string {
-  const field = activeRetornoFields.value.find(f => f.nome === fieldName);
+  const field = allRetornoFields.value.find(f => f.nome === fieldName);
   if (!field?.obrigatorio) return '';
   const value = form.retorno[fieldName];
   if (!value || value.trim() === '') {
@@ -45,6 +63,21 @@ watch(() => form.tipoOrdem, () => {
 watch(() => form.iniciais['tipo-ordem'], () => {
   form.retorno = {};
 });
+
+// Clear conditional field values when they become hidden
+watch(activeRetornoFields, (newFields, oldFields) => {
+  const newFieldNames = new Set(newFields.map(f => f.nome));
+  const oldFieldNames = new Set(oldFields.map(f => f.nome));
+  
+  // Find fields that were visible but are now hidden
+  const hiddenFields = [...oldFieldNames].filter(name => !newFieldNames.has(name));
+  
+  hiddenFields.forEach(fieldName => {
+    if (form.retorno[fieldName]) {
+      form.retorno[fieldName] = '';
+    }
+  });
+}, { deep: true });
 </script>
 
 <template>
