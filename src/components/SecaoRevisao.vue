@@ -1,7 +1,8 @@
 <!-- src/components/SecaoRevisao.vue -->
 <script setup lang="ts">
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useFormStore } from '@/stores/form';
+import { useUIStore } from '@/stores/ui';
 import { useEmail } from '@/composables/useEmail';
 import { useValidation } from '@/composables/useValidation';
 import { useOnlineStatus } from '@/composables/useOnlineStatus';
@@ -9,29 +10,38 @@ import { useOfflineQueue } from '@/composables/useOfflineQueue';
 import type { StoredAttachment } from '@/types';
 
 const form = useFormStore();
+const ui = useUIStore();
 const { composeEmail } = useEmail();
 const { validateAll } = useValidation();
 const { isOnline } = useOnlineStatus();
 const { queueSend } = useOfflineQueue();
+
+const sending = ref(false);
 
 const isFormValid = computed(() => {
   return form.iniciaisValido && form.tipoOrdem;
 });
 
 async function handleSend() {
+  // Validate
   const validation = validateAll();
   if (!validation.valid) {
-    alert(validation.errors.join('\n'));
+    ui.showToast(validation.errors.join('\n'), false);
     return;
+  }
+
+  // Check duplicate (status = 'sent' means this record was already sent)
+  if (form.status === 'sent') {
+    const confirm = await ui.showConfirm('Este registro já foi enviado. Deseja reenviar o e-mail?');
+    if (!confirm) return;
   }
 
   if (!form.currentUUID) {
     await form.saveDraft();
   }
 
+  // Compose payload
   const emailBody = composeEmail.value;
-
-  // Build payload matching send.js expectations: { subject, text, attachments }
   const uc = form.iniciais.uc || '—';
   const os = form.iniciais.os || '—';
   const tipoOrdem = form.tipoOrdem || form.iniciais['tipo-ordem'] || '—';
@@ -46,12 +56,15 @@ async function handleSend() {
   
   const payload = { subject, text, attachments };
 
+  // Offline → queue
   if (!isOnline.value) {
     await queueSend(form.currentUUID!, payload);
-    alert('Offline. E-mail salvo para envio quando voltar a conexão.');
+    ui.showToast('Offline. E-mail salvo para envio quando voltar a conexão.', true);
     return;
   }
 
+  // Online → send
+  sending.value = true;
   try {
     const response = await fetch('/api/send', {
       method: 'POST',
@@ -63,9 +76,9 @@ async function handleSend() {
       form.status = 'sent';
       form.sentData = { sentAt: new Date().toISOString(), subject };
       await form.saveDraft();
-      alert('E-mail enviado com sucesso!');
+      ui.showToast('E-mail enviado com sucesso!', true);
     } else {
-      // Server returned an error (4xx, 5xx) - read body as text to show actual error
+      // Server returned an error (4xx, 5xx)
       const errBody = await response.text().catch(() => '(resposta vazia)');
       let errMsg: string;
       try {
@@ -75,12 +88,14 @@ async function handleSend() {
         errMsg = errBody;
       }
       await queueSend(form.currentUUID!, payload);
-      alert(`Erro ${response.status}: ${errMsg}`);
+      ui.showToast(`Erro ${response.status}: ${errMsg}`, false);
     }
   } catch {
-    // Network error - backend offline, proxy unavailable, CORS, etc.
+    // Network error
     await queueSend(form.currentUUID!, payload);
-    alert('Servidor de envio não disponível. E-mail salvo para envio posterior.');
+    ui.showToast('Servidor de envio não disponível. E-mail salvo para envio posterior.', false);
+  } finally {
+    sending.value = false;
   }
 }
 </script>
@@ -117,9 +132,9 @@ async function handleSend() {
       id="btn-enviar"
       class="btn btn-success"
       @click="handleSend"
-      :disabled="!isFormValid"
+      :disabled="!isFormValid || sending"
     >
-      📨 Enviar
+      {{ sending ? '⏳ Enviando...' : '📨 Enviar' }}
     </button>
   </div>
 </template>
