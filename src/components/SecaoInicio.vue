@@ -72,37 +72,39 @@ async function handleCoordinates() {
             </label>
             
             <!-- Select -->
-            <select 
-              v-if="field.tipo === 'select'" 
-              :id="field.nome"
-              :value="form.iniciais[field.nome]"
-              @change="($event) => { const val = ($event.target as HTMLSelectElement).value; form.iniciais[field.nome] = val; if (field.nome === 'tipo-ordem') form.setTipoOrdem(val); }"
-              @blur="markTouched(field.nome)"
-              :class="['w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2.5 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10', getFieldStateClass(field.nome)]"
-              :disabled="field.readonly"
-            >
-              <option value="">Selecione</option>
-              <option v-for="opt in field.opcoes" :key="opt" :value="opt">{{ opt }}</option>
-            </select>
-            <span v-if="field.obrigatorio" class="field-error" :class="{ show: isFieldError(field.nome) }">
-              {{ field.label }} é obrigatório
-            </span>
+            <template v-if="field.tipo === 'select'">
+              <select 
+                :id="field.nome"
+                :value="form.iniciais[field.nome]"
+                @change="($event) => { const val = ($event.target as HTMLSelectElement).value; form.iniciais[field.nome] = val; if (field.nome === 'tipo-ordem') form.setTipoOrdem(val); }"
+                @blur="markTouched(field.nome)"
+                :class="['w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2.5 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10', getFieldStateClass(field.nome)]"
+                :disabled="field.readonly"
+              >
+                <option value="">Selecione</option>
+                <option v-for="opt in field.opcoes" :key="opt" :value="opt">{{ opt }}</option>
+              </select>
+              <span v-if="field.obrigatorio" class="field-error" :class="{ show: isFieldError(field.nome) }">
+                {{ field.label }} é obrigatório
+              </span>
+            </template>
 
             <!-- Text/Number -->
-            <input 
-              v-else-if="field.tipo === 'text' || field.tipo === 'number'" 
-              :id="field.nome"
-              :type="field.tipo === 'number' ? 'number' : 'text'"
-              :value="form.iniciais[field.nome]"
-              @input="($event) => { form.iniciais[field.nome] = ($event.target as HTMLInputElement).value; }"
-              @blur="markTouched(field.nome)"
-              :disabled="field.readonly"
-              :inputmode="field.tipo === 'number' ? 'numeric' : 'text'"
-              :class="['w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2.5 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10', getFieldStateClass(field.nome)]"
-            />
-            <span v-if="field.obrigatorio" class="field-error" :class="{ show: isFieldError(field.nome) }">
-              {{ field.label }} é obrigatório
-            </span>
+            <template v-else-if="field.tipo === 'text' || field.tipo === 'number'">
+              <input 
+                :id="field.nome"
+                :type="field.tipo === 'number' ? 'number' : 'text'"
+                :value="form.iniciais[field.nome]"
+                @input="($event) => { form.iniciais[field.nome] = ($event.target as HTMLInputElement).value; }"
+                @blur="markTouched(field.nome)"
+                :disabled="field.readonly"
+                :inputmode="field.tipo === 'number' ? 'numeric' : 'text'"
+                :class="['w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2.5 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10', getFieldStateClass(field.nome)]"
+              />
+              <span v-if="field.obrigatorio" class="field-error" :class="{ show: isFieldError(field.nome) }">
+                {{ field.label }} é obrigatório
+              </span>
+            </template>
           </div>
         </div>
 
@@ -122,35 +124,37 @@ async function handleCoordinates() {
             </label>
             
             <!-- Date -->
-            <input 
-              v-if="field.tipo === 'date'" 
-              :id="field.nome"
-              type="date"
-              :value="form.iniciais[field.nome]"
-              @input="($event) => { form.iniciais[field.nome] = ($event.target as HTMLInputElement).value; }"
-              @blur="markTouched(field.nome)"
-              :class="['w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2.5 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10', getFieldStateClass(field.nome)]"
-              :disabled="field.readonly"
-            />
-            <span v-if="field.obrigatorio" class="field-error" :class="{ show: isFieldError(field.nome) }">
-              {{ field.label }} é obrigatório
-            </span>
+            <template v-if="field.tipo === 'date'">
+              <input 
+                :id="field.nome"
+                type="date"
+                :value="form.iniciais[field.nome]"
+                @input="($event) => { form.iniciais[field.nome] = ($event.target as HTMLInputElement).value; }"
+                @blur="markTouched(field.nome)"
+                :class="['w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2.5 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10', getFieldStateClass(field.nome)]"
+                :disabled="field.readonly"
+              />
+              <span v-if="field.obrigatorio" class="field-error" :class="{ show: isFieldError(field.nome) }">
+                {{ field.label }} é obrigatório
+              </span>
+            </template>
 
             <!-- Time -->
-            <input 
-              v-else-if="field.tipo === 'time'" 
-              :id="field.nome"
-              type="time"
-              :value="form.iniciais[field.nome]"
-              @input="($event) => { form.iniciais[field.nome] = ($event.target as HTMLInputElement).value; }"
-              @blur="markTouched(field.nome)"
-              step="300"
-              :class="['w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2.5 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10', getFieldStateClass(field.nome)]"
-              :disabled="field.readonly"
-            />
-            <span v-if="field.obrigatorio" class="field-error" :class="{ show: isFieldError(field.nome) }">
-              {{ field.label }} é obrigatório
-            </span>
+            <template v-else-if="field.tipo === 'time'">
+              <input 
+                :id="field.nome"
+                type="time"
+                :value="form.iniciais[field.nome]"
+                @input="($event) => { form.iniciais[field.nome] = ($event.target as HTMLInputElement).value; }"
+                @blur="markTouched(field.nome)"
+                step="300"
+                :class="['w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2.5 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10', getFieldStateClass(field.nome)]"
+                :disabled="field.readonly"
+              />
+              <span v-if="field.obrigatorio" class="field-error" :class="{ show: isFieldError(field.nome) }">
+                {{ field.label }} é obrigatório
+              </span>
+            </template>
           </div>
         </div>
 
@@ -167,60 +171,64 @@ async function handleCoordinates() {
             </label>
             
             <!-- Select -->
-            <select 
-              v-if="field.tipo === 'select'" 
-              :id="field.nome"
-              :value="form.iniciais[field.nome]"
-              @change="($event) => { const val = ($event.target as HTMLSelectElement).value; form.iniciais[field.nome] = val; if (field.nome === 'tipo-ordem') form.setTipoOrdem(val); }"
-              @blur="markTouched(field.nome)"
-              :class="['w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2.5 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10', getFieldStateClass(field.nome)]"
-              :disabled="field.readonly"
-            >
-              <option value="">Selecione</option>
-              <option v-for="opt in field.opcoes" :key="opt" :value="opt">{{ opt }}</option>
-            </select>
-            <span v-if="field.obrigatorio" class="field-error" :class="{ show: isFieldError(field.nome) }">
-              {{ field.label }} é obrigatório
-            </span>
+            <template v-if="field.tipo === 'select'">
+              <select 
+                :id="field.nome"
+                :value="form.iniciais[field.nome]"
+                @change="($event) => { const val = ($event.target as HTMLSelectElement).value; form.iniciais[field.nome] = val; if (field.nome === 'tipo-ordem') form.setTipoOrdem(val); }"
+                @blur="markTouched(field.nome)"
+                :class="['w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2.5 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10', getFieldStateClass(field.nome)]"
+                :disabled="field.readonly"
+              >
+                <option value="">Selecione</option>
+                <option v-for="opt in field.opcoes" :key="opt" :value="opt">{{ opt }}</option>
+              </select>
+              <span v-if="field.obrigatorio" class="field-error" :class="{ show: isFieldError(field.nome) }">
+                {{ field.label }} é obrigatório
+              </span>
+            </template>
 
             <!-- Text/Number -->
-            <input 
-              v-else-if="field.tipo === 'text' || field.tipo === 'number'" 
-              :id="field.nome"
-              :type="field.tipo === 'number' ? 'number' : 'text'"
-              :value="form.iniciais[field.nome]"
-              @input="($event) => { form.iniciais[field.nome] = ($event.target as HTMLInputElement).value; }"
-              @blur="markTouched(field.nome)"
-              :disabled="field.readonly"
-              :inputmode="field.tipo === 'number' ? 'numeric' : 'text'"
-              :class="['w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2.5 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10', getFieldStateClass(field.nome)]"
-            />
-            <span v-if="field.obrigatorio" class="field-error" :class="{ show: isFieldError(field.nome) }">
-              {{ field.label }} é obrigatório
-            </span>
-
-            <!-- Coordinates (linha 0) -->
-            <div v-else-if="field.tipo === 'coordinates'" class="relative">
+            <template v-else-if="field.tipo === 'text' || field.tipo === 'number'">
               <input 
                 :id="field.nome"
-                type="text"
+                :type="field.tipo === 'number' ? 'number' : 'text'"
                 :value="form.iniciais[field.nome]"
-                readonly
-                class="w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2.5 bg-gray-100 outline-none transition-all duration-200 pr-12"
-                placeholder="Coordenadas GPS"
+                @input="($event) => { form.iniciais[field.nome] = ($event.target as HTMLInputElement).value; }"
+                @blur="markTouched(field.nome)"
+                :disabled="field.readonly"
+                :inputmode="field.tipo === 'number' ? 'numeric' : 'text'"
+                :class="['w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2.5 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10', getFieldStateClass(field.nome)]"
               />
-              <button 
-                @click="handleCoordinates"
-                class="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-[8px] bg-blue-600 text-white hover:bg-blue-700 text-lg transition-all"
-                title="Capturar coordenadas"
-                type="button"
-              >
-                &#8635;
-              </button>
-            </div>
-            <span v-if="field.obrigatorio" class="field-error" :class="{ show: isFieldError(field.nome) }">
-              {{ field.label }} é obrigatório
-            </span>
+              <span v-if="field.obrigatorio" class="field-error" :class="{ show: isFieldError(field.nome) }">
+                {{ field.label }} é obrigatório
+              </span>
+            </template>
+
+            <!-- Coordinates (linha 0) -->
+            <template v-else-if="field.tipo === 'coordinates'">
+              <div class="relative">
+                <input 
+                  :id="field.nome"
+                  type="text"
+                  :value="form.iniciais[field.nome]"
+                  readonly
+                  class="w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2.5 bg-gray-100 outline-none transition-all duration-200 pr-12"
+                  placeholder="Coordenadas GPS"
+                />
+                <button 
+                  @click="handleCoordinates"
+                  class="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-[8px] bg-blue-600 text-white hover:bg-blue-700 text-lg transition-all"
+                  title="Capturar coordenadas"
+                  type="button"
+                >
+                  &#8635;
+                </button>
+              </div>
+              <span v-if="field.obrigatorio" class="field-error" :class="{ show: isFieldError(field.nome) }">
+                {{ field.label }} é obrigatório
+              </span>
+            </template>
           </div>
         </div>
       </div>

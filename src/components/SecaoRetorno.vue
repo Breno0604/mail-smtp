@@ -107,49 +107,52 @@ watch(activeRetornoFields, (newFields, oldFields) => {
           </label>
           
           <!-- Textarea -->
-          <textarea 
-            v-if="field.tipo === 'textarea'" 
-            :id="field.nome"
-            :value="form.retorno[field.nome]"
-            @input="($event) => { form.retorno[field.nome] = ($event.target as HTMLTextAreaElement).value; }"
-            @blur="markTouched(field.nome)"
-            rows="3"
-            :class="['w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2.5 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10 resize-y min-h-[80px]', getFieldStateClass(field.nome)]"
-          />
-          <span v-if="field.obrigatorio" class="field-error" :class="{ show: isFieldError(field.nome) }">
-            {{ field.label }} é obrigatório
-          </span>
+          <template v-if="field.tipo === 'textarea'">
+            <textarea 
+              :id="field.nome"
+              :value="form.retorno[field.nome]"
+              @input="($event) => { form.retorno[field.nome] = ($event.target as HTMLTextAreaElement).value; }"
+              @blur="markTouched(field.nome)"
+              rows="3"
+              :class="['w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2.5 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10 resize-y min-h-[80px]', getFieldStateClass(field.nome)]"
+            />
+            <span v-if="field.obrigatorio" class="field-error" :class="{ show: isFieldError(field.nome) }">
+              {{ field.label }} é obrigatório
+            </span>
+          </template>
           
           <!-- Select -->
-          <select 
-            v-else-if="field.tipo === 'select'" 
-            :id="field.nome"
-            :value="form.retorno[field.nome]"
-            @change="($event) => { form.retorno[field.nome] = ($event.target as HTMLSelectElement).value; }"
-            @blur="markTouched(field.nome)"
-            :class="['w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2.5 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10', getFieldStateClass(field.nome)]"
-          >
-            <option value="">Selecione</option>
-            <option v-for="opt in field.opcoes" :key="opt" :value="opt">{{ opt }}</option>
-          </select>
-          <span v-if="field.obrigatorio" class="field-error" :class="{ show: isFieldError(field.nome) }">
-            {{ field.label }} é obrigatório
-          </span>
+          <template v-else-if="field.tipo === 'select'">
+            <select 
+              :id="field.nome"
+              :value="form.retorno[field.nome]"
+              @change="($event) => { form.retorno[field.nome] = ($event.target as HTMLSelectElement).value; }"
+              @blur="markTouched(field.nome)"
+              :class="['w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2.5 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10', getFieldStateClass(field.nome)]"
+            >
+              <option value="">Selecione</option>
+              <option v-for="opt in field.opcoes" :key="opt" :value="opt">{{ opt }}</option>
+            </select>
+            <span v-if="field.obrigatorio" class="field-error" :class="{ show: isFieldError(field.nome) }">
+              {{ field.label }} é obrigatório
+            </span>
+          </template>
 
           <!-- Text/Number -->
-          <input 
-            v-else 
-            :id="field.nome"
-            :type="field.tipo === 'number' ? 'number' : 'text'"
-            :value="form.retorno[field.nome]"
-            @input="($event) => { form.retorno[field.nome] = ($event.target as HTMLInputElement).value; }"
-            @blur="markTouched(field.nome)"
-            :inputmode="field.tipo === 'number' ? 'numeric' : 'text'"
-            :class="['w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2.5 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10', getFieldStateClass(field.nome)]"
-          />
-          <span v-if="field.obrigatorio" class="field-error" :class="{ show: isFieldError(field.nome) }">
-            {{ field.label }} é obrigatório
-          </span>
+          <template v-else>
+            <input 
+              :id="field.nome"
+              :type="field.tipo === 'number' ? 'number' : 'text'"
+              :value="form.retorno[field.nome]"
+              @input="($event) => { form.retorno[field.nome] = ($event.target as HTMLInputElement).value; }"
+              @blur="markTouched(field.nome)"
+              :inputmode="field.tipo === 'number' ? 'numeric' : 'text'"
+              :class="['w-full px-3.5 py-3 rounded-[10px] text-[15px] border-2.5 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10', getFieldStateClass(field.nome)]"
+            />
+            <span v-if="field.obrigatorio" class="field-error" :class="{ show: isFieldError(field.nome) }">
+              {{ field.label }} é obrigatório
+            </span>
+          </template>
         </div>
       </div>
     </div>
