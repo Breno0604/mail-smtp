@@ -65,10 +65,17 @@ async function handleSend() {
       await form.saveDraft();
       alert('E-mail enviado com sucesso!');
     } else {
-      // Server returned an error (4xx, 5xx)
-      const errData = await response.json().catch(() => null);
+      // Server returned an error (4xx, 5xx) - read body as text to show actual error
+      const errBody = await response.text().catch(() => '(resposta vazia)');
+      let errMsg: string;
+      try {
+        const parsed = JSON.parse(errBody);
+        errMsg = parsed.error || errBody;
+      } catch {
+        errMsg = errBody;
+      }
       await queueSend(form.currentUUID!, payload);
-      alert(errData?.error || 'Erro no servidor ao enviar e-mail. Salvo para tentar novamente.');
+      alert(`Erro ${response.status}: ${errMsg}`);
     }
   } catch {
     // Network error - backend offline, proxy unavailable, CORS, etc.
