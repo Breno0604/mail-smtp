@@ -56,6 +56,7 @@ async function handleCoordinates() {
     </div>
     <div class="sec-body" id="iniciais-campos">
       <div v-for="linha in linhas" :key="linha" class="mb-4">
+        <!-- Linha 4 e 5: Grid 2 colunas (UC/OS, Notificado/Placa) -->
         <div 
           v-if="linha === 4 || linha === 5" 
           class="linha-grid"
@@ -105,7 +106,7 @@ async function handleCoordinates() {
           </div>
         </div>
 
-        <!-- Linha 6: Data/Início/Fim - 3 column grid -->
+        <!-- Linha 6: Grid 3 colunas (Data/Início/Fim) -->
         <div 
           v-else-if="linha === 6" 
           class="linha-data"
@@ -153,12 +154,12 @@ async function handleCoordinates() {
           </div>
         </div>
 
-        <!-- Normal row (other lines: 0, 1, 2, 3, 7) -->
-        <div v-else class="flex flex-wrap gap-2">
+        <!-- Linhas 0, 1, 2, 3, 7: Layout normal (um campo por linha, empilhados verticalmente) -->
+        <div v-else>
           <div 
             v-for="field in fieldsByLinha[linha]" 
-            :key="field.nome" 
-            class="flex-1 min-w-[160px]"
+            :key="field.nome"
+            class="w-full"
           >
             <label :for="field.nome" class="block text-xs mb-0.5 font-bold">
               {{ field.label }}
@@ -198,7 +199,7 @@ async function handleCoordinates() {
               {{ field.label }} é obrigatório
             </span>
 
-            <!-- Coordinates -->
+            <!-- Coordinates (linha 0) -->
             <div v-else-if="field.tipo === 'coordinates'" class="relative">
               <input 
                 :id="field.nome"
