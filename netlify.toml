@@ -4,13 +4,13 @@
   publish = "dist"
 
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
+  from = "/api/send"
+  to = "/.netlify/functions/send"
   status = 200
 
 [[redirects]]
-  from = "/api/send"
-  to = "/.netlify/functions/send"
+  from = "/*"
+  to = "/index.html"
   status = 200
 
 [[headers]]
