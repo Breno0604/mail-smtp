@@ -1,6 +1,5 @@
 <!-- src/components/SecaoRevisao.vue -->
 <script setup lang="ts">
-import { computed } from 'vue';
 import { useFormStore } from '@/stores/form';
 import { useEmail } from '@/composables/useEmail';
 import { useValidation } from '@/composables/useValidation';
@@ -12,10 +11,6 @@ const { composeEmail } = useEmail();
 const { validateAll } = useValidation();
 const { isOnline } = useOnlineStatus();
 const { queueSend } = useOfflineQueue();
-
-const isFormValid = computed(() => {
-  return form.iniciaisValido && form.tipoOrdem;
-});
 
 async function handleSend() {
   const validation = validateAll();
@@ -53,7 +48,6 @@ async function handleSend() {
         throw new Error('Falha no envio');
       }
     } catch {
-      // Fallback to offline queue
       await queueSend(form.currentUUID!, payload);
       alert('Sem conexão. E-mail salvo para envio posterior.');
     }
@@ -65,55 +59,38 @@ async function handleSend() {
 </script>
 
 <template>
-  <section class="bg-white rounded-lg shadow-sm p-6" id="sec-revisao">
-    <h2 class="text-lg font-semibold text-gray-900 mb-4">5. Revisão e Envio</h2>
-    
-    <!-- Email Preview -->
-    <div class="mb-6">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Prévia do E-mail</label>
-      <pre class="bg-gray-50 p-4 rounded-md border border-gray-200 max-h-96 overflow-auto text-sm whitespace-pre-wrap font-mono">
-{{ composeEmail }}
-      </pre>
+  <!-- Section card -->
+  <section class="sec-card mx-2.5 mt-4" id="sec-revisao">
+    <div class="sec-head">
+      <span class="sec-num">5</span> Revisão
     </div>
-
-    <!-- Complemento -->
-    <div class="mb-6">
-      <label for="complemento" class="block text-sm font-medium text-gray-700 mb-2">Complemento (opcional)</label>
-      <textarea 
-        id="complemento-corpo"
-        v-model="form.composicao['complemento-corpo']"
-        rows="3"
-        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        placeholder="Texto adicional para o corpo do e-mail..."
-      />
-    </div>
-
-    <!-- Status indicators -->
-    <div class="flex items-center gap-4 mb-4 p-4 bg-gray-50 rounded-md">
-      <div class="flex items-center gap-2">
-        <span :class="isOnline ? 'text-green-600' : 'text-red-600'" class="font-medium">
-          {{ isOnline ? '● Online' : '● Offline' }}
-        </span>
-      </div>
-      <div class="flex items-center gap-2">
-        <span :class="form.iniciaisValido ? 'text-green-600' : 'text-red-600'" class="font-medium">
-          {{ form.iniciaisValido ? '✓ Iniciais válidos' : '✗ Iniciais incompletos' }}
-        </span>
-      </div>
-      <div class="flex items-center gap-2">
-        <span :class="form.tipoOrdem ? 'text-green-600' : 'text-red-600'" class="font-medium">
-          {{ form.tipoOrdem ? '✓ Tipo de Ordem selecionado' : '✗ Tipo de Ordem não selecionado' }}
-        </span>
+    <div class="sec-body">
+      <!-- Email Preview -->
+      <div class="email-preview bg-slate-50/70 border-2 border-slate-300 rounded-[12px] p-5">
+        <div class="text-sm text-slate-800 whitespace-pre-wrap leading-relaxed font-bold" id="preview-corpo">
+          {{ composeEmail || '—' }}
+        </div>
+        <div class="mt-5 pt-4 border-t border-slate-200/60">
+          <label for="complemento-corpo" class="block font-semibold text-[15px] text-slate-700 mb-2">Complemento do corpo (opcional)</label>
+          <textarea 
+            id="complemento-corpo"
+            v-model="form.composicao['complemento-corpo']"
+            rows="6"
+            placeholder="Texto adicional para o corpo..."
+            class="w-full px-4 py-3 border-2 border-gray-300 rounded-[10px] text-[15px] outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10 resize-y min-h-[120px]"
+          />
+        </div>
       </div>
     </div>
-
-    <!-- Send Button -->
-    <button 
-      @click="handleSend"
-      :disabled="!isFormValid"
-      class="w-full py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-lg font-medium"
-    >
-      {{ isOnline ? 'Enviar E-mail' : 'Salvar para Envio Offline' }}
-    </button>
   </section>
+
+  <!-- Send button: outside section card, matching original layout -->
+  <div class="mx-2.5 mt-4 mb-6 text-center">
+    <button 
+      id="btn-enviar"
+      @click="handleSend"
+    >
+      📨 Enviar
+    </button>
+  </div>
 </template>

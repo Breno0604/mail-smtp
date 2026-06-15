@@ -1,25 +1,17 @@
 <!-- src/App.vue -->
 <script setup lang="ts">
+import { ref } from 'vue';
 import { useUIStore } from '@/stores/ui';
 import { useFormStore } from '@/stores/form';
-import { onMounted } from 'vue';
 import Sidebar from '@/components/Sidebar.vue';
 import ConfirmModal from '@/components/ConfirmModal.vue';
 import UpdateModal from '@/components/UpdateModal.vue';
-import DuplicateModal from '@/components/DuplicateModal.vue'
+import DuplicateModal from '@/components/DuplicateModal.vue';
 import OrientationOverlay from '@/components/OrientationOverlay.vue';
 
 const ui = useUIStore();
 const form = useFormStore();
-
-onMounted(() => {
-  // Register service worker for PWA
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').catch(() => {
-      // SW registration failed silently
-    });
-  }
-});
+const sidebarOpen = ref(false);
 
 function handleNewRecord() {
   form.newRecord();
@@ -27,70 +19,49 @@ function handleNewRecord() {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <!-- Toast notification -->
-    <Teleport to="body">
-      <div 
-        v-if="ui.toastVisible" 
-        class="fixed bottom-4 right-4 z-50 animate-slide-in"
-        :class="[ui.toastSuccess ? 'bg-green-600' : 'bg-red-600', 'text-white px-4 py-3 rounded-lg shadow-lg']"
-      >
-        {{ ui.toastMessage }}
+  <div class="bg-gradient-to-br from-slate-100 to-blue-50 min-h-screen flex justify-center items-start p-0">
+    <!-- Main container -->
+    <div class="container bg-white rounded-[20px] border-2 border-slate-200/50 w-full max-w-[640px] relative shadow-sm">
+      
+      <!-- Header -->
+      <div class="flex justify-between items-center px-5 pt-3.5 pb-2.5">
+        <button class="hamburger" @click="sidebarOpen = true">
+          &#9776;
+        </button>
+        <h1 class="text-xl text-slate-900 font-bold m-0 tracking-tight">Retorno de Ordens</h1>
+        <button class="btn-new-form" @click="handleNewRecord" title="Novo formulário">+</button>
       </div>
-    </Teleport>
 
-    <!-- Error banner -->
-    <Teleport to="body">
+      <!-- Error banner -->
       <div 
         v-if="ui.errorVisible" 
-        class="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg animate-slide-down"
+        class="bg-red-50 text-red-600 px-4 py-3 rounded-[10px] text-xs font-semibold border border-red-200 mx-2.5 mt-3"
       >
-        <div class="flex items-center justify-between gap-4">
-          <span>{{ ui.errorMessage }}</span>
-          <button @click="ui.hideError()" class="text-white hover:text-gray-200 font-bold text-lg leading-none">
-            ✕
-          </button>
-        </div>
+        {{ ui.errorMessage }}
       </div>
-    </Teleport>
 
-    <!-- Global modals -->
-    <ConfirmModal />
-    <UpdateModal />
-    <DuplicateModal />
-    <OrientationOverlay />
-
-    <!-- Main app layout -->
-    <header class="bg-blue-600 text-white shadow-sm">
-      <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-        <h1 class="text-xl font-semibold">Retorno</h1>
-        <div class="flex items-center gap-4">
-          <button 
-            @click="handleNewRecord"
-            class="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-white transition-colors font-medium"
-          >
-            + Novo Registro
-          </button>
-          <Sidebar />
-        </div>
-      </div>
-    </header>
-
-    <main class="max-w-7xl mx-auto px-4 py-6">
+      <!-- Form sections -->
       <router-view />
-    </main>
+
+      <!-- Sidebar panel (teleported to body) -->
+      <Sidebar :isOpen="sidebarOpen" @close="sidebarOpen = false" />
+
+      <!-- Toast notification -->
+      <Teleport to="body">
+        <div 
+          class="toast"
+          :class="{ show: ui.toastVisible, success: ui.toastSuccess }"
+        >
+          {{ ui.toastMessage }}
+        </div>
+      </Teleport>
+
+      <!-- Global modals -->
+      <ConfirmModal />
+      <UpdateModal />
+      <DuplicateModal />
+      <OrientationOverlay />
+
+    </div>
   </div>
 </template>
-
-<style scoped>
-@keyframes slide-in {
-  from { opacity: 0; transform: translateX(100%); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes slide-down {
-  from { opacity: 0; transform: translateY(-100%); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.animate-slide-in { animation: slide-in 0.3s ease-out; }
-.animate-slide-down { animation: slide-down 0.3s ease-out; }
-</style>

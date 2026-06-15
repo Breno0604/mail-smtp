@@ -3,11 +3,11 @@
 import { ref } from 'vue';
 import { useFormStore } from '@/stores/form';
 import { compressAttachment } from '@/utils/compress';
-import Lightbox from './Lightbox.vue';
 
 const form = useFormStore();
 const previews = ref<string[]>([]);
 const maxSize = 8 * 1024 * 1024; // 8MB
+const fileInput = ref<HTMLInputElement | null>(null);
 
 const lightboxOpen = ref(false);
 const lightboxImage = ref<string | null>(null);
@@ -37,7 +37,6 @@ function handleFileSelect(event: Event) {
       form.attachments.push(attachment);
       form.markAttachmentsDirty();
       
-      // Create preview URL
       const url = URL.createObjectURL(compressed);
       previews.value.push(url);
     } catch (err) {
@@ -76,37 +75,46 @@ function closeLightbox() {
   lightboxOpen.value = false;
   lightboxImage.value = null;
 }
+
+function triggerFileInput() {
+  fileInput.value?.click();
+}
 </script>
 
 <template>
-  <section class="bg-white rounded-lg shadow-sm p-6" id="sec-anexos">
-    <h2 class="text-lg font-semibold text-gray-900 mb-4">4. Anexos</h2>
-    
-    <div class="mb-4">
-      <label class="block text-sm font-medium text-gray-700 mb-2">
-        Adicionar fotos/anexos (máx. 8MB cada)
-      </label>
+  <section class="sec-card mx-2.5 mt-4" id="sec-anexos">
+    <div class="sec-head">
+      <span class="sec-num">4</span> Anexos
+    </div>
+    <div class="sec-body">
+      <!-- Drop zone -->
+      <div 
+        class="file-upload-area border-2 border-dashed border-slate-200 rounded-[12px] py-8 px-5 text-center cursor-pointer transition-all duration-200 hover:border-blue-500 hover:bg-blue-50/30 bg-slate-50/50"
+        @click="triggerFileInput"
+      >
+        <span class="text-3xl block mb-2">📎</span>
+        <span class="text-sm text-slate-600 font-semibold">Clique para selecionar imagens</span>
+        <span class="block mt-1.5 text-xs text-slate-400 font-medium">
+          {{ form.attachments.length }} / 12
+        </span>
+      </div>
+      
       <input 
         type="file" 
         ref="fileInput"
+        accept="image/*" 
         multiple 
-        accept="image/*,application/pdf"
+        class="hidden"
         @change="handleFileSelect"
-        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
       />
-    </div>
 
-    <div v-if="form.attachments.length === 0" class="text-gray-500 text-sm text-center py-8">
-      Nenhum anexo adicionado.
-    </div>
-
-    <div v-else class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <div 
-        v-for="(attachment, index) in form.attachments" 
-        :key="index"
-        class="relative group"
-      >
-        <div class="aspect-square bg-gray-100 rounded-md overflow-hidden relative">
+      <!-- Preview grid -->
+      <div v-if="form.attachments.length > 0" class="grid grid-cols-4 gap-2 mt-4 preview-grid">
+        <div 
+          v-for="(attachment, index) in form.attachments" 
+          :key="index"
+          class="preview-item relative border-2 border-slate-300 rounded-[10px] overflow-hidden bg-slate-100 aspect-square group"
+        >
           <img 
             v-if="previews[index]" 
             :src="previews[index]" 
@@ -114,36 +122,41 @@ function closeLightbox() {
             class="w-full h-full object-cover cursor-zoom-in"
             @click="openLightbox(previews[index])"
           />
-          <div v-else class="w-full h-full flex items-center justify-center text-gray-400">
-            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
+          <div v-else class="w-full h-full flex items-center justify-center text-slate-400 text-sm">
+            {{ attachment.name?.substring(0, 8) }}
           </div>
           
           <button 
-            @click="removeAttachment(index)"
-            class="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+            @click.stop="removeAttachment(index)"
+            class="absolute top-1 right-1 w-6 h-6 flex items-center justify-center bg-red-600 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-700"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            ✕
           </button>
         </div>
-        
-        <p class="mt-1 text-xs text-gray-500 truncate">{{ attachment.name }}</p>
       </div>
-    </div>
 
-    <Lightbox 
-      v-model:isOpen="lightboxOpen" 
-      :imageUrl="lightboxImage || ''" 
-      @close="closeLightbox" 
-    />
+      <!-- Lightbox -->
+      <Teleport to="body">
+        <div 
+          v-if="lightboxOpen" 
+          class="fixed inset-0 bg-black/90 z-[1001] flex items-center justify-center"
+          @click="closeLightbox"
+        >
+          <button 
+            @click.stop="closeLightbox"
+            class="absolute top-5 right-7 bg-none border-none text-white text-3xl cursor-pointer hover:opacity-70"
+          >
+            ✕
+          </button>
+          <img 
+            v-if="lightboxImage" 
+            :src="lightboxImage" 
+            alt="Preview ampliado" 
+            class="max-w-[90vw] max-h-[90vh] rounded-[10px] shadow-2xl"
+            @click.stop
+          >
+        </div>
+      </Teleport>
+    </div>
   </section>
 </template>
-
-<style scoped>
-.lightbox-close:hover {
-  opacity: 0.7;
-}
-</style>

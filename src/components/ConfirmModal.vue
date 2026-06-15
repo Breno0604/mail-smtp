@@ -9,20 +9,20 @@ const ui = useUIStore();
   <Teleport to="body">
     <div 
       v-if="ui.confirmOpen" 
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center"
     >
-      <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
-        <p class="text-lg mb-6">{{ ui.confirmMessage }}</p>
-        <div class="flex justify-end gap-3">
+      <div class="bg-white rounded-[12px] p-7 max-w-[420px] w-[90%] shadow-xl text-center">
+        <p class="text-sm text-slate-600 mb-6 leading-relaxed">{{ ui.confirmMessage }}</p>
+        <div class="flex gap-2.5 justify-center">
           <button 
             @click="ui.resolveConfirm(false)"
-            class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+            class="btn btn-secondary"
           >
             Cancelar
           </button>
           <button 
             @click="ui.resolveConfirm(true)"
-            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            class="btn btn-primary"
           >
             Confirmar
           </button>
