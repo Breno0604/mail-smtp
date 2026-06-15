@@ -36,29 +36,33 @@ async function handleSend() {
     complemento: form.composicao['complemento-corpo'],
   };
 
-  if (isOnline.value) {
-    try {
-      const response = await fetch('/api/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-
-      if (response.ok) {
-        form.status = 'sent';
-        form.sentData = { sentAt: new Date().toISOString() };
-        await form.saveDraft();
-        alert('E-mail enviado com sucesso!');
-      } else {
-        throw new Error('Falha no envio');
-      }
-    } catch {
-      await queueSend(form.currentUUID!, payload);
-      alert('Sem conexão. E-mail salvo para envio posterior.');
-    }
-  } else {
+  if (!isOnline.value) {
     await queueSend(form.currentUUID!, payload);
     alert('Offline. E-mail salvo para envio quando voltar a conexão.');
+    return;
+  }
+
+  try {
+    const response = await fetch('/api/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (response.ok) {
+      form.status = 'sent';
+      form.sentData = { sentAt: new Date().toISOString() };
+      await form.saveDraft();
+      alert('E-mail enviado com sucesso!');
+    } else {
+      // Server returned an error (4xx, 5xx)
+      await queueSend(form.currentUUID!, payload);
+      alert('Erro no servidor ao enviar e-mail. Salvo para tentar novamente.');
+    }
+  } catch {
+    // Network error - backend offline, proxy unavailable, CORS, etc.
+    await queueSend(form.currentUUID!, payload);
+    alert('Servidor de envio não disponível. E-mail salvo para envio posterior.');
   }
 }
 </script>
