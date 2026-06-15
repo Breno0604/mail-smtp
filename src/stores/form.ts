@@ -5,6 +5,7 @@ import { db } from '@/db';
 import type { RecordData, EquipamentoData, StoredAttachment } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
 import { captureCoordinates } from '@/utils/coordinates';
+import { useUIStore } from './ui';
 
 export const useFormStore = defineStore('form', () => {
   // ── State ──────────────────────────────────────────────────────────────
@@ -156,7 +157,9 @@ export const useFormStore = defineStore('form', () => {
       const coords = await captureCoordinates();
       iniciais.value.coordenadas = coords;
     } catch {
-      // Ignore geolocation errors
+      // GPS failed silently - user can click refresh button manually
+      const ui = useUIStore();
+      ui.showToast('GPS não disponível. Clique no botão ↻ para tentar novamente.', false);
     }
   }
 

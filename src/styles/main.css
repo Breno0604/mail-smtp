@@ -238,10 +238,21 @@ input.is-filled:hover, select.is-filled:hover, textarea.is-filled:hover {
 }
 .toast.success { background: #16a34a !important; }
 
-/* === Linha Data Grid === */
+/* === Linha Grid (linhas 4 e 5 - 2 colunas) === */
+.linha-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 640px) {
+  .linha-grid { grid-template-columns: 1fr; }
+}
+
+/* === Linha Data Grid (linha 6 - 3 colunas) === */
 .linha-data {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
 }
 @media (max-width: 640px) {
   .linha-data { grid-template-columns: 1.4fr 1fr 1fr; }

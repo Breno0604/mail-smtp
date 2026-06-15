@@ -57,8 +57,8 @@ async function handleCoordinates() {
     <div class="sec-body" id="iniciais-campos">
       <div v-for="linha in linhas" :key="linha" class="mb-4">
         <div 
-          v-if="linha === 6" 
-          class="linha-data"
+          v-if="linha === 4 || linha === 5" 
+          class="linha-grid"
         >
           <div 
             v-for="field in fieldsByLinha[linha]" 
@@ -103,7 +103,7 @@ async function handleCoordinates() {
           </div>
         </div>
         
-        <!-- Normal row (non-linha-8) -->
+        <!-- Normal row (non-linha-4,5,6) -->
         <div v-else class="flex flex-wrap gap-2">
           <div 
             v-for="field in fieldsByLinha[linha]" 

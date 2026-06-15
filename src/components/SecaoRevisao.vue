@@ -1,5 +1,6 @@
 <!-- src/components/SecaoRevisao.vue -->
 <script setup lang="ts">
+import { computed } from 'vue';
 import { useFormStore } from '@/stores/form';
 import { useEmail } from '@/composables/useEmail';
 import { useValidation } from '@/composables/useValidation';
@@ -11,6 +12,10 @@ const { composeEmail } = useEmail();
 const { validateAll } = useValidation();
 const { isOnline } = useOnlineStatus();
 const { queueSend } = useOfflineQueue();
+
+const isFormValid = computed(() => {
+  return form.iniciaisValido && form.tipoOrdem;
+});
 
 async function handleSend() {
   const validation = validateAll();
@@ -88,7 +93,9 @@ async function handleSend() {
   <div class="mx-2.5 mt-4 mb-6 text-center">
     <button 
       id="btn-enviar"
+      class="btn btn-success"
       @click="handleSend"
+      :disabled="!isFormValid"
     >
       📨 Enviar
     </button>
