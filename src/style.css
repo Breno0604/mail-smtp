@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --sidebar-width: 320px;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+}

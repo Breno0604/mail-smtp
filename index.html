@@ -1,160 +1,19 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Formulário de Envio</title>
-<meta name="theme-color" content="#2563eb">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Retorno">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="tailwind.css">
-<script type="module" src="scripts/app.js"></script>
-<script type="module" src="scripts/sw-update.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Retorno de Ordens</title>
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Retorno" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
 </head>
-<body class="font-sans bg-gradient-to-br from-slate-100 to-blue-50 flex justify-center items-start min-h-screen p-0">
-
-<div class="container bg-white rounded-[20px] shadow-sm border border-slate-200/50 w-full max-w-[640px] relative">
-  <div class="flex justify-between items-center px-5 pt-3.5 pb-2.5">
-    <button class="hamburger" id="hamburger">&#9776;</button>
-    <h1 class="text-xl text-slate-900 font-bold m-0 tracking-tight">Retorno de Ordens</h1>
-    <button class="btn-new-form" id="btn-novo-form" title="Novo formulário">+</button>
-  </div>
-
-  <div class="bg-red-50 text-red-600 px-4 py-3 rounded-[10px] text-xs font-semibold border border-red-200 mx-2.5 mt-3" id="error-msg" style="display:none"></div>
-
-  <!-- Section 1: Início -->
-  <section class="sec-card mx-2.5 mt-4" id="sec-inicio">
-    <div class="sec-head">
-      <span class="sec-num">1</span> Início
-    </div>
-    <div class="sec-body" id="iniciais-campos"></div>
-  </section>
-
-  <!-- Section 2: Retorno -->
-  <section class="sec-card mx-2.5 mt-4" id="sec-retorno">
-    <div class="sec-head">
-      <span class="sec-num">2</span> Retorno
-    </div>
-    <div class="sec-body">
-      <p class="text-base font-bold text-slate-900 mb-4" id="retorno-desc">—</p>
-      <div id="retorno-placeholder" class="ret-placeholder">
-        <span class="ret-icon">👆</span>
-        Selecione o Tipo de Ordem na seção "Início" para exibir os campos de Retorno
-      </div>
-      <div id="retorno-campos"></div>
-    </div>
-  </section>
-
-  <!-- Section 3: Equipamentos -->
-  <section class="sec-card mx-2.5 mt-4" id="sec-equipamentos">
-    <div class="sec-head">
-      <span class="sec-num">3</span> Equipamentos
-    </div>
-    <div class="sec-body">
-      <div id="equipamentos-list"></div>
-      <button class="btn-add flex-1 py-3 px-4 border-2 border-dashed border-slate-200 rounded-[10px] bg-slate-50/30 text-slate-600 text-sm font-semibold cursor-pointer transition-all duration-200 hover:border-blue-500 hover:text-blue-500 hover:bg-blue-50/30" id="btn-add-equip" type="button">+ Adicionar equipamento</button>
-    </div>
-  </section>
-
-  <!-- Section 4: Anexos -->
-  <section class="sec-card mx-2.5 mt-4" id="sec-anexos">
-    <div class="sec-head">
-      <span class="sec-num">4</span> Anexos
-    </div>
-    <div class="sec-body">
-      <div class="file-upload-area border-2 border-dashed border-slate-200 rounded-[12px] py-8 px-5 text-center cursor-pointer transition-all duration-200 hover:border-blue-500 hover:bg-blue-50/30 bg-slate-50/50" id="file-upload-area">
-        <span class="text-3xl block mb-2">📎</span>
-        <span class="text-sm text-slate-600 font-semibold">Clique para selecionar imagens</span>
-        <span class="file-count block mt-1.5 text-xs text-slate-400 font-medium" id="file-count">0 / 12</span>
-      </div>
-      <input type="file" id="file-input" accept="image/*" multiple class="hidden">
-      <div class="preview-grid grid grid-cols-4 max-sm:grid-cols-2 gap-2 mt-4" id="preview-grid"></div>
-    </div>
-  </section>
-
-  <!-- Section 5: Revisão -->
-  <section class="sec-card mx-2.5 mt-4" id="sec-revisao">
-    <div class="sec-head">
-      <span class="sec-num">5</span> Revisão
-    </div>
-    <div class="sec-body">
-      <div class="email-preview bg-slate-50/70 border border-slate-200 rounded-[12px] p-5">
-        <div class="preview-value text-sm text-slate-800 whitespace-pre-wrap leading-relaxed" id="preview-corpo">—</div>
-        <div class="mt-5 pt-4 border-t border-slate-200/60">
-          <label for="complemento-corpo" class="block font-semibold text-[15px] text-slate-700 mb-2">Complemento do corpo (opcional)</label>
-          <textarea id="complemento-corpo" rows="6" placeholder="Texto adicional para o corpo..." class="w-full px-4 py-3 border rounded-[10px] text-[15px] font-sans text-slate-800 outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10 resize-y min-h-[120px]"></textarea>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Send button -->
-  <div class="mx-2.5 mt-4 mb-6 text-center">
-    <button class="btn btn-success" id="btn-enviar">📨 Enviar</button>
-  </div>
-</div>
-
-<div class="sidebar" id="sidebar">
-  <div class="sidebar-inner">
-    <div class="sidebar-head">
-      <h2 class="sidebar-title">Registros</h2>
-      <button class="sidebar-close" id="sidebar-close">&times;</button>
-    </div>
-    <input type="search" id="sidebar-filter" placeholder="Buscar por UC, OS ou tipo..." autocomplete="off" class="w-full px-4 py-3 mb-3 border border-slate-200 rounded-[10px] text-sm font-sans text-slate-900 bg-white outline-none transition-colors focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10">
-    <div class="sidebar-list" id="sidebar-list"></div>
-  </div>
-</div>
-<div class="sidebar-overlay" id="sidebar-overlay"></div>
-
-<div class="toast" id="toast"></div>
-
-<div class="modal-overlay fixed inset-0 bg-black/40 z-50 flex items-center justify-center hidden" id="dup-modal">
-  <div class="modal bg-white rounded-[12px] p-7 max-w-[420px] w-[90%] shadow-xl text-center">
-    <p class="text-base font-bold text-slate-900 mb-3" id="dup-modal-title"></p>
-    <p class="text-sm text-slate-600 mb-6 leading-relaxed" id="dup-modal-body"></p>
-    <div class="flex gap-2.5 justify-center">
-      <button class="btn btn-secondary" id="dup-modal-cancel">Cancelar</button>
-      <button class="btn btn-primary" id="dup-modal-confirm">Reenviar</button>
-    </div>
-  </div>
-</div>
-
-<div class="lightbox-overlay fixed inset-0 bg-black/90 z-[1001] flex items-center justify-center hidden" id="lightbox">
-  <button class="lightbox-close absolute top-5 right-7 bg-none border-none text-white text-3xl cursor-pointer" id="lightbox-close">✕</button>
-  <img id="lightbox-img" src="" alt="Preview ampliado" class="max-w-[90vw] max-h-[90vh] rounded-[10px] shadow-2xl">
-</div>
-
-<div class="orientation-overlay" id="orientation-overlay">
-  <div class="orientation-overlay-content">
-    <div class="orientation-icon">📱</div>
-    <p class="orientation-text">Gire o celular na vertical</p>
-    <p class="orientation-sub">O formulário funciona melhor no modo retrato.</p>
-  </div>
-</div>
-
-<div class="modal-overlay fixed inset-0 bg-black/40 z-50 flex items-center justify-center hidden" id="confirm-modal">
-  <div class="modal bg-white rounded-[12px] p-7 max-w-[420px] w-[90%] shadow-xl text-center">
-    <p class="text-sm text-slate-600 mb-6 leading-relaxed" id="confirm-modal-text"></p>
-    <div class="flex gap-2.5 justify-center">
-      <button class="btn btn-secondary" id="confirm-modal-cancel">Cancelar</button>
-      <button class="btn btn-primary" id="confirm-modal-ok">Confirmar</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay fixed inset-0 bg-black/40 z-50 flex items-center justify-center hidden" id="update-modal">
-  <div class="modal bg-white rounded-[12px] p-7 max-w-[420px] w-[90%] shadow-xl text-center">
-    <p class="text-base font-bold text-slate-900 mb-3">Sistema atualizado</p>
-    <p class="text-sm text-slate-600 mb-6 leading-relaxed">O sistema foi atualizado com sucesso. Clique em OK para recarregar.</p>
-    <div class="flex gap-2.5 justify-center">
-      <button class="btn btn-primary" id="update-modal-ok">OK</button>
-    </div>
-  </div>
-</div>
-
+<body class="font-sans">
+  <div id="app"></div>
+  <script type="module" src="/src/main.ts"></script>
 </body>
 </html>
