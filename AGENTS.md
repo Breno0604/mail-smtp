@@ -22,6 +22,23 @@
 - **Deploy**: `git add -A && git commit -m "msg" && git push`
 - **Husky pre-commit**: Auto-bumps `CACHE_NAME` in `sw.js` when static assets (JS/CSS/HTML) change. Runs on `git commit`.
 
+## PowerShell Rules (Windows 5.1)
+**Este projeto roda em PowerShell 5.1 — não bash/zsh.**
+
+| ❌ Proibido | ✅ Correto |
+|-------------|-----------|
+| `cmd1 && cmd2` | `cmd1; if ($?) { cmd2 }` |
+| `cmd1 \|\| cmd2` | `cmd1; if (-not $?) { cmd2 }` |
+| `head -n N` | `Select-Object -First N` |
+| `grep "pat"` | `Select-String "pat"` ou `findstr "pat"` |
+| `chmod +x` | `git update-index --chmod=+x` |
+| `timeout N cmd` | Evite / use `Start-Job` |
+| `\` escape | `` ` `` (acento grave) |
+
+- Separador: `;` (sequencial), `; if ($?)` (condicional sucesso), `; if (-not $?)` (condicional falha)
+- Strings: `"interpola $var"`, `'literal'`
+- Caminhos com espaço: `"C:\pasta\arquivo"`
+
 ## Key conventions an agent might miss
 - **DOM cache** (`scripts/dom.js`): All DOM lookups happen once in `cacheDOM()`. Import `DOM` from `dom.js`; never call `getElementById` elsewhere.
 - **DOM.tipoOrdem is an exception**: It's created dynamically by `renderIniciais()`, so `iniciais.js` line 172 manually assigns `DOM.tipoOrdem = input` after `cacheDOM()` runs. Always re-attach event listeners after renderIniciais().
