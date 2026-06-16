@@ -110,6 +110,12 @@ function initEvents() {
 document.addEventListener("DOMContentLoaded", async () => {
   cacheDOM();
   initSidebarFilter();
+
+  // Solicita armazenamento persistente (protege contra limpeza automática do navegador)
+  if (navigator.storage?.persist) {
+    await navigator.storage.persist();
+  }
+
   renderIniciais();
   initEvents();
   updateFileCount();
