@@ -20,16 +20,18 @@
 - **Tests skip `send.js`** (SMTP not available in CI)
 - **Test setup** (`tests/setup.js`) mocks canvas, crypto, URL, and builds minimal DOM.
 - **Deploy**: `git add -A && git commit -m "msg" && git push`
+- **Husky pre-commit**: Auto-bumps `CACHE_NAME` in `sw.js` when static assets (JS/CSS/HTML) change. Runs on `git commit`.
 
 ## Key conventions an agent might miss
 - **DOM cache** (`scripts/dom.js`): All DOM lookups happen once in `cacheDOM()`. Import `DOM` from `dom.js`; never call `getElementById` elsewhere.
 - **DOM.tipoOrdem is an exception**: It's created dynamically by `renderIniciais()`, so `iniciais.js` line 172 manually assigns `DOM.tipoOrdem = input` after `cacheDOM()` runs. Always re-attach event listeners after renderIniciais().
-- **CACHE_NAME** in `sw.js`: Bump this number every time static assets (HTML, CSS, JS) change. Backend-only changes skip this.
+- **CACHE_NAME** in `sw.js`: Bump this number every time static assets (HTML, CSS, JS) change. Backend-only changes skip this. **Auto-bumped by Husky pre-commit hook**.
 - **Tipo de Ordem names** in `scripts/fields.js` must match **exactly** between `iniciaisFields` dropdown options and `retornoFieldsByTipo` keys.
 - **Hidden fields excluded from email**: `collectRetorno()` and `collectAllData()` filter `display: none` fields. `composeEmail()` double-checks field exists in data. Both layers protect against sending hidden field values.
 - **Validation skips hidden fields**: `validateSection3` checks `group.style.display === "none"` before validating.
 - **Backend env vars (6 required)**: `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`, `SMTP_TO`. Recipients come from `SMTP_TO` only — not from form.
 - **SMTP TLS**: `rejectUnauthorized: false` is intentional (self-signed certs in production).
+- **Conditional fields with empty control value**: `updateConditionalFields()` in `retornos.js` hides conditional fields when the control field has no value (placeholder "Selecione"). This prevents `negado: true` fields from showing prematurely (e.g., `acesso_desligamento` for `DESLIG.PROG.MANUTENCAO`).
 
 ## Non-obvious architecture facts
 - **No JS navigation between sections**: All 5 sections are flat in HTML (sec-inicio, sec-retorno, sec-equipamentos, sec-anexos, sec-revisao). No prev/next buttons. Old docs listing `animator.js` and `sectionManager.js` are stale — those files don't exist.
