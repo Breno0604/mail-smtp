@@ -46,6 +46,17 @@ const LIGACAO_NOVA_MT_FIELDS = [
   { linha: 6, nome: "acesso_ponto_de_entrega", label: "Descreva o Problema", tipo: "text", condicional: { campoRef: "acesso_medicao", valor: ["IRREGULAR", "SEM ACESSO"] } },
 ];
 
+// Campos para Aferição de Medidor e Aferição Cliente Livre - mesmos 7 campos
+const AFERICAO_MEDIDOR_FIELDS = [
+  { linha: 1, nome: "medidor_afericao", label: "Medidor", tipo: "select", opcoes: ["SUBSTITUIDO", "NAO SUBSTITUIDO"] },
+  { linha: 2, nome: "Motivo_cancel_afericao", label: "Motivo Cancelamento", tipo: "text", condicional: { campoRef: "medidor_afericao", valor: "NAO SUBSTITUIDO" } },
+  { linha: 3, nome: "leitura_afericao", label: "Leitura", tipo: "select", opcoes: ["VISUAL E NETBOOK", "APENAS VISUAL", "APENAS NOTEBOOK", "NAO FOI COLHIDO LEITURA"], condicional: { campoRef: "medidor_afericao", valor: "SUBSTITUIDO" } },
+  { linha: 4, nome: "motivo_nao_colher", label: "Porque não foi colhido", tipo: "text", condicional: { campoRef: "leitura_afericao", valor: "NAO FOI COLHIDO LEITURA" } },
+  { linha: 5, nome: "toi_afericao", label: "TOI", tipo: "select", opcoes: ["APLICADO TOI", "PERDAS JA APLICOU TOI", "NAO FOI APLICADO TOI"], condicional: { campoRef: "medidor_afericao", valor: "SUBSTITUIDO" } },
+  { linha: 6, nome: "numero_toi", label: "Nº TOI", tipo: "text", condicional: { campoRef: "toi_afericao", valor: "APLICADO TOI" } },
+  { linha: 7, nome: "porque_nao_aplicado_toi", label: "Porque não foi aplicado TOI", tipo: "text", condicional: { campoRef: "toi_afericao", valor: "NAO FOI APLICADO TOI" } },
+];
+
 export const retornoFieldsByTipo = {
   "default": [FIELD_DESCRICAO],
 
@@ -91,11 +102,8 @@ export const retornoFieldsByTipo = {
     { nome: "display-funcionando", label: "Display Novo Funcionando?", tipo: "select", opcoes: ["SIM", "NÃO"] },
   ],
 
-  "AFERIÇÃO DE MEDIDOR": [
-    FIELD_DESCRICAO,
-    { nome: "medidor-aferido", label: "Medidor Aferido?", tipo: "select", opcoes: ["SIM", "NÃO"] },
-    { nome: "resultado-afericao", label: "Resultado da Aferição", tipo: "text", condicional: { campoRef: "medidor-aferido", valor: "SIM" } },
-  ],
+  "AFERIÇÃO DE MEDIDOR": AFERICAO_MEDIDOR_FIELDS,
+  "AFERIÇÃO MEDIDOR CLIENTE LIVRE": AFERICAO_MEDIDOR_FIELDS,
 
   "CORTE POR FALTA DE PAGAMENTO": [
     { linha: 1, nome: "situacao_corte", label: "Situação", tipo: "select", opcoes: ["CLIENTE CORTADO", "CLIENTE VISITADO CONTA PAGA", "CLIENTE NAO PERMITIU O CORTE", "SEM ACESSO PARA EXECUTAR O CORTE"] },
