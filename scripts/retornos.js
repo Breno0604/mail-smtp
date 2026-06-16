@@ -110,6 +110,14 @@ function updateConditionalFields(fields) {
     const controlEl = document.getElementById(field.condicional.campoRef);
     if (!controlEl) return;
 
+    // Se o campo de controle não tem valor selecionado (placeholder "Selecione"), manter oculto
+    if (!controlEl.value) {
+      group.style.display = "none";
+      const input = group.querySelector("input, select, textarea");
+      if (input) input.value = "";
+      return;
+    }
+
     const valores = Array.isArray(field.condicional.valor)
       ? field.condicional.valor
       : [field.condicional.valor];

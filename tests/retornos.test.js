@@ -366,11 +366,11 @@ describe('retornos', () => {
         expect(group.style.display).toBe('');
       });
 
-      it('should initially show acesso_desligamento (no value selected, negado matches)', () => {
+it('should initially hide acesso_desligamento when no value selected in control field', () => {
         DOM.tipoOrdem.value = 'DESLIG.PROG.MANUTENÇÃO';
         renderRetorno();
         const group = document.querySelector('[data-field-nome="acesso_desligamento"]');
-        expect(group.style.display).toBe('');
+        expect(group.style.display).toBe('none');
       });
     });
 
