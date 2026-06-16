@@ -80,47 +80,25 @@ function initEvents() {
     }
   }
 
-  document.addEventListener("input", (e) => {
-    if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT" || e.target.tagName === "TEXTAREA") {
-      updateFilledClass(e.target);
-      // Sync state (single source of truth) before save and preview
-      syncIniciaisField(e.target);
-      // Sync equipment state when an equipment field changes
-      if (e.target.closest('.equip-row')) {
-        collectEquipamentos();
-      }
-      if (e.target.id === "complemento-corpo") {
-        state.composicao.complementoCorpo = e.target.value;
-      }
-      debouncedSave();
-      updateLivePreview();
-      // Check if UC and OS are now filled to enable initial persistence
-      if (e.target.id === "uc" || e.target.id === "os") {
-        checkInitialPersistence();
-      }
+  function handleFieldChange(e) {
+    if (e.target.tagName !== "INPUT" && e.target.tagName !== "SELECT" && e.target.tagName !== "TEXTAREA") return;
+    updateFilledClass(e.target);
+    syncIniciaisField(e.target);
+    if (e.target.closest('.equip-row')) {
+      collectEquipamentos();
     }
-  });
+    if (e.target.id === "complemento-corpo") {
+      state.composicao.complementoCorpo = e.target.value;
+    }
+    debouncedSave();
+    updateLivePreview();
+    if (e.target.id === "uc" || e.target.id === "os") {
+      checkInitialPersistence();
+    }
+  }
 
-  document.addEventListener("change", (e) => {
-    if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT" || e.target.tagName === "TEXTAREA") {
-      updateFilledClass(e.target);
-      // Sync state (single source of truth) before save and preview
-      syncIniciaisField(e.target);
-      // Sync equipment state when an equipment field changes
-      if (e.target.closest('.equip-row')) {
-        collectEquipamentos();
-      }
-      if (e.target.id === "complemento-corpo") {
-        state.composicao.complementoCorpo = e.target.value;
-      }
-      debouncedSave();
-      updateLivePreview();
-      // Check if UC and OS are now filled to enable initial persistence
-      if (e.target.id === "uc" || e.target.id === "os") {
-        checkInitialPersistence();
-      }
-    }
-  });
+  document.addEventListener("input", handleFieldChange);
+  document.addEventListener("change", handleFieldChange);
 
   document.addEventListener("pointerdown", (e) => {
     if (e.target.tagName !== "INPUT" && e.target.tagName !== "SELECT" && e.target.tagName !== "TEXTAREA" && e.target.tagName !== "BUTTON") {

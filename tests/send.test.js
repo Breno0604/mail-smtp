@@ -70,6 +70,7 @@ describe('sendEmail', () => {
 
     // Preview body
     DOM.previewCorpo.textContent = 'UC: 12345\nOS: 67890';
+    DOM.complementoCorpo.value = '';
     DOM.tipoOrdem.value = 'CORTE POR FALTA DE PAGAMENTO';
 
     // No vitest 4.x, clearAllMocks também reseta implementações (mockReset).

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { iniciaisFields, retornoFields, getRetornoFields, retornoFieldsByTipo } from '../scripts/fields.js';
+import { iniciaisFields, getRetornoFields, retornoFieldsByTipo } from '../scripts/fields.js';
 
 describe('fields', () => {
   describe('iniciaisFields', () => {
@@ -104,24 +104,6 @@ describe('fields', () => {
       iniciaisFields.forEach(field => {
         expect(field.label).toBeTruthy();
       });
-    });
-  });
-
-  describe('retornoFields', () => {
-    it('should be an array', () => {
-      expect(Array.isArray(retornoFields)).toBe(true);
-    });
-
-    it('should have exactly 1 entry', () => {
-      expect(retornoFields.length).toBe(1);
-    });
-
-    it('should have a descricao field with textarea type', () => {
-      const field = retornoFields[0];
-      expect(field.id).toBe('descricao-retorno');
-      expect(field.label).toBe('Descrição');
-      expect(field.type).toBe('textarea');
-      expect(field.required).toBe(true);
     });
   });
 

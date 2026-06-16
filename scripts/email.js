@@ -6,7 +6,7 @@ import { collectAllData } from "./collectors.js";
  * Normaliza texto: remove acentos, substitui ç→c, converte para MAIÚSCULAS
  */
 function normalizeText(str) {
-  if (!str) return str;
+  if (typeof str !== 'string' || !str) return str;
   return str
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")

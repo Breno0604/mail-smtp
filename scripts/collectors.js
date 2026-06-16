@@ -73,6 +73,5 @@ export function collectAllData() {
     attachments: state.attachments,
     tipoOrdem: state.iniciais['tipo-ordem'] || '',
     composicao: state.composicao,
-    complementoCorpo: state.composicao?.complementoCorpo || '',
   };
 }

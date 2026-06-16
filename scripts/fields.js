@@ -121,6 +121,4 @@ export function getRetornoFields(tipo) {
   return retornoFieldsByTipo[tipo] || retornoFieldsByTipo["default"];
 }
 
-export const retornoFields = [
-  { label: "Descrição", id: "descricao-retorno", type: "textarea", required: true },
-];
+

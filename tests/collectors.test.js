@@ -111,7 +111,7 @@ describe('collectors', () => {
       expect(result.equipamentos).toHaveLength(1);
       expect(result.equipamentos[0].status).toBe('Instalado');
       expect(result.attachments).toHaveLength(1);
-      expect(result.complementoCorpo).toBe('Observação teste');
+      expect(result.composicao.complementoCorpo).toBe('Observação teste');
       expect(result.tipoOrdem).toBe('CORTE POR FALTA DE PAGAMENTO');
       // Verify state is unchanged (collectAllData reads, doesn't write)
       expect(state.iniciais.uc).toBe('12345');

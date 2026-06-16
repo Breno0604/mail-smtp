@@ -22,7 +22,7 @@ export async function sendEmail() {
     const tipoLabel = DOM.tipoOrdem?.options[DOM.tipoOrdem.selectedIndex]?.text || "\u2014";
     const subject = `OS #${os} - UC ${uc} - ${tipoLabel}`;
     const baseBody = DOM.previewCorpo.textContent;
-    const compCorpo = (state.composicao?.complementoCorpo || '').trim();
+    const compCorpo = DOM.complementoCorpo?.value?.trim() || '';
 
     const text = compCorpo ? `${baseBody}\n\n${compCorpo}` : baseBody;
 
