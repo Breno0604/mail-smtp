@@ -6,7 +6,13 @@ exports.handler = async (event) => {
   }
 
   try {
-    const body = JSON.parse(event.body);
+    // ── Segurança: limite de payload ────────────────────────────
+    const rawBody = event.body || '';
+    if (Buffer.byteLength(rawBody, 'utf-8') > 10 * 1024 * 1024) {
+      return { statusCode: 413, body: JSON.stringify({ error: "Payload excede o limite de 10 MB." }) };
+    }
+
+    const body = JSON.parse(rawBody);
     const { subject, text, attachments } = body;
 
     if (!subject) {
@@ -49,6 +55,9 @@ exports.handler = async (event) => {
 
     if (attachments) {
       for (const att of attachments) {
+        // ── Segurança: sanitiza nome do arquivo ─────────────────
+        att.filename = att.filename.replace(/[^a-zA-Z0-9._-]/g, '_');
+
         const size = Buffer.from(att.content, "base64").length;
         if (size > 8 * 1024 * 1024) {
           return { statusCode: 400, body: JSON.stringify({ error: `Anexo '${att.filename}' excede 8 MB.` }) };
@@ -78,6 +87,15 @@ exports.handler = async (event) => {
     };
 
     await transporter.sendMail(mailOptions);
+
+    // ── Segurança: log de auditoria ─────────────────────────────
+    console.log(JSON.stringify({
+      audit: true,
+      to: toList,
+      subject,
+      anexos: (attachments || []).length,
+      timestamp: new Date().toISOString(),
+    }));
 
     return {
       statusCode: 200,
