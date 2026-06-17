@@ -5,6 +5,8 @@ import { showToast } from "./ui.js";
 import { checkDuplicate } from "./duplicate.js";
 import { compressAttachments } from "./compress.js";
 import { validateAll } from "./validation.js";
+import { collectAllData } from "./collectors.js";
+import { composeEmail } from "./email.js";
 
 export async function sendEmail() {
   if (!validateAll()) return false;
@@ -21,7 +23,9 @@ export async function sendEmail() {
     const os = state.iniciais?.os || "—";
     const tipoLabel = DOM.tipoOrdem?.options[DOM.tipoOrdem.selectedIndex]?.text || "\u2014";
     const subject = `OS #${os} - UC ${uc} - ${tipoLabel}`;
-    const baseBody = DOM.previewCorpo.textContent;
+    
+    const collectedData = collectAllData();
+    const baseBody = composeEmail(collectedData);
     const compCorpo = DOM.complementoCorpo?.value?.trim() || '';
 
     const text = compCorpo ? `${baseBody}\n\n${compCorpo}` : baseBody;
@@ -34,16 +38,16 @@ export async function sendEmail() {
       body: JSON.stringify({ subject, text, attachments }),
     });
 
-    const data = await res.json();
+    const responseData = await res.json();
 
-    if (res.ok && data.success) {
+    if (res.ok && responseData.success) {
       showToast("Email enviado com sucesso!", true);
       if (state.currentUUID) {
-        await updateRecordStatus(state.currentUUID, { to: data.to, subject, sentAt: new Date().toISOString() });
+        await updateRecordStatus(state.currentUUID, { to: responseData.to, subject, sentAt: new Date().toISOString() });
       }
       return true;
     } else {
-      showToast(data.error || "Erro ao enviar email.", false);
+      showToast(responseData.error || "Erro ao enviar email.", false);
       return false;
     }
   } catch (err) {

@@ -6,12 +6,21 @@ import { state } from '../scripts/state.js';
 
 // Usar vi.hoisted() para criar referências compartilhadas entre o factory
 // do vi.mock e o escopo do teste, garantindo isolation de mocks.
-const { showToastMock, validateAllMock, checkDuplicateMock, compressMock, updateStatusMock } = vi.hoisted(() => ({
+const { showToastMock, validateAllMock, checkDuplicateMock, compressMock, updateStatusMock, collectAllDataMock, composeEmailMock } = vi.hoisted(() => ({
   showToastMock: vi.fn(),
   validateAllMock: vi.fn(() => true),
   checkDuplicateMock: vi.fn(() => Promise.resolve(true)),
   compressMock: vi.fn(() => Promise.resolve([])),
   updateStatusMock: vi.fn(() => Promise.resolve()),
+  collectAllDataMock: vi.fn(() => ({
+    iniciais: { uc: '12345', os: '67890', 'tipo-ordem': 'CORTE POR FALTA DE PAGAMENTO' },
+    retorno: {},
+    equipamentos: [],
+    attachments: [],
+    tipoOrdem: 'CORTE POR FALTA DE PAGAMENTO',
+    composicao: { complementoCorpo: '' },
+  })),
+  composeEmailMock: vi.fn(() => 'UC: 12345\nOS: 67890'),
 }));
 
 vi.mock('../scripts/validation.js', () => ({
@@ -32,6 +41,14 @@ vi.mock('../scripts/ui.js', () => ({
 
 vi.mock('../scripts/db.js', () => ({
   updateRecordStatus: updateStatusMock,
+}));
+
+vi.mock('../scripts/collectors.js', () => ({
+  collectAllData: collectAllDataMock,
+}));
+
+vi.mock('../scripts/email.js', () => ({
+  composeEmail: composeEmailMock,
 }));
 
 import { sendEmail } from '../scripts/send.js';
@@ -68,8 +85,6 @@ describe('sendEmail', () => {
     state.currentUUID = 'test-uuid-123';
     state.composicao = { complementoCorpo: '' };
 
-    // Preview body
-    DOM.previewCorpo.textContent = 'UC: 12345\nOS: 67890';
     DOM.complementoCorpo.value = '';
     DOM.tipoOrdem.value = 'CORTE POR FALTA DE PAGAMENTO';
 
@@ -80,6 +95,15 @@ describe('sendEmail', () => {
     checkDuplicateMock.mockImplementation(() => Promise.resolve(true));
     compressMock.mockImplementation(() => Promise.resolve([]));
     updateStatusMock.mockImplementation(() => Promise.resolve());
+    collectAllDataMock.mockImplementation(() => ({
+      iniciais: { uc: '12345', os: '67890', 'tipo-ordem': 'CORTE POR FALTA DE PAGAMENTO' },
+      retorno: {},
+      equipamentos: [],
+      attachments: [],
+      tipoOrdem: 'CORTE POR FALTA DE PAGAMENTO',
+      composicao: { complementoCorpo: '' },
+    }));
+    composeEmailMock.mockImplementation(() => 'UC: 12345\nOS: 67890');
   });
 
   afterEach(() => {
@@ -131,9 +155,8 @@ describe('sendEmail', () => {
     expect(callBody.subject).toContain('CORTE POR FALTA DE PAGAMENTO');
   });
 
-  it('should build body from previewCorpo and complementoCorpo', async () => {
+  it('should build body from composeEmail and complementoCorpo', async () => {
     DOM.complementoCorpo.value = 'Observação importante';
-    state.composicao.complementoCorpo = 'Observação importante';
 
     fetch.mockResolvedValue({
       ok: true,
@@ -144,6 +167,8 @@ describe('sendEmail', () => {
     const callBody = JSON.parse(fetch.mock.calls[0][1].body);
     expect(callBody.text).toContain('UC: 12345');
     expect(callBody.text).toContain('Observação importante');
+    expect(composeEmailMock).toHaveBeenCalled();
+    expect(collectAllDataMock).toHaveBeenCalled();
   });
 
   it('should compress attachments before sending', async () => {
@@ -238,6 +263,6 @@ describe('sendEmail', () => {
     await sendEmail();
     const callBody = JSON.parse(fetch.mock.calls[0][1].body);
     expect(callBody.text).not.toContain('\n\n');
-    expect(callBody.text).toBe(DOM.previewCorpo.textContent);
+    expect(callBody.text).toBe('UC: 12345\nOS: 67890');
   });
 });
