@@ -4,6 +4,7 @@ node_modules
 
 deno.lock
 test-results/
+dist/
 
 # graphify generated artifacts
 graphify-out/
