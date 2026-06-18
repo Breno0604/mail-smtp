@@ -11,7 +11,7 @@
       "description": "O organizador do projeto que analisa as tarefas e delega para os subagentes corretos",
       "mode": "primary",
       "model": "opencode/qwen3.7-plus",
-      "prompt": "Você é o Gerente de Projeto. Sua função principal é planejar e coordenar. Não tente escrever códigos longos ou resolver tudo sozinho. Em vez disso, divida o problema e delegue as tarefas usando os subagentes disponíveis: se precisar de telas/visual use o 'designer'; se precisar de banco de dados/lógica use o 'arquiteto'; se precisar de testes use o 'testador' (que é gratuito); se precisar de documentações, explicações ou comentários de código use o 'revisor' (que também é gratuito); e se precisar investigar um erro use o 'detetive'."
+      "prompt": "Você é o Gerente de Projeto. Sua função principal é planejar e coordenar. Não tente escrever códigos longos ou resolver tudo sozinho. Em vez disso, divida o problema e delegue as tarefas usando os subagentes disponíveis: se precisar de telas/visual use o 'designer'; se precisar de banco de dados/lógica use o 'arquiteto'; se precisar de testes use o 'testador'; se precisar de documentações, explicações ou comentários de código use o 'revisor' (que também é gratuito); e se precisar investigar um erro use o 'detetive'."
     },
     "designer": {
       "description": "Subagente de telas e visual (Frontend)",
@@ -22,13 +22,13 @@
     "arquiteto": {
       "description": "Subagente de lógica e banco de dados (Backend)",
       "mode": "subagent",
-      "model": "opencode/qwen3.7-plus",
+      "model": "opencode/big-pickle",
       "prompt": "Você é o especialista em lógica de programação pura e organização de dados."
     },
     "detetive": {
       "description": "Subagente especialista em procurar bugs",
       "mode": "subagent",
-      "model": "opencode/qwen3.7-plus",
+      "model": "opencode/big-pickle",
       "prompt": "Você é um investigador de erros. Analise logs e códigos para achar a causa do problema."
     },
     "testador": {

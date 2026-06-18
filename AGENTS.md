@@ -10,7 +10,7 @@
 - Frontend: vanilla HTML/CSS/JS (ES6 modules), Tailwind CSS (static), no bundler
 - Backend: single Netlify Function at `netlify/functions/send.js` (Node.js + nodemailer)
 - Persistence: IndexedDB (`mail-mvp` DB, `records` store) + localStorage backup (`mail_form_estado`)
-- Tests: Vitest + jsdom, 394 tests
+- Tests: Vitest + jsdom, tests
 - Deploy: `git push` → Netlify auto-deploys (`npm install` runs on build)
 
 ## Dev workflow
@@ -59,17 +59,6 @@
 - **Conditional field system** (`retornos.js`): Fields can depend on other fields. Supports string values, arrays, and negation. Parent fields must appear before children in the array (cascading order).
 - **Select inputs** get a "Selecione" placeholder `<option>` as first child (in `iniciais.js`).
 - **Date in email**: Dates are reversed from YYYY-MM-DD to DD-MM-YYYY in `composeEmail()` (line 27).
-
-## Retorno field definition pattern (`scripts/fields.js`)
-Field schema:
-```js
-{ linha: 1, nome: "field_id", label: "Label Text", tipo: "select|text|number|textarea" }
-// Optional: opcoes: [...], condicional: { campoRef: "other_field", valor: "X"|["X","Y"], negado: true }
-```
-- **condicional.valor**: string (single value) or array (any match). **condicional.negado**: invert logic.
-- **linha**: groups fields horizontally (same linha = same flex row).
-- Field names in `iniciaisFields` are kebab-case (`tipo-ordem`). Retorno fields use snake_case (`situacao_corte`). Not all retorno types include `FIELD_DESCRICAO`.
-- Restoring saved data calls `setRetornoData()` then `updateConditionalFields()` — conditional visibility is re-evaluated.
 
 ## graphify
 
