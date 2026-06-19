@@ -1,8 +1,6 @@
 // tests-e2e/helpers/persistence.js
 // Shared helpers for Playwright persistence E2E tests
 
-import { expect } from '@playwright/test';
-
 // ── IndexedDB Helpers ────────────────────────────────────────────────────────
 
 /**
