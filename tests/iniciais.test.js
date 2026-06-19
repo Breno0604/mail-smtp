@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { renderIniciais, iniciaisFields } from '../scripts/iniciais.js';
+import { renderIniciais } from '../scripts/iniciais.js';
+import { iniciaisFields } from '../scripts/fields.js';
 import { cacheDOM, DOM } from '../scripts/dom.js';
 import { state } from '../scripts/state.js';
 import { collectIniciais } from '../scripts/collectors.js';

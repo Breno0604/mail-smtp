@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const isHeaded = process.argv.includes('--headed');
+
 export default defineConfig({
   testDir: './tests-e2e',
   fullyParallel: false,
@@ -11,6 +13,7 @@ export default defineConfig({
     baseURL: 'http://localhost:8888',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
+    slowMo: isHeaded ? 2000 : undefined,
   },
   projects: [
     {

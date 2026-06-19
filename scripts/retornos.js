@@ -111,7 +111,6 @@ function updateConditionalFields(fields) {
     if (!controlEl) return;
 
     // Se o campo de controle não tem valor selecionado (placeholder "Selecione"), manter oculto
-    // Auto cache bump test
     if (!controlEl.value) {
       group.style.display = "none";
       const input = group.querySelector("input, select, textarea");

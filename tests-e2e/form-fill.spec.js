@@ -67,5 +67,9 @@ test.describe('Form Fill and Preview E2E', () => {
     
     // Verify complemento-corpo value directly
     await expect(page.locator('#complemento-corpo')).toHaveValue('Complemento E2E de teste automatizado');
+
+    // Keep browser open so user can inspect the final state
+    // Pressione F8 ou clique em "Resume" no Playwright Inspector para fechar
+    await page.pause();
   });
 });

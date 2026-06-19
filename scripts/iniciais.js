@@ -5,8 +5,6 @@ import { iniciaisFields } from "./fields.js";
 import { captureCoordinates } from "./utils.js";
 import { INPUT_CLASS, SELECT_CLASS } from "./styles.js";
 
-export { iniciaisFields };
-
 const linhaConfig = {
   4: "grid grid-cols-2 gap-3 mb-4",
   5: "grid grid-cols-2 gap-3 mb-4",
