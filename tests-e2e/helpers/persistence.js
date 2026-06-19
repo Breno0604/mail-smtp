@@ -1,6 +1,14 @@
 // tests-e2e/helpers/persistence.js
 // Shared helpers for Playwright persistence E2E tests
 
+// ── IndexedDB Schema Constants ───────────────────────────────────────────────
+
+const DB_NAME = 'mail-mvp';
+const DB_VERSION = 3;
+const STORE_RECORDS = 'records';
+const STORE_ATTACHMENTS = 'attachments';
+const INDEX_UUID = 'uuid';
+
 // ── IndexedDB Helpers ────────────────────────────────────────────────────────
 
 /**
@@ -8,57 +16,57 @@
  * Runs inside the browser context via page.evaluate().
  */
 export async function readIndexedDB(page) {
-  return page.evaluate(() => {
+  return page.evaluate((DB_NAME, DB_VERSION, STORE_RECORDS) => {
     return new Promise((resolve, reject) => {
-      const req = indexedDB.open('mail-mvp', 3);
+      const req = indexedDB.open(DB_NAME, DB_VERSION);
       req.onsuccess = () => {
-        const tx = req.result.transaction('records', 'readonly');
-        const getAll = tx.objectStore('records').getAll();
+        const tx = req.result.transaction(STORE_RECORDS, 'readonly');
+        const getAll = tx.objectStore(STORE_RECORDS).getAll();
         getAll.onsuccess = () => resolve(getAll.result);
         getAll.onerror = () => reject(getAll.error);
       };
       req.onerror = () => reject(req.error);
     });
-  });
+  }, DB_NAME, DB_VERSION, STORE_RECORDS);
 }
 
 /**
  * Read attachments for a given UUID from IndexedDB (attachments store).
  */
 export async function readAttachments(page, uuid) {
-  return page.evaluate((uuid) => {
+  return page.evaluate((uuid, DB_NAME, DB_VERSION, STORE_ATTACHMENTS, INDEX_UUID) => {
     return new Promise((resolve, reject) => {
-      const req = indexedDB.open('mail-mvp', 3);
+      const req = indexedDB.open(DB_NAME, DB_VERSION);
       req.onsuccess = () => {
-        const tx = req.result.transaction('attachments', 'readonly');
-        const index = tx.objectStore('attachments').index('uuid');
+        const tx = req.result.transaction(STORE_ATTACHMENTS, 'readonly');
+        const index = tx.objectStore(STORE_ATTACHMENTS).index(INDEX_UUID);
         const getAll = index.getAll(uuid);
         getAll.onsuccess = () => resolve(getAll.result);
         getAll.onerror = () => reject(getAll.error);
       };
       req.onerror = () => reject(req.error);
     });
-  }, uuid);
+  }, uuid, DB_NAME, DB_VERSION, STORE_ATTACHMENTS, INDEX_UUID);
 }
 
 /**
  * Delete all records from IndexedDB (cleanup before/after tests).
  */
 export async function clearIndexedDB(page) {
-  return page.evaluate(() => {
+  return page.evaluate((DB_NAME, DB_VERSION, STORE_RECORDS, STORE_ATTACHMENTS) => {
     return new Promise((resolve, reject) => {
-      const req = indexedDB.open('mail-mvp', 3);
+      const req = indexedDB.open(DB_NAME, DB_VERSION);
       req.onsuccess = () => {
         const db = req.result;
-        const tx = db.transaction(['records', 'attachments'], 'readwrite');
-        tx.objectStore('records').clear();
-        tx.objectStore('attachments').clear();
+        const tx = db.transaction([STORE_RECORDS, STORE_ATTACHMENTS], 'readwrite');
+        tx.objectStore(STORE_RECORDS).clear();
+        tx.objectStore(STORE_ATTACHMENTS).clear();
         tx.oncomplete = () => resolve();
         tx.onerror = () => reject(tx.error);
       };
       req.onerror = () => reject(req.error);
     });
-  });
+  }, DB_NAME, DB_VERSION, STORE_RECORDS, STORE_ATTACHMENTS);
 }
 
 // ── Form Fill Helpers ─────────────────────────────────────────────────────────
@@ -107,14 +115,21 @@ export async function addEquipRow(page, status, categoria, numero) {
 // ── Sidebar / Restore Helpers ────────────────────────────────────────────────
 
 /**
+ * Open the sidebar and return the first .sidebar-item matching the summary text.
+ */
+async function findSidebarItem(page, summaryText) {
+  await page.click('#hamburger');
+  await page.waitForSelector('#sidebar-list .sidebar-item');
+  return page.locator('#sidebar-list .sidebar-item', { hasText: summaryText }).first();
+}
+
+/**
  * Restore a record via sidebar: open hamburger → find record by summary text → click Editar.
  * The sidebar record summary format is "${uc}-${os}" or "${uc}-${os}-${tipoOrdem}".
  * After clicking Editar, sidebar closes and form is populated.
  */
 export async function restoreViaSidebar(page, summaryText) {
-  await page.click('#hamburger');
-  await page.waitForSelector('#sidebar-list .sidebar-item');
-  const item = page.locator('#sidebar-list .sidebar-item', { hasText: summaryText }).first();
+  const item = await findSidebarItem(page, summaryText);
   await item.locator('.sidebar-btn-edit').click();
   // Sidebar closes after Editar (loadRecord calls closeSidebar)
   await page.waitForSelector('#sidebar-list', { state: 'hidden', timeout: 5000 }).catch(() => {});
@@ -125,9 +140,7 @@ export async function restoreViaSidebar(page, summaryText) {
  * Flow: closeSidebar() → showConfirm() → click OK → record deleted.
  */
 export async function deleteViaSidebar(page, summaryText) {
-  await page.click('#hamburger');
-  await page.waitForSelector('#sidebar-list .sidebar-item');
-  const item = page.locator('#sidebar-list .sidebar-item', { hasText: summaryText }).first();
+  const item = await findSidebarItem(page, summaryText);
   await item.locator('.sidebar-btn-delete').click();
   // After click, sidebar closes first, then confirm modal appears
   await confirmModal(page);
