@@ -1,10 +1,11 @@
 import { DOM } from "./dom.js";
 import { state, setCurrentUUID } from "./state.js";
 import { markAttachmentsDirty } from "./persistence.js";
-import { renderIniciais, iniciaisFields } from "./iniciais.js";
+import { renderIniciais } from "./iniciais.js";
+import { iniciaisFields } from "./fields.js";
 import { renderRetorno, setRetornoData, handleTipoChange } from "./retornos.js";
 import { renderEquipamentos } from "./equipment.js";
-import { renderPreviews } from "./attachments.js";
+import { renderPreviews, updateFileCount } from "./attachments.js";
 import { base64ToBlob } from "./utils.js";
 import { getAttachmentsByUuid } from "./db.js";
 import { updateLivePreview } from "./email.js";
@@ -83,6 +84,7 @@ export async function applyRecord(record) {
 
   // ── Render Anexos ───────────────────────────────────────────────────────
   renderPreviews();
+  updateFileCount();
 
   // ── Restore complemento ─────────────────────────────────────────────────
   if (record.composicao) {

@@ -18,13 +18,21 @@ export function handleUploadClick() {
 
 export function handleFileChange(e) {
   const files = Array.from(e.target.files);
+
+  // Rejeitar arquivos que não são imagem
+  const imageFiles = files.filter((f) => f.type.startsWith("image/"));
+  const rejectedCount = files.length - imageFiles.length;
+  if (rejectedCount > 0) {
+    showError(`${rejectedCount} arquivo(s) ignorado(s) — apenas imagens s\u00E3o permitidas.`);
+  }
+
   const remaining = 12 - state.attachments.length;
-  const toAdd = files.slice(0, remaining);
+  const toAdd = imageFiles.slice(0, remaining);
 
   toAdd.forEach((file) => state.attachments.push(file));
 
-  if (files.length > remaining) {
-    showError(`M\u00E1ximo de 12 anexos. ${files.length - remaining} ignorado(s).`);
+  if (imageFiles.length > remaining) {
+    showError(`M\u00E1ximo de 12 anexos. ${imageFiles.length - remaining} ignorado(s).`);
   }
 
   markAttachmentsDirty();

@@ -143,12 +143,11 @@ describe('attachments', () => {
       expect(DOM.fileInput.value).toBe('');
     });
 
-    it('should handle non-image files', () => {
+    it('should reject non-image files', () => {
       const file = createFile('test.pdf', 100, 'application/pdf');
       const event = createFileEvent([file]);
       handleFileChange(event);
-      expect(state.attachments).toHaveLength(1);
-      expect(state.attachments[0].type).toBe('application/pdf');
+      expect(state.attachments).toHaveLength(0);
     });
   });
 
