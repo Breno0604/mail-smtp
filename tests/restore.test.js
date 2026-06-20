@@ -12,7 +12,14 @@ describe('restore', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <div id="iniciais-campos"></div>
-      <div id="equipamentos-list"></div>
+      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <div id="sec-equip-instalados" class="hidden"></div>
+      <div id="sec-equip-retirados" class="hidden"></div>
+      <div id="checkboxes-instalados"></div>
+      <div id="checkboxes-retirados"></div>
+      <div id="campos-instalados"></div>
+      <div id="campos-retirados"></div>
       <div id="retorno-campos"></div>
       <div id="retorno-placeholder"></div>
       <div id="retorno-desc"></div>
@@ -60,7 +67,16 @@ describe('restore', () => {
     
     // Reset state
     state.iniciais = {};
-    state.equipamentos = [];
+    state.equipamentos = {
+      instaladoEquip: 'NAO',
+      retiradoEquip: 'NAO',
+      instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      checkboxes: {
+        instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+      }
+    };
     state.attachments = [];
     state.lastTipoOrdem = '';
     state.iniciaisValido = false;
@@ -88,10 +104,16 @@ describe('restore', () => {
         hora_inicio: '08:00',
         hora_fim: '17:00',
       },
-      equipamentos: [
-        { status: 'Instalado', categoria: 'Medidor', numero: '111' },
-        { status: 'Retirado', categoria: 'Display', numero: '222' },
-      ],
+      equipamentos: {
+        instaladoEquip: 'SIM',
+        retiradoEquip: 'SIM',
+        instalados: { medidor: '111', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+        retirados: { medidor: '', conjunto: '', display: '222', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+        checkboxes: {
+          instalados: { medidor: true, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+          retirados: { medidor: false, conjunto: false, display: true, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+        }
+      },
       retorno: { descricao: 'Restored description' },
       lastTipoOrdem: 'ADEQUACAO SMF',
       tipoOrdem: 'ADEQUACAO SMF',

@@ -1,5 +1,5 @@
 import { DOM } from "./dom.js";
-import { state, setCurrentUUID } from "./state.js";
+import { state, setCurrentUUID, createDefaultEquipamentos } from "./state.js";
 import { markAttachmentsDirty } from "./persistence.js";
 import { renderIniciais } from "./iniciais.js";
 import { iniciaisFields } from "./fields.js";
@@ -23,28 +23,9 @@ export async function applyRecord(record) {
 
   // Handle migration from old array format
   if (Array.isArray(record.equipamentos)) {
-    // Old format - reset to defaults
-    state.equipamentos = {
-      instaladoEquip: 'NAO',
-      retiradoEquip: 'NAO',
-      instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
-      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
-      checkboxes: {
-        instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
-        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
-      }
-    };
+    state.equipamentos = createDefaultEquipamentos();
   } else {
-    state.equipamentos = record.equipamentos || {
-      instaladoEquip: 'NAO',
-      retiradoEquip: 'NAO',
-      instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
-      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
-      checkboxes: {
-        instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
-        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
-      }
-    };
+    state.equipamentos = record.equipamentos || createDefaultEquipamentos();
   }
   state.lastTipoOrdem = record.tipoOrdem || "";
   state.iniciais = record.iniciais || {};

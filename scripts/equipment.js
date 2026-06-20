@@ -19,6 +19,11 @@ const EQUIPMENT_LIST = [
 export function renderEquipamentos() {
   renderCheckboxes('instalados');
   renderCheckboxes('retirados');
+  // Clear stale field inputs before restoring from state
+  const camposInstalados = document.getElementById('campos-instalados');
+  const camposRetirados = document.getElementById('campos-retirados');
+  if (camposInstalados) camposInstalados.innerHTML = '';
+  if (camposRetirados) camposRetirados.innerHTML = '';
   restoreCheckboxStates();
   restoreFieldStates();
 }

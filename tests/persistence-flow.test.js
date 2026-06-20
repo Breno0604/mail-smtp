@@ -8,7 +8,7 @@ import { applyRecord } from '../scripts/restore.js';
 import { resetForm } from '../scripts/reset.js';
 import { renderIniciais } from '../scripts/iniciais.js';
 import { renderRetorno, setRetornoData, handleTipoChange } from '../scripts/retornos.js';
-import { renderEquipamentos, addEquip } from '../scripts/equipment.js';
+import { renderEquipamentos } from '../scripts/equipment.js';
 import { collectEquipamentos } from '../scripts/collectors.js';
 
 /**
@@ -26,7 +26,14 @@ describe('persistence flow: real-world scenarios', () => {
     // Setup DOM completo
     document.body.innerHTML = `
       <div id="iniciais-campos"></div>
-      <div id="equipamentos-list"></div>
+      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <div id="sec-equip-instalados" class="hidden"></div>
+      <div id="sec-equip-retirados" class="hidden"></div>
+      <div id="checkboxes-instalados"></div>
+      <div id="checkboxes-retirados"></div>
+      <div id="campos-instalados"></div>
+      <div id="campos-retirados"></div>
       <div id="retorno-campos"></div>
       <div id="retorno-placeholder"></div>
       <div id="retorno-desc"></div>
@@ -76,7 +83,16 @@ describe('persistence flow: real-world scenarios', () => {
 
     // Reset state
     state.iniciais = {};
-    state.equipamentos = [];
+    state.equipamentos = {
+      instaladoEquip: 'NAO',
+      retiradoEquip: 'NAO',
+      instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      checkboxes: {
+        instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+      }
+    };
     state.attachments = [];
     state.lastTipoOrdem = '';
     state.iniciaisValido = false;
@@ -354,41 +370,53 @@ describe('persistence flow: real-world scenarios', () => {
       document.getElementById('os').value = '22222';
       state.iniciaisValido = true;
 
-      state.equipamentos = [
-        { status: 'Instalado', categoria: 'Medidor', numero: '111' },
-        { status: 'Instalado', categoria: 'Display', numero: '222' },
-        { status: 'Retirado', categoria: 'TC', numero: '333' },
-      ];
+      state.equipamentos = {
+        instaladoEquip: 'SIM',
+        retiradoEquip: 'SIM',
+        instalados: { medidor: '111', conjunto: '', display: '222', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+        retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+        checkboxes: {
+          instalados: { medidor: true, conjunto: false, display: true, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+          retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+        }
+      };
       renderEquipamentos();
+      document.getElementById('instalado-equip').value = 'SIM';
+      document.getElementById('retirado-equip').value = 'NAO';
       await saveState();
       const uuid = state.currentUUID;
 
       // Restore and verify
       let record = await getRecord(uuid);
-      expect(record.equipamentos).toHaveLength(3);
+      expect(record.equipamentos.instaladoEquip).toBe('SIM');
+      expect(record.equipamentos.instalados.medidor).toBe('111');
+      expect(record.equipamentos.instalados.display).toBe('222');
 
-      // Remove one equipment
+      // Remove one equipment (clear display value)
       await applyRecord(record);
-      const rows = DOM.equipList.querySelectorAll('.equip-row');
-      rows[1].querySelector('.btn-remove').click();
+      state.equipamentos.instalados.display = '';
+      state.equipamentos.checkboxes.instalados.display = false;
+      // Re-render to reflect state changes
+      renderEquipamentos();
       collectEquipamentos();
       await saveState();
 
       // Verify
       record = await getRecord(uuid);
-      expect(record.equipamentos).toHaveLength(2);
-      expect(record.equipamentos[0].numero).toBe('111');
-      expect(record.equipamentos[1].numero).toBe('333');
+      expect(record.equipamentos.instalados.medidor).toBe('111');
+      expect(record.equipamentos.instalados.display).toBe('');
 
-      // Add new equipment
-      await applyRecord(record);
-      addEquip({ status: 'Instalado', categoria: 'TP', numero: '444' });
+      // Add new equipment (add TC to retirados)
+      state.equipamentos.retiradoEquip = 'SIM';
+      state.equipamentos.retirados.tc_fase_a = '444';
+      state.equipamentos.checkboxes.retirados.tc_fase_a = true;
+      renderEquipamentos();
       collectEquipamentos();
       await saveState();
 
       record = await getRecord(uuid);
-      expect(record.equipamentos).toHaveLength(3);
-      expect(record.equipamentos[2].numero).toBe('444');
+      expect(record.equipamentos.retirados.tc_fase_a).toBe('444');
+      expect(record.equipamentos.instalados.medidor).toBe('111');
     });
   });
 
@@ -449,7 +477,16 @@ describe('persistence flow: real-world scenarios', () => {
         renderRetorno();
         document.getElementById('situacao_corte').value = 'CLIENTE CORTADO';
         // Set equipment in state and render to DOM
-        state.equipamentos = [{ status: 'Instalado', categoria: 'Medidor', numero: `${i}11` }];
+        state.equipamentos = {
+          instaladoEquip: 'SIM',
+          retiradoEquip: 'NAO',
+          instalados: { medidor: `${i}11`, conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+          retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+          checkboxes: {
+            instalados: { medidor: true, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+            retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+          }
+        };
         renderEquipamentos();
         state.iniciaisValido = true;
         await saveState();
@@ -466,7 +503,7 @@ describe('persistence flow: real-world scenarios', () => {
         const record = await getRecord(uuids[i]);
         expect(record.iniciais.uc).toBe(`${i + 1}${i + 1}${i + 1}${i + 1}${i + 1}`);
         expect(record.iniciais.os).toBe(`OS-${i + 1}`);
-        expect(record.equipamentos[0].numero).toBe(`${i + 1}11`);
+        expect(record.equipamentos.instalados.medidor).toBe(`${i + 1}11`);
       }
 
       // Edit record 3 and verify others unchanged
@@ -677,10 +714,16 @@ describe('persistence flow: real-world scenarios', () => {
       DOM.tipoOrdem.value = 'CORTE POR FALTA DE PAGAMENTO';
       renderRetorno();
       document.getElementById('situacao_corte').value = 'CLIENTE CORTADO';
-      state.equipamentos = [
-        { status: 'Instalado', categoria: 'Medidor', numero: '111' },
-        { status: 'Retirado', categoria: 'Display', numero: '222' },
-      ];
+      state.equipamentos = {
+        instaladoEquip: 'SIM',
+        retiradoEquip: 'SIM',
+        instalados: { medidor: '111', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+        retirados: { medidor: '', conjunto: '', display: '222', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+        checkboxes: {
+          instalados: { medidor: true, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+          retirados: { medidor: false, conjunto: false, display: true, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+        }
+      };
       renderEquipamentos();
       state.iniciaisValido = true;
       await saveState();
@@ -708,10 +751,10 @@ describe('persistence flow: real-world scenarios', () => {
       expect(document.getElementById('situacao_corte').value).toBe('CLIENTE CORTADO');
 
       // Verify equipment
-      const equipRows = DOM.equipList.querySelectorAll('.equip-row');
-      expect(equipRows.length).toBe(2);
-      expect(equipRows[0].querySelector('.equip-numero').value).toBe('111');
-      expect(equipRows[1].querySelector('.equip-numero').value).toBe('222');
+      const instaladoInput = document.querySelector('#campos-instalados input');
+      const retiradoInput = document.querySelector('#campos-retirados input');
+      expect(instaladoInput.value).toBe('111');
+      expect(retiradoInput.value).toBe('222');
 
       // Verify state
       expect(state.currentUUID).toBe(uuid);

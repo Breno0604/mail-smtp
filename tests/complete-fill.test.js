@@ -8,7 +8,7 @@ import { applyRecord } from '../scripts/restore.js';
 import { resetForm } from '../scripts/reset.js';
 import { renderIniciais } from '../scripts/iniciais.js';
 import { renderRetorno, setRetornoData, handleTipoChange } from '../scripts/retornos.js';
-import { renderEquipamentos, addEquip } from '../scripts/equipment.js';
+import { renderEquipamentos } from '../scripts/equipment.js';
 import { collectEquipamentos, collectIniciais } from '../scripts/collectors.js';
 import { updateLivePreview } from '../scripts/email.js';
 
@@ -20,7 +20,14 @@ describe('complete fill persistence', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <div id="iniciais-campos"></div>
-      <div id="equipamentos-list"></div>
+      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <div id="sec-equip-instalados" class="hidden"></div>
+      <div id="sec-equip-retirados" class="hidden"></div>
+      <div id="checkboxes-instalados"></div>
+      <div id="checkboxes-retirados"></div>
+      <div id="campos-instalados"></div>
+      <div id="campos-retirados"></div>
       <div id="retorno-campos"></div>
       <div id="retorno-placeholder"></div>
       <div id="retorno-desc"></div>
@@ -70,7 +77,16 @@ describe('complete fill persistence', () => {
     cacheDOM();
 
     state.iniciais = {};
-    state.equipamentos = [];
+    state.equipamentos = {
+      instaladoEquip: 'NAO',
+      retiradoEquip: 'NAO',
+      instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      checkboxes: {
+        instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+      }
+    };
     state.attachments = [];
     state.lastTipoOrdem = '';
     state.iniciaisValido = false;
@@ -110,11 +126,19 @@ describe('complete fill persistence', () => {
       renderRetorno();
       document.getElementById('situacao_corte').value = 'CLIENTE CORTADO';
       
-      state.equipamentos = [
-        { status: 'Instalado', categoria: 'Medidor', numero: '111' },
-        { status: 'Retirado', categoria: 'Display', numero: '222' },
-      ];
+      state.equipamentos = {
+        instaladoEquip: 'SIM',
+        retiradoEquip: 'SIM',
+        instalados: { medidor: '111', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+        retirados: { medidor: '', conjunto: '', display: '222', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+        checkboxes: {
+          instalados: { medidor: true, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+          retirados: { medidor: false, conjunto: false, display: true, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+        }
+      };
       renderEquipamentos();
+      document.getElementById('instalado-equip').value = 'SIM';
+      document.getElementById('retirado-equip').value = 'SIM';
       
       state.iniciaisValido = true;
       await saveState();
@@ -137,7 +161,8 @@ describe('complete fill persistence', () => {
       expect(state.iniciais.os).toBe('22222');
       expect(state.iniciais.lider).toBe('ANDRE DE SOUSA CARVALHO');
       expect(state.retorno.situacao_corte).toBe('CLIENTE CORTADO');
-      expect(state.equipamentos).toHaveLength(2);
+      expect(state.equipamentos.instaladoEquip).toBe('SIM');
+      expect(state.equipamentos.instalados.medidor).toBe('111');
 
       // ═══ STEP 4: Edit some fields ═══
       document.getElementById('uc').value = '99999';
@@ -145,7 +170,9 @@ describe('complete fill persistence', () => {
       document.getElementById('situacao_corte').value = 'CLIENTE VISITADO CONTA PAGA';
       
       // Add new equipment
-      addEquip({ status: 'Instalado', categoria: 'TC', numero: '333' });
+      state.equipamentos.instalados.tc_fase_a = '333';
+      state.equipamentos.checkboxes.instalados.tc_fase_a = true;
+      renderEquipamentos();
       collectEquipamentos();
       
       await saveState();
@@ -156,7 +183,8 @@ describe('complete fill persistence', () => {
       expect(updatedRecord.iniciais.os).toBe('22222'); // unchanged
       expect(updatedRecord.iniciais.lider).toBe('CARLOS CRISTIANO DO NASCIMENTO SILVA');
       expect(updatedRecord.retorno.situacao_corte).toBe('CLIENTE VISITADO CONTA PAGA');
-      expect(updatedRecord.equipamentos).toHaveLength(3);
+      expect(updatedRecord.equipamentos.instalados.medidor).toBe('111');
+      expect(updatedRecord.equipamentos.instalados.tc_fase_a).toBe('333');
     });
   });
 
@@ -218,7 +246,14 @@ describe('advanced persistence scenarios', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <div id="iniciais-campos"></div>
-      <div id="equipamentos-list"></div>
+      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <div id="sec-equip-instalados" class="hidden"></div>
+      <div id="sec-equip-retirados" class="hidden"></div>
+      <div id="checkboxes-instalados"></div>
+      <div id="checkboxes-retirados"></div>
+      <div id="campos-instalados"></div>
+      <div id="campos-retirados"></div>
       <div id="retorno-campos"></div>
       <div id="retorno-placeholder"></div>
       <div id="retorno-desc"></div>
@@ -268,7 +303,16 @@ describe('advanced persistence scenarios', () => {
     cacheDOM();
 
     state.iniciais = {};
-    state.equipamentos = [];
+    state.equipamentos = {
+      instaladoEquip: 'NAO',
+      retiradoEquip: 'NAO',
+      instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      checkboxes: {
+        instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+      }
+    };
     state.attachments = [];
     state.lastTipoOrdem = '';
     state.iniciaisValido = false;
@@ -301,7 +345,7 @@ describe('advanced persistence scenarios', () => {
 
     expect(state.iniciais.uc).toBe('11111');
     expect(state.iniciais.os).toBe('22222');
-    expect(state.equipamentos).toHaveLength(0);
+    expect(state.equipamentos.instaladoEquip).toBe('NAO');
     expect(state.retorno).toEqual({});
   });
 
@@ -342,8 +386,18 @@ describe('advanced persistence scenarios', () => {
     renderIniciais();
     document.getElementById('uc').value = '11111';
     document.getElementById('os').value = '22222';
-    state.equipamentos = [{ status: 'Instalado', categoria: 'Medidor', numero: '12345' }];
+    state.equipamentos = {
+      instaladoEquip: 'SIM',
+      retiradoEquip: 'NAO',
+      instalados: { medidor: '12345', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      checkboxes: {
+        instalados: { medidor: true, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+      }
+    };
     renderEquipamentos();
+    document.getElementById('instalado-equip').value = 'SIM';
     state.iniciaisValido = true;
     await saveState();
     const uuid = state.currentUUID;
@@ -352,24 +406,25 @@ describe('advanced persistence scenarios', () => {
     const record = await getRecord(uuid);
     await applyRecord(record);
 
-    expect(state.equipamentos).toHaveLength(1);
-    expect(state.equipamentos[0].status).toBe('Instalado');
-    expect(state.equipamentos[0].categoria).toBe('Medidor');
-    expect(state.equipamentos[0].numero).toBe('12345');
+    expect(state.equipamentos.instaladoEquip).toBe('SIM');
+    expect(state.equipamentos.instalados.medidor).toBe('12345');
   });
 
   // ═══ TESTE 4: Múltiplos equipamentos (5) ═══
-  it('should persist 5 equipment items correctly', async () => {
+  it('should persist multiple equipment categories correctly', async () => {
     renderIniciais();
     document.getElementById('uc').value = '11111';
     document.getElementById('os').value = '22222';
-    state.equipamentos = [
-      { status: 'Instalado', categoria: 'Medidor', numero: '111' },
-      { status: 'Retirado', categoria: 'Display', numero: '222' },
-      { status: 'Instalado', categoria: 'TC', numero: '333' },
-      { status: 'Retirado', categoria: 'TP', numero: '444' },
-      { status: 'Instalado', categoria: 'Conjunto', numero: '555' },
-    ];
+    state.equipamentos = {
+      instaladoEquip: 'SIM',
+      retiradoEquip: 'SIM',
+      instalados: { medidor: '111', conjunto: '555', display: '', tc_fase_a: '333', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      retirados: { medidor: '', conjunto: '', display: '222', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '444', tp_fase_b: '', tp_fase_c: '' },
+      checkboxes: {
+        instalados: { medidor: true, conjunto: true, display: false, tc_fase_a: true, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+        retirados: { medidor: false, conjunto: false, display: true, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: true, tp_fase_b: false, tp_fase_c: false }
+      }
+    };
     renderEquipamentos();
     state.iniciaisValido = true;
     await saveState();
@@ -379,9 +434,9 @@ describe('advanced persistence scenarios', () => {
     const record = await getRecord(uuid);
     await applyRecord(record);
 
-    expect(state.equipamentos).toHaveLength(5);
-    expect(state.equipamentos[2].categoria).toBe('TC');
-    expect(state.equipamentos[4].numero).toBe('555');
+    expect(state.equipamentos.instalados.tc_fase_a).toBe('333');
+    expect(state.equipamentos.instalados.conjunto).toBe('555');
+    expect(state.equipamentos.retirados.display).toBe('222');
   });
 
   // ═══ TESTE 5: Retorno com campos condicionais visíveis ═══
@@ -458,55 +513,73 @@ describe('advanced persistence scenarios', () => {
   });
 
   // ═══ TESTE 9: Remover equipamento persiste ═══
-  it('should persist equipment removal', async () => {
+  it('should persist equipment field clearance', async () => {
     renderIniciais();
     document.getElementById('uc').value = '11111';
     document.getElementById('os').value = '22222';
-    state.equipamentos = [
-      { status: 'Instalado', categoria: 'Medidor', numero: '111' },
-      { status: 'Retirado', categoria: 'Display', numero: '222' },
-      { status: 'Instalado', categoria: 'TC', numero: '333' },
-    ];
+    state.equipamentos = {
+      instaladoEquip: 'SIM',
+      retiradoEquip: 'SIM',
+      instalados: { medidor: '111', conjunto: '', display: '', tc_fase_a: '333', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      retirados: { medidor: '', conjunto: '', display: '222', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      checkboxes: {
+        instalados: { medidor: true, conjunto: false, display: false, tc_fase_a: true, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+        retirados: { medidor: false, conjunto: false, display: true, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+      }
+    };
     renderEquipamentos();
+    document.getElementById('instalado-equip').value = 'SIM';
+    document.getElementById('retirado-equip').value = 'SIM';
     state.iniciaisValido = true;
     await saveState();
     const uuid = state.currentUUID;
 
-    // Restore and remove middle equipment
+    // Restore and clear a field
     const record = await getRecord(uuid);
     await applyRecord(record);
-    const rows = DOM.equipList.querySelectorAll('.equip-row');
-    rows[1].querySelector('.btn-remove').click();
+    state.equipamentos.instalados.tc_fase_a = '';
+    state.equipamentos.checkboxes.instalados.tc_fase_a = false;
+    renderEquipamentos();
     collectEquipamentos();
     await saveState();
 
     const updated = await getRecord(uuid);
-    expect(updated.equipamentos).toHaveLength(2);
-    expect(updated.equipamentos[0].numero).toBe('111');
-    expect(updated.equipamentos[1].numero).toBe('333');
+    expect(updated.equipamentos.instalados.tc_fase_a).toBe('');
+    expect(updated.equipamentos.instalados.medidor).toBe('111');
   });
 
   // ═══ TESTE 10: Adicionar equipamento persiste ═══
-  it('should persist equipment addition', async () => {
+  it('should persist equipment field addition', async () => {
     renderIniciais();
     document.getElementById('uc').value = '11111';
     document.getElementById('os').value = '22222';
-    state.equipamentos = [{ status: 'Instalado', categoria: 'Medidor', numero: '111' }];
+    state.equipamentos = {
+      instaladoEquip: 'SIM',
+      retiradoEquip: 'SIM',
+      instalados: { medidor: '111', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      checkboxes: {
+        instalados: { medidor: true, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+      }
+    };
     renderEquipamentos();
     state.iniciaisValido = true;
     await saveState();
     const uuid = state.currentUUID;
 
-    // Restore and add equipment
+    // Restore and add a new equipment field
     const record = await getRecord(uuid);
     await applyRecord(record);
-    addEquip({ status: 'Retirado', categoria: 'Display', numero: '222' });
+    state.equipamentos.retirados.display = '222';
+    state.equipamentos.checkboxes.retirados.display = true;
+    renderEquipamentos();
     collectEquipamentos();
     await saveState();
 
     const updated = await getRecord(uuid);
-    expect(updated.equipamentos).toHaveLength(2);
-    expect(updated.equipamentos[1].numero).toBe('222');
+    expect(updated.equipamentos.instalados.medidor).toBe('111');
+    expect(updated.equipamentos.retirados.display).toBe('222');
   });
 
   // ═══ TESTE 11: Trocar tipo-ordem limpa retorno antigo ═══
@@ -575,7 +648,16 @@ describe('advanced persistence scenarios', () => {
     DOM.tipoOrdem.value = 'CORTE POR FALTA DE PAGAMENTO';
     renderRetorno();
     document.getElementById('situacao_corte').value = 'CLIENTE CORTADO';
-    state.equipamentos = [{ status: 'Instalado', categoria: 'Medidor', numero: '111' }];
+    state.equipamentos = {
+      instaladoEquip: 'SIM',
+      retiradoEquip: 'NAO',
+      instalados: { medidor: '111', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      checkboxes: {
+        instalados: { medidor: true, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+      }
+    };
     renderEquipamentos();
     state.iniciaisValido = true;
     await saveState();
@@ -588,7 +670,7 @@ describe('advanced persistence scenarios', () => {
     expect(state.iniciais.uc).toBe('11111');
     expect(state.iniciais.data).toBe('2024-03-15');
     expect(state.retorno.situacao_corte).toBe('CLIENTE CORTADO');
-    expect(state.equipamentos[0].numero).toBe('111');
+    expect(state.equipamentos.instalados.medidor).toBe('111');
   });
 
   // ═══ TESTE 14: Limpar campo preenchido ═══
@@ -659,8 +741,18 @@ describe('advanced persistence scenarios', () => {
     renderIniciais();
     document.getElementById('uc').value = '11111';
     document.getElementById('os').value = '22222';
-    state.equipamentos = [{ status: '', categoria: '', numero: '' }];
+    state.equipamentos = {
+      instaladoEquip: 'SIM',
+      retiradoEquip: 'NAO',
+      instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      checkboxes: {
+        instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+      }
+    };
     renderEquipamentos();
+    document.getElementById('instalado-equip').value = 'SIM';
     state.iniciaisValido = true;
     await saveState();
     const uuid = state.currentUUID;
@@ -669,9 +761,8 @@ describe('advanced persistence scenarios', () => {
     const record = await getRecord(uuid);
     await applyRecord(record);
 
-    expect(state.equipamentos[0].status).toBe('');
-    expect(state.equipamentos[0].categoria).toBe('');
-    expect(state.equipamentos[0].numero).toBe('');
+    expect(state.equipamentos.instalados.medidor).toBe('');
+    expect(state.equipamentos.instaladoEquip).toBe('SIM');
   });
 
   // ═══ TESTE 18: Campos com caracteres especiais ═══

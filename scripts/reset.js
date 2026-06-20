@@ -1,5 +1,5 @@
 import { DOM } from "./dom.js";
-import { state, clearCurrentUUID } from "./state.js";
+import { state, clearCurrentUUID, createDefaultEquipamentos } from "./state.js";
 import { markAttachmentsDirty } from "./persistence.js";
 import { renderIniciais } from "./iniciais.js";
 import { renderRetorno, handleTipoChange } from "./retornos.js";
@@ -12,16 +12,7 @@ import { collectIniciais } from "./collectors.js";
 
 export function resetForm() {
   // Reset state
-  state.equipamentos = {
-    instaladoEquip: 'NAO',
-    retiradoEquip: 'NAO',
-    instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
-    retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
-    checkboxes: {
-      instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
-      retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
-    }
-  };
+  state.equipamentos = createDefaultEquipamentos();
   state.attachments = [];
   state.iniciais = {};
   state.retorno = {};
@@ -54,10 +45,6 @@ export function resetForm() {
   DOM.retiradoEquip.value = 'NAO';
   DOM.secEquipInstalados.classList.add('hidden');
   DOM.secEquipRetirados.classList.add('hidden');
-  DOM.checkboxesInstalados.innerHTML = '';
-  DOM.checkboxesRetirados.innerHTML = '';
-  DOM.camposInstalados.innerHTML = '';
-  DOM.camposRetirados.innerHTML = '';
   
   // Re-render equipment checkboxes (empty state)
   renderEquipamentos();

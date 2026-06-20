@@ -1,7 +1,7 @@
 import { DOM } from "./dom.js";
 import { state } from "./state.js";
 import { showError, hideError, setFieldError, clearFieldError } from "./ui.js";
-import { collectIniciais, collectRetorno, collectEquipamentos } from "./collectors.js";
+import { collectIniciais, collectRetorno } from "./collectors.js";
 import { iniciaisFields as fieldsIniciais } from "./fields.js";
 
 // ── helpers locais ────────────────────────────────────────────────────────────
@@ -215,7 +215,7 @@ export function validateAll() {
     valid = valid && s3Valid;
   }
 
-  // Section 2: Equipamentos (optional, but validate if rows exist)
+  // Section 2: Equipamentos (validate if SIM selected)
   const s2Valid = validateSection2();
   if (!s2Valid && !firstError) {
     firstError = document.querySelector("#sec-equipamentos .error");

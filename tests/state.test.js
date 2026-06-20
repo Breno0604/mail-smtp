@@ -1,67 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import 'fake-indexeddb/auto';
-import { state, setCurrentUUID, clearCurrentUUID } from '../scripts/state.js';
+import { state, setCurrentUUID, clearCurrentUUID, createDefaultEquipamentos } from '../scripts/state.js';
 import { getCurrentUUID } from '../scripts/uuid.js';
 import { debouncedSave, saveState } from '../scripts/persistence.js';
 import { getRecord } from '../scripts/db.js';
 import { cacheDOM, DOM } from '../scripts/dom.js';
-
-/**
- * Helper to create default equipamentos structure
- * Ensures consistency across all test setups
- */
-function createDefaultEquipamentos() {
-  return {
-    instaladoEquip: 'NAO',
-    retiradoEquip: 'NAO',
-    instalados: {
-      medidor: '',
-      conjunto: '',
-      display: '',
-      tc_fase_a: '',
-      tc_fase_b: '',
-      tc_fase_c: '',
-      tp_fase_a: '',
-      tp_fase_b: '',
-      tp_fase_c: ''
-    },
-    retirados: {
-      medidor: '',
-      conjunto: '',
-      display: '',
-      tc_fase_a: '',
-      tc_fase_b: '',
-      tc_fase_c: '',
-      tp_fase_a: '',
-      tp_fase_b: '',
-      tp_fase_c: ''
-    },
-    checkboxes: {
-      instalados: {
-        medidor: false,
-        conjunto: false,
-        display: false,
-        tc_fase_a: false,
-        tc_fase_b: false,
-        tc_fase_c: false,
-        tp_fase_a: false,
-        tp_fase_b: false,
-        tp_fase_c: false
-      },
-      retirados: {
-        medidor: false,
-        conjunto: false,
-        display: false,
-        tc_fase_a: false,
-        tc_fase_b: false,
-        tc_fase_c: false,
-        tp_fase_a: false,
-        tp_fase_b: false,
-        tp_fase_c: false
-      }
-    }
-  };
-}
 
 describe('state', () => {
   beforeEach(() => {

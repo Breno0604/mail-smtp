@@ -32,7 +32,7 @@ describe('DOM readiness', () => {
       'error-msg',
       'sec-inicio', 'iniciais-campos',
       'sec-retorno', 'retorno-desc', 'retorno-placeholder', 'retorno-campos',
-      'sec-equipamentos', 'equipamentos-list', 'btn-add-equip',
+      'sec-equipamentos', 'instalado-equip', 'retirado-equip', 'sec-equip-instalados', 'sec-equip-retirados', 'checkboxes-instalados', 'checkboxes-retirados', 'campos-instalados', 'campos-retirados',
       'sec-anexos', 'file-input', 'file-count', 'preview-grid', 'file-upload-area',
       'sec-revisao', 'preview-corpo',
       'btn-enviar',

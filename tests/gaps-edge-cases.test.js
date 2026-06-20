@@ -28,7 +28,14 @@ describe('G2: saveState QuotaExceededError', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <div id="iniciais-campos"></div>
-      <div id="equipamentos-list"></div>
+      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <div id="sec-equip-instalados" class="hidden"></div>
+      <div id="sec-equip-retirados" class="hidden"></div>
+      <div id="checkboxes-instalados"></div>
+      <div id="checkboxes-retirados"></div>
+      <div id="campos-instalados"></div>
+      <div id="campos-retirados"></div>
       <div id="retorno-campos"></div>
       <div id="retorno-desc"></div>
       <select id="tipo-ordem"><option value="">Selecione</option></select>
@@ -70,7 +77,16 @@ describe('G2: saveState QuotaExceededError', () => {
     cacheDOM();
 
     state.iniciais = {};
-    state.equipamentos = [];
+    state.equipamentos = {
+      instaladoEquip: 'NAO',
+      retiradoEquip: 'NAO',
+      instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      checkboxes: {
+        instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+      }
+    };
     state.attachments = [];
     state.lastTipoOrdem = '';
     state.iniciaisValido = false;
@@ -116,7 +132,14 @@ describe('G3: handleTipoChange guard clause', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <div id="iniciais-campos"></div>
-      <div id="equipamentos-list"></div>
+      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <div id="sec-equip-instalados" class="hidden"></div>
+      <div id="sec-equip-retirados" class="hidden"></div>
+      <div id="checkboxes-instalados"></div>
+      <div id="checkboxes-retirados"></div>
+      <div id="campos-instalados"></div>
+      <div id="campos-retirados"></div>
       <div id="retorno-campos"></div>
       <div id="retorno-desc"></div>
       <div id="retorno-placeholder"></div>
@@ -192,7 +215,14 @@ describe('G4: applyRecord attachment migration fallback', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <div id="iniciais-campos"></div>
-      <div id="equipamentos-list"></div>
+      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <div id="sec-equip-instalados" class="hidden"></div>
+      <div id="sec-equip-retirados" class="hidden"></div>
+      <div id="checkboxes-instalados"></div>
+      <div id="checkboxes-retirados"></div>
+      <div id="campos-instalados"></div>
+      <div id="campos-retirados"></div>
       <div id="retorno-campos"></div>
       <div id="retorno-desc"></div>
       <div id="retorno-placeholder"></div>
@@ -238,7 +268,16 @@ describe('G4: applyRecord attachment migration fallback', () => {
     cacheDOM();
     localStorage.clear();
     state.iniciais = {};
-    state.equipamentos = [];
+    state.equipamentos = {
+      instaladoEquip: 'NAO',
+      retiradoEquip: 'NAO',
+      instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      checkboxes: {
+        instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+      }
+    };
     state.attachments = [];
     state.retorno = {};
     state.lastTipoOrdem = '';
@@ -297,7 +336,14 @@ describe('G6: resolveCreatedAt failure fallback', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <div id="iniciais-campos"></div>
-      <div id="equipamentos-list"></div>
+      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <div id="sec-equip-instalados" class="hidden"></div>
+      <div id="sec-equip-retirados" class="hidden"></div>
+      <div id="checkboxes-instalados"></div>
+      <div id="checkboxes-retirados"></div>
+      <div id="campos-instalados"></div>
+      <div id="campos-retirados"></div>
       <div id="retorno-campos"></div>
       <div id="retorno-desc"></div>
       <select id="tipo-ordem"><option value="">Selecione</option></select>
@@ -338,7 +384,16 @@ describe('G6: resolveCreatedAt failure fallback', () => {
     `;
     cacheDOM();
     state.iniciais = {};
-    state.equipamentos = [];
+    state.equipamentos = {
+      instaladoEquip: 'NAO',
+      retiradoEquip: 'NAO',
+      instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      checkboxes: {
+        instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+      }
+    };
     state.attachments = [];
     state.lastTipoOrdem = '';
     state.iniciaisValido = false;
@@ -382,7 +437,14 @@ describe('G7+G8: markAttachmentsDirty and empty attachments save', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <div id="iniciais-campos"></div>
-      <div id="equipamentos-list"></div>
+      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <div id="sec-equip-instalados" class="hidden"></div>
+      <div id="sec-equip-retirados" class="hidden"></div>
+      <div id="checkboxes-instalados"></div>
+      <div id="checkboxes-retirados"></div>
+      <div id="campos-instalados"></div>
+      <div id="campos-retirados"></div>
       <div id="retorno-campos"></div>
       <div id="retorno-desc"></div>
       <select id="tipo-ordem"><option value="">Selecione</option></select>
@@ -423,7 +485,16 @@ describe('G7+G8: markAttachmentsDirty and empty attachments save', () => {
     `;
     cacheDOM();
     state.iniciais = {};
-    state.equipamentos = [];
+    state.equipamentos = {
+      instaladoEquip: 'NAO',
+      retiradoEquip: 'NAO',
+      instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      checkboxes: {
+        instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+      }
+    };
     state.attachments = [];
     state.lastTipoOrdem = '';
     state.iniciaisValido = false;
@@ -475,7 +546,14 @@ describe('G9: updateLivePreview DOM update', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <div id="iniciais-campos"></div>
-      <div id="equipamentos-list"></div>
+      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <div id="sec-equip-instalados" class="hidden"></div>
+      <div id="sec-equip-retirados" class="hidden"></div>
+      <div id="checkboxes-instalados"></div>
+      <div id="checkboxes-retirados"></div>
+      <div id="campos-instalados"></div>
+      <div id="campos-retirados"></div>
       <div id="retorno-campos"></div>
       <div id="retorno-desc"></div>
       <div id="retorno-placeholder"></div>
@@ -519,7 +597,16 @@ describe('G9: updateLivePreview DOM update', () => {
     `;
     cacheDOM();
     state.iniciais = {};
-    state.equipamentos = [];
+    state.equipamentos = {
+      instaladoEquip: 'NAO',
+      retiradoEquip: 'NAO',
+      instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      checkboxes: {
+        instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+      }
+    };
     state.retorno = {};
     state.attachments = [];
     localStorage.clear();
@@ -578,7 +665,14 @@ describe('G11: resetForm preview state', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <div id="iniciais-campos"></div>
-      <div id="equipamentos-list"></div>
+      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <div id="sec-equip-instalados" class="hidden"></div>
+      <div id="sec-equip-retirados" class="hidden"></div>
+      <div id="checkboxes-instalados"></div>
+      <div id="checkboxes-retirados"></div>
+      <div id="campos-instalados"></div>
+      <div id="campos-retirados"></div>
       <div id="retorno-campos"></div>
       <div id="retorno-desc"></div>
       <div id="retorno-placeholder"></div>
@@ -624,7 +718,16 @@ describe('G11: resetForm preview state', () => {
     `;
     cacheDOM();
     state.iniciais = {};
-    state.equipamentos = [];
+    state.equipamentos = {
+      instaladoEquip: 'NAO',
+      retiradoEquip: 'NAO',
+      instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      checkboxes: {
+        instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+      }
+    };
     state.attachments = [];
     state.retorno = {};
     state.lastTipoOrdem = '';

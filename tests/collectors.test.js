@@ -8,7 +8,14 @@ describe('collectors', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <div id="iniciais-campos"></div>
-      <div id="equipamentos-list"></div>
+      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <div id="campos-instalados"></div>
+      <div id="campos-retirados"></div>
+      <div id="checkboxes-instalados"></div>
+      <div id="checkboxes-retirados"></div>
+      <div id="sec-equip-instalados" class="hidden"></div>
+      <div id="sec-equip-retirados" class="hidden"></div>
       <div id="retorno-campos"></div>
       <select id="tipo-ordem">
         <option value="">Selecione</option>
@@ -21,7 +28,16 @@ describe('collectors', () => {
     // Reset state
     state.iniciais = {};
     state.retorno = {};
-    state.equipamentos = [];
+    state.equipamentos = {
+      instaladoEquip: 'NAO',
+      retiradoEquip: 'NAO',
+      instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      checkboxes: {
+        instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+      }
+    };
     state.attachments = [];
   });
 
@@ -74,23 +90,21 @@ describe('collectors', () => {
   });
 
   describe('collectEquipamentos', () => {
-    it('should collect equipment rows from DOM and update state', () => {
-      const container = document.getElementById('equipamentos-list');
-      container.innerHTML = `
-        <div class="equip-row">
-          <select class="equip-tipo"><option value="Instalado" selected>Instalado</option></select>
-          <select class="equip-categoria"><option value="Medidor" selected>Medidor</option></select>
-          <input class="equip-numero" value="12345">
-        </div>
-      `;
+    it('should collect equipment fields from DOM and update state', () => {
+      // Set up control selects
+      document.getElementById('instalado-equip').value = 'SIM';
+      
+      // Set up a field input in campos-instalados
+      const camposInstalados = document.getElementById('campos-instalados');
+      const fieldDiv = document.createElement('div');
+      fieldDiv.setAttribute('data-equip', 'medidor');
+      fieldDiv.innerHTML = '<input type="number" data-tipo="instalados" data-equip="medidor" value="12345">';
+      camposInstalados.appendChild(fieldDiv);
       
       const result = collectEquipamentos();
       
-      expect(result).toHaveLength(1);
-      expect(result[0].status).toBe('Instalado');
-      expect(result[0].categoria).toBe('Medidor');
-      expect(result[0].numero).toBe('12345');
-      expect(state.equipamentos).toHaveLength(1);
+      expect(result.instaladoEquip).toBe('SIM');
+      expect(result.instalados.medidor).toBe('12345');
     });
   });
 
@@ -98,7 +112,16 @@ describe('collectors', () => {
     it('should return all data from state (single source of truth)', () => {
       // Setup state directly (state is the single source of truth)
       state.iniciais = { uc: '12345', os: '67890' };
-      state.equipamentos = [{ status: 'Instalado', categoria: 'Medidor', numero: '12345' }];
+      state.equipamentos = {
+        instaladoEquip: 'SIM',
+        retiradoEquip: 'NAO',
+        instalados: { medidor: '12345', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+        retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+        checkboxes: {
+          instalados: { medidor: true, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+          retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+        }
+      };
       state.retorno = { situacao_corte: 'CLIENTE CORTADO' };
       state.attachments = [new File(['test'], 'test.jpg', { type: 'image/jpeg' })];
       state.iniciais['tipo-ordem'] = 'CORTE POR FALTA DE PAGAMENTO';
@@ -107,13 +130,13 @@ describe('collectors', () => {
       
       expect(result.iniciais.uc).toBe('12345');
       expect(result.iniciais.os).toBe('67890');
-      expect(result.equipamentos).toHaveLength(1);
-      expect(result.equipamentos[0].status).toBe('Instalado');
+      expect(result.equipamentos.instaladoEquip).toBe('SIM');
+      expect(result.equipamentos.instalados.medidor).toBe('12345');
       expect(result.attachments).toHaveLength(1);
       expect(result.tipoOrdem).toBe('CORTE POR FALTA DE PAGAMENTO');
       // Verify state is unchanged (collectAllData reads, doesn't write)
       expect(state.iniciais.uc).toBe('12345');
-      expect(state.equipamentos).toHaveLength(1);
+      expect(state.equipamentos.instaladoEquip).toBe('SIM');
     });
   });
 });

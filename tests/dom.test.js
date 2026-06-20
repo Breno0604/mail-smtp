@@ -35,8 +35,14 @@ describe('dom — element caching', () => {
       <div id="retorno-campos"></div>
 
       <!-- Equipamentos -->
-      <div id="equipamentos-list"></div>
-      <button id="btn-add-equip"></button>
+      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <div id="sec-equip-instalados" class="hidden"></div>
+      <div id="sec-equip-retirados" class="hidden"></div>
+      <div id="checkboxes-instalados"></div>
+      <div id="checkboxes-retirados"></div>
+      <div id="campos-instalados"></div>
+      <div id="campos-retirados"></div>
 
       <!-- Anexos -->
       <input type="file" id="file-input">
@@ -104,8 +110,14 @@ describe('dom — element caching', () => {
     expect(DOM.retornoCampos).toBeInstanceOf(HTMLElement);
 
     // Equipamentos
-    expect(DOM.equipList).toBeInstanceOf(HTMLElement);
-    expect(DOM.btnAddEquip).toBeInstanceOf(HTMLElement);
+    expect(DOM.instaladoEquip).toBeInstanceOf(HTMLElement);
+    expect(DOM.retiradoEquip).toBeInstanceOf(HTMLElement);
+    expect(DOM.secEquipInstalados).toBeInstanceOf(HTMLElement);
+    expect(DOM.secEquipRetirados).toBeInstanceOf(HTMLElement);
+    expect(DOM.checkboxesInstalados).toBeInstanceOf(HTMLElement);
+    expect(DOM.checkboxesRetirados).toBeInstanceOf(HTMLElement);
+    expect(DOM.camposInstalados).toBeInstanceOf(HTMLElement);
+    expect(DOM.camposRetirados).toBeInstanceOf(HTMLElement);
 
     // Anexos
     expect(DOM.fileInput).toBeInstanceOf(HTMLElement);

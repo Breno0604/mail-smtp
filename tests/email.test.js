@@ -68,7 +68,12 @@ describe('email', () => {
         hora_fim: '17:00',
         'tipo-ordem': 'ADEQUACAO SMF',
       },
-      equipamentos: [],
+      equipamentos: {
+        instaladoEquip: 'NAO',
+        retiradoEquip: 'NAO',
+        instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+        retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' }
+      },
       retorno: { descricao: '' },
     };
 
@@ -103,23 +108,32 @@ describe('email', () => {
     it('should include equipamentos section when equipment rows exist', () => {
       const data = {
         ...sampleData,
-        equipamentos: [{ status: 'Instalado', categoria: 'Medidor', numero: '12345' }],
+        equipamentos: {
+          instaladoEquip: 'SIM',
+          retiradoEquip: 'NAO',
+          instalados: { medidor: '12345', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+          retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' }
+        },
       };
       const body = composeEmail(data);
       expect(body).toContain('EQUIPAMENTOS:');
       expect(body).toContain('MEDIDOR');
-      expect(body).toContain('INSTALADO');
-      expect(body).toContain('Nº');
       expect(body).toContain('12345');
+      expect(body).toContain('Foi instalado Equipamentos: SIM');
     });
 
-    it('should include "—" for equipment number when empty', () => {
+    it('should include "—" for empty equipment values', () => {
       const data = {
         ...sampleData,
-        equipamentos: [{ status: 'Instalado', categoria: 'Medidor', numero: '' }],
+        equipamentos: {
+          instaladoEquip: 'SIM',
+          retiradoEquip: 'NAO',
+          instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+          retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' }
+        },
       };
       const body = composeEmail(data);
-      expect(body).toContain('—');
+      expect(body).toContain('Foi instalado Equipamentos: SIM');
     });
 
     it('should include retorno section', () => {

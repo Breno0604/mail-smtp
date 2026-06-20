@@ -12,7 +12,14 @@ describe('reset', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <div id="iniciais-campos"></div>
-      <div id="equipamentos-list"></div>
+      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <div id="sec-equip-instalados" class="hidden"></div>
+      <div id="sec-equip-retirados" class="hidden"></div>
+      <div id="checkboxes-instalados"></div>
+      <div id="checkboxes-retirados"></div>
+      <div id="campos-instalados"></div>
+      <div id="campos-retirados"></div>
       <div id="retorno-campos"></div>
       <div id="retorno-placeholder"></div>
       <div id="retorno-desc"></div>
@@ -56,7 +63,16 @@ describe('reset', () => {
     
     // Set up populated state
     state.iniciais = { uc: '12345', os: '67890' };
-    state.equipamentos = [{ status: 'Instalado', categoria: 'Medidor', numero: '1' }];
+    state.equipamentos = {
+      instaladoEquip: 'SIM',
+      retiradoEquip: 'NAO',
+      instalados: { medidor: '1', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      checkboxes: {
+        instalados: { medidor: true, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+      }
+    };
     state.attachments = [new File(['test'], 'test.jpg', { type: 'image/jpeg' })];
     state.lastTipoOrdem = 'ADEQUACAO SMF';
     state.currentUUID = 'test-uuid-123';
@@ -66,7 +82,6 @@ describe('reset', () => {
 
     // Populate some DOM elements
     DOM.retornoCampos.innerHTML = '<p>retorno content</p>';
-    DOM.equipList.innerHTML = '<div class="equip-row">some equipment</div>';
     DOM.previewGrid.innerHTML = '<div class="preview-item">preview</div>';
     DOM.errorMsg.style.display = 'block';
     DOM.errorMsg.textContent = 'Some error';
@@ -87,7 +102,10 @@ describe('reset', () => {
 
     it('should clear state.equipamentos', () => {
       resetForm();
-      expect(state.equipamentos).toEqual([]);
+      expect(state.equipamentos.instaladoEquip).toBe('NAO');
+      expect(state.equipamentos.retiradoEquip).toBe('NAO');
+      expect(state.equipamentos.instalados.medidor).toBe('');
+      expect(state.equipamentos.checkboxes.instalados.medidor).toBe(false);
     });
 
     it('should clear state.attachments', () => {
@@ -122,9 +140,10 @@ describe('reset', () => {
 
     it('should clear equipamentos list DOM', () => {
       resetForm();
-      expect(DOM.equipList.innerHTML).not.toBe('');
-      // Should have empty-msg
-      expect(DOM.equipList.querySelector('.empty-msg')).toBeTruthy();
+      // Checkboxes should be rendered (empty state)
+      expect(DOM.checkboxesInstalados.children.length).toBeGreaterThan(0);
+      expect(DOM.camposInstalados.innerHTML).toBe('');
+      expect(DOM.camposRetirados.innerHTML).toBe('');
     });
 
     it('should clear preview grid', () => {

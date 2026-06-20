@@ -1,13 +1,19 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { addEquip, renderEquipRow, showEmptyEquip, hideEmptyEquip, renderEquipamentos } from '../scripts/equipment.js';
-import { cacheDOM, DOM } from '../scripts/dom.js';
+import { renderEquipamentos, toggleSectionVisibility, toggleFieldVisibility, updateFieldValue } from '../scripts/equipment.js';
+import { cacheDOM } from '../scripts/dom.js';
 import { state } from '../scripts/state.js';
 
 describe('equipment', () => {
   beforeEach(() => {
     document.body.innerHTML = `
-      <div id="equipamentos-list"></div>
-      <button id="btn-add-equip">+ Adicionar equipamento</button>
+      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <div id="sec-equip-instalados" class="hidden"></div>
+      <div id="sec-equip-retirados" class="hidden"></div>
+      <div id="checkboxes-instalados"></div>
+      <div id="checkboxes-retirados"></div>
+      <div id="campos-instalados"></div>
+      <div id="campos-retirados"></div>
       <div id="error-msg" style="display:none"></div>
       <div id="iniciais-campos"></div>
       <div id="retorno-campos"></div>
@@ -47,200 +53,162 @@ describe('equipment', () => {
       </div>
     `;
     cacheDOM();
-    state.equipamentos = [];
+    state.equipamentos = {
+      instaladoEquip: 'NAO',
+      retiradoEquip: 'NAO',
+      instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      checkboxes: {
+        instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+      }
+    };
     state.attachments = [];
   });
 
-  describe('addEquip', () => {
-    it('should create an equipment row with default values', () => {
-      addEquip();
-      const rows = DOM.equipList.querySelectorAll('.equip-row');
-      expect(rows.length).toBe(1);
-    });
-
-    it('should create select elements for tipo and categoria', () => {
-      addEquip();
-      const tipo = DOM.equipList.querySelector('.equip-tipo');
-      const categoria = DOM.equipList.querySelector('.equip-categoria');
-      expect(tipo).toBeTruthy();
-      expect(tipo.tagName).toBe('SELECT');
-      expect(categoria).toBeTruthy();
-      expect(categoria.tagName).toBe('SELECT');
-    });
-
-    it('should create an input for numero', () => {
-      addEquip();
-      const numero = DOM.equipList.querySelector('.equip-numero');
-      expect(numero).toBeTruthy();
-      expect(numero.tagName).toBe('INPUT');
-      expect(numero.type).toBe('number');
-    });
-
-    it('should create a remove button', () => {
-      addEquip();
-      const removeBtn = DOM.equipList.querySelector('.btn-remove');
-      expect(removeBtn).toBeTruthy();
-    });
-
-    it('should pre-fill values when data is provided', () => {
-      const data = { status: 'Instalado', categoria: 'Medidor', numero: '12345' };
-      addEquip(data);
-      const tipo = DOM.equipList.querySelector('.equip-tipo');
-      const categoria = DOM.equipList.querySelector('.equip-categoria');
-      const numero = DOM.equipList.querySelector('.equip-numero');
-      expect(tipo.value).toBe('Instalado');
-      expect(categoria.value).toBe('Medidor');
-      expect(numero.value).toBe('12345');
-    });
-
-    it('should add equipment data to state', () => {
-      addEquip({ status: 'Retirado', categoria: 'Display', numero: '67890' });
-      expect(state.equipamentos).toHaveLength(1);
-      expect(state.equipamentos[0].status).toBe('Retirado');
-      expect(state.equipamentos[0].categoria).toBe('Display');
-      expect(state.equipamentos[0].numero).toBe('67890');
-    });
-
-    it('should remove row when remove button is clicked', () => {
-      addEquip({ status: 'Instalado', categoria: 'Medidor', numero: '12345' });
-      const removeBtn = DOM.equipList.querySelector('.btn-remove');
-      removeBtn.click();
-      const rows = DOM.equipList.querySelectorAll('.equip-row');
-      expect(rows.length).toBe(0);
-    });
-
-    it('should show empty message when last row is removed', () => {
-      addEquip({ status: 'Instalado', categoria: 'Medidor', numero: '12345' });
-      const removeBtn = DOM.equipList.querySelector('.btn-remove');
-      removeBtn.click();
-      const emptyMsg = DOM.equipList.querySelector('.empty-msg');
-      expect(emptyMsg).toBeTruthy();
-    });
-  });
-
-  describe('showEmptyEquip', () => {
-    it('should show empty message when no equipment rows exist', () => {
-      DOM.equipList.innerHTML = '';
-      showEmptyEquip();
-      const msg = DOM.equipList.querySelector('.empty-msg');
-      expect(msg).toBeTruthy();
-      expect(msg.textContent).toBe('Nenhum equipamento adicionado.');
-    });
-
-    it('should not duplicate empty message if already present', () => {
-      showEmptyEquip();
-      showEmptyEquip();
-      const msgs = DOM.equipList.querySelectorAll('.empty-msg');
-      expect(msgs.length).toBe(1);
-    });
-  });
-
-  describe('hideEmptyEquip', () => {
-    it('should remove the empty message', () => {
-      showEmptyEquip();
-      hideEmptyEquip();
-      const msg = DOM.equipList.querySelector('.empty-msg');
-      expect(msg).toBeNull();
-    });
-
-    it('should not throw if no empty message exists', () => {
-      DOM.equipList.innerHTML = '';
-      expect(() => hideEmptyEquip()).not.toThrow();
-    });
-  });
-
   describe('renderEquipamentos', () => {
-    it('should show empty message when state.equipamentos is empty', () => {
-      state.equipamentos = [];
+    it('should render checkboxes for instalados section', () => {
       renderEquipamentos();
-      const emptyMsg = DOM.equipList.querySelector('.empty-msg');
-      expect(emptyMsg).toBeTruthy();
+      const checkboxes = document.querySelectorAll('#checkboxes-instalados .equip-checkbox');
+      expect(checkboxes.length).toBe(9);
     });
 
-    it('should render rows from state.equipamentos', () => {
-      state.equipamentos = [
-        { status: 'Instalado', categoria: 'Medidor', numero: '111' },
-        { status: 'Retirado', categoria: 'Display', numero: '222' },
-      ];
+    it('should render checkboxes for retirados section', () => {
       renderEquipamentos();
-      const rows = DOM.equipList.querySelectorAll('.equip-row');
-      expect(rows.length).toBe(2);
+      const checkboxes = document.querySelectorAll('#checkboxes-retirados .equip-checkbox');
+      expect(checkboxes.length).toBe(9);
     });
 
-    it('should pre-fill values from state', () => {
-      state.equipamentos = [
-        { status: 'Instalado', categoria: 'TC', numero: '333' },
-      ];
+    it('should label each checkbox correctly', () => {
       renderEquipamentos();
-      const tipo = DOM.equipList.querySelector('.equip-tipo');
-      const categoria = DOM.equipList.querySelector('.equip-categoria');
-      const numero = DOM.equipList.querySelector('.equip-numero');
-      expect(tipo.value).toBe('Instalado');
-      expect(categoria.value).toBe('TC');
-      expect(numero.value).toBe('333');
+      const labels = document.querySelectorAll('#checkboxes-instalados label span');
+      expect(labels[0].textContent).toBe('MEDIDOR');
+      expect(labels[1].textContent).toBe('CONJUNTO');
+      expect(labels[2].textContent).toBe('DISPLAY');
     });
 
-    it('should clear existing rows before rendering', () => {
-      // Start with one row via DOM directly
-      const existingRow = document.createElement('div');
-      existingRow.className = 'equip-row';
-      existingRow.innerHTML = '<select class="equip-tipo"><option value="Instalado">Instalado</option></select><select class="equip-categoria"><option value="Medidor">Medidor</option></select><input class="equip-numero" value="old">';
-      DOM.equipList.appendChild(existingRow);
-      
-      state.equipamentos = [{ status: 'Retirado', categoria: 'Display', numero: '42' }];
+    it('should restore checked state from state', () => {
+      state.equipamentos.checkboxes.instalados.medidor = true;
+      state.equipamentos.instalados.medidor = '123';
       renderEquipamentos();
-      const rows = DOM.equipList.querySelectorAll('.equip-row');
-      expect(rows.length).toBe(1);
-      expect(rows[0].querySelector('.equip-numero').value).toBe('42');
+      const checkbox = document.querySelector('[data-tipo="instalados"][data-equip="medidor"]');
+      expect(checkbox.checked).toBe(true);
     });
   });
 
-  describe('renderEquipRow', () => {
-    it('should create a row element without appending to DOM', () => {
-      const row = renderEquipRow({ status: 'Instalado', categoria: 'Medidor', numero: '111' });
-      expect(row).toBeInstanceOf(HTMLElement);
-      expect(row.className).toContain('equip-row');
+  describe('toggleSectionVisibility', () => {
+    it('should show section when select value is SIM', () => {
+      document.getElementById('instalado-equip').value = 'SIM';
+      toggleSectionVisibility('instalados');
+      const section = document.getElementById('sec-equip-instalados');
+      expect(section.classList.contains('hidden')).toBe(false);
     });
 
-    it('should pre-fill values from data', () => {
-      const row = renderEquipRow({ status: 'Instalado', categoria: 'TC', numero: '333' });
-      expect(row.querySelector('.equip-tipo').value).toBe('Instalado');
-      expect(row.querySelector('.equip-categoria').value).toBe('TC');
-      expect(row.querySelector('.equip-numero').value).toBe('333');
+    it('should hide section when select value is NAO', () => {
+      document.getElementById('instalado-equip').value = 'SIM';
+      toggleSectionVisibility('instalados');
+      document.getElementById('instalado-equip').value = 'NAO';
+      toggleSectionVisibility('instalados');
+      const section = document.getElementById('sec-equip-instalados');
+      expect(section.classList.contains('hidden')).toBe(true);
     });
 
-    it('should create remove button', () => {
-      const row = renderEquipRow();
-      const btn = row.querySelector('.btn-remove');
-      expect(btn).toBeTruthy();
+    it('should update state.instaladoEquip when toggling', () => {
+      document.getElementById('instalado-equip').value = 'SIM';
+      toggleSectionVisibility('instalados');
+      expect(state.equipamentos.instaladoEquip).toBe('SIM');
+
+      document.getElementById('instalado-equip').value = 'NAO';
+      toggleSectionVisibility('instalados');
+      expect(state.equipamentos.instaladoEquip).toBe('NAO');
     });
   });
 
-  describe('renderEquipamentos silent behavior', () => {
-    it('should render multiple equipment items correctly', () => {
-      state.equipamentos = [
-        { status: 'Instalado', categoria: 'Medidor', numero: '111' },
-        { status: 'Retirado', categoria: 'Display', numero: '222' },
-        { status: 'Instalado', categoria: 'TC', numero: '333' },
-      ];
+  describe('toggleFieldVisibility', () => {
+    it('should show field input when checkbox is checked', () => {
       renderEquipamentos();
-      const rows = DOM.equipList.querySelectorAll('.equip-row');
-      expect(rows.length).toBe(3);
+      toggleFieldVisibility('instalados', 'medidor', true);
+      const field = document.querySelector('#campos-instalados [data-equip="medidor"]');
+      expect(field).toBeTruthy();
     });
 
-    it('should correctly populate all values when rendering multiple items', () => {
-      state.equipamentos = [
-        { status: 'Instalado', categoria: 'Medidor', numero: '111' },
-        { status: 'Retirado', categoria: 'Display', numero: '222' },
-      ];
+    it('should hide field input when checkbox is unchecked', () => {
       renderEquipamentos();
-      const rows = DOM.equipList.querySelectorAll('.equip-row');
-      expect(rows[0].querySelector('.equip-tipo').value).toBe('Instalado');
-      expect(rows[0].querySelector('.equip-categoria').value).toBe('Medidor');
-      expect(rows[0].querySelector('.equip-numero').value).toBe('111');
-      expect(rows[1].querySelector('.equip-tipo').value).toBe('Retirado');
-      expect(rows[1].querySelector('.equip-categoria').value).toBe('Display');
-      expect(rows[1].querySelector('.equip-numero').value).toBe('222');
+      toggleFieldVisibility('instalados', 'medidor', true);
+      toggleFieldVisibility('instalados', 'medidor', false);
+      const field = document.querySelector('#campos-instalados [data-equip="medidor"]');
+      expect(field).toBeNull();
+    });
+
+    it('should update checkbox state on toggle', () => {
+      renderEquipamentos();
+      toggleFieldVisibility('instalados', 'medidor', true);
+      expect(state.equipamentos.checkboxes.instalados.medidor).toBe(true);
+      toggleFieldVisibility('instalados', 'medidor', false);
+      expect(state.equipamentos.checkboxes.instalados.medidor).toBe(false);
+    });
+
+    it('should clear field value when unchecking', () => {
+      state.equipamentos.instalados.medidor = '123';
+      renderEquipamentos();
+      toggleFieldVisibility('instalados', 'medidor', true);
+      toggleFieldVisibility('instalados', 'medidor', false);
+      expect(state.equipamentos.instalados.medidor).toBe('');
+    });
+  });
+
+  describe('updateFieldValue', () => {
+    it('should update state when field value changes', () => {
+      updateFieldValue('instalados', 'medidor', '555');
+      expect(state.equipamentos.instalados.medidor).toBe('555');
+    });
+
+    it('should update retirados field values', () => {
+      updateFieldValue('retirados', 'display', '999');
+      expect(state.equipamentos.retirados.display).toBe('999');
+    });
+  });
+
+  describe('full render and restore cycle', () => {
+    it('should restore field values from state after render', () => {
+      state.equipamentos.instaladoEquip = 'SIM';
+      state.equipamentos.checkboxes.instalados.medidor = true;
+      state.equipamentos.checkboxes.instalados.conjunto = true;
+      state.equipamentos.instalados.medidor = '111';
+      state.equipamentos.instalados.conjunto = '222';
+
+      renderEquipamentos();
+
+      const instaladoCheckbox = document.querySelector('[data-tipo="instalados"][data-equip="medidor"]');
+      expect(instaladoCheckbox.checked).toBe(true);
+
+      const conjInput = document.querySelector('#campos-instalados [data-equip="conjunto"] input');
+      expect(conjInput.value).toBe('222');
+    });
+  });
+
+  describe('clearSection on hide', () => {
+    it('should clear all fields when hiding section', () => {
+      state.equipamentos.instaladoEquip = 'SIM';
+      state.equipamentos.checkboxes.instalados.medidor = true;
+      state.equipamentos.checkboxes.instalados.display = true;
+      state.equipamentos.instalados.medidor = '111';
+      state.equipamentos.instalados.display = '222';
+      renderEquipamentos();
+
+      // Hide section
+      document.getElementById('instalado-equip').value = 'NAO';
+      toggleSectionVisibility('instalados');
+
+      // State should be cleared
+      expect(state.equipamentos.instalados.medidor).toBe('');
+      expect(state.equipamentos.instalados.display).toBe('');
+      expect(state.equipamentos.checkboxes.instalados.medidor).toBe(false);
+      expect(state.equipamentos.checkboxes.instalados.display).toBe(false);
+
+      // DOM fields should be removed
+      const campos = document.getElementById('campos-instalados');
+      expect(campos.innerHTML).toBe('');
     });
   });
 });

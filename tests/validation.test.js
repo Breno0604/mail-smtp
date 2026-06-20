@@ -10,7 +10,14 @@ describe('validation', () => {
     document.body.innerHTML = `
       <div id="error-msg" style="display:none"></div>
       <div id="iniciais-campos"></div>
-      <div id="equipamentos-list"></div>
+      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <div id="sec-equip-instalados" class="hidden"></div>
+      <div id="sec-equip-retirados" class="hidden"></div>
+      <div id="checkboxes-instalados"></div>
+      <div id="checkboxes-retirados"></div>
+      <div id="campos-instalados"></div>
+      <div id="campos-retirados"></div>
       <div id="retorno-campos"></div>
       <div id="retorno-placeholder"></div>
       <div id="retorno-desc"></div>
@@ -74,7 +81,16 @@ describe('validation', () => {
     state.iniciais = {};
     state.iniciaisValido = false;
     state.retorno = {};
-    state.equipamentos = [];
+    state.equipamentos = {
+      instaladoEquip: 'NAO',
+      retiradoEquip: 'NAO',
+      instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      checkboxes: {
+        instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+      }
+    };
   });
 
   describe('validateSection(1) - Iniciais', () => {
@@ -239,100 +255,57 @@ describe('validation', () => {
   });
 
   describe('validateSection(2) - Equipamentos', () => {
-    function addEquipmentRow(status, categoria, numero) {
-      const row = document.createElement('div');
-      row.className = 'equip-row';
-      row.innerHTML = `
-        <select class="equip-tipo">
-          <option value="">Selecione...</option>
-          <option value="Instalado" ${status === 'Instalado' ? 'selected' : ''}>Instalado</option>
-          <option value="Retirado" ${status === 'Retirado' ? 'selected' : ''}>Retirado</option>
-        </select>
-        <select class="equip-categoria">
-          <option value="">Selecione...</option>
-          <option value="Medidor" ${categoria === 'Medidor' ? 'selected' : ''}>Medidor</option>
-          <option value="Display" ${categoria === 'Display' ? 'selected' : ''}>Display</option>
-        </select>
-        <input class="equip-numero" value="${numero || ''}">
-      `;
-      DOM.equipList.appendChild(row);
-    }
-
-    it('should return true when there are no equipment rows (skip allowed)', () => {
-      DOM.equipList.innerHTML = '';
+    it('should return true when both control fields are NAO', () => {
+      state.equipamentos.instaladoEquip = 'NAO';
+      state.equipamentos.retiradoEquip = 'NAO';
       const result = validateSection(2);
       expect(result).toBe(true);
     });
 
-    it('should return false when a row has empty tipo', () => {
-      addEquipmentRow('', 'Medidor', '12345');
+    it('should return false when instalado is SIM but no equipment fields filled', () => {
+      state.equipamentos.instaladoEquip = 'SIM';
+      state.equipamentos.instalados = { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' };
       const result = validateSection(2);
       expect(result).toBe(false);
     });
 
-    it('should return false when a row has empty categoria', () => {
-      addEquipmentRow('Instalado', '', '12345');
+    it('should return true when instalado is SIM with at least one value', () => {
+      state.equipamentos.instaladoEquip = 'SIM';
+      state.equipamentos.instalados = { medidor: '12345', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' };
+      const result = validateSection(2);
+      expect(result).toBe(true);
+    });
+
+    it('should return false when retirado is SIM but no equipment fields filled', () => {
+      state.equipamentos.retiradoEquip = 'SIM';
+      state.equipamentos.retirados = { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' };
       const result = validateSection(2);
       expect(result).toBe(false);
     });
 
-    it('should return false when a row has empty numero', () => {
-      addEquipmentRow('Instalado', 'Medidor', '');
+    it('should return true when retirado is SIM with at least one value', () => {
+      state.equipamentos.retiradoEquip = 'SIM';
+      state.equipamentos.retirados = { display: '67890', medidor: '', conjunto: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' };
       const result = validateSection(2);
-      expect(result).toBe(false);
+      expect(result).toBe(true);
     });
 
-    it('should return false when there are duplicate equipment numbers', () => {
-      addEquipmentRow('Instalado', 'Medidor', '12345');
-      addEquipmentRow('Retirado', 'Display', '12345');
-      const result = validateSection(2);
-      expect(result).toBe(false);
-    });
-
-    it('should hide global error on duplicate (per-field error shown)', () => {
-      addEquipmentRow('Instalado', 'Medidor', '12345');
-      addEquipmentRow('Retirado', 'Display', '12345');
+    it('should hide global error when validation finds empty fields', () => {
+      state.equipamentos.instaladoEquip = 'SIM';
+      state.equipamentos.instalados = { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' };
       validateSection(2);
       const errorMsg = document.getElementById('error-msg');
       expect(errorMsg.style.display).toBe('none');
       expect(errorMsg.textContent).toBe('');
     });
 
-    it('should return true for valid equipment rows', () => {
-      addEquipmentRow('Instalado', 'Medidor', '12345');
-      addEquipmentRow('Retirado', 'Display', '67890');
+    it('should return true for valid equipment with both instalado and retirado', () => {
+      state.equipamentos.instaladoEquip = 'SIM';
+      state.equipamentos.retiradoEquip = 'SIM';
+      state.equipamentos.instalados = { medidor: '111', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' };
+      state.equipamentos.retirados = { display: '222', medidor: '', conjunto: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' };
       const result = validateSection(2);
       expect(result).toBe(true);
-    });
-
-    it('should add error class to empty fields in equipment row', () => {
-      addEquipmentRow('', '', '');
-      validateSection(2);
-      const tipo = DOM.equipList.querySelector('.equip-tipo');
-      const categoria = DOM.equipList.querySelector('.equip-categoria');
-      const numero = DOM.equipList.querySelector('.equip-numero');
-      expect(tipo.classList.contains('error')).toBe(true);
-      expect(categoria.classList.contains('error')).toBe(true);
-      expect(numero.classList.contains('error')).toBe(true);
-    });
-
-    it('should add error class to empty tipo (no global message)', () => {
-      addEquipmentRow('', 'Medidor', '123');
-      validateSection(2);
-      const tipo = DOM.equipList.querySelector('.equip-tipo');
-      expect(tipo.classList.contains('error')).toBe(true);
-      const errorMsg = document.getElementById('error-msg');
-      expect(errorMsg.style.display).toBe('none');
-    });
-
-    it('should add error class to duplicated input (no global message)', () => {
-      addEquipmentRow('Instalado', 'Medidor', '111');
-      addEquipmentRow('Retirado', 'Display', '111');
-      validateSection(2);
-      const inputs = DOM.equipList.querySelectorAll('.equip-numero');
-      expect(inputs[1].classList.contains('error')).toBe(true);
-      const errorMsg = document.getElementById('error-msg');
-      expect(errorMsg.style.display).toBe('none');
     });
   });
 
@@ -572,20 +545,11 @@ describe('validation', () => {
       expect(state.iniciais.lider).toBeUndefined();
     });
 
-    it('should populate state.equipamentos after valid section 2', () => {
-      const row1 = document.createElement('div');
-      row1.className = 'equip-row';
-      row1.innerHTML = '<select class="equip-tipo"><option value="Instalado">Instalado</option></select><select class="equip-categoria"><option value="Medidor">Medidor</option></select><input class="equip-numero" value="111">';
-      DOM.equipList.appendChild(row1);
-      const row2 = document.createElement('div');
-      row2.className = 'equip-row';
-      row2.innerHTML = '<select class="equip-tipo"><option value="Retirado">Retirado</option></select><select class="equip-categoria"><option value="Display">Display</option></select><input class="equip-numero" value="222">';
-      DOM.equipList.appendChild(row2);
-      validateSection(2);
-      expect(state.equipamentos).toHaveLength(2);
-      expect(state.equipamentos[0].status).toBe('Instalado');
-      expect(state.equipamentos[0].categoria).toBe('Medidor');
-      expect(state.equipamentos[0].numero).toBe('111');
+    it('should validate section 2 with valid installed equipment', () => {
+      state.equipamentos.instaladoEquip = 'SIM';
+      state.equipamentos.instalados = { medidor: '111', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' };
+      const result = validateSection(2);
+      expect(result).toBe(true);
     });
 
     it('should populate state.retorno after valid section 3', () => {

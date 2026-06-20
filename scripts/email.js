@@ -15,6 +15,18 @@ function normalizeText(str) {
     .toUpperCase();
 }
 
+const EQUIP_LABELS = {
+  medidor: 'MEDIDOR',
+  conjunto: 'CONJUNTO',
+  display: 'DISPLAY',
+  tc_fase_a: 'TC FASE A',
+  tc_fase_b: 'TC FASE B',
+  tc_fase_c: 'TC FASE C',
+  tp_fase_a: 'TP FASE A',
+  tp_fase_b: 'TP FASE B',
+  tp_fase_c: 'TP FASE C'
+};
+
 export function composeEmail(data) {
   let body = "";
 
@@ -32,22 +44,11 @@ export function composeEmail(data) {
   
   if (data.equipamentos.instaladoEquip === 'SIM') {
     body += "\nEQUIPAMENTOS INSTALADOS:";
-    const equipLabels = {
-      medidor: 'MEDIDOR',
-      conjunto: 'CONJUNTO',
-      display: 'DISPLAY',
-      tc_fase_a: 'TC FASE A',
-      tc_fase_b: 'TC FASE B',
-      tc_fase_c: 'TC FASE C',
-      tp_fase_a: 'TP FASE A',
-      tp_fase_b: 'TP FASE B',
-      tp_fase_c: 'TP FASE C'
-    };
     
     Object.keys(data.equipamentos.instalados).forEach((key) => {
       const value = data.equipamentos.instalados[key];
       if (value && value.trim() !== '') {
-        body += `\n${equipLabels[key]}: ${normalizeText(value)}`;
+        body += `\n${EQUIP_LABELS[key]}: ${normalizeText(value)}`;
       }
     });
   }
@@ -56,22 +57,11 @@ export function composeEmail(data) {
   
   if (data.equipamentos.retiradoEquip === 'SIM') {
     body += "\nEQUIPAMENTOS RETIRADOS:";
-    const equipLabels = {
-      medidor: 'MEDIDOR',
-      conjunto: 'CONJUNTO',
-      display: 'DISPLAY',
-      tc_fase_a: 'TC FASE A',
-      tc_fase_b: 'TC FASE B',
-      tc_fase_c: 'TC FASE C',
-      tp_fase_a: 'TP FASE A',
-      tp_fase_b: 'TP FASE B',
-      tp_fase_c: 'TP FASE C'
-    };
     
     Object.keys(data.equipamentos.retirados).forEach((key) => {
       const value = data.equipamentos.retirados[key];
       if (value && value.trim() !== '') {
-        body += `\n${equipLabels[key]}: ${normalizeText(value)}`;
+        body += `\n${EQUIP_LABELS[key]}: ${normalizeText(value)}`;
       }
     });
   }

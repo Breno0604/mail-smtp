@@ -21,7 +21,14 @@ describe('integration: full record lifecycle', () => {
     // Setup DOM completo
     document.body.innerHTML = `
       <div id="iniciais-campos"></div>
-      <div id="equipamentos-list"></div>
+      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
+      <div id="sec-equip-instalados" class="hidden"></div>
+      <div id="sec-equip-retirados" class="hidden"></div>
+      <div id="checkboxes-instalados"></div>
+      <div id="checkboxes-retirados"></div>
+      <div id="campos-instalados"></div>
+      <div id="campos-retirados"></div>
       <div id="retorno-campos"></div>
       <div id="retorno-placeholder"></div>
       <div id="retorno-desc"></div>
@@ -70,7 +77,16 @@ describe('integration: full record lifecycle', () => {
 
     // Reset state
     state.iniciais = {};
-    state.equipamentos = [];
+    state.equipamentos = {
+      instaladoEquip: 'NAO',
+      retiradoEquip: 'NAO',
+      instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      checkboxes: {
+        instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+      }
+    };
     state.attachments = [];
     state.lastTipoOrdem = '';
     state.iniciaisValido = false;
@@ -120,10 +136,12 @@ describe('integration: full record lifecycle', () => {
     situacaoCorte.value = 'CLIENTE CORTADO';
 
     // Add equipment
-    state.equipamentos = [
-      { status: 'Instalado', categoria: 'Medidor', numero: '12345' },
-      { status: 'Retirado', categoria: 'Display', numero: '67890' },
-    ];
+    state.equipamentos.instaladoEquip = 'SIM';
+    state.equipamentos.retiradoEquip = 'SIM';
+    state.equipamentos.instalados = { medidor: '12345', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' };
+    state.equipamentos.retirados = { medidor: '', conjunto: '', display: '67890', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' };
+    state.equipamentos.checkboxes.instalados.medidor = true;
+    state.equipamentos.checkboxes.retirados.display = true;
     renderEquipamentos();
 
     // Create record and save
@@ -148,7 +166,8 @@ describe('integration: full record lifecycle', () => {
     expect(savedRecord.iniciais.uc).toBe('99999');
     expect(savedRecord.iniciais.os).toBe('88888');
     expect(savedRecord.retorno.situacao_corte).toBe('CLIENTE CORTADO');
-    expect(savedRecord.equipamentos).toHaveLength(2);
+    expect(savedRecord.equipamentos.instaladoEquip).toBe('SIM');
+    expect(savedRecord.equipamentos.instalados.medidor).toBe('12345');
 
     // ═══════════════════════════════════════════════════════════════════════
     // STEP 2: Edit the record — restore and verify data
@@ -164,7 +183,8 @@ describe('integration: full record lifecycle', () => {
     expect(state.iniciais.uc).toBe('99999');
     expect(state.iniciais.os).toBe('88888');
     expect(state.retorno.situacao_corte).toBe('CLIENTE CORTADO');
-    expect(state.equipamentos).toHaveLength(2);
+    expect(state.equipamentos.instaladoEquip).toBe('SIM');
+    expect(state.equipamentos.instalados.medidor).toBe('12345');
 
     // Verify DOM was populated correctly
     expect(document.getElementById('uc').value).toBe('99999');
@@ -173,10 +193,10 @@ describe('integration: full record lifecycle', () => {
     expect(document.getElementById('situacao_corte').value).toBe('CLIENTE CORTADO');
 
     // Verify equipment was rendered
-    const equipRows = DOM.equipList.querySelectorAll('.equip-row');
-    expect(equipRows.length).toBe(2);
-    expect(equipRows[0].querySelector('.equip-numero').value).toBe('12345');
-    expect(equipRows[1].querySelector('.equip-numero').value).toBe('67890');
+    const instaladoInput = document.querySelector('#campos-instalados input');
+    const retiradoInput = document.querySelector('#campos-retirados input');
+    expect(instaladoInput.value).toBe('12345');
+    expect(retiradoInput.value).toBe('67890');
 
     // ═══════════════════════════════════════════════════════════════════════
     // STEP 3: Delete the record and verify form is reset
@@ -199,7 +219,9 @@ describe('integration: full record lifecycle', () => {
     expect(state.iniciais.uc).toBe('');
     expect(state.iniciais.os).toBe('');
     expect(state.retorno).toEqual({});
-    expect(state.equipamentos).toEqual([]);
+    expect(state.equipamentos.instaladoEquip).toBe('NAO');
+    expect(state.equipamentos.retiradoEquip).toBe('NAO');
+    expect(state.equipamentos.instalados.medidor).toBe('');
     expect(state.attachments).toEqual([]);
     expect(state.lastTipoOrdem).toBe('');
     expect(state._createdAt).toBeNull();
@@ -208,7 +230,7 @@ describe('integration: full record lifecycle', () => {
     expect(document.getElementById('uc').value).toBe('');
     expect(document.getElementById('os').value).toBe('');
     expect(DOM.tipoOrdem.value).toBe('');
-    expect(DOM.equipList.querySelectorAll('.equip-row').length).toBe(0);
+    expect(document.querySelector('#campos-instalados input')).toBeNull();
   });
 
   it('should not leak data between records when editing', async () => {
@@ -231,7 +253,16 @@ describe('integration: full record lifecycle', () => {
       iniciais: collectIniciais(),
       retorno: collectRetorno(),
       tipoOrdem: 'VISTORIA DA UC',
-      equipamentos: [{ status: 'Instalado', categoria: 'Medidor', numero: '111' }],
+      equipamentos: {
+        instaladoEquip: 'SIM',
+        retiradoEquip: 'NAO',
+        instalados: { medidor: '111', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+        retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+        checkboxes: {
+          instalados: { medidor: true, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+          retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+        }
+      },
 
       attachmentCount: 0,
       sentData: null,
@@ -257,7 +288,16 @@ describe('integration: full record lifecycle', () => {
       iniciais: collectIniciais(),
       retorno: collectRetorno(),
       tipoOrdem: 'CORTE POR FALTA DE PAGAMENTO',
-      equipamentos: [{ status: 'Retirado', categoria: 'Display', numero: '222' }],
+      equipamentos: {
+        instaladoEquip: 'NAO',
+        retiradoEquip: 'SIM',
+        instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+        retirados: { medidor: '', conjunto: '', display: '222', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+        checkboxes: {
+          instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+          retirados: { medidor: false, conjunto: false, display: true, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+        }
+      },
 
       attachmentCount: 0,
       sentData: null,
@@ -276,14 +316,15 @@ describe('integration: full record lifecycle', () => {
     expect(state.iniciais.os).toBe('22222');
     expect(state.lastTipoOrdem).toBe('VISTORIA DA UC');
     expect(state.retorno.resultado).toBe('Regular');
-    expect(state.equipamentos[0].numero).toBe('111');
+    expect(state.equipamentos.instalados.medidor).toBe('111');
 
     // Verify DOM matches Record A (no Record B data)
     expect(document.getElementById('uc').value).toBe('11111');
     expect(document.getElementById('os').value).toBe('22222');
     expect(DOM.tipoOrdem.value).toBe('VISTORIA DA UC');
     expect(document.getElementById('resultado').value).toBe('Regular');
-    expect(DOM.equipList.querySelectorAll('.equip-row')[0].querySelector('.equip-numero').value).toBe('111');
+    const instaladoInputA = document.querySelector('#campos-instalados input');
+    expect(instaladoInputA.value).toBe('111');
 
     // Verify Record B specific field is NOT present
     expect(document.getElementById('situacao_corte')).toBeNull();
@@ -300,14 +341,15 @@ describe('integration: full record lifecycle', () => {
     expect(state.iniciais.os).toBe('44444');
     expect(state.lastTipoOrdem).toBe('CORTE POR FALTA DE PAGAMENTO');
     expect(state.retorno.situacao_corte).toBe('CLIENTE CORTADO');
-    expect(state.equipamentos[0].numero).toBe('222');
+    expect(state.equipamentos.retirados.display).toBe('222');
 
     // Verify DOM matches Record B (no Record A data)
     expect(document.getElementById('uc').value).toBe('33333');
     expect(document.getElementById('os').value).toBe('44444');
     expect(DOM.tipoOrdem.value).toBe('CORTE POR FALTA DE PAGAMENTO');
     expect(document.getElementById('situacao_corte').value).toBe('CLIENTE CORTADO');
-    expect(DOM.equipList.querySelectorAll('.equip-row')[0].querySelector('.equip-numero').value).toBe('222');
+    const retiradoInputB = document.querySelector('#campos-retirados input');
+    expect(retiradoInputB.value).toBe('222');
 
     // Verify Record A specific field is NOT present
     expect(document.getElementById('resultado')).toBeNull();
