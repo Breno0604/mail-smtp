@@ -88,42 +88,42 @@ function validateSection1() {
 }
 
 function validateSection2() {
-  const rows = DOM.equipList.querySelectorAll(".equip-row");
-  if (rows.length === 0) return true;
-
+  const instalado = state.equipamentos.instaladoEquip;
+  const retirado = state.equipamentos.retiradoEquip;
+  
+  // If both NAO, no validation needed
+  if (instalado === 'NAO' && retirado === 'NAO') {
+    return true;
+  }
+  
   let hasError = false;
-  let hasDuplicate = false;
-  const nums = [];
-
-  rows.forEach((row) => {
-    const tipo = row.querySelector(".equip-tipo");
-    const categoria = row.querySelector(".equip-categoria");
-    const inp = row.querySelector(".equip-numero");
-
-    [tipo, categoria, inp].forEach((el) => clearError(el));
-
-    if (tipo.value === "") { markError(tipo, "Selecione o tipo"); hasError = true; }
-    if (categoria.value === "") { markError(categoria, "Selecione a categoria"); hasError = true; }
-    if (inp.value === "") {
-      markError(inp, "Informe o número");
-      hasError = true;
-    } else {
-      // Normalizar número: converter para número se possível, senão remover zeros à esquerda
-      const normalizedNum = isNaN(Number(inp.value)) ? inp.value.replace(/^0+/, '') : String(Number(inp.value));
-      if (nums.includes(normalizedNum)) {
-        markError(inp, "Número duplicado");
-        hasError = true;
-        hasDuplicate = true;
-      } else {
-        nums.push(normalizedNum);
+  
+  // Validate installed equipment
+  if (instalado === 'SIM') {
+    const hasAtLeastOne = Object.values(state.equipamentos.instalados).some((val) => val && val.trim() !== '');
+    if (!hasAtLeastOne) {
+      const firstInput = document.querySelector('#campos-instalados input[type="number"]');
+      if (firstInput) {
+        markError(firstInput, 'Preencha pelo menos um equipamento');
       }
+      hasError = true;
     }
-  });
-
+  }
+  
+  // Validate removed equipment
+  if (retirado === 'SIM') {
+    const hasAtLeastOne = Object.values(state.equipamentos.retirados).some((val) => val && val.trim() !== '');
+    if (!hasAtLeastOne) {
+      const firstInput = document.querySelector('#campos-retirados input[type="number"]');
+      if (firstInput) {
+        markError(firstInput, 'Preencha pelo menos um equipamento');
+      }
+      hasError = true;
+    }
+  }
+  
   if (hasError) return false;
-
-  // Update state
-  collectEquipamentos();
+  
   return true;
 }
 
