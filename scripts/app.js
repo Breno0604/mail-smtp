@@ -3,8 +3,7 @@ import { state, clearCurrentUUID } from "./state.js";
 import { saveState, debouncedSave } from "./persistence.js";
 import { iniciaisFields } from "./fields.js";
 import { renderIniciais } from "./iniciais.js";
-import { addEquip } from "./equipment.js";
-import { collectEquipamentos } from "./collectors.js";
+import { renderEquipamentos, toggleSectionVisibility, toggleFieldVisibility, updateFieldValue } from "./equipment.js";
 import { handleTipoChange } from "./retornos.js";
 import { handleUploadClick, handleFileChange, closeLightbox, updateFileCount, renderPreviews } from "./attachments.js";
 import { resetForm } from "./reset.js";
@@ -51,9 +50,18 @@ function initEvents() {
     updateAllFilledClasses();
   });
 
-  DOM.btnAddEquip.addEventListener("click", () => addEquip());
-
   DOM.tipoOrdem.addEventListener("change", handleTipoChange);
+
+  // Equipment control fields
+  DOM.instaladoEquip.addEventListener("change", () => {
+    toggleSectionVisibility('instalados');
+    updateLivePreview();
+  });
+  
+  DOM.retiradoEquip.addEventListener("change", () => {
+    toggleSectionVisibility('retirados');
+    updateLivePreview();
+  });
 
   DOM.fileUploadArea.addEventListener("click", handleUploadClick);
   DOM.fileInput.addEventListener("change", handleFileChange);
@@ -84,9 +92,6 @@ function initEvents() {
     if (e.target.tagName !== "INPUT" && e.target.tagName !== "SELECT" && e.target.tagName !== "TEXTAREA") return;
     updateFilledClass(e.target);
     syncIniciaisField(e.target);
-    if (e.target.closest('.equip-row')) {
-      collectEquipamentos();
-    }
     debouncedSave();
     updateLivePreview();
     if (e.target.id === "uc" || e.target.id === "os") {
@@ -102,6 +107,26 @@ function initEvents() {
       document.activeElement?.blur();
     }
   });
+
+  // Equipment checkboxes (delegated)
+  document.addEventListener("change", (e) => {
+    if (e.target.classList.contains('equip-checkbox')) {
+      const tipo = e.target.getAttribute('data-tipo');
+      const equipKey = e.target.getAttribute('data-equip');
+      toggleFieldVisibility(tipo, equipKey, e.target.checked);
+      updateLivePreview();
+    }
+  });
+  
+  // Equipment input fields (delegated)
+  document.addEventListener("input", (e) => {
+    if (e.target.matches('#campos-instalados input, #campos-retirados input')) {
+      const tipo = e.target.getAttribute('data-tipo');
+      const equipKey = e.target.getAttribute('data-equip');
+      updateFieldValue(tipo, equipKey, e.target.value);
+      updateLivePreview();
+    }
+  });
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -114,6 +139,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   renderIniciais();
+  renderEquipamentos();
   initEvents();
   updateFileCount();
   renderPreviews();
