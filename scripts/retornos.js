@@ -85,7 +85,9 @@ function agruparPorLinha(fields) {
   const mapa = new Map();
 
   fields.forEach((field) => {
-    const linhaKey = field.linha ?? linhas.length;
+    // Symbol() garante que cada campo sem `linha` fique em sua própria linha,
+    // evitando conflito com linhas numéricas definidas explicitamente.
+    const linhaKey = field.linha ?? Symbol();
     if (!mapa.has(linhaKey)) {
       mapa.set(linhaKey, []);
       linhas.push(mapa.get(linhaKey));

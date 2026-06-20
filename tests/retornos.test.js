@@ -673,6 +673,18 @@ it('should initially hide acesso_desligamento when no value selected in control 
       expect(data.motivo_cancelamento_telemedicao).toBeUndefined();
       expect(data.descreva_problema_telemedicao).toBeUndefined();
     });
+
+    it('should keep descricao on its own row when conditional fields become visible', () => {
+      DOM.tipoOrdem.value = 'TELEMEDIÇÃO MANUTENÇÃO';
+      renderRetorno();
+      const executado = document.getElementById('executado_telemedicao');
+      executado.value = 'SIM';
+      executado.dispatchEvent(new Event('change'));
+      const descricaoGroup = document.querySelector('[data-field-nome="descricao"]');
+      const realizadoGroup = document.querySelector('[data-field-nome="realizado_telemedicao"]');
+      expect(descricaoGroup.parentElement).not.toBe(realizadoGroup.parentElement);
+      expect(descricaoGroup.parentElement.classList.contains('flex')).toBe(false);
+    });
   });
 
   describe('CORTE DE UC POR DEF TECNICO - renderização', () => {
@@ -749,6 +761,21 @@ it('should initially hide acesso_desligamento when no value selected in control 
       expect(data.corte_por_defeito_tecnico).toBe('NAO');
       expect(data.motivo_cancelamento_corte_por_defeito_tecnico).toBe('SEM ACESSO');
       expect(data.descreva_problema_corte_por_defeito_tecnico).toBe('Rua bloqueada');
+    });
+
+    it('should keep descricao on its own row when conditional fields become visible', () => {
+      DOM.tipoOrdem.value = 'CORTE DE UC POR DEF TECNICO';
+      renderRetorno();
+      const executado = document.getElementById('corte_por_defeito_tecnico');
+      executado.value = 'NAO';
+      executado.dispatchEvent(new Event('change'));
+      const motivo = document.getElementById('motivo_cancelamento_corte_por_defeito_tecnico');
+      motivo.value = 'SEM ACESSO';
+      motivo.dispatchEvent(new Event('change'));
+      const descricaoGroup = document.querySelector('[data-field-nome="descricao"]');
+      const problemaGroup = document.querySelector('[data-field-nome="descreva_problema_corte_por_defeito_tecnico"]');
+      expect(descricaoGroup.parentElement).not.toBe(problemaGroup.parentElement);
+      expect(descricaoGroup.parentElement.classList.contains('flex')).toBe(false);
     });
   });
 });
