@@ -113,6 +113,84 @@ describe('state', () => {
     });
   });
 
+  describe('state.equipamentos structure', () => {
+    beforeEach(() => {
+      state.equipamentos = {
+        instaladoEquip: 'NAO',
+        retiradoEquip: 'NAO',
+        instalados: {
+          medidor: '',
+          conjunto: '',
+          display: '',
+          tc_fase_a: '',
+          tc_fase_b: '',
+          tc_fase_c: '',
+          tp_fase_a: '',
+          tp_fase_b: '',
+          tp_fase_c: ''
+        },
+        retirados: {
+          medidor: '',
+          conjunto: '',
+          display: '',
+          tc_fase_a: '',
+          tc_fase_b: '',
+          tc_fase_c: '',
+          tp_fase_a: '',
+          tp_fase_b: '',
+          tp_fase_c: ''
+        },
+        checkboxes: {
+          instalados: {
+            medidor: false,
+            conjunto: false,
+            display: false,
+            tc_fase_a: false,
+            tc_fase_b: false,
+            tc_fase_c: false,
+            tp_fase_a: false,
+            tp_fase_b: false,
+            tp_fase_c: false
+          },
+          retirados: {
+            medidor: false,
+            conjunto: false,
+            display: false,
+            tc_fase_a: false,
+            tc_fase_b: false,
+            tc_fase_c: false,
+            tp_fase_a: false,
+            tp_fase_b: false,
+            tp_fase_c: false
+          }
+        }
+      };
+    });
+
+    it('should have installed and removed control fields', () => {
+      expect(state.equipamentos.instaladoEquip).toBe('NAO');
+      expect(state.equipamentos.retiradoEquip).toBe('NAO');
+    });
+
+    it('should have installed equipment fields', () => {
+      expect(state.equipamentos.instalados.medidor).toBe('');
+      expect(state.equipamentos.instalados.tc_fase_a).toBe('');
+    });
+
+    it('should have removed equipment fields', () => {
+      expect(state.equipamentos.retirados.medidor).toBe('');
+      expect(state.equipamentos.retirados.tc_fase_a).toBe('');
+    });
+
+    it('should have checkbox states for installed', () => {
+      expect(state.equipamentos.checkboxes.instalados.medidor).toBe(false);
+    });
+
+    it('should have checkbox states for removed', () => {
+      expect(state.equipamentos.checkboxes.retirados.medidor).toBe(false);
+    });
+  });
+
   describe('debouncedSave', () => {
     it('should call saveState after 1000ms delay', async () => {
       vi.useFakeTimers();
