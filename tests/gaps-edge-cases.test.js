@@ -77,7 +77,6 @@ describe('G2: saveState QuotaExceededError', () => {
     state.currentUUID = '';
     state.retorno = {};
     state._createdAt = null;
-    state.composicao = { complementoCorpo: '' };
     localStorage.clear();
 
     // Adicionar campos iniciais
@@ -244,7 +243,6 @@ describe('G4: applyRecord attachment migration fallback', () => {
     state.retorno = {};
     state.lastTipoOrdem = '';
     state._createdAt = null;
-    state.composicao = { complementoCorpo: '' };
   });
 
   it('should handle getAttachmentsByUuid failure gracefully (v3 fallback)', async () => {
@@ -256,7 +254,6 @@ describe('G4: applyRecord attachment migration fallback', () => {
       iniciais: { uc: '11111', os: '22222', 'tipo-ordem': 'CORTE POR FALTA DE PAGAMENTO' },
       retorno: { situacao_corte: 'CLIENTE CORTADO' },
       equipamentos: [],
-      composicao: { complementoCorpo: '' },
       attachmentCount: 2, // gatilho para buscar no store v3
       createdAt: new Date().toISOString(),
     };
@@ -348,7 +345,6 @@ describe('G6: resolveCreatedAt failure fallback', () => {
     state.currentUUID = '';
     state.retorno = {};
     state._createdAt = null;
-    state.composicao = { complementoCorpo: '' };
     localStorage.clear();
   });
 
@@ -434,7 +430,6 @@ describe('G7+G8: markAttachmentsDirty and empty attachments save', () => {
     state.currentUUID = '';
     state.retorno = {};
     state._createdAt = null;
-    state.composicao = { complementoCorpo: '' };
     localStorage.clear();
   });
 
@@ -527,7 +522,6 @@ describe('G9: updateLivePreview DOM update', () => {
     state.equipamentos = [];
     state.retorno = {};
     state.attachments = [];
-    state.composicao = { complementoCorpo: '' };
     localStorage.clear();
     renderIniciais();
   });
@@ -633,7 +627,6 @@ describe('G11: resetForm preview state', () => {
     state.equipamentos = [];
     state.attachments = [];
     state.retorno = {};
-    state.composicao = { complementoCorpo: '' };
     state.lastTipoOrdem = '';
     state.iniciaisValido = false;
     state.currentUUID = '';

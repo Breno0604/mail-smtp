@@ -34,7 +34,7 @@ describe('DOM readiness', () => {
       'sec-retorno', 'retorno-desc', 'retorno-placeholder', 'retorno-campos',
       'sec-equipamentos', 'equipamentos-list', 'btn-add-equip',
       'sec-anexos', 'file-input', 'file-count', 'preview-grid', 'file-upload-area',
-      'sec-revisao', 'preview-corpo', 'complemento-corpo',
+      'sec-revisao', 'preview-corpo',
       'btn-enviar',
       'toast',
       'lightbox', 'lightbox-img', 'lightbox-close',

@@ -26,11 +26,6 @@ export async function saveState() {
   collectIniciais();
   collectRetorno();
   collectEquipamentos();
-  // Also sync complementoCorpo (not captured by the collectors above)
-  state.composicao = state.composicao || {};
-  if (DOM.complementoCorpo) {
-    state.composicao.complementoCorpo = DOM.complementoCorpo.value;
-  }
 
   // Check if there's any data to save
   const hasData = Object.values(state.iniciais).some(v => v && v.trim() !== '') ||
@@ -59,7 +54,6 @@ export async function saveState() {
     retorno: state.retorno,
     tipoOrdem: state.iniciais['tipo-ordem'] || '',
     equipamentos: state.equipamentos,
-    composicao: { complementoCorpo: state.composicao.complementoCorpo },
     attachmentCount: state.attachments.length,
     sentData: null,
   };

@@ -115,7 +115,6 @@ describe('dom — element caching', () => {
 
     // Revisão
     expect(DOM.previewCorpo).toBeInstanceOf(HTMLElement);
-    expect(DOM.complementoCorpo).toBeInstanceOf(HTMLElement);
 
     // Send
     expect(DOM.btnEnviar).toBeInstanceOf(HTMLElement);
@@ -169,14 +168,12 @@ describe('dom — element caching', () => {
     document.body.innerHTML = `
       <select id="tipo-ordem"></select>
       <input type="file" id="file-input">
-      <textarea id="complemento-corpo"></textarea>
       <input id="sidebar-filter">
     `;
     cacheDOM();
 
     expect(DOM.tipoOrdem).toBeInstanceOf(HTMLSelectElement);
     expect(DOM.fileInput).toBeInstanceOf(HTMLInputElement);
-    expect(DOM.complementoCorpo).toBeInstanceOf(HTMLTextAreaElement);
     expect(DOM.sidebarFilter).toBeInstanceOf(HTMLInputElement);
   });
 });

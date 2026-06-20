@@ -20,7 +20,6 @@ export function resetForm() {
   state.currentUUID = "";
   state._createdAt = null;
   state.iniciaisValido = false;
-  state.composicao = { complementoCorpo: "" };
 
   // Marcar anexos como dirty (força re-save vazio no próximo saveState)
   markAttachmentsDirty();
@@ -42,7 +41,6 @@ export function resetForm() {
   DOM.retornoDesc.innerHTML = "—";
 
   DOM.equipList.innerHTML = "";
-  DOM.complementoCorpo.value = "";
   DOM.previewGrid.innerHTML = "";
 
   showEmptyEquip();

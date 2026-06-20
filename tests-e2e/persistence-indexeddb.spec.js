@@ -49,7 +49,6 @@ test.describe('Persistence — IndexedDB', () => {
     await page.waitForSelector('#situacao_corte');
     await page.selectOption('#situacao_corte', 'CLIENTE CORTADO');
     await addEquipRow(page, 'Instalado', 'Medidor', '99999');
-    await page.fill('#complemento-corpo', 'Teste IndexedDB');
     await waitForSave(page);
 
     const records = await readIndexedDB(page);
@@ -59,7 +58,6 @@ test.describe('Persistence — IndexedDB', () => {
     expect(record.iniciais.uc).toBe('11111');
     expect(record.iniciais['tipo-ordem']).toBe('CORTE POR FALTA DE PAGAMENTO');
     expect(record.retorno.situacao_corte).toBe('CLIENTE CORTADO');
-    expect(record.composicao.complementoCorpo).toBe('Teste IndexedDB');
     expect(record.uuid).toBeTruthy();
     expect(record.uuid.length).toBe(36);
     expect(record.createdAt).toBeTruthy();

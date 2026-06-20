@@ -87,9 +87,6 @@ function initEvents() {
     if (e.target.closest('.equip-row')) {
       collectEquipamentos();
     }
-    if (e.target.id === "complemento-corpo") {
-      state.composicao.complementoCorpo = e.target.value;
-    }
     debouncedSave();
     updateLivePreview();
     if (e.target.id === "uc" || e.target.id === "os") {

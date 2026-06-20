@@ -11,7 +11,6 @@ export const state = {
   lastTipoOrdem: '',
   retorno: {},
   currentUUID: getCurrentUUID(),
-  composicao: { complementoCorpo: '' },
   iniciaisValido: false,
   _createdAt: null,
 };

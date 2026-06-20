@@ -67,7 +67,6 @@ describe('reset', () => {
     // Populate some DOM elements
     DOM.retornoCampos.innerHTML = '<p>retorno content</p>';
     DOM.equipList.innerHTML = '<div class="equip-row">some equipment</div>';
-    DOM.complementoCorpo.value = 'Some complement';
     DOM.previewGrid.innerHTML = '<div class="preview-item">preview</div>';
     DOM.errorMsg.style.display = 'block';
     DOM.errorMsg.textContent = 'Some error';
@@ -126,11 +125,6 @@ describe('reset', () => {
       expect(DOM.equipList.innerHTML).not.toBe('');
       // Should have empty-msg
       expect(DOM.equipList.querySelector('.empty-msg')).toBeTruthy();
-    });
-
-    it('should clear complementoCorpo value', () => {
-      resetForm();
-      expect(DOM.complementoCorpo.value).toBe('');
     });
 
     it('should clear preview grid', () => {

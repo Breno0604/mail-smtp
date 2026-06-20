@@ -25,10 +25,7 @@ export async function sendEmail() {
     const subject = `OS #${os} - UC ${uc} - ${tipoLabel}`;
     
     const collectedData = collectAllData();
-    const baseBody = composeEmail(collectedData);
-    const compCorpo = DOM.complementoCorpo?.value?.trim() || '';
-
-    const text = compCorpo ? `${baseBody}\n\n${compCorpo}` : baseBody;
+    const text = composeEmail(collectedData);
 
     const attachments = await compressAttachments(state.attachments);
 

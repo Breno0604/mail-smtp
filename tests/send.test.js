@@ -18,7 +18,6 @@ const { showToastMock, validateAllMock, checkDuplicateMock, compressMock, update
     equipamentos: [],
     attachments: [],
     tipoOrdem: 'CORTE POR FALTA DE PAGAMENTO',
-    composicao: { complementoCorpo: '' },
   })),
   composeEmailMock: vi.fn(() => 'UC: 12345\nOS: 67890'),
 }));
@@ -83,9 +82,7 @@ describe('sendEmail', () => {
     };
     state.attachments = [];
     state.currentUUID = 'test-uuid-123';
-    state.composicao = { complementoCorpo: '' };
 
-    DOM.complementoCorpo.value = '';
     DOM.tipoOrdem.value = 'CORTE POR FALTA DE PAGAMENTO';
 
     // No vitest 4.x, clearAllMocks também reseta implementações (mockReset).
@@ -101,7 +98,6 @@ describe('sendEmail', () => {
       equipamentos: [],
       attachments: [],
       tipoOrdem: 'CORTE POR FALTA DE PAGAMENTO',
-      composicao: { complementoCorpo: '' },
     }));
     composeEmailMock.mockImplementation(() => 'UC: 12345\nOS: 67890');
   });
@@ -155,9 +151,7 @@ describe('sendEmail', () => {
     expect(callBody.subject).toContain('CORTE POR FALTA DE PAGAMENTO');
   });
 
-  it('should build body from composeEmail and complementoCorpo', async () => {
-    DOM.complementoCorpo.value = 'Observação importante';
-
+  it('should build body from composeEmail', async () => {
     fetch.mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ success: true, to: 'test@example.com' }),
@@ -166,7 +160,6 @@ describe('sendEmail', () => {
     await sendEmail();
     const callBody = JSON.parse(fetch.mock.calls[0][1].body);
     expect(callBody.text).toContain('UC: 12345');
-    expect(callBody.text).toContain('Observação importante');
     expect(composeEmailMock).toHaveBeenCalled();
     expect(collectAllDataMock).toHaveBeenCalled();
   });
@@ -252,9 +245,9 @@ describe('sendEmail', () => {
     expect(showToastMock).toHaveBeenCalledWith('Erro de conexão. Tente novamente.', false);
   });
 
-  // ── CENÁRIO 6: Body sem complemento ───────────────────────────────────
+  // ── CENÁRIO 6: Body without complemento ───────────────────────────────────
 
-  it('should send body without complemento when it is empty', async () => {
+  it('should send body from composeEmail', async () => {
     fetch.mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ success: true, to: 'test@example.com' }),

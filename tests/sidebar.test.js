@@ -78,7 +78,6 @@ describe('sidebar', () => {
         createdAt: new Date().toISOString(),
         equipamentos: [],
         attachments: [],
-        composicao: {},
       });
 
       await renderSidebar();
@@ -96,7 +95,6 @@ describe('sidebar', () => {
         createdAt: new Date().toISOString(),
         equipamentos: [],
         attachments: [],
-        composicao: {},
         sentData: { to: ['a@b.com'], subject: 'test', sentAt: new Date().toISOString() },
       });
 
@@ -114,7 +112,6 @@ describe('sidebar', () => {
         createdAt: new Date().toISOString(),
         equipamentos: [],
         attachments: [],
-        composicao: {},
       });
 
       await renderSidebar();
@@ -131,7 +128,6 @@ describe('sidebar', () => {
         createdAt: new Date().toISOString(),
         equipamentos: [],
         attachments: [],
-        composicao: {},
       });
       await saveDraft({
         uuid: 'uc-nomatch',
@@ -141,7 +137,6 @@ describe('sidebar', () => {
         createdAt: new Date().toISOString(),
         equipamentos: [],
         attachments: [],
-        composicao: {},
       });
 
       await renderSidebar('99999');
@@ -159,7 +154,6 @@ describe('sidebar', () => {
         createdAt: new Date().toISOString(),
         equipamentos: [],
         attachments: [],
-        composicao: {},
       });
       await saveDraft({
         uuid: 'os-nomatch',
@@ -169,7 +163,6 @@ describe('sidebar', () => {
         createdAt: new Date().toISOString(),
         equipamentos: [],
         attachments: [],
-        composicao: {},
       });
 
       await renderSidebar('55555');
@@ -187,7 +180,6 @@ describe('sidebar', () => {
         createdAt: new Date().toISOString(),
         equipamentos: [],
         attachments: [],
-        composicao: {},
       });
 
       await renderSidebar('NONEXISTENT');
@@ -204,7 +196,6 @@ describe('sidebar', () => {
         createdAt: new Date().toISOString(),
         equipamentos: [],
         attachments: [],
-        composicao: {},
       });
 
       await renderSidebar();
@@ -233,7 +224,6 @@ describe('sidebar', () => {
         createdAt: new Date().toISOString(),
         equipamentos: [],
         attachments: [],
-        composicao: {},
       });
 
       // Set this as the current record
@@ -276,7 +266,6 @@ describe('sidebar', () => {
         createdAt: new Date().toISOString(),
         equipamentos: [],
         attachments: [],
-        composicao: {},
       });
       await saveDraft({
         uuid: 'delete-other',
@@ -286,7 +275,6 @@ describe('sidebar', () => {
         createdAt: new Date().toISOString(),
         equipamentos: [],
         attachments: [],
-        composicao: {},
       });
 
       // Set current to 'keep-me'

@@ -29,6 +29,7 @@ const UC_CORTADA_FIELDS = [
   { linha: 4, nome: "chaves", label: "Chaves", tipo: "select", opcoes: ["COM CHAVE", "SEM CHAVE"] },
   { linha: 5, nome: "aplicado-toi", label: "Aplicado TOI", tipo: "select", opcoes: ["SIM", "NAO"] },
   { linha: 5, nome: "toi", label: "TOI", tipo: "text", condicional: { campoRef: "aplicado-toi", valor: "SIM" } },
+  { linha: 6, nome: "descricao", label: "Descrição do Serviço", tipo: "textarea" },
 ];
 
 // Campos para Ligação Nova Média Tensão e MT Cliente Livre - mesmos campos
@@ -44,6 +45,7 @@ const LIGACAO_NOVA_MT_FIELDS = [
   { linha: 5, nome: "qtd_medidor_bt", label: "Quantidade", tipo: "number", condicional: { campoRef: "medidor_bt", valor: "COM MEDIDOR BT" } },
   { linha: 6, nome: "acesso_medicao", label: "Acesso", tipo: "select", opcoes: ["REGULAR", "IRREGULAR", "SEM ACESSO"], condicional: { campoRef: "retorno_ligacao", valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"] } },
   { linha: 6, nome: "acesso_ponto_de_entrega", label: "Descreva o Problema", tipo: "text", condicional: { campoRef: "acesso_medicao", valor: ["IRREGULAR", "SEM ACESSO"] } },
+  { linha: 7, nome: "descricao", label: "Descrição do Serviço", tipo: "textarea" },
 ];
 
 // Campos para Aferição de Medidor e Aferição Cliente Livre - mesmos 7 campos
@@ -55,6 +57,7 @@ const AFERICAO_MEDIDOR_FIELDS = [
   { linha: 5, nome: "toi_afericao", label: "TOI", tipo: "select", opcoes: ["APLICADO TOI", "PERDAS JA APLICOU TOI", "NAO FOI APLICADO TOI"], condicional: { campoRef: "medidor_afericao", valor: "SUBSTITUIDO" } },
   { linha: 6, nome: "numero_toi", label: "Nº TOI", tipo: "text", condicional: { campoRef: "toi_afericao", valor: "APLICADO TOI" } },
   { linha: 7, nome: "porque_nao_aplicado_toi", label: "Porque não foi aplicado TOI", tipo: "text", condicional: { campoRef: "toi_afericao", valor: "NAO FOI APLICADO TOI" } },
+  { linha: 8, nome: "descricao", label: "Descrição do Serviço", tipo: "textarea" },
 ];
 
 export const retornoFieldsByTipo = {
@@ -107,11 +110,13 @@ export const retornoFieldsByTipo = {
 
   "CORTE POR FALTA DE PAGAMENTO": [
     { linha: 1, nome: "situacao_corte", label: "Situação", tipo: "select", opcoes: ["CLIENTE CORTADO", "CLIENTE VISITADO CONTA PAGA", "CLIENTE NAO PERMITIU O CORTE", "SEM ACESSO PARA EXECUTAR O CORTE"] },
+    { linha: 2, nome: "descricao", label: "Descrição do Serviço", tipo: "textarea" },
   ],
 
   "DESLIG.PROG.MANUTENÇÃO": [
     { linha: 1, nome: "desligamento", label: "Desligamento", tipo: "select", opcoes: ["DESLIGAMENTO EXECUTADO", "CLIENTE CANCELOU DESLIGAMENTO", "SEM ACESSO", "NAO EXECUTADO PENDENCIA CLIENTE", "NAO EXECUTADO PENDENCIA ENEL"] },
     { linha: 2, nome: "acesso_desligamento", label: "Descreva o Problema", tipo: "text", condicional: { campoRef: "desligamento", valor: "DESLIGAMENTO EXECUTADO", negado: true } },
+    { linha: 3, nome: "descricao", label: "Descrição do Serviço", tipo: "textarea" },
   ],
 
   "LIGACAO NOVA MEDIA TENSAO": LIGACAO_NOVA_MT_FIELDS,

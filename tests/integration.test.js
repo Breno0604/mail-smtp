@@ -136,7 +136,6 @@ describe('integration: full record lifecycle', () => {
       retorno: collectRetorno(),
       tipoOrdem: DOM.tipoOrdem.value,
       equipamentos: state.equipamentos,
-      composicao: { complementoCorpo: 'Test complement' },
       attachmentCount: 0,
       sentData: null,
     };
@@ -172,7 +171,6 @@ describe('integration: full record lifecycle', () => {
     expect(document.getElementById('os').value).toBe('88888');
     expect(DOM.tipoOrdem.value).toBe('CORTE POR FALTA DE PAGAMENTO');
     expect(document.getElementById('situacao_corte').value).toBe('CLIENTE CORTADO');
-    expect(DOM.complementoCorpo.value).toBe('Test complement');
 
     // Verify equipment was rendered
     const equipRows = DOM.equipList.querySelectorAll('.equip-row');
@@ -210,7 +208,6 @@ describe('integration: full record lifecycle', () => {
     expect(document.getElementById('uc').value).toBe('');
     expect(document.getElementById('os').value).toBe('');
     expect(DOM.tipoOrdem.value).toBe('');
-    expect(DOM.complementoCorpo.value).toBe('');
     expect(DOM.equipList.querySelectorAll('.equip-row').length).toBe(0);
   });
 
@@ -235,7 +232,7 @@ describe('integration: full record lifecycle', () => {
       retorno: collectRetorno(),
       tipoOrdem: 'VISTORIA DA UC',
       equipamentos: [{ status: 'Instalado', categoria: 'Medidor', numero: '111' }],
-      composicao: { complementoCorpo: 'Complement A' },
+
       attachmentCount: 0,
       sentData: null,
     };
@@ -261,7 +258,7 @@ describe('integration: full record lifecycle', () => {
       retorno: collectRetorno(),
       tipoOrdem: 'CORTE POR FALTA DE PAGAMENTO',
       equipamentos: [{ status: 'Retirado', categoria: 'Display', numero: '222' }],
-      composicao: { complementoCorpo: 'Complement B' },
+
       attachmentCount: 0,
       sentData: null,
     };
@@ -280,7 +277,6 @@ describe('integration: full record lifecycle', () => {
     expect(state.lastTipoOrdem).toBe('VISTORIA DA UC');
     expect(state.retorno.resultado).toBe('Regular');
     expect(state.equipamentos[0].numero).toBe('111');
-    expect(DOM.complementoCorpo.value).toBe('Complement A');
 
     // Verify DOM matches Record A (no Record B data)
     expect(document.getElementById('uc').value).toBe('11111');
@@ -305,7 +301,6 @@ describe('integration: full record lifecycle', () => {
     expect(state.lastTipoOrdem).toBe('CORTE POR FALTA DE PAGAMENTO');
     expect(state.retorno.situacao_corte).toBe('CLIENTE CORTADO');
     expect(state.equipamentos[0].numero).toBe('222');
-    expect(DOM.complementoCorpo.value).toBe('Complement B');
 
     // Verify DOM matches Record B (no Record A data)
     expect(document.getElementById('uc').value).toBe('33333');

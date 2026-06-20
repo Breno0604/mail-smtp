@@ -305,11 +305,13 @@ describe('retornos', () => {
       expect(document.getElementById('observacoes')).toBeNull();
     });
 
-    it('should NOT render descricao field for UC Cortada', () => {
+    it('should render descricao field for UC Cortada', () => {
       DOM.tipoOrdem.value = 'INSPECAO UC CORTADA I15';
       renderRetorno();
       const descricao = document.getElementById('descricao');
-      expect(descricao).toBeNull();
+      expect(descricao).toBeTruthy();
+      expect(descricao.tagName).toBe('TEXTAREA');
+      expect(descricao.placeholder).toBe('Descrição do Serviço');
     });
 
     it('should collect all visible UC Cortada field values via collectRetorno', () => {

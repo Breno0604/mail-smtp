@@ -101,7 +101,6 @@ describe('collectors', () => {
       state.equipamentos = [{ status: 'Instalado', categoria: 'Medidor', numero: '12345' }];
       state.retorno = { situacao_corte: 'CLIENTE CORTADO' };
       state.attachments = [new File(['test'], 'test.jpg', { type: 'image/jpeg' })];
-      state.composicao = { complementoCorpo: 'Observação teste' };
       state.iniciais['tipo-ordem'] = 'CORTE POR FALTA DE PAGAMENTO';
       
       const result = collectAllData();
@@ -111,7 +110,6 @@ describe('collectors', () => {
       expect(result.equipamentos).toHaveLength(1);
       expect(result.equipamentos[0].status).toBe('Instalado');
       expect(result.attachments).toHaveLength(1);
-      expect(result.composicao.complementoCorpo).toBe('Observação teste');
       expect(result.tipoOrdem).toBe('CORTE POR FALTA DE PAGAMENTO');
       // Verify state is unchanged (collectAllData reads, doesn't write)
       expect(state.iniciais.uc).toBe('12345');

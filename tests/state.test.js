@@ -71,7 +71,6 @@ describe('state', () => {
     state.visitedRetorno = false;
     state.retorno = {};
     state.currentUUID = '';
-    state.composicao = { complementoCorpo: '' };
     state.iniciaisValido = false;
     state._createdAt = null;
     localStorage.clear();

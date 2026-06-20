@@ -682,7 +682,6 @@ describe('persistence flow: real-world scenarios', () => {
         { status: 'Retirado', categoria: 'Display', numero: '222' },
       ];
       renderEquipamentos();
-      DOM.complementoCorpo.value = 'Complemento de teste';
       state.iniciaisValido = true;
       await saveState();
       const uuid = state.currentUUID;
@@ -713,9 +712,6 @@ describe('persistence flow: real-world scenarios', () => {
       expect(equipRows.length).toBe(2);
       expect(equipRows[0].querySelector('.equip-numero').value).toBe('111');
       expect(equipRows[1].querySelector('.equip-numero').value).toBe('222');
-
-      // Verify complemento
-      expect(DOM.complementoCorpo.value).toBe('Complemento de teste');
 
       // Verify state
       expect(state.currentUUID).toBe(uuid);

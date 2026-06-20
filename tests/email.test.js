@@ -16,7 +16,6 @@ describe('email', () => {
         <option value="ADEQUACAO SMF">ADEQUACAO SMF</option>
       </select>
       <div id="preview-corpo">—</div>
-      <textarea id="complemento-corpo" rows="3"></textarea>
       <div id="preview-grid"></div>
       <div id="file-count">0 / 12</div>
       <div id="file-upload-area"></div>
@@ -126,7 +125,8 @@ describe('email', () => {
     });
 
     it('should show "(NAO PREENCHIDO)" for empty retorno field', () => {
-      const body = composeEmail(sampleData);
+      const data = { ...sampleData, retorno: { descricao: '' } };
+      const body = composeEmail(data);
       expect(body).toContain('(NAO PREENCHIDO)');
     });
 

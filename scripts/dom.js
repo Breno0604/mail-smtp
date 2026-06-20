@@ -41,7 +41,6 @@ export function cacheDOM() {
 
   // Revisão
   DOM.previewCorpo = document.getElementById("preview-corpo");
-  DOM.complementoCorpo = document.getElementById("complemento-corpo");
 
   // Send
   DOM.btnEnviar = document.getElementById("btn-enviar");

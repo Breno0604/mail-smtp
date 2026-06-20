@@ -86,14 +86,6 @@ export async function applyRecord(record) {
   renderPreviews();
   updateFileCount();
 
-  // ── Restore complemento ─────────────────────────────────────────────────
-  if (record.composicao) {
-    state.composicao = { ...state.composicao, ...record.composicao };
-    if (record.composicao.complementoCorpo && DOM.complementoCorpo) {
-      DOM.complementoCorpo.value = record.composicao.complementoCorpo;
-    }
-  }
-
   // ── Sync state from DOM to normalize field names ──────────────────────────
   collectIniciais();
 

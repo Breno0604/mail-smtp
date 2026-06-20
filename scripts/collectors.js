@@ -72,6 +72,5 @@ export function collectAllData() {
     equipamentos: state.equipamentos,
     attachments: state.attachments,
     tipoOrdem: state.iniciais['tipo-ordem'] || '',
-    composicao: state.composicao,
   };
 }

@@ -13,7 +13,6 @@ describe('db', () => {
     equipamentos: [],
     attachments: [],
     retorno: {},
-    composicao: { complementoCorpo: '' },
   };
 
   // Clean all records between tests

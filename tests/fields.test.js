@@ -115,10 +115,10 @@ describe('fields', () => {
       'INSPECAO UC CORTADA I180',
     ];
 
-    it('should have exactly 8 fields for each UC Cortada tipo', () => {
+    it('should have exactly 9 fields for each UC Cortada tipo (including descricao)', () => {
       ucCortadaTipos.forEach((tipo) => {
         const fields = getRetornoFields(tipo);
-        expect(fields.length).toBe(8);
+        expect(fields.length).toBe(9);
       });
     });
 
@@ -192,17 +192,20 @@ describe('fields', () => {
       });
     });
 
-    it('should have toi as last field (observacoes removed)', () => {
+    it('should have descricao as last field', () => {
       const fields = getRetornoFields('INSPECAO UC CORTADA I15');
       const lastField = fields[fields.length - 1];
-      expect(lastField.nome).toBe('toi');
-      expect(lastField.linha).toBe(5);
+      expect(lastField.nome).toBe('descricao');
+      expect(lastField.label).toBe('Descrição do Serviço');
+      expect(lastField.tipo).toBe('textarea');
+      expect(lastField.linha).toBe(6);
     });
 
-    it('should NOT have descricao field', () => {
+    it('should have descricao field', () => {
       const fields = getRetornoFields('INSPECAO UC CORTADA I15');
       const descricao = fields.find(f => f.nome === 'descricao');
-      expect(descricao).toBeUndefined();
+      expect(descricao).toBeDefined();
+      expect(descricao.tipo).toBe('textarea');
     });
 
     it('should NOT have observacoes field (removed)', () => {
@@ -211,20 +214,20 @@ describe('fields', () => {
       expect(observacoes).toBeUndefined();
     });
 
-    it('should have exactly 8 fields (observacoes removed)', () => {
+    it('should have exactly 9 fields (includes descricao, observacoes removed)', () => {
       const fields = getRetornoFields('INSPECAO UC CORTADA I15');
-      expect(fields.length).toBe(8);
+      expect(fields.length).toBe(9);
     });
   });
 
   describe('Campos da aba corte', () => {
     describe('CORTE POR FALTA DE PAGAMENTO', () => {
-      it('should have exactly 1 field (situacao_corte)', () => {
+      it('should have exactly 2 fields (situacao_corte and descricao)', () => {
         const fields = getRetornoFields('CORTE POR FALTA DE PAGAMENTO');
-        expect(fields.length).toBe(1);
+        expect(fields.length).toBe(2);
       });
 
-      it('should have situacao_corte as select with 4 options', () => {
+      it('should have situacao_corte as first field with 4 options', () => {
         const fields = getRetornoFields('CORTE POR FALTA DE PAGAMENTO');
         const field = fields[0];
         expect(field.nome).toBe('situacao_corte');
@@ -232,16 +235,20 @@ describe('fields', () => {
         expect(field.opcoes).toEqual(['CLIENTE CORTADO', 'CLIENTE VISITADO CONTA PAGA', 'CLIENTE NAO PERMITIU O CORTE', 'SEM ACESSO PARA EXECUTAR O CORTE']);
       });
 
-      it('should NOT have descricao field', () => {
+      it('should have descricao as last field', () => {
         const fields = getRetornoFields('CORTE POR FALTA DE PAGAMENTO');
-        expect(fields.find(f => f.nome === 'descricao')).toBeUndefined();
+        const lastField = fields[fields.length - 1];
+        expect(lastField.nome).toBe('descricao');
+        expect(lastField.label).toBe('Descrição do Serviço');
+        expect(lastField.tipo).toBe('textarea');
+        expect(lastField.linha).toBe(2);
       });
     });
 
     describe('DESLIG.PROG.MANUTENÇÃO', () => {
-      it('should have exactly 2 fields', () => {
+      it('should have exactly 3 fields (desligamento, acesso_desligamento, descricao)', () => {
         const fields = getRetornoFields('DESLIG.PROG.MANUTENÇÃO');
-        expect(fields.length).toBe(2);
+        expect(fields.length).toBe(3);
       });
 
       it('should have desligamento as first field with 5 options', () => {
@@ -260,16 +267,20 @@ describe('fields', () => {
         expect(field.condicional).toEqual({ campoRef: 'desligamento', valor: 'DESLIGAMENTO EXECUTADO', negado: true });
       });
 
-      it('should NOT have descricao field', () => {
+      it('should have descricao as last field', () => {
         const fields = getRetornoFields('DESLIG.PROG.MANUTENÇÃO');
-        expect(fields.find(f => f.nome === 'descricao')).toBeUndefined();
+        const lastField = fields[fields.length - 1];
+        expect(lastField.nome).toBe('descricao');
+        expect(lastField.label).toBe('Descrição do Serviço');
+        expect(lastField.tipo).toBe('textarea');
+        expect(lastField.linha).toBe(3);
       });
     });
 
     describe('LIGACAO NOVA MEDIA TENSAO', () => {
-      it('should have exactly 11 fields', () => {
+      it('should have exactly 12 fields (including descricao)', () => {
         const fields = getRetornoFields('LIGACAO NOVA MEDIA TENSAO');
-        expect(fields.length).toBe(11);
+        expect(fields.length).toBe(12);
       });
 
       it('should have retorno_ligacao as first field with 3 options', () => {
@@ -298,9 +309,13 @@ describe('fields', () => {
         expect(field.condicional).toEqual({ campoRef: 'retorno_ligacao', valor: ['LIGAÇÃO', 'VISTORIA + LIGAÇÃO'] });
       });
 
-      it('should NOT have descricao field', () => {
+      it('should have descricao as last field', () => {
         const fields = getRetornoFields('LIGACAO NOVA MEDIA TENSAO');
-        expect(fields.find(f => f.nome === 'descricao')).toBeUndefined();
+        const lastField = fields[fields.length - 1];
+        expect(lastField.nome).toBe('descricao');
+        expect(lastField.label).toBe('Descrição do Serviço');
+        expect(lastField.tipo).toBe('textarea');
+        expect(lastField.linha).toBe(7);
       });
     });
 
@@ -315,9 +330,9 @@ describe('fields', () => {
 
   describe('Campos da aba afericao', () => {
     describe('AFERIÇÃO DE MEDIDOR', () => {
-      it('should have exactly 7 fields', () => {
+      it('should have exactly 8 fields (including descricao)', () => {
         const fields = getRetornoFields('AFERIÇÃO DE MEDIDOR');
-        expect(fields.length).toBe(7);
+        expect(fields.length).toBe(8);
       });
 
       it('should have medidor_afericao as first field (select, 2 options)', () => {
@@ -373,16 +388,20 @@ describe('fields', () => {
         expect(field.condicional).toEqual({ campoRef: 'toi_afericao', valor: 'NAO FOI APLICADO TOI' });
       });
 
-      it('should NOT have descricao field', () => {
+      it('should have descricao as last field', () => {
         const fields = getRetornoFields('AFERIÇÃO DE MEDIDOR');
-        expect(fields.find(f => f.nome === 'descricao')).toBeUndefined();
+        const lastField = fields[fields.length - 1];
+        expect(lastField.nome).toBe('descricao');
+        expect(lastField.label).toBe('Descrição do Serviço');
+        expect(lastField.tipo).toBe('textarea');
+        expect(lastField.linha).toBe(8);
       });
     });
 
     describe('AFERIÇÃO MEDIDOR CLIENTE LIVRE', () => {
-      it('should have exactly 7 fields', () => {
+      it('should have exactly 8 fields (including descricao)', () => {
         const fields = getRetornoFields('AFERIÇÃO MEDIDOR CLIENTE LIVRE');
-        expect(fields.length).toBe(7);
+        expect(fields.length).toBe(8);
       });
 
       it('should return the same array reference as AFERIÇÃO DE MEDIDOR', () => {
@@ -391,9 +410,11 @@ describe('fields', () => {
         expect(fields1).toBe(fields2);
       });
 
-      it('should NOT have descricao field', () => {
+      it('should have descricao field', () => {
         const fields = getRetornoFields('AFERIÇÃO MEDIDOR CLIENTE LIVRE');
-        expect(fields.find(f => f.nome === 'descricao')).toBeUndefined();
+        const descricao = fields.find(f => f.nome === 'descricao');
+        expect(descricao).toBeDefined();
+        expect(descricao.tipo).toBe('textarea');
       });
     });
   });

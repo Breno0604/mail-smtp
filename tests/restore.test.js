@@ -95,7 +95,6 @@ describe('restore', () => {
       retorno: { descricao: 'Restored description' },
       lastTipoOrdem: 'ADEQUACAO SMF',
       tipoOrdem: 'ADEQUACAO SMF',
-      composicao: { complementoCorpo: 'Restored complement' },
       attachments: [
         { name: 'photo.jpg', type: 'image/jpeg', data: btoa('fake-image-data') },
       ],
@@ -169,16 +168,6 @@ describe('restore', () => {
     it('should restore tipoOrdem select value', () => {
       applyRecord(sampleRecord);
       expect(DOM.tipoOrdem.value).toBe('ADEQUACAO SMF');
-    });
-
-    it('should restore complementoCorpo', () => {
-      applyRecord(sampleRecord);
-      expect(DOM.complementoCorpo.value).toBe('Restored complement');
-    });
-
-    it('should handle empty or missing composicao', () => {
-      const recordWithoutComposicao = { ...sampleRecord, composicao: undefined };
-      expect(() => applyRecord(recordWithoutComposicao)).not.toThrow();
     });
 
     // ── Bug 1: lastTipoOrdem must match record.tipoOrdem, not record.lastTipoOrdem ──

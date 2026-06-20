@@ -53,7 +53,6 @@ describe('duplicate', () => {
         createdAt: new Date().toISOString(),
         equipamentos: [],
         attachments: [],
-        composicao: {},
       });
       const result = await checkDuplicate();
       expect(result).toBe(true);
@@ -74,7 +73,6 @@ describe('duplicate', () => {
         createdAt: new Date().toISOString(),
         equipamentos: [],
         attachments: [],
-        composicao: {},
       });
 
       const promise = checkDuplicate();
@@ -107,7 +105,6 @@ describe('duplicate', () => {
         createdAt: new Date().toISOString(),
         equipamentos: [],
         attachments: [],
-        composicao: {},
       });
 
       const promise = checkDuplicate();
@@ -134,7 +131,6 @@ describe('duplicate', () => {
         createdAt: new Date().toISOString(),
         equipamentos: [],
         attachments: [],
-        composicao: {},
       });
 
       const promise = checkDuplicate();
@@ -160,7 +156,6 @@ describe('duplicate', () => {
         createdAt: new Date().toISOString(),
         equipamentos: [],
         attachments: [],
-        composicao: {},
       });
 
       const promise = checkDuplicate();

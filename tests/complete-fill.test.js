@@ -9,7 +9,7 @@ import { resetForm } from '../scripts/reset.js';
 import { renderIniciais } from '../scripts/iniciais.js';
 import { renderRetorno, setRetornoData, handleTipoChange } from '../scripts/retornos.js';
 import { renderEquipamentos, addEquip } from '../scripts/equipment.js';
-import { collectEquipamentos } from '../scripts/collectors.js';
+import { collectEquipamentos, collectIniciais } from '../scripts/collectors.js';
 import { updateLivePreview } from '../scripts/email.js';
 
 /**
@@ -116,7 +116,6 @@ describe('complete fill persistence', () => {
       ];
       renderEquipamentos();
       
-      DOM.complementoCorpo.value = 'Complemento de teste';
       state.iniciaisValido = true;
       await saveState();
       const uuid = state.currentUUID;
@@ -139,7 +138,6 @@ describe('complete fill persistence', () => {
       expect(state.iniciais.lider).toBe('ANDRE DE SOUSA CARVALHO');
       expect(state.retorno.situacao_corte).toBe('CLIENTE CORTADO');
       expect(state.equipamentos).toHaveLength(2);
-      expect(DOM.complementoCorpo.value).toBe('Complemento de teste');
 
       // ═══ STEP 4: Edit some fields ═══
       document.getElementById('uc').value = '99999';
@@ -150,7 +148,6 @@ describe('complete fill persistence', () => {
       addEquip({ status: 'Instalado', categoria: 'TC', numero: '333' });
       collectEquipamentos();
       
-      DOM.complementoCorpo.value = 'Complemento atualizado';
       await saveState();
 
       // ═══ STEP 5: Verify changes persisted ═══
@@ -160,7 +157,6 @@ describe('complete fill persistence', () => {
       expect(updatedRecord.iniciais.lider).toBe('CARLOS CRISTIANO DO NASCIMENTO SILVA');
       expect(updatedRecord.retorno.situacao_corte).toBe('CLIENTE VISITADO CONTA PAGA');
       expect(updatedRecord.equipamentos).toHaveLength(3);
-      expect(updatedRecord.composicao.complementoCorpo).toBe('Complemento atualizado');
     });
   });
 
@@ -437,26 +433,7 @@ describe('advanced persistence scenarios', () => {
     expect(state.retorno['medidor-novo']).toBeUndefined();
   });
 
-  // ═══ TESTE 7: Complemento longo ═══
-  it('should persist long complemento text', async () => {
-    renderIniciais();
-    document.getElementById('uc').value = '11111';
-    document.getElementById('os').value = '22222';
-    const longText = 'A'.repeat(1000);
-    DOM.complementoCorpo.value = longText;
-    state.iniciaisValido = true;
-    await saveState();
-    const uuid = state.currentUUID;
-
-    resetForm();
-    const record = await getRecord(uuid);
-    await applyRecord(record);
-
-    expect(DOM.complementoCorpo.value).toBe(longText);
-    expect(DOM.complementoCorpo.value.length).toBe(1000);
-  });
-
-  // ═══ TESTE 8: Editar campo específico mantém outros ═══
+  // ═══ TESTE 7: Editar campo específico mantém outros ═══
   it('should preserve other fields when editing one field', async () => {
     renderIniciais();
     document.getElementById('uc').value = '11111';
@@ -600,7 +577,6 @@ describe('advanced persistence scenarios', () => {
     document.getElementById('situacao_corte').value = 'CLIENTE CORTADO';
     state.equipamentos = [{ status: 'Instalado', categoria: 'Medidor', numero: '111' }];
     renderEquipamentos();
-    DOM.complementoCorpo.value = 'Test';
     state.iniciaisValido = true;
     await saveState();
     const uuid = state.currentUUID;
@@ -613,7 +589,6 @@ describe('advanced persistence scenarios', () => {
     expect(state.iniciais.data).toBe('2024-03-15');
     expect(state.retorno.situacao_corte).toBe('CLIENTE CORTADO');
     expect(state.equipamentos[0].numero).toBe('111');
-    expect(DOM.complementoCorpo.value).toBe('Test');
   });
 
   // ═══ TESTE 14: Limpar campo preenchido ═══
@@ -704,7 +679,8 @@ describe('advanced persistence scenarios', () => {
     renderIniciais();
     document.getElementById('uc').value = '11111';
     document.getElementById('os').value = 'OS-2024/123';
-    DOM.complementoCorpo.value = 'Teste com acentos: ã, é, ç, õ';
+    // Sync state from DOM
+    collectIniciais();
     state.iniciaisValido = true;
     await saveState();
     const uuid = state.currentUUID;
@@ -714,7 +690,6 @@ describe('advanced persistence scenarios', () => {
     await applyRecord(record);
 
     expect(state.iniciais.os).toBe('OS-2024/123');
-    expect(DOM.complementoCorpo.value).toBe('Teste com acentos: ã, é, ç, õ');
   });
 
   // ═══ TESTE 19: Múltiplas trocas de tipo-ordem ═══
