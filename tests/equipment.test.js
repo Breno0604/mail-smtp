@@ -81,7 +81,7 @@ describe('equipment', () => {
 
     it('should label each checkbox correctly', () => {
       renderEquipamentos();
-      const labels = document.querySelectorAll('#checkboxes-instalados label span');
+      const labels = document.querySelectorAll('#checkboxes-instalados label');
       expect(labels[0].textContent).toBe('MEDIDOR');
       expect(labels[1].textContent).toBe('CONJUNTO');
       expect(labels[2].textContent).toBe('DISPLAY');

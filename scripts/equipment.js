@@ -1,5 +1,6 @@
 import { state } from "./state.js";
 import { debouncedSave } from "./persistence.js";
+import { INPUT_CLASS } from "./styles.js";
 
 const EQUIPMENT_LIST = [
   { key: 'medidor', label: 'MEDIDOR' },
@@ -33,17 +34,28 @@ function renderCheckboxes(tipo) {
   if (!container) return;
   container.innerHTML = '';
 
+  // Grid de 3 colunas com mesmo gap dos campos da seção Início
+  container.className = 'grid grid-cols-3 gap-3 mb-4';
+
   EQUIPMENT_LIST.forEach((equip) => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'flex items-center';
+    
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = `checkbox-${tipo}-${equip.key}`;
+    checkbox.setAttribute('data-tipo', tipo);
+    checkbox.setAttribute('data-equip', equip.key);
+    checkbox.className = 'equip-checkbox w-4 h-4 mr-2 border-slate-300 rounded cursor-pointer accent-blue-600';
+    
     const label = document.createElement('label');
-    label.className = 'flex items-center gap-2 cursor-pointer';
-    label.innerHTML = `
-      <input type="checkbox"
-             data-tipo="${tipo}"
-             data-equip="${equip.key}"
-             class="equip-checkbox w-4 h-4 border border-slate-300 rounded cursor-pointer">
-      <span class="text-sm font-medium text-slate-700">${equip.label}</span>
-    `;
-    container.appendChild(label);
+    label.setAttribute('for', `checkbox-${tipo}-${equip.key}`);
+    label.className = 'font-semibold text-[13px] text-slate-600 cursor-pointer select-none';
+    label.textContent = equip.label;
+    
+    wrapper.appendChild(checkbox);
+    wrapper.appendChild(label);
+    container.appendChild(wrapper);
   });
 }
 
@@ -64,9 +76,12 @@ function restoreCheckboxStates() {
 function restoreFieldStates() {
   ['instalados', 'retirados'].forEach((tipo) => {
     Object.keys(state.equipamentos[tipo]).forEach((key) => {
-      const input = document.querySelector(`#campos-${tipo} [data-equip="${key}"] input`);
-      if (input && state.equipamentos[tipo][key]) {
-        input.value = state.equipamentos[tipo][key];
+      const wrapper = document.querySelector(`#campos-${tipo} [data-equip="${key}"]`);
+      if (wrapper) {
+        const input = wrapper.querySelector('input');
+        if (input && state.equipamentos[tipo][key]) {
+          input.value = state.equipamentos[tipo][key];
+        }
       }
     });
   });
@@ -141,31 +156,35 @@ function showField(tipo, equipKey) {
   const equip = EQUIPMENT_LIST.find((e) => e.key === equipKey);
   if (!equip) return;
 
-  const div = document.createElement('div');
-  div.setAttribute('data-equip', equipKey);
-  div.className = 'flex items-center justify-between gap-3';
-  div.innerHTML = `
-    <label class="text-sm font-semibold text-slate-700">${equip.label}</label>
-    <input type="number"
-           data-tipo="${tipo}"
-           data-equip="${equipKey}"
-           class="flex-1 max-w-[200px] px-3 py-2 border rounded-[10px] text-sm outline-none focus:ring-4 focus:ring-blue-500/10 text-slate-900 font-sans"
-           placeholder="">
-  `;
+  const wrapper = document.createElement('div');
+  wrapper.className = 'mb-4';
+  wrapper.setAttribute('data-equip', equipKey);
 
-  container.appendChild(div);
+  const label = document.createElement('label');
+  label.className = 'block font-semibold text-[13px] text-slate-600 mb-1';
+  label.textContent = equip.label;
+
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.setAttribute('data-tipo', tipo);
+  input.setAttribute('data-equip', equipKey);
+  input.className = INPUT_CLASS;
+  input.placeholder = equip.label;
+
+  wrapper.appendChild(label);
+  wrapper.appendChild(input);
+  container.appendChild(wrapper);
 
   // Restore value if exists
-  const input = div.querySelector('input');
   if (state.equipamentos[tipo][equipKey]) {
     input.value = state.equipamentos[tipo][equipKey];
   }
 }
 
 function hideField(tipo, equipKey) {
-  const field = document.querySelector(`#campos-${tipo} [data-equip="${equipKey}"]`);
-  if (field) {
-    field.remove();
+  const wrapper = document.querySelector(`#campos-${tipo} [data-equip="${equipKey}"]`);
+  if (wrapper) {
+    wrapper.remove();
   }
 }
 

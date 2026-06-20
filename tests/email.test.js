@@ -117,12 +117,12 @@ describe('email', () => {
       };
       const body = composeEmail(data);
       expect(body).toContain('EQUIPAMENTOS:');
+      expect(body).toContain('EQUIPAMENTOS INSTALADOS:');
       expect(body).toContain('MEDIDOR');
       expect(body).toContain('12345');
-      expect(body).toContain('Foi instalado Equipamentos: SIM');
     });
 
-    it('should include "—" for empty equipment values', () => {
+    it('should not include empty equipment fields', () => {
       const data = {
         ...sampleData,
         equipamentos: {
@@ -133,7 +133,8 @@ describe('email', () => {
         },
       };
       const body = composeEmail(data);
-      expect(body).toContain('Foi instalado Equipamentos: SIM');
+      expect(body).toContain('EQUIPAMENTOS:');
+      expect(body).not.toContain('EQUIPAMENTOS INSTALADOS:');
     });
 
     it('should include retorno section', () => {

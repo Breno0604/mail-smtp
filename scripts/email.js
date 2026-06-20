@@ -40,30 +40,27 @@ export function composeEmail(data) {
 
   // Equipment section
   body += "\n\nEQUIPAMENTOS:";
-  body += `\nFoi instalado Equipamentos: ${data.equipamentos.instaladoEquip}`;
   
   if (data.equipamentos.instaladoEquip === 'SIM') {
-    body += "\nEQUIPAMENTOS INSTALADOS:";
+    const installedItems = Object.keys(data.equipamentos.instalados)
+      .filter((key) => data.equipamentos.instalados[key] && data.equipamentos.instalados[key].trim() !== '')
+      .map((key) => `${EQUIP_LABELS[key]}: ${normalizeText(data.equipamentos.instalados[key])}`);
     
-    Object.keys(data.equipamentos.instalados).forEach((key) => {
-      const value = data.equipamentos.instalados[key];
-      if (value && value.trim() !== '') {
-        body += `\n${EQUIP_LABELS[key]}: ${normalizeText(value)}`;
-      }
-    });
+    if (installedItems.length > 0) {
+      body += "\nEQUIPAMENTOS INSTALADOS:";
+      body += "\n" + installedItems.join("\n");
+    }
   }
   
-  body += `\nFoi retirado Equipamentos: ${data.equipamentos.retiradoEquip}`;
-  
   if (data.equipamentos.retiradoEquip === 'SIM') {
-    body += "\nEQUIPAMENTOS RETIRADOS:";
+    const removedItems = Object.keys(data.equipamentos.retirados)
+      .filter((key) => data.equipamentos.retirados[key] && data.equipamentos.retirados[key].trim() !== '')
+      .map((key) => `${EQUIP_LABELS[key]}: ${normalizeText(data.equipamentos.retirados[key])}`);
     
-    Object.keys(data.equipamentos.retirados).forEach((key) => {
-      const value = data.equipamentos.retirados[key];
-      if (value && value.trim() !== '') {
-        body += `\n${EQUIP_LABELS[key]}: ${normalizeText(value)}`;
-      }
-    });
+    if (removedItems.length > 0) {
+      body += "\nEQUIPAMENTOS RETIRADOS:";
+      body += "\n" + removedItems.join("\n");
+    }
   }
 
   body += "\n\nRETORNO:";

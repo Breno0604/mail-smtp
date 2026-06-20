@@ -97,7 +97,7 @@ describe('Equipment checkbox logic', () => {
 
   it('should render correct checkbox labels', () => {
     renderEquipamentos();
-    const labels = document.querySelectorAll('#checkboxes-instalados label span');
+    const labels = document.querySelectorAll('#checkboxes-instalados label');
     const labelTexts = Array.from(labels).map(el => el.textContent);
     expect(labelTexts).toContain('MEDIDOR');
     expect(labelTexts).toContain('TC FASE A');
