@@ -44,21 +44,40 @@ export function collectRetorno() {
 }
 
 /**
- * Collect equipment rows from DOM and update state
- * @returns {Array} Collected equipment data
+ * Collect equipment data from DOM and update state
+ * @returns {Object} Collected equipment data
  */
 export function collectEquipamentos() {
-  const rows = DOM.equipList.querySelectorAll('.equip-row');
-  const data = [];
-  rows.forEach((row) => {
-    data.push({
-      status: row.querySelector('.equip-tipo').value,
-      categoria: row.querySelector('.equip-categoria').value,
-      numero: row.querySelector('.equip-numero').value,
-    });
+  // Collect control fields
+  const instaladoSelect = document.getElementById('instalado-equip');
+  const retiradoSelect = document.getElementById('retirado-equip');
+  
+  if (instaladoSelect) {
+    state.equipamentos.instaladoEquip = instaladoSelect.value;
+  }
+  if (retiradoSelect) {
+    state.equipamentos.retiradoEquip = retiradoSelect.value;
+  }
+  
+  // Collect installed equipment values
+  const installedInputs = document.querySelectorAll('#campos-instalados input[type="number"]');
+  installedInputs.forEach((input) => {
+    const equipKey = input.getAttribute('data-equip');
+    if (equipKey) {
+      state.equipamentos.instalados[equipKey] = input.value;
+    }
   });
-  state.equipamentos = data;
-  return data;
+  
+  // Collect removed equipment values
+  const removedInputs = document.querySelectorAll('#campos-retirados input[type="number"]');
+  removedInputs.forEach((input) => {
+    const equipKey = input.getAttribute('data-equip');
+    if (equipKey) {
+      state.equipamentos.retirados[equipKey] = input.value;
+    }
+  });
+  
+  return state.equipamentos;
 }
 
 /**
