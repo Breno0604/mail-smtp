@@ -30,8 +30,14 @@ export function cacheDOM() {
   DOM.retornoCampos = document.getElementById("retorno-campos");
 
   // Equipamentos
-  DOM.equipList = document.getElementById("equipamentos-list");
-  DOM.btnAddEquip = document.getElementById("btn-add-equip");
+  DOM.instaladoEquip = document.getElementById("instalado-equip");
+  DOM.retiradoEquip = document.getElementById("retirado-equip");
+  DOM.secEquipInstalados = document.getElementById("sec-equip-instalados");
+  DOM.secEquipRetirados = document.getElementById("sec-equip-retirados");
+  DOM.checkboxesInstalados = document.getElementById("checkboxes-instalados");
+  DOM.checkboxesRetirados = document.getElementById("checkboxes-retirados");
+  DOM.camposInstalados = document.getElementById("campos-instalados");
+  DOM.camposRetirados = document.getElementById("campos-retirados");
 
   // Anexos
   DOM.fileInput = document.getElementById("file-input");
