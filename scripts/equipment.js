@@ -38,19 +38,19 @@ function renderCheckboxes(tipo) {
   container.className = 'grid grid-cols-3 gap-3 mb-4';
 
   EQUIPMENT_LIST.forEach((equip) => {
-    const wrapper = document.createElement('div');
-    wrapper.className = 'flex items-center';
+    const wrapper = document.createElement('label');
+    wrapper.setAttribute('for', `checkbox-${tipo}-${equip.key}`);
+    wrapper.className = 'flex items-center gap-2 cursor-pointer';
     
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.id = `checkbox-${tipo}-${equip.key}`;
     checkbox.setAttribute('data-tipo', tipo);
     checkbox.setAttribute('data-equip', equip.key);
-    checkbox.className = 'equip-checkbox w-4 h-4 mr-2 border-slate-300 rounded cursor-pointer accent-blue-600';
+    checkbox.className = 'equip-checkbox w-4 h-4 border-slate-300 rounded cursor-pointer accent-blue-600';
     
-    const label = document.createElement('label');
-    label.setAttribute('for', `checkbox-${tipo}-${equip.key}`);
-    label.className = 'font-semibold text-[13px] text-slate-600 cursor-pointer select-none';
+    const label = document.createElement('span');
+    label.className = 'font-semibold text-[13px] text-slate-600 select-none';
     label.textContent = equip.label;
     
     wrapper.appendChild(checkbox);
@@ -157,18 +157,18 @@ function showField(tipo, equipKey) {
   if (!equip) return;
 
   const wrapper = document.createElement('div');
-  wrapper.className = 'mb-4';
+  wrapper.className = 'flex items-center gap-3 mb-4';
   wrapper.setAttribute('data-equip', equipKey);
 
   const label = document.createElement('label');
-  label.className = 'block font-semibold text-[13px] text-slate-600 mb-1';
+  label.className = 'font-semibold text-[13px] text-slate-600 min-w-[120px]';
   label.textContent = equip.label;
 
   const input = document.createElement('input');
   input.type = 'number';
   input.setAttribute('data-tipo', tipo);
   input.setAttribute('data-equip', equipKey);
-  input.className = INPUT_CLASS;
+  input.className = INPUT_CLASS + ' flex-1';
   input.placeholder = equip.label;
 
   wrapper.appendChild(label);

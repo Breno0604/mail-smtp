@@ -58,15 +58,17 @@
       <!-- Control fields -->
       <div class="mb-4">
         <div class="mb-4">
-          <label for="instalado-equip" class="block font-semibold text-[13px] text-slate-600 mb-1">Foi instalado Equipamentos?</label>
-          <select id="instalado-equip" class="w-full px-3.5 py-3 border rounded-[10px] text-[15px] font-sans outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10">
+          <label for="instalado-equip" class="block font-semibold text-[13px] text-slate-600 mb-1">Foi instalado Equipamentos? <span class="text-red-600">*</span></label>
+          <select id="instalado-equip" class="w-full px-3.5 py-3 border rounded-[10px] text-[15px] font-sans outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10" data-required>
+            <option value="">Selecione</option>
             <option value="NAO">NAO</option>
             <option value="SIM">SIM</option>
           </select>
         </div>
         <div class="mb-4">
-          <label for="retirado-equip" class="block font-semibold text-[13px] text-slate-600 mb-1">Foi retirado Equipamentos?</label>
-          <select id="retirado-equip" class="w-full px-3.5 py-3 border rounded-[10px] text-[15px] font-sans outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10">
+          <label for="retirado-equip" class="block font-semibold text-[13px] text-slate-600 mb-1">Foi retirado Equipamentos? <span class="text-red-600">*</span></label>
+          <select id="retirado-equip" class="w-full px-3.5 py-3 border rounded-[10px] text-[15px] font-sans outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10" data-required>
+            <option value="">Selecione</option>
             <option value="NAO">NAO</option>
             <option value="SIM">SIM</option>
           </select>
