@@ -418,4 +418,113 @@ describe('fields', () => {
       });
     });
   });
+
+  describe('Campos da aba telemetria', () => {
+    const telemetriaTipos = [
+      'TELEMEDIÇÃO MANUTENÇÃO',
+      'TELEMEDIÇÃO MANUTENÇÃO CLIENTE LIVRE',
+      'TELEMEDIÇÃO MANUTENÇÃO LOTE',
+    ];
+
+    it('should have exactly 6 fields for each TELEMEDIÇÃO tipo (5 + descricao)', () => {
+      telemetriaTipos.forEach((tipo) => {
+        const fields = getRetornoFields(tipo);
+        expect(fields.length).toBe(6);
+      });
+    });
+
+    it('should return the same array reference for all 3 TELEMEDIÇÃO tipos', () => {
+      const fields1 = getRetornoFields('TELEMEDIÇÃO MANUTENÇÃO');
+      const fields2 = getRetornoFields('TELEMEDIÇÃO MANUTENÇÃO CLIENTE LIVRE');
+      const fields3 = getRetornoFields('TELEMEDIÇÃO MANUTENÇÃO LOTE');
+      expect(fields1).toBe(fields2);
+      expect(fields2).toBe(fields3);
+    });
+
+    it('should have executado_telemedicao as first field with 2 options', () => {
+      const fields = getRetornoFields('TELEMEDIÇÃO MANUTENÇÃO');
+      const field = fields[0];
+      expect(field.nome).toBe('executado_telemedicao');
+      expect(field.tipo).toBe('select');
+      expect(field.opcoes).toEqual(['SIM', 'NAO']);
+      expect(field.condicional).toBeUndefined();
+    });
+
+    it('should have motivo_cancelamento_telemedicao conditional on executado_telemedicao = NAO', () => {
+      const fields = getRetornoFields('TELEMEDIÇÃO MANUTENÇÃO');
+      const field = fields.find(f => f.nome === 'motivo_cancelamento_telemedicao');
+      expect(field.tipo).toBe('select');
+      expect(field.opcoes).toEqual(['SEM ACESSO', 'MEDICAO COM BY-PASS', 'MEDICAO AVARIADA', 'OUTRO MOTIVO']);
+      expect(field.condicional).toEqual({ campoRef: 'executado_telemedicao', valor: 'NAO' });
+    });
+
+    it('should have descreva_problema_telemedicao with multi-value conditional', () => {
+      const fields = getRetornoFields('TELEMEDIÇÃO MANUTENÇÃO');
+      const field = fields.find(f => f.nome === 'descreva_problema_telemedicao');
+      expect(field.tipo).toBe('textarea');
+      expect(field.condicional).toEqual({ campoRef: 'motivo_cancelamento_telemedicao', valor: ['SEM ACESSO', 'OUTRO MOTIVO'] });
+    });
+
+    it('should have atentende_com with label "Atendente (COM)" and conditional on executado_telemedicao = SIM', () => {
+      const fields = getRetornoFields('TELEMEDIÇÃO MANUTENÇÃO');
+      const field = fields.find(f => f.nome === 'atentende_com');
+      expect(field.label).toBe('Atendente (COM)');
+      expect(field.tipo).toBe('text');
+      expect(field.condicional).toEqual({ campoRef: 'executado_telemedicao', valor: 'SIM' });
+    });
+
+    it('should have realizado_telemedicao conditional on executado_telemedicao = SIM', () => {
+      const fields = getRetornoFields('TELEMEDIÇÃO MANUTENÇÃO');
+      const field = fields.find(f => f.nome === 'realizado_telemedicao');
+      expect(field.tipo).toBe('textarea');
+      expect(field.condicional).toEqual({ campoRef: 'executado_telemedicao', valor: 'SIM' });
+    });
+
+    it('should have descricao as last field', () => {
+      const fields = getRetornoFields('TELEMEDIÇÃO MANUTENÇÃO');
+      const lastField = fields[fields.length - 1];
+      expect(lastField.nome).toBe('descricao');
+      expect(lastField.label).toBe('Descrição do Serviço');
+      expect(lastField.tipo).toBe('textarea');
+    });
+  });
+
+  describe('Campos da aba corte - CORTE DE UC POR DEF TECNICO', () => {
+    it('should have exactly 4 fields (3 + descricao)', () => {
+      const fields = getRetornoFields('CORTE DE UC POR DEF TECNICO');
+      expect(fields.length).toBe(4);
+    });
+
+    it('should have corte_por_defeito_tecnico as first field with 2 options', () => {
+      const fields = getRetornoFields('CORTE DE UC POR DEF TECNICO');
+      const field = fields[0];
+      expect(field.nome).toBe('corte_por_defeito_tecnico');
+      expect(field.tipo).toBe('select');
+      expect(field.opcoes).toEqual(['SIM', 'NAO']);
+      expect(field.condicional).toBeUndefined();
+    });
+
+    it('should have motivo_cancelamento_corte_por_defeito_tecnico conditional on corte_por_defeito_tecnico = NAO', () => {
+      const fields = getRetornoFields('CORTE DE UC POR DEF TECNICO');
+      const field = fields.find(f => f.nome === 'motivo_cancelamento_corte_por_defeito_tecnico');
+      expect(field.tipo).toBe('select');
+      expect(field.opcoes).toEqual(['SEM ACESSO', 'SOLICITACAO ENEL', 'CLIENTE NAO PERMITIU', 'CLIENTE CORRIGIU PROBLEMA', 'OUTRO PROBLEMA']);
+      expect(field.condicional).toEqual({ campoRef: 'corte_por_defeito_tecnico', valor: 'NAO' });
+    });
+
+    it('should have descreva_problema_corte_por_defeito_tecnico with multi-value conditional', () => {
+      const fields = getRetornoFields('CORTE DE UC POR DEF TECNICO');
+      const field = fields.find(f => f.nome === 'descreva_problema_corte_por_defeito_tecnico');
+      expect(field.tipo).toBe('textarea');
+      expect(field.condicional).toEqual({ campoRef: 'motivo_cancelamento_corte_por_defeito_tecnico', valor: ['SEM ACESSO', 'OUTRO PROBLEMA'] });
+    });
+
+    it('should have descricao as last field', () => {
+      const fields = getRetornoFields('CORTE DE UC POR DEF TECNICO');
+      const lastField = fields[fields.length - 1];
+      expect(lastField.nome).toBe('descricao');
+      expect(lastField.label).toBe('Descrição do Serviço');
+      expect(lastField.tipo).toBe('textarea');
+    });
+  });
 });

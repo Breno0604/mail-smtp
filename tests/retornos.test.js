@@ -14,12 +14,16 @@ describe('retornos', () => {
         <option value="">Selecione</option>
         <option value="ADEQUACAO SMF">ADEQUACAO SMF</option>
         <option value="CORTE POR FALTA DE PAGAMENTO">CORTE POR FALTA DE PAGAMENTO</option>
+        <option value="CORTE DE UC POR DEF TECNICO">CORTE DE UC POR DEF TECNICO</option>
         <option value="DESLIG.PROG.MANUTENÇÃO">DESLIG.PROG.MANUTENÇÃO</option>
         <option value="INSPECAO UC CORTADA I15">INSPECAO UC CORTADA I15</option>
         <option value="INSPECAO UC CORTADA I30">INSPECAO UC CORTADA I30</option>
         <option value="LIGACAO NOVA MEDIA TENSAO">LIGACAO NOVA MEDIA TENSAO</option>
         <option value="AFERIÇÃO DE MEDIDOR">AFERIÇÃO DE MEDIDOR</option>
         <option value="AFERIÇÃO MEDIDOR CLIENTE LIVRE">AFERIÇÃO MEDIDOR CLIENTE LIVRE</option>
+        <option value="TELEMEDIÇÃO MANUTENÇÃO">TELEMEDIÇÃO MANUTENÇÃO</option>
+        <option value="TELEMEDIÇÃO MANUTENÇÃO CLIENTE LIVRE">TELEMEDIÇÃO MANUTENÇÃO CLIENTE LIVRE</option>
+        <option value="TELEMEDIÇÃO MANUTENÇÃO LOTE">TELEMEDIÇÃO MANUTENÇÃO LOTE</option>
       </select>
       <div id="iniciais-campos"></div>
       <div id="equipamentos-list"></div>
@@ -565,6 +569,186 @@ it('should initially hide acesso_desligamento when no value selected in control 
       expect(data.Motivo_cancel_afericao).toBeUndefined();
       expect(data.motivo_nao_colher).toBeUndefined();
       expect(data.porque_nao_aplicado_toi).toBeUndefined();
+    });
+  });
+
+  describe('TELEMEDIÇÃO MANUTENÇÃO - renderização', () => {
+    it('should render executado_telemedicao and descricao initially', () => {
+      DOM.tipoOrdem.value = 'TELEMEDIÇÃO MANUTENÇÃO';
+      renderRetorno();
+      expect(document.getElementById('executado_telemedicao')).toBeTruthy();
+      expect(document.getElementById('descricao')).toBeTruthy();
+    });
+
+    it('should hide conditional fields initially', () => {
+      DOM.tipoOrdem.value = 'TELEMEDIÇÃO MANUTENÇÃO';
+      renderRetorno();
+      expect(document.querySelector('[data-field-nome="motivo_cancelamento_telemedicao"]').style.display).toBe('none');
+      expect(document.querySelector('[data-field-nome="descreva_problema_telemedicao"]').style.display).toBe('none');
+      expect(document.querySelector('[data-field-nome="atentende_com"]').style.display).toBe('none');
+      expect(document.querySelector('[data-field-nome="realizado_telemedicao"]').style.display).toBe('none');
+    });
+
+    it('should show motivo_cancelamento_telemedicao when executado_telemedicao = NAO', () => {
+      DOM.tipoOrdem.value = 'TELEMEDIÇÃO MANUTENÇÃO';
+      renderRetorno();
+      const executado = document.getElementById('executado_telemedicao');
+      executado.value = 'NAO';
+      executado.dispatchEvent(new Event('change'));
+      expect(document.querySelector('[data-field-nome="motivo_cancelamento_telemedicao"]').style.display).toBe('');
+    });
+
+    it('should show atentende_com and realizado_telemedicao when executado_telemedicao = SIM', () => {
+      DOM.tipoOrdem.value = 'TELEMEDIÇÃO MANUTENÇÃO';
+      renderRetorno();
+      const executado = document.getElementById('executado_telemedicao');
+      executado.value = 'SIM';
+      executado.dispatchEvent(new Event('change'));
+      expect(document.querySelector('[data-field-nome="atentende_com"]').style.display).toBe('');
+      expect(document.querySelector('[data-field-nome="realizado_telemedicao"]').style.display).toBe('');
+    });
+
+    it('should show descreva_problema_telemedicao when motivo = SEM ACESSO', () => {
+      DOM.tipoOrdem.value = 'TELEMEDIÇÃO MANUTENÇÃO';
+      renderRetorno();
+      const executado = document.getElementById('executado_telemedicao');
+      executado.value = 'NAO';
+      executado.dispatchEvent(new Event('change'));
+      const motivo = document.getElementById('motivo_cancelamento_telemedicao');
+      motivo.value = 'SEM ACESSO';
+      motivo.dispatchEvent(new Event('change'));
+      expect(document.querySelector('[data-field-nome="descreva_problema_telemedicao"]').style.display).toBe('');
+    });
+
+    it('should show descreva_problema_telemedicao when motivo = OUTRO MOTIVO', () => {
+      DOM.tipoOrdem.value = 'TELEMEDIÇÃO MANUTENÇÃO';
+      renderRetorno();
+      const executado = document.getElementById('executado_telemedicao');
+      executado.value = 'NAO';
+      executado.dispatchEvent(new Event('change'));
+      const motivo = document.getElementById('motivo_cancelamento_telemedicao');
+      motivo.value = 'OUTRO MOTIVO';
+      motivo.dispatchEvent(new Event('change'));
+      expect(document.querySelector('[data-field-nome="descreva_problema_telemedicao"]').style.display).toBe('');
+    });
+
+    it('should hide descreva_problema_telemedicao when motivo = MEDICAO COM BY-PASS', () => {
+      DOM.tipoOrdem.value = 'TELEMEDIÇÃO MANUTENÇÃO';
+      renderRetorno();
+      const executado = document.getElementById('executado_telemedicao');
+      executado.value = 'NAO';
+      executado.dispatchEvent(new Event('change'));
+      const motivo = document.getElementById('motivo_cancelamento_telemedicao');
+      motivo.value = 'MEDICAO COM BY-PASS';
+      motivo.dispatchEvent(new Event('change'));
+      expect(document.querySelector('[data-field-nome="descreva_problema_telemedicao"]').style.display).toBe('none');
+    });
+
+    it('should render same fields for TELEMEDIÇÃO MANUTENÇÃO CLIENTE LIVRE', () => {
+      DOM.tipoOrdem.value = 'TELEMEDIÇÃO MANUTENÇÃO CLIENTE LIVRE';
+      renderRetorno();
+      expect(document.getElementById('executado_telemedicao')).toBeTruthy();
+      expect(document.getElementById('descricao')).toBeTruthy();
+    });
+
+    it('should render same fields for TELEMEDIÇÃO MANUTENÇÃO LOTE', () => {
+      DOM.tipoOrdem.value = 'TELEMEDIÇÃO MANUTENÇÃO LOTE';
+      renderRetorno();
+      expect(document.getElementById('executado_telemedicao')).toBeTruthy();
+      expect(document.getElementById('descricao')).toBeTruthy();
+    });
+
+    it('should collect visible fields but skip hidden ones', () => {
+      DOM.tipoOrdem.value = 'TELEMEDIÇÃO MANUTENÇÃO';
+      renderRetorno();
+      const executado = document.getElementById('executado_telemedicao');
+      executado.value = 'SIM';
+      executado.dispatchEvent(new Event('change'));
+      document.getElementById('atentende_com').value = 'João';
+      document.getElementById('realizado_telemedicao').value = 'Troca de modem';
+      const data = collectRetorno();
+      expect(data.executado_telemedicao).toBe('SIM');
+      expect(data.atentende_com).toBe('João');
+      expect(data.realizado_telemedicao).toBe('Troca de modem');
+      expect(data.motivo_cancelamento_telemedicao).toBeUndefined();
+      expect(data.descreva_problema_telemedicao).toBeUndefined();
+    });
+  });
+
+  describe('CORTE DE UC POR DEF TECNICO - renderização', () => {
+    it('should render corte_por_defeito_tecnico and descricao initially', () => {
+      DOM.tipoOrdem.value = 'CORTE DE UC POR DEF TECNICO';
+      renderRetorno();
+      expect(document.getElementById('corte_por_defeito_tecnico')).toBeTruthy();
+      expect(document.getElementById('descricao')).toBeTruthy();
+    });
+
+    it('should hide conditional fields initially', () => {
+      DOM.tipoOrdem.value = 'CORTE DE UC POR DEF TECNICO';
+      renderRetorno();
+      expect(document.querySelector('[data-field-nome="motivo_cancelamento_corte_por_defeito_tecnico"]').style.display).toBe('none');
+      expect(document.querySelector('[data-field-nome="descreva_problema_corte_por_defeito_tecnico"]').style.display).toBe('none');
+    });
+
+    it('should show motivo when corte_por_defeito_tecnico = NAO', () => {
+      DOM.tipoOrdem.value = 'CORTE DE UC POR DEF TECNICO';
+      renderRetorno();
+      const executado = document.getElementById('corte_por_defeito_tecnico');
+      executado.value = 'NAO';
+      executado.dispatchEvent(new Event('change'));
+      expect(document.querySelector('[data-field-nome="motivo_cancelamento_corte_por_defeito_tecnico"]').style.display).toBe('');
+    });
+
+    it('should show descreva_problema when motivo = SEM ACESSO', () => {
+      DOM.tipoOrdem.value = 'CORTE DE UC POR DEF TECNICO';
+      renderRetorno();
+      const executado = document.getElementById('corte_por_defeito_tecnico');
+      executado.value = 'NAO';
+      executado.dispatchEvent(new Event('change'));
+      const motivo = document.getElementById('motivo_cancelamento_corte_por_defeito_tecnico');
+      motivo.value = 'SEM ACESSO';
+      motivo.dispatchEvent(new Event('change'));
+      expect(document.querySelector('[data-field-nome="descreva_problema_corte_por_defeito_tecnico"]').style.display).toBe('');
+    });
+
+    it('should show descreva_problema when motivo = OUTRO PROBLEMA', () => {
+      DOM.tipoOrdem.value = 'CORTE DE UC POR DEF TECNICO';
+      renderRetorno();
+      const executado = document.getElementById('corte_por_defeito_tecnico');
+      executado.value = 'NAO';
+      executado.dispatchEvent(new Event('change'));
+      const motivo = document.getElementById('motivo_cancelamento_corte_por_defeito_tecnico');
+      motivo.value = 'OUTRO PROBLEMA';
+      motivo.dispatchEvent(new Event('change'));
+      expect(document.querySelector('[data-field-nome="descreva_problema_corte_por_defeito_tecnico"]').style.display).toBe('');
+    });
+
+    it('should hide descreva_problema when motivo = SOLICITACAO ENEL', () => {
+      DOM.tipoOrdem.value = 'CORTE DE UC POR DEF TECNICO';
+      renderRetorno();
+      const executado = document.getElementById('corte_por_defeito_tecnico');
+      executado.value = 'NAO';
+      executado.dispatchEvent(new Event('change'));
+      const motivo = document.getElementById('motivo_cancelamento_corte_por_defeito_tecnico');
+      motivo.value = 'SOLICITACAO ENEL';
+      motivo.dispatchEvent(new Event('change'));
+      expect(document.querySelector('[data-field-nome="descreva_problema_corte_por_defeito_tecnico"]').style.display).toBe('none');
+    });
+
+    it('should collect visible fields but skip hidden ones', () => {
+      DOM.tipoOrdem.value = 'CORTE DE UC POR DEF TECNICO';
+      renderRetorno();
+      const executado = document.getElementById('corte_por_defeito_tecnico');
+      executado.value = 'NAO';
+      executado.dispatchEvent(new Event('change'));
+      const motivo = document.getElementById('motivo_cancelamento_corte_por_defeito_tecnico');
+      motivo.value = 'SEM ACESSO';
+      motivo.dispatchEvent(new Event('change'));
+      document.getElementById('descreva_problema_corte_por_defeito_tecnico').value = 'Rua bloqueada';
+      const data = collectRetorno();
+      expect(data.corte_por_defeito_tecnico).toBe('NAO');
+      expect(data.motivo_cancelamento_corte_por_defeito_tecnico).toBe('SEM ACESSO');
+      expect(data.descreva_problema_corte_por_defeito_tecnico).toBe('Rua bloqueada');
     });
   });
 });

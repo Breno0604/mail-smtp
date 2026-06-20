@@ -60,6 +60,16 @@ const AFERICAO_MEDIDOR_FIELDS = [
   { linha: 8, nome: "descricao", label: "Descrição do Serviço", tipo: "textarea" },
 ];
 
+// Campos para Telemetria Manutenção (3 tipos compartilhados)
+const TELEMEDICAO_FIELDS = [
+  { linha: 1, nome: "executado_telemedicao", label: "Executado", tipo: "select", opcoes: ["SIM", "NAO"] },
+  { linha: 2, nome: "motivo_cancelamento_telemedicao", label: "Motivo", tipo: "select", opcoes: ["SEM ACESSO", "MEDICAO COM BY-PASS", "MEDICAO AVARIADA", "OUTRO MOTIVO"], condicional: { campoRef: "executado_telemedicao", valor: "NAO" } },
+  { linha: 3, nome: "descreva_problema_telemedicao", label: "Descreva Problema", tipo: "textarea", condicional: { campoRef: "motivo_cancelamento_telemedicao", valor: ["SEM ACESSO", "OUTRO MOTIVO"] } },
+  { linha: 4, nome: "atentende_com", label: "Atendente (COM)", tipo: "text", condicional: { campoRef: "executado_telemedicao", valor: "SIM" } },
+  { linha: 5, nome: "realizado_telemedicao", label: "O que foi realizado", tipo: "textarea", condicional: { campoRef: "executado_telemedicao", valor: "SIM" } },
+  FIELD_DESCRICAO,
+];
+
 export const retornoFieldsByTipo = {
   "default": [FIELD_DESCRICAO],
 
@@ -122,11 +132,15 @@ export const retornoFieldsByTipo = {
   "LIGACAO NOVA MEDIA TENSAO": LIGACAO_NOVA_MT_FIELDS,
   "LIGACAO NOVA MT - CLIENTE LIVRE": LIGACAO_NOVA_MT_FIELDS,
 
-  "TELEMEDIÇÃO MANUTENÇÃO": [
+  "TELEMEDIÇÃO MANUTENÇÃO": TELEMEDICAO_FIELDS,
+  "TELEMEDIÇÃO MANUTENÇÃO CLIENTE LIVRE": TELEMEDICAO_FIELDS,
+  "TELEMEDIÇÃO MANUTENÇÃO LOTE": TELEMEDICAO_FIELDS,
+
+  "CORTE DE UC POR DEF TECNICO": [
+    { linha: 1, nome: "corte_por_defeito_tecnico", label: "Executado", tipo: "select", opcoes: ["SIM", "NAO"] },
+    { linha: 2, nome: "motivo_cancelamento_corte_por_defeito_tecnico", label: "Motivo", tipo: "select", opcoes: ["SEM ACESSO", "SOLICITACAO ENEL", "CLIENTE NAO PERMITIU", "CLIENTE CORRIGIU PROBLEMA", "OUTRO PROBLEMA"], condicional: { campoRef: "corte_por_defeito_tecnico", valor: "NAO" } },
+    { linha: 3, nome: "descreva_problema_corte_por_defeito_tecnico", label: "Descreva Problema", tipo: "textarea", condicional: { campoRef: "motivo_cancelamento_corte_por_defeito_tecnico", valor: ["SEM ACESSO", "OUTRO PROBLEMA"] } },
     FIELD_DESCRICAO,
-    { nome: "equipamento", label: "Equipamento", tipo: "select", opcoes: ["Modem", "Roteador", "Concentrador", "Fonte", "Antena", "Hub", "Outro"] },
-    { nome: "defeito", label: "Defeito Encontrado", tipo: "text" },
-    { nome: "num-serie", label: "Nº de Série", tipo: "text" },
   ],
 };
 
