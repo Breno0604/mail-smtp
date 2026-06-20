@@ -524,3 +524,14 @@ input, select, textarea {
 #preview-corpo {
   font-weight: 700 !important;
 }
+
+/* === Equipment section animation ───────────────────────────────────────── */
+.equip-section {
+  transition: opacity 0.2s ease;
+  opacity: 1;
+}
+
+.equip-section.hidden {
+  opacity: 0;
+  display: none;
+}
