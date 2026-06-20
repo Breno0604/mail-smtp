@@ -3,7 +3,7 @@ import { state, clearCurrentUUID } from "./state.js";
 import { markAttachmentsDirty } from "./persistence.js";
 import { renderIniciais } from "./iniciais.js";
 import { renderRetorno, handleTipoChange } from "./retornos.js";
-
+import { renderEquipamentos } from "./equipment.js";
 import { updateFileCount } from "./attachments.js";
 import { hideError } from "./ui.js";
 import { captureCoordinates } from "./utils.js";
@@ -49,7 +49,19 @@ export function resetForm() {
   DOM.retornoPlaceholder.style.display = "";
   DOM.retornoDesc.innerHTML = "—";
 
-  DOM.equipList.innerHTML = "";
+  // Reset equipment control fields
+  DOM.instaladoEquip.value = 'NAO';
+  DOM.retiradoEquip.value = 'NAO';
+  DOM.secEquipInstalados.classList.add('hidden');
+  DOM.secEquipRetirados.classList.add('hidden');
+  DOM.checkboxesInstalados.innerHTML = '';
+  DOM.checkboxesRetirados.innerHTML = '';
+  DOM.camposInstalados.innerHTML = '';
+  DOM.camposRetirados.innerHTML = '';
+  
+  // Re-render equipment checkboxes (empty state)
+  renderEquipamentos();
+  
   DOM.previewGrid.innerHTML = "";
 
   updateFileCount();
