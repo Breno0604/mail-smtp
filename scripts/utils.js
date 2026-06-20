@@ -51,6 +51,7 @@ export async function captureCoordinates() {
 
   if (!navigator.geolocation) {
     coordEl.value = "Não disponível";
+    coordEl.dispatchEvent(new Event('input'));
     return;
   }
 
@@ -65,7 +66,9 @@ export async function captureCoordinates() {
     const lat = position.coords.latitude.toFixed(4);
     const lon = position.coords.longitude.toFixed(4);
     coordEl.value = `${lat}, ${lon}`;
+    coordEl.dispatchEvent(new Event('input'));
   } catch (err) {
     coordEl.value = "Não disponível";
+    coordEl.dispatchEvent(new Event('input'));
   }
 }

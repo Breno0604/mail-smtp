@@ -82,6 +82,12 @@ describe('email', () => {
       expect(body).toContain('67890');
     });
 
+    it('should include coordenadas in email body', () => {
+      const body = composeEmail(sampleData);
+      expect(body).toContain('COORDENADAS:');
+      expect(body).toContain('-3.123, -38.456');
+    });
+
     it('should format date field as DD-MM-YYYY', () => {
       const data = { ...sampleData, iniciais: { ...sampleData.iniciais, data: '2024-03-15' } };
       const body = composeEmail(data);
