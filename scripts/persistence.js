@@ -29,7 +29,8 @@ export async function saveState() {
 
   // Check if there's any data to save
   const hasData = Object.values(state.iniciais).some(v => v && v.trim() !== '') ||
-                  state.equipamentos.length > 0 ||
+                  state.equipamentos.instaladoEquip === 'SIM' ||
+                  state.equipamentos.retiradoEquip === 'SIM' ||
                   state.attachments.length > 0 ||
                   state.currentUUID;
 

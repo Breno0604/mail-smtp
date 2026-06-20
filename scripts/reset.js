@@ -3,7 +3,7 @@ import { state, clearCurrentUUID } from "./state.js";
 import { markAttachmentsDirty } from "./persistence.js";
 import { renderIniciais } from "./iniciais.js";
 import { renderRetorno, handleTipoChange } from "./retornos.js";
-import { showEmptyEquip } from "./equipment.js";
+
 import { updateFileCount } from "./attachments.js";
 import { hideError } from "./ui.js";
 import { captureCoordinates } from "./utils.js";
@@ -12,7 +12,16 @@ import { collectIniciais } from "./collectors.js";
 
 export function resetForm() {
   // Reset state
-  state.equipamentos = [];
+  state.equipamentos = {
+    instaladoEquip: 'NAO',
+    retiradoEquip: 'NAO',
+    instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+    retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+    checkboxes: {
+      instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+      retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+    }
+  };
   state.attachments = [];
   state.iniciais = {};
   state.retorno = {};
@@ -43,7 +52,6 @@ export function resetForm() {
   DOM.equipList.innerHTML = "";
   DOM.previewGrid.innerHTML = "";
 
-  showEmptyEquip();
   updateFileCount();
   hideError();
   clearCurrentUUID();

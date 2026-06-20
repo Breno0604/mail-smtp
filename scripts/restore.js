@@ -21,7 +21,31 @@ export async function applyRecord(record) {
   setCurrentUUID(record.uuid);
   state.iniciaisValido = true;
 
-  state.equipamentos = record.equipamentos || [];
+  // Handle migration from old array format
+  if (Array.isArray(record.equipamentos)) {
+    // Old format - reset to defaults
+    state.equipamentos = {
+      instaladoEquip: 'NAO',
+      retiradoEquip: 'NAO',
+      instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      checkboxes: {
+        instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+      }
+    };
+  } else {
+    state.equipamentos = record.equipamentos || {
+      instaladoEquip: 'NAO',
+      retiradoEquip: 'NAO',
+      instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      checkboxes: {
+        instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
+        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
+      }
+    };
+  }
   state.lastTipoOrdem = record.tipoOrdem || "";
   state.iniciais = record.iniciais || {};
   state.retorno = record.retorno || {};
