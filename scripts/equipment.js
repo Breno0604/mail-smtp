@@ -34,27 +34,24 @@ function renderCheckboxes(tipo) {
   if (!container) return;
   container.innerHTML = '';
 
-  // Grid de 3 colunas com mesmo gap dos campos da seção Início
-  container.className = 'grid grid-cols-3 gap-3 mb-4';
+  // Grid de 6 colunas: checkbox | label | checkbox | label | checkbox | label
+  // Garante alinhamento vertical perfeito dos checkboxes e dos labels
+  container.className = 'grid grid-cols-6 gap-x-2 gap-y-3 mb-4 items-center';
 
   EQUIPMENT_LIST.forEach((equip) => {
-    const wrapper = document.createElement('label');
-    wrapper.setAttribute('for', `checkbox-${tipo}-${equip.key}`);
-    wrapper.className = 'flex items-center gap-2 cursor-pointer w-full';
-    
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.id = `checkbox-${tipo}-${equip.key}`;
     checkbox.setAttribute('data-tipo', tipo);
     checkbox.setAttribute('data-equip', equip.key);
-    checkbox.className = 'equip-checkbox w-4 h-4 flex-shrink-0 border-slate-300 rounded cursor-pointer accent-blue-600';
-    
-    const label = document.createElement('span');
-    label.className = 'font-semibold text-[13px] text-slate-600 select-none whitespace-nowrap';
-    label.textContent = equip.label;
-    
-    wrapper.appendChild(checkbox);
-    wrapper.appendChild(label);
+    checkbox.className = 'equip-checkbox w-4 h-4 flex-shrink-0 border-slate-300 rounded cursor-pointer accent-blue-600 justify-self-center';
+
+    const wrapper = document.createElement('label');
+    wrapper.setAttribute('for', `checkbox-${tipo}-${equip.key}`);
+    wrapper.className = 'font-semibold text-[13px] text-slate-600 select-none cursor-pointer whitespace-nowrap';
+
+    wrapper.textContent = equip.label;
+    container.appendChild(checkbox);
     container.appendChild(wrapper);
   });
 }
@@ -168,7 +165,8 @@ function showField(tipo, equipKey) {
   input.type = 'number';
   input.setAttribute('data-tipo', tipo);
   input.setAttribute('data-equip', equipKey);
-  input.className = INPUT_CLASS + ' w-[70%]';
+  // Replace w-full from INPUT_CLASS with w-[70%] to enforce 30/70 split
+  input.className = INPUT_CLASS.replace('w-full', 'w-[70%]');
   input.placeholder = equip.label;
 
   wrapper.appendChild(label);
