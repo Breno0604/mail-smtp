@@ -40,17 +40,17 @@ function renderCheckboxes(tipo) {
   EQUIPMENT_LIST.forEach((equip) => {
     const wrapper = document.createElement('label');
     wrapper.setAttribute('for', `checkbox-${tipo}-${equip.key}`);
-    wrapper.className = 'flex items-center gap-2 cursor-pointer';
+    wrapper.className = 'flex items-center gap-2 cursor-pointer w-full';
     
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.id = `checkbox-${tipo}-${equip.key}`;
     checkbox.setAttribute('data-tipo', tipo);
     checkbox.setAttribute('data-equip', equip.key);
-    checkbox.className = 'equip-checkbox w-4 h-4 border-slate-300 rounded cursor-pointer accent-blue-600';
+    checkbox.className = 'equip-checkbox w-4 h-4 flex-shrink-0 border-slate-300 rounded cursor-pointer accent-blue-600';
     
     const label = document.createElement('span');
-    label.className = 'font-semibold text-[13px] text-slate-600 select-none';
+    label.className = 'font-semibold text-[13px] text-slate-600 select-none whitespace-nowrap';
     label.textContent = equip.label;
     
     wrapper.appendChild(checkbox);
@@ -161,14 +161,14 @@ function showField(tipo, equipKey) {
   wrapper.setAttribute('data-equip', equipKey);
 
   const label = document.createElement('label');
-  label.className = 'font-semibold text-[13px] text-slate-600 min-w-[120px]';
+  label.className = 'font-semibold text-[13px] text-slate-600 w-[30%] flex-shrink-0';
   label.textContent = equip.label;
 
   const input = document.createElement('input');
   input.type = 'number';
   input.setAttribute('data-tipo', tipo);
   input.setAttribute('data-equip', equipKey);
-  input.className = INPUT_CLASS + ' flex-1';
+  input.className = INPUT_CLASS + ' w-[70%]';
   input.placeholder = equip.label;
 
   wrapper.appendChild(label);
