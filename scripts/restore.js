@@ -87,6 +87,24 @@ export async function applyRecord(record) {
   // ── Render Equipamentos ─────────────────────────────────────────────────
   renderEquipamentos();
 
+  // Restore control select values and show/hide sections
+  // (State is already correct from record, just sync DOM visibility)
+  if (state.equipamentos.instaladoEquip === 'SIM') {
+    DOM.instaladoEquip.value = 'SIM';
+    DOM.secEquipInstalados.classList.remove('hidden');
+  } else {
+    DOM.instaladoEquip.value = state.equipamentos.instaladoEquip || 'NAO';
+    DOM.secEquipInstalados.classList.add('hidden');
+  }
+  
+  if (state.equipamentos.retiradoEquip === 'SIM') {
+    DOM.retiradoEquip.value = 'SIM';
+    DOM.secEquipRetirados.classList.remove('hidden');
+  } else {
+    DOM.retiradoEquip.value = state.equipamentos.retiradoEquip || 'NAO';
+    DOM.secEquipRetirados.classList.add('hidden');
+  }
+
   // ── Render Anexos ───────────────────────────────────────────────────────
   renderPreviews();
   updateFileCount();
