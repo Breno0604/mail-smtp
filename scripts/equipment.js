@@ -35,7 +35,7 @@ function renderCheckboxes(tipo) {
   container.innerHTML = '';
 
   // Grid de 3 colunas usando Tailwind nativo (JIT detecta)
-  container.className = 'grid grid-cols-3 gap-3 mb-4';
+  container.className = 'grid grid-cols-3 gap-3 mb-6';
 
   EQUIPMENT_LIST.forEach(equip => {
     const wrapper = document.createElement('label');
@@ -158,7 +158,7 @@ function showField(tipo, equipKey) {
   if (!equip) return;
 
   const wrapper = document.createElement('div');
-  wrapper.className = 'mb-4';
+  wrapper.className = 'mb-6';
   wrapper.setAttribute('data-equip', equipKey);
 
   const label = document.createElement('label');
@@ -166,7 +166,9 @@ function showField(tipo, equipKey) {
   label.textContent = equip.label;
 
   const input = document.createElement('input');
-  input.type = 'number';
+  input.type = 'text';
+  input.inputMode = 'numeric';
+  input.pattern = '[0-9]*';
   input.setAttribute('data-tipo', tipo);
   input.setAttribute('data-equip', equipKey);
   input.className = INPUT_CLASS;

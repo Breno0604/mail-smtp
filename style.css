@@ -148,9 +148,7 @@ body {
 }
 
 /* Espaço após último campo da seção 1 (Início) */
-#iniciais-campos > :last-child {
-  margin-bottom: 24px;
-}
+/* mb-6 em cada linha já garante espaçamento adequado */
 
 /* === Buttons === */
 .btn {
