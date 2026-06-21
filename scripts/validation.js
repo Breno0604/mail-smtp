@@ -1,7 +1,7 @@
 import { DOM } from "./dom.js";
 import { state } from "./state.js";
 import { showError, hideError, setFieldError, clearFieldError } from "./ui.js";
-import { collectIniciais, collectRetorno } from "./collectors.js";
+import { collectIniciais, collectRetorno, collectEquipamentos } from "./collectors.js";
 import { iniciaisFields as fieldsIniciais } from "./fields.js";
 
 // ── helpers locais ────────────────────────────────────────────────────────────
@@ -88,37 +88,84 @@ function validateSection1() {
 }
 
 function validateSection2() {
-  const instalado = state.equipamentos.instaladoEquip;
-  const retirado = state.equipamentos.retiradoEquip;
-  
-  // If both NAO, no validation needed
-  if (instalado === 'NAO' && retirado === 'NAO') {
-    return true;
-  }
+  const instaladoSelect = DOM.instaladoEquip;
+  const retiradoSelect = DOM.retiradoEquip;
   
   let hasError = false;
   
-  // Validate installed equipment
+  // Validate control selects (required fields)
+  if (!instaladoSelect.value || instaladoSelect.value.trim() === "") {
+    markError(instaladoSelect, "Campo obrigatório");
+    hasError = true;
+  } else {
+    clearError(instaladoSelect);
+  }
+  
+  if (!retiradoSelect.value || retiradoSelect.value.trim() === "") {
+    markError(retiradoSelect, "Campo obrigatório");
+    hasError = true;
+  } else {
+    clearError(retiradoSelect);
+  }
+  
+  const instalado = state.equipamentos.instaladoEquip;
+  const retirado = state.equipamentos.retiradoEquip;
+  
+  // If both NAO, no further validation needed for equipment fields
+  if (instalado === 'NAO' && retirado === 'NAO') {
+    return !hasError;
+  }
+  
+  // Validate installed equipment (when SIM, at least one checkbox must be checked and filled)
   if (instalado === 'SIM') {
-    const hasAtLeastOne = Object.values(state.equipamentos.instalados).some((val) => val && val.trim() !== '');
-    if (!hasAtLeastOne) {
-      const firstInput = document.querySelector('#campos-instalados input[type="number"]');
-      if (firstInput) {
-        markError(firstInput, 'Preencha pelo menos um equipamento');
-      }
+    const installedInputs = document.querySelectorAll('#campos-instalados input[type="number"]');
+    let hasAtLeastOneFilled = false;
+    
+    if (installedInputs.length === 0) {
+      // SIM selected but no equipment fields filled (no checkboxes checked)
+      markError(DOM.instaladoEquip, 'Selecione e preencha pelo menos um equipamento');
       hasError = true;
+    } else {
+      installedInputs.forEach((input) => {
+        if (!input.value || input.value.trim() === "") {
+          markError(input, "Campo obrigatório");
+          hasError = true;
+        } else {
+          clearError(input);
+          hasAtLeastOneFilled = true;
+        }
+      });
+      
+      // If section visible but no inputs filled, error
+      if (!hasAtLeastOneFilled) {
+        hasError = true;
+      }
     }
   }
   
-  // Validate removed equipment
+  // Validate removed equipment (when SIM, at least one checkbox must be checked and filled)
   if (retirado === 'SIM') {
-    const hasAtLeastOne = Object.values(state.equipamentos.retirados).some((val) => val && val.trim() !== '');
-    if (!hasAtLeastOne) {
-      const firstInput = document.querySelector('#campos-retirados input[type="number"]');
-      if (firstInput) {
-        markError(firstInput, 'Preencha pelo menos um equipamento');
-      }
+    const removedInputs = document.querySelectorAll('#campos-retirados input[type="number"]');
+    let hasAtLeastOneFilled = false;
+    
+    if (removedInputs.length === 0) {
+      // SIM selected but no equipment fields filled (no checkboxes checked)
+      markError(DOM.retiradoEquip, 'Selecione e preencha pelo menos um equipamento');
       hasError = true;
+    } else {
+      removedInputs.forEach((input) => {
+        if (!input.value || input.value.trim() === "") {
+          markError(input, "Campo obrigatório");
+          hasError = true;
+        } else {
+          clearError(input);
+          hasAtLeastOneFilled = true;
+        }
+      });
+      
+      if (!hasAtLeastOneFilled) {
+        hasError = true;
+      }
     }
   }
   
