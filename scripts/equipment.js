@@ -34,24 +34,27 @@ function renderCheckboxes(tipo) {
   if (!container) return;
   container.innerHTML = '';
 
-  // Grid de 6 colunas: checkbox | label | checkbox | label | checkbox | label
-  // Garante alinhamento vertical perfeito dos checkboxes e dos labels
-  container.className = 'grid grid-cols-6 gap-x-2 gap-y-3 mb-4 items-center';
+  // Grid de 3 colunas de mesmo tamanho, cada uma com checkbox à esquerda + legenda
+  container.className = 'grid grid-cols-3 gap-3 mb-4';
 
   EQUIPMENT_LIST.forEach((equip) => {
+    const wrapper = document.createElement('label');
+    wrapper.setAttribute('for', `checkbox-${tipo}-${equip.key}`);
+    wrapper.className = 'flex items-center gap-2 cursor-pointer';
+    
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.id = `checkbox-${tipo}-${equip.key}`;
     checkbox.setAttribute('data-tipo', tipo);
     checkbox.setAttribute('data-equip', equip.key);
-    checkbox.className = 'equip-checkbox w-4 h-4 flex-shrink-0 border-slate-300 rounded cursor-pointer accent-blue-600 justify-self-center';
-
-    const wrapper = document.createElement('label');
-    wrapper.setAttribute('for', `checkbox-${tipo}-${equip.key}`);
-    wrapper.className = 'font-semibold text-[13px] text-slate-600 select-none cursor-pointer whitespace-nowrap';
-
-    wrapper.textContent = equip.label;
-    container.appendChild(checkbox);
+    checkbox.className = 'equip-checkbox w-4 h-4 flex-shrink-0 border-slate-300 rounded cursor-pointer accent-blue-600';
+    
+    const label = document.createElement('span');
+    label.className = 'font-semibold text-[13px] text-slate-600 select-none';
+    label.textContent = equip.label;
+    
+    wrapper.appendChild(checkbox);
+    wrapper.appendChild(label);
     container.appendChild(wrapper);
   });
 }
@@ -154,19 +157,18 @@ function showField(tipo, equipKey) {
   if (!equip) return;
 
   const wrapper = document.createElement('div');
-  wrapper.className = 'flex items-center gap-3 mb-4';
+  wrapper.className = 'mb-4';
   wrapper.setAttribute('data-equip', equipKey);
 
   const label = document.createElement('label');
-  label.className = 'font-semibold text-[13px] text-slate-600 w-[30%] flex-shrink-0';
+  label.className = 'block font-semibold text-[13px] text-slate-600 mb-1';
   label.textContent = equip.label;
 
   const input = document.createElement('input');
   input.type = 'number';
   input.setAttribute('data-tipo', tipo);
   input.setAttribute('data-equip', equipKey);
-  // Replace w-full from INPUT_CLASS with w-[70%] to enforce 30/70 split
-  input.className = INPUT_CLASS.replace('w-full', 'w-[70%]');
+  input.className = INPUT_CLASS;
   input.placeholder = equip.label;
 
   wrapper.appendChild(label);
