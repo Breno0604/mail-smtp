@@ -9,7 +9,6 @@ import {
 } from './helpers/persistence.js';
 
 test.describe('Persistence — Attachments', () => {
-
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('#uc');
@@ -77,5 +76,4 @@ test.describe('Persistence — Attachments', () => {
     const ucValue = await page.locator('#uc').inputValue();
     expect(ucValue).toBe('11111');
   });
-
 });

@@ -17,7 +17,7 @@ if (!globalThis.URL?.createObjectURL) {
 HTMLCanvasElement.prototype.getContext = function () {
   return {
     drawImage: () => {},
-    toBlob: (cb) => cb(new Blob(['test'], { type: 'image/jpeg' })),
+    toBlob: cb => cb(new Blob(['test'], { type: 'image/jpeg' })),
   };
 };
 

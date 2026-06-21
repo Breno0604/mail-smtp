@@ -1,14 +1,14 @@
-import { DOM } from "./dom.js";
-import { state, clearCurrentUUID, createDefaultEquipamentos } from "./state.js";
-import { markAttachmentsDirty } from "./persistence.js";
-import { renderIniciais } from "./iniciais.js";
-import { renderRetorno, handleTipoChange } from "./retornos.js";
-import { renderEquipamentos } from "./equipment.js";
-import { updateFileCount } from "./attachments.js";
-import { hideError } from "./ui.js";
-import { captureCoordinates } from "./utils.js";
-import { updateLivePreview } from "./email.js";
-import { collectIniciais } from "./collectors.js";
+import { DOM } from './dom.js';
+import { state, clearCurrentUUID, createDefaultEquipamentos } from './state.js';
+import { markAttachmentsDirty } from './persistence.js';
+import { renderIniciais } from './iniciais.js';
+import { handleTipoChange } from './retornos.js';
+import { renderEquipamentos } from './equipment.js';
+import { updateFileCount } from './attachments.js';
+import { hideError } from './ui.js';
+import { captureCoordinates } from './utils.js';
+import { updateLivePreview } from './email.js';
+import { collectIniciais } from './collectors.js';
 
 export function resetForm() {
   // Reset state
@@ -16,8 +16,8 @@ export function resetForm() {
   state.attachments = [];
   state.iniciais = {};
   state.retorno = {};
-  state.lastTipoOrdem = "";
-  state.currentUUID = "";
+  state.lastTipoOrdem = '';
+  state.currentUUID = '';
   state._createdAt = null;
   state.iniciaisValido = false;
 
@@ -32,24 +32,24 @@ export function resetForm() {
 
   // Re-attach tipo-ordem change listener (renderIniciais recreates the element)
   if (DOM.tipoOrdem) {
-    DOM.tipoOrdem.addEventListener("change", handleTipoChange);
+    DOM.tipoOrdem.addEventListener('change', handleTipoChange);
   }
 
   // Retorno starts empty (placeholder visible)
-  DOM.retornoCampos.innerHTML = "";
-  DOM.retornoPlaceholder.style.display = "";
-  DOM.retornoDesc.innerHTML = "—";
+  DOM.retornoCampos.innerHTML = '';
+  DOM.retornoPlaceholder.style.display = '';
+  DOM.retornoDesc.innerHTML = '—';
 
   // Reset equipment control fields
   DOM.instaladoEquip.value = 'NAO';
   DOM.retiradoEquip.value = 'NAO';
   DOM.secEquipInstalados.classList.add('hidden');
   DOM.secEquipRetirados.classList.add('hidden');
-  
+
   // Re-render equipment checkboxes (empty state)
   renderEquipamentos();
-  
-  DOM.previewGrid.innerHTML = "";
+
+  DOM.previewGrid.innerHTML = '';
 
   updateFileCount();
   hideError();

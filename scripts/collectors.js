@@ -9,7 +9,7 @@ import { iniciaisFields, getRetornoFields } from './fields.js';
  */
 export function collectIniciais() {
   const data = {};
-  iniciaisFields.forEach((field) => {
+  iniciaisFields.forEach(field => {
     const el = document.getElementById(field.nome);
     data[field.nome] = el ? el.value : '';
   });
@@ -31,7 +31,7 @@ export function collectRetorno() {
   const fields = getRetornoFields(tipo);
   const data = {};
 
-  fields.forEach((field) => {
+  fields.forEach(field => {
     const group = DOM.retornoCampos.querySelector(`[data-field-nome="${field.nome}"]`);
     if (!group || group.style.display === 'none') return;
 
@@ -51,32 +51,32 @@ export function collectEquipamentos() {
   // Collect control fields
   const instaladoSelect = document.getElementById('instalado-equip');
   const retiradoSelect = document.getElementById('retirado-equip');
-  
+
   if (instaladoSelect) {
     state.equipamentos.instaladoEquip = instaladoSelect.value;
   }
   if (retiradoSelect) {
     state.equipamentos.retiradoEquip = retiradoSelect.value;
   }
-  
+
   // Collect installed equipment values
   const installedInputs = document.querySelectorAll('#campos-instalados input[type="number"]');
-  installedInputs.forEach((input) => {
+  installedInputs.forEach(input => {
     const equipKey = input.getAttribute('data-equip');
     if (equipKey) {
       state.equipamentos.instalados[equipKey] = input.value;
     }
   });
-  
+
   // Collect removed equipment values
   const removedInputs = document.querySelectorAll('#campos-retirados input[type="number"]');
-  removedInputs.forEach((input) => {
+  removedInputs.forEach(input => {
     const equipKey = input.getAttribute('data-equip');
     if (equipKey) {
       state.equipamentos.retirados[equipKey] = input.value;
     }
   });
-  
+
   return state.equipamentos;
 }
 

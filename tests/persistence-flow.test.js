@@ -13,7 +13,7 @@ import { collectEquipamentos } from '../scripts/collectors.js';
 
 /**
  * Testes de fluxo de persistência — cenários realistas e adversários
- * 
+ *
  * Estes testes simulam o comportamento real do usuário:
  * - Preenchimento progressivo com auto-save
  * - Troca entre registros
@@ -86,12 +86,52 @@ describe('persistence flow: real-world scenarios', () => {
     state.equipamentos = {
       instaladoEquip: 'NAO',
       retiradoEquip: 'NAO',
-      instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
-      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      instalados: {
+        medidor: '',
+        conjunto: '',
+        display: '',
+        tc_fase_a: '',
+        tc_fase_b: '',
+        tc_fase_c: '',
+        tp_fase_a: '',
+        tp_fase_b: '',
+        tp_fase_c: '',
+      },
+      retirados: {
+        medidor: '',
+        conjunto: '',
+        display: '',
+        tc_fase_a: '',
+        tc_fase_b: '',
+        tc_fase_c: '',
+        tp_fase_a: '',
+        tp_fase_b: '',
+        tp_fase_c: '',
+      },
       checkboxes: {
-        instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
-        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
-      }
+        instalados: {
+          medidor: false,
+          conjunto: false,
+          display: false,
+          tc_fase_a: false,
+          tc_fase_b: false,
+          tc_fase_c: false,
+          tp_fase_a: false,
+          tp_fase_b: false,
+          tp_fase_c: false,
+        },
+        retirados: {
+          medidor: false,
+          conjunto: false,
+          display: false,
+          tc_fase_a: false,
+          tc_fase_b: false,
+          tc_fase_c: false,
+          tp_fase_a: false,
+          tp_fase_b: false,
+          tp_fase_c: false,
+        },
+      },
     };
     state.attachments = [];
     state.lastTipoOrdem = '';
@@ -163,12 +203,12 @@ describe('persistence flow: real-world scenarios', () => {
       renderIniciais();
       document.getElementById('lider').value = 'ANDRE DE SOUSA CARVALHO';
       // UC and OS are empty — iniciaisValido is false
-      
+
       // Add equipment data - both state and DOM
       DOM.instaladoEquip.value = 'SIM';
       state.equipamentos.instaladoEquip = 'SIM';
       state.equipamentos.instalados.medidor = '12345';
-      
+
       // Create the equipment input in DOM (simulating checkbox checked)
       const camposInstalados = document.getElementById('campos-instalados');
       const wrapper = document.createElement('div');
@@ -180,7 +220,7 @@ describe('persistence flow: real-world scenarios', () => {
       input.value = '12345';
       wrapper.appendChild(input);
       camposInstalados.appendChild(wrapper);
-      
+
       state.iniciaisValido = false;
       await saveState();
 
@@ -391,12 +431,52 @@ describe('persistence flow: real-world scenarios', () => {
       state.equipamentos = {
         instaladoEquip: 'SIM',
         retiradoEquip: 'SIM',
-        instalados: { medidor: '111', conjunto: '', display: '222', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
-        retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+        instalados: {
+          medidor: '111',
+          conjunto: '',
+          display: '222',
+          tc_fase_a: '',
+          tc_fase_b: '',
+          tc_fase_c: '',
+          tp_fase_a: '',
+          tp_fase_b: '',
+          tp_fase_c: '',
+        },
+        retirados: {
+          medidor: '',
+          conjunto: '',
+          display: '',
+          tc_fase_a: '',
+          tc_fase_b: '',
+          tc_fase_c: '',
+          tp_fase_a: '',
+          tp_fase_b: '',
+          tp_fase_c: '',
+        },
         checkboxes: {
-          instalados: { medidor: true, conjunto: false, display: true, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
-          retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
-        }
+          instalados: {
+            medidor: true,
+            conjunto: false,
+            display: true,
+            tc_fase_a: false,
+            tc_fase_b: false,
+            tc_fase_c: false,
+            tp_fase_a: false,
+            tp_fase_b: false,
+            tp_fase_c: false,
+          },
+          retirados: {
+            medidor: false,
+            conjunto: false,
+            display: false,
+            tc_fase_a: false,
+            tc_fase_b: false,
+            tc_fase_c: false,
+            tp_fase_a: false,
+            tp_fase_b: false,
+            tp_fase_c: false,
+          },
+        },
       };
       renderEquipamentos();
       document.getElementById('instalado-equip').value = 'SIM';
@@ -498,12 +578,52 @@ describe('persistence flow: real-world scenarios', () => {
         state.equipamentos = {
           instaladoEquip: 'SIM',
           retiradoEquip: 'NAO',
-          instalados: { medidor: `${i}11`, conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
-          retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+          instalados: {
+            medidor: `${i}11`,
+            conjunto: '',
+            display: '',
+            tc_fase_a: '',
+            tc_fase_b: '',
+            tc_fase_c: '',
+            tp_fase_a: '',
+            tp_fase_b: '',
+            tp_fase_c: '',
+          },
+          retirados: {
+            medidor: '',
+            conjunto: '',
+            display: '',
+            tc_fase_a: '',
+            tc_fase_b: '',
+            tc_fase_c: '',
+            tp_fase_a: '',
+            tp_fase_b: '',
+            tp_fase_c: '',
+          },
           checkboxes: {
-            instalados: { medidor: true, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
-            retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
-          }
+            instalados: {
+              medidor: true,
+              conjunto: false,
+              display: false,
+              tc_fase_a: false,
+              tc_fase_b: false,
+              tc_fase_c: false,
+              tp_fase_a: false,
+              tp_fase_b: false,
+              tp_fase_c: false,
+            },
+            retirados: {
+              medidor: false,
+              conjunto: false,
+              display: false,
+              tc_fase_a: false,
+              tc_fase_b: false,
+              tc_fase_c: false,
+              tp_fase_a: false,
+              tp_fase_b: false,
+              tp_fase_c: false,
+            },
+          },
         };
         renderEquipamentos();
         state.iniciaisValido = true;
@@ -579,7 +699,9 @@ describe('persistence flow: real-world scenarios', () => {
       document.getElementById('tipo-servico').dispatchEvent(new Event('change'));
 
       // Conditional fields should be hidden and cleared
-      const medidorAntigoGroup = DOM.retornoCampos.querySelector('[data-field-nome="medidor-antigo"]');
+      const medidorAntigoGroup = DOM.retornoCampos.querySelector(
+        '[data-field-nome="medidor-antigo"]'
+      );
       expect(medidorAntigoGroup.style.display).toBe('none');
 
       await saveState();
@@ -611,7 +733,9 @@ describe('persistence flow: real-world scenarios', () => {
       await applyRecord(record);
 
       // Verify conditional fields are visible and populated
-      const medidorAntigoGroup = DOM.retornoCampos.querySelector('[data-field-nome="medidor-antigo"]');
+      const medidorAntigoGroup = DOM.retornoCampos.querySelector(
+        '[data-field-nome="medidor-antigo"]'
+      );
       expect(medidorAntigoGroup.style.display).not.toBe('none');
       expect(document.getElementById('medidor-antigo').value).toBe('MA-123');
       expect(document.getElementById('medidor-novo').value).toBe('MN-456');
@@ -735,12 +859,52 @@ describe('persistence flow: real-world scenarios', () => {
       state.equipamentos = {
         instaladoEquip: 'SIM',
         retiradoEquip: 'SIM',
-        instalados: { medidor: '111', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
-        retirados: { medidor: '', conjunto: '', display: '222', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+        instalados: {
+          medidor: '111',
+          conjunto: '',
+          display: '',
+          tc_fase_a: '',
+          tc_fase_b: '',
+          tc_fase_c: '',
+          tp_fase_a: '',
+          tp_fase_b: '',
+          tp_fase_c: '',
+        },
+        retirados: {
+          medidor: '',
+          conjunto: '',
+          display: '222',
+          tc_fase_a: '',
+          tc_fase_b: '',
+          tc_fase_c: '',
+          tp_fase_a: '',
+          tp_fase_b: '',
+          tp_fase_c: '',
+        },
         checkboxes: {
-          instalados: { medidor: true, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
-          retirados: { medidor: false, conjunto: false, display: true, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
-        }
+          instalados: {
+            medidor: true,
+            conjunto: false,
+            display: false,
+            tc_fase_a: false,
+            tc_fase_b: false,
+            tc_fase_c: false,
+            tp_fase_a: false,
+            tp_fase_b: false,
+            tp_fase_c: false,
+          },
+          retirados: {
+            medidor: false,
+            conjunto: false,
+            display: true,
+            tc_fase_a: false,
+            tc_fase_b: false,
+            tc_fase_c: false,
+            tp_fase_a: false,
+            tp_fase_b: false,
+            tp_fase_c: false,
+          },
+        },
       };
       renderEquipamentos();
       state.iniciaisValido = true;

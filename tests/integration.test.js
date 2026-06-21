@@ -80,12 +80,52 @@ describe('integration: full record lifecycle', () => {
     state.equipamentos = {
       instaladoEquip: 'NAO',
       retiradoEquip: 'NAO',
-      instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
-      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      instalados: {
+        medidor: '',
+        conjunto: '',
+        display: '',
+        tc_fase_a: '',
+        tc_fase_b: '',
+        tc_fase_c: '',
+        tp_fase_a: '',
+        tp_fase_b: '',
+        tp_fase_c: '',
+      },
+      retirados: {
+        medidor: '',
+        conjunto: '',
+        display: '',
+        tc_fase_a: '',
+        tc_fase_b: '',
+        tc_fase_c: '',
+        tp_fase_a: '',
+        tp_fase_b: '',
+        tp_fase_c: '',
+      },
       checkboxes: {
-        instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
-        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
-      }
+        instalados: {
+          medidor: false,
+          conjunto: false,
+          display: false,
+          tc_fase_a: false,
+          tc_fase_b: false,
+          tc_fase_c: false,
+          tp_fase_a: false,
+          tp_fase_b: false,
+          tp_fase_c: false,
+        },
+        retirados: {
+          medidor: false,
+          conjunto: false,
+          display: false,
+          tc_fase_a: false,
+          tc_fase_b: false,
+          tc_fase_c: false,
+          tp_fase_a: false,
+          tp_fase_b: false,
+          tp_fase_c: false,
+        },
+      },
     };
     state.attachments = [];
     state.lastTipoOrdem = '';
@@ -138,8 +178,28 @@ describe('integration: full record lifecycle', () => {
     // Add equipment
     state.equipamentos.instaladoEquip = 'SIM';
     state.equipamentos.retiradoEquip = 'SIM';
-    state.equipamentos.instalados = { medidor: '12345', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' };
-    state.equipamentos.retirados = { medidor: '', conjunto: '', display: '67890', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' };
+    state.equipamentos.instalados = {
+      medidor: '12345',
+      conjunto: '',
+      display: '',
+      tc_fase_a: '',
+      tc_fase_b: '',
+      tc_fase_c: '',
+      tp_fase_a: '',
+      tp_fase_b: '',
+      tp_fase_c: '',
+    };
+    state.equipamentos.retirados = {
+      medidor: '',
+      conjunto: '',
+      display: '67890',
+      tc_fase_a: '',
+      tc_fase_b: '',
+      tc_fase_c: '',
+      tp_fase_a: '',
+      tp_fase_b: '',
+      tp_fase_c: '',
+    };
     state.equipamentos.checkboxes.instalados.medidor = true;
     state.equipamentos.checkboxes.retirados.display = true;
     renderEquipamentos();
@@ -256,12 +316,52 @@ describe('integration: full record lifecycle', () => {
       equipamentos: {
         instaladoEquip: 'SIM',
         retiradoEquip: 'NAO',
-        instalados: { medidor: '111', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
-        retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+        instalados: {
+          medidor: '111',
+          conjunto: '',
+          display: '',
+          tc_fase_a: '',
+          tc_fase_b: '',
+          tc_fase_c: '',
+          tp_fase_a: '',
+          tp_fase_b: '',
+          tp_fase_c: '',
+        },
+        retirados: {
+          medidor: '',
+          conjunto: '',
+          display: '',
+          tc_fase_a: '',
+          tc_fase_b: '',
+          tc_fase_c: '',
+          tp_fase_a: '',
+          tp_fase_b: '',
+          tp_fase_c: '',
+        },
         checkboxes: {
-          instalados: { medidor: true, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
-          retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
-        }
+          instalados: {
+            medidor: true,
+            conjunto: false,
+            display: false,
+            tc_fase_a: false,
+            tc_fase_b: false,
+            tc_fase_c: false,
+            tp_fase_a: false,
+            tp_fase_b: false,
+            tp_fase_c: false,
+          },
+          retirados: {
+            medidor: false,
+            conjunto: false,
+            display: false,
+            tc_fase_a: false,
+            tc_fase_b: false,
+            tc_fase_c: false,
+            tp_fase_a: false,
+            tp_fase_b: false,
+            tp_fase_c: false,
+          },
+        },
       },
 
       attachmentCount: 0,
@@ -291,12 +391,52 @@ describe('integration: full record lifecycle', () => {
       equipamentos: {
         instaladoEquip: 'NAO',
         retiradoEquip: 'SIM',
-        instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
-        retirados: { medidor: '', conjunto: '', display: '222', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+        instalados: {
+          medidor: '',
+          conjunto: '',
+          display: '',
+          tc_fase_a: '',
+          tc_fase_b: '',
+          tc_fase_c: '',
+          tp_fase_a: '',
+          tp_fase_b: '',
+          tp_fase_c: '',
+        },
+        retirados: {
+          medidor: '',
+          conjunto: '',
+          display: '222',
+          tc_fase_a: '',
+          tc_fase_b: '',
+          tc_fase_c: '',
+          tp_fase_a: '',
+          tp_fase_b: '',
+          tp_fase_c: '',
+        },
         checkboxes: {
-          instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
-          retirados: { medidor: false, conjunto: false, display: true, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
-        }
+          instalados: {
+            medidor: false,
+            conjunto: false,
+            display: false,
+            tc_fase_a: false,
+            tc_fase_b: false,
+            tc_fase_c: false,
+            tp_fase_a: false,
+            tp_fase_b: false,
+            tp_fase_c: false,
+          },
+          retirados: {
+            medidor: false,
+            conjunto: false,
+            display: true,
+            tc_fase_a: false,
+            tc_fase_b: false,
+            tc_fase_c: false,
+            tp_fase_a: false,
+            tp_fase_b: false,
+            tp_fase_c: false,
+          },
+        },
       },
 
       attachmentCount: 0,

@@ -1,22 +1,33 @@
-import { DOM, cacheDOM } from "./dom.js";
-import { state, clearCurrentUUID } from "./state.js";
-import { saveState, debouncedSave } from "./persistence.js";
-import { iniciaisFields } from "./fields.js";
-import { renderIniciais } from "./iniciais.js";
-import { renderEquipamentos, toggleSectionVisibility, toggleFieldVisibility, updateFieldValue } from "./equipment.js";
-import { handleTipoChange } from "./retornos.js";
-import { handleUploadClick, handleFileChange, closeLightbox, updateFileCount, renderPreviews } from "./attachments.js";
-import { resetForm } from "./reset.js";
-import { renderSidebar, closeSidebar, initSidebarFilter } from "./sidebar.js";
-import { captureCoordinates } from "./utils.js";
-import { sendEmail } from "./send.js";
-import { updateLivePreview } from "./email.js";
+import { DOM, cacheDOM } from './dom.js';
+import { state, clearCurrentUUID } from './state.js';
+import { saveState, debouncedSave } from './persistence.js';
+import { iniciaisFields } from './fields.js';
+import { renderIniciais } from './iniciais.js';
+import {
+  renderEquipamentos,
+  toggleSectionVisibility,
+  toggleFieldVisibility,
+  updateFieldValue,
+} from './equipment.js';
+import { handleTipoChange } from './retornos.js';
+import {
+  handleUploadClick,
+  handleFileChange,
+  closeLightbox,
+  updateFileCount,
+  renderPreviews,
+} from './attachments.js';
+import { resetForm } from './reset.js';
+import { renderSidebar, closeSidebar, initSidebarFilter } from './sidebar.js';
+import { captureCoordinates } from './utils.js';
+import { sendEmail } from './send.js';
+import { updateLivePreview } from './email.js';
 
 function updateFilledClass(el) {
-  if (el.value && el.value.trim() !== "") {
-    el.classList.add("is-filled");
+  if (el.value && el.value.trim() !== '') {
+    el.classList.add('is-filled');
   } else {
-    el.classList.remove("is-filled");
+    el.classList.remove('is-filled');
   }
 }
 
@@ -25,8 +36,8 @@ function updateFilledClass(el) {
  * Quando ambos estão preenchidos, seta iniciaisValido = true e dispara saveState().
  */
 function checkInitialPersistence() {
-  const ucPreenchido = state.iniciais.uc && state.iniciais.uc.trim() !== "";
-  const osPreenchido = state.iniciais.os && state.iniciais.os.trim() !== "";
+  const ucPreenchido = state.iniciais.uc && state.iniciais.uc.trim() !== '';
+  const osPreenchido = state.iniciais.os && state.iniciais.os.trim() !== '';
 
   if (ucPreenchido && osPreenchido && !state.iniciaisValido) {
     state.iniciaisValido = true;
@@ -35,50 +46,50 @@ function checkInitialPersistence() {
 }
 
 export function updateAllFilledClasses() {
-  document.querySelectorAll("input, select, textarea").forEach((el) => {
+  document.querySelectorAll('input, select, textarea').forEach(el => {
     updateFilledClass(el);
   });
 }
 
 function initEvents() {
-  DOM.btnEnviar.addEventListener("click", sendEmail);
+  DOM.btnEnviar.addEventListener('click', sendEmail);
 
-  DOM.btnNovoForm.addEventListener("click", async () => {
+  DOM.btnNovoForm.addEventListener('click', async () => {
     await saveState();
     resetForm();
     await captureCoordinates();
     updateAllFilledClasses();
   });
 
-  DOM.tipoOrdem.addEventListener("change", handleTipoChange);
+  DOM.tipoOrdem.addEventListener('change', handleTipoChange);
 
   // Equipment control fields
-  DOM.instaladoEquip.addEventListener("change", () => {
+  DOM.instaladoEquip.addEventListener('change', () => {
     toggleSectionVisibility('instalados');
     debouncedSave();
     updateLivePreview();
   });
-  
-  DOM.retiradoEquip.addEventListener("change", () => {
+
+  DOM.retiradoEquip.addEventListener('change', () => {
     toggleSectionVisibility('retirados');
     debouncedSave();
     updateLivePreview();
   });
 
-  DOM.fileUploadArea.addEventListener("click", handleUploadClick);
-  DOM.fileInput.addEventListener("change", handleFileChange);
+  DOM.fileUploadArea.addEventListener('click', handleUploadClick);
+  DOM.fileInput.addEventListener('change', handleFileChange);
 
-  DOM.lightboxClose.addEventListener("click", closeLightbox);
-  DOM.lightbox.addEventListener("click", (e) => {
+  DOM.lightboxClose.addEventListener('click', closeLightbox);
+  DOM.lightbox.addEventListener('click', e => {
     if (e.target === DOM.lightbox) closeLightbox();
   });
 
-  DOM.hamburger.addEventListener("click", () => {
+  DOM.hamburger.addEventListener('click', () => {
     renderSidebar();
-    document.body.classList.add("sidebar-open");
+    document.body.classList.add('sidebar-open');
   });
-  DOM.sidebarOverlay.addEventListener("click", closeSidebar);
-  DOM.sidebarClose.addEventListener("click", closeSidebar);
+  DOM.sidebarOverlay.addEventListener('click', closeSidebar);
+  DOM.sidebarClose.addEventListener('click', closeSidebar);
 
   /**
    * Sync a DOM element's value to state.iniciais if it matches an iniciais field
@@ -91,27 +102,37 @@ function initEvents() {
   }
 
   function handleFieldChange(e) {
-    if (e.target.tagName !== "INPUT" && e.target.tagName !== "SELECT" && e.target.tagName !== "TEXTAREA") return;
+    if (
+      e.target.tagName !== 'INPUT' &&
+      e.target.tagName !== 'SELECT' &&
+      e.target.tagName !== 'TEXTAREA'
+    )
+      return;
     updateFilledClass(e.target);
     syncIniciaisField(e.target);
     debouncedSave();
     updateLivePreview();
-    if (e.target.id === "uc" || e.target.id === "os") {
+    if (e.target.id === 'uc' || e.target.id === 'os') {
       checkInitialPersistence();
     }
   }
 
-  document.addEventListener("input", handleFieldChange);
-  document.addEventListener("change", handleFieldChange);
+  document.addEventListener('input', handleFieldChange);
+  document.addEventListener('change', handleFieldChange);
 
-  document.addEventListener("pointerdown", (e) => {
-    if (e.target.tagName !== "INPUT" && e.target.tagName !== "SELECT" && e.target.tagName !== "TEXTAREA" && e.target.tagName !== "BUTTON") {
+  document.addEventListener('pointerdown', e => {
+    if (
+      e.target.tagName !== 'INPUT' &&
+      e.target.tagName !== 'SELECT' &&
+      e.target.tagName !== 'TEXTAREA' &&
+      e.target.tagName !== 'BUTTON'
+    ) {
       document.activeElement?.blur();
     }
   });
 
   // Equipment checkboxes (delegated)
-  document.addEventListener("change", (e) => {
+  document.addEventListener('change', e => {
     if (e.target.classList.contains('equip-checkbox')) {
       const tipo = e.target.getAttribute('data-tipo');
       const equipKey = e.target.getAttribute('data-equip');
@@ -119,9 +140,9 @@ function initEvents() {
       updateLivePreview();
     }
   });
-  
+
   // Equipment input fields (delegated)
-  document.addEventListener("input", (e) => {
+  document.addEventListener('input', e => {
     if (e.target.matches('#campos-instalados input, #campos-retirados input')) {
       const tipo = e.target.getAttribute('data-tipo');
       const equipKey = e.target.getAttribute('data-equip');
@@ -131,7 +152,7 @@ function initEvents() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener('DOMContentLoaded', async () => {
   cacheDOM();
   initSidebarFilter();
 

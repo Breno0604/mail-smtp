@@ -10,7 +10,6 @@ import {
 } from './helpers/persistence.js';
 
 test.describe('Persistence — Multi-Tab', () => {
-
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('#uc');
@@ -92,5 +91,4 @@ test.describe('Persistence — Multi-Tab', () => {
 
     await page2.close();
   });
-
 });

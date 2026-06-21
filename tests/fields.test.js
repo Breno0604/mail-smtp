@@ -116,7 +116,7 @@ describe('fields', () => {
     ];
 
     it('should have exactly 9 fields for each UC Cortada tipo (including descricao)', () => {
-      ucCortadaTipos.forEach((tipo) => {
+      ucCortadaTipos.forEach(tipo => {
         const fields = getRetornoFields(tipo);
         expect(fields.length).toBe(9);
       });
@@ -151,12 +151,7 @@ describe('fields', () => {
       const viavel = fields[1];
       expect(viavel.nome).toBe('viavel-retirar');
       expect(viavel.tipo).toBe('select');
-      expect(viavel.opcoes).toEqual([
-        'COM MUNK OU GUINCHO',
-        'COM MUNK',
-        'COM LINHA VIVA',
-        'N/A',
-      ]);
+      expect(viavel.opcoes).toEqual(['COM MUNK OU GUINCHO', 'COM MUNK', 'COM LINHA VIVA', 'N/A']);
     });
 
     it('should have ramal and medicao on same linha (3)', () => {
@@ -232,7 +227,12 @@ describe('fields', () => {
         const field = fields[0];
         expect(field.nome).toBe('situacao_corte');
         expect(field.tipo).toBe('select');
-        expect(field.opcoes).toEqual(['CLIENTE CORTADO', 'CLIENTE VISITADO CONTA PAGA', 'CLIENTE NAO PERMITIU O CORTE', 'SEM ACESSO PARA EXECUTAR O CORTE']);
+        expect(field.opcoes).toEqual([
+          'CLIENTE CORTADO',
+          'CLIENTE VISITADO CONTA PAGA',
+          'CLIENTE NAO PERMITIU O CORTE',
+          'SEM ACESSO PARA EXECUTAR O CORTE',
+        ]);
       });
 
       it('should have descricao as last field', () => {
@@ -256,7 +256,13 @@ describe('fields', () => {
         const field = fields[0];
         expect(field.nome).toBe('desligamento');
         expect(field.tipo).toBe('select');
-        expect(field.opcoes).toEqual(['DESLIGAMENTO EXECUTADO', 'CLIENTE CANCELOU DESLIGAMENTO', 'SEM ACESSO', 'NAO EXECUTADO PENDENCIA CLIENTE', 'NAO EXECUTADO PENDENCIA ENEL']);
+        expect(field.opcoes).toEqual([
+          'DESLIGAMENTO EXECUTADO',
+          'CLIENTE CANCELOU DESLIGAMENTO',
+          'SEM ACESSO',
+          'NAO EXECUTADO PENDENCIA CLIENTE',
+          'NAO EXECUTADO PENDENCIA ENEL',
+        ]);
       });
 
       it('should have acesso_desligamento with negated conditional', () => {
@@ -264,7 +270,11 @@ describe('fields', () => {
         const field = fields[1];
         expect(field.nome).toBe('acesso_desligamento');
         expect(field.tipo).toBe('text');
-        expect(field.condicional).toEqual({ campoRef: 'desligamento', valor: 'DESLIGAMENTO EXECUTADO', negado: true });
+        expect(field.condicional).toEqual({
+          campoRef: 'desligamento',
+          valor: 'DESLIGAMENTO EXECUTADO',
+          negado: true,
+        });
       });
 
       it('should have descricao as last field', () => {
@@ -294,7 +304,10 @@ describe('fields', () => {
       it('should have obra with multi-value conditional (array)', () => {
         const fields = getRetornoFields('LIGACAO NOVA MEDIA TENSAO');
         const field = fields.find(f => f.nome === 'obra');
-        expect(field.condicional).toEqual({ campoRef: 'retorno_ligacao', valor: ['VISTORIA', 'VISTORIA + LIGAÇÃO'] });
+        expect(field.condicional).toEqual({
+          campoRef: 'retorno_ligacao',
+          valor: ['VISTORIA', 'VISTORIA + LIGAÇÃO'],
+        });
       });
 
       it('should have qtd_medidor_bt conditional on medidor_bt', () => {
@@ -306,7 +319,10 @@ describe('fields', () => {
       it('should have ligacao conditional on retorno_ligacao = LIGAÇÃO or VISTORIA + LIGAÇÃO', () => {
         const fields = getRetornoFields('LIGACAO NOVA MEDIA TENSAO');
         const field = fields.find(f => f.nome === 'ligacao');
-        expect(field.condicional).toEqual({ campoRef: 'retorno_ligacao', valor: ['LIGAÇÃO', 'VISTORIA + LIGAÇÃO'] });
+        expect(field.condicional).toEqual({
+          campoRef: 'retorno_ligacao',
+          valor: ['LIGAÇÃO', 'VISTORIA + LIGAÇÃO'],
+        });
       });
 
       it('should have descricao as last field', () => {
@@ -348,14 +364,22 @@ describe('fields', () => {
         const fields = getRetornoFields('AFERIÇÃO DE MEDIDOR');
         const field = fields.find(f => f.nome === 'Motivo_cancel_afericao');
         expect(field.tipo).toBe('text');
-        expect(field.condicional).toEqual({ campoRef: 'medidor_afericao', valor: 'NAO SUBSTITUIDO' });
+        expect(field.condicional).toEqual({
+          campoRef: 'medidor_afericao',
+          valor: 'NAO SUBSTITUIDO',
+        });
       });
 
       it('should have leitura_afericao conditional on medidor_afericao = SUBSTITUIDO', () => {
         const fields = getRetornoFields('AFERIÇÃO DE MEDIDOR');
         const field = fields.find(f => f.nome === 'leitura_afericao');
         expect(field.tipo).toBe('select');
-        expect(field.opcoes).toEqual(['VISUAL E NETBOOK', 'APENAS VISUAL', 'APENAS NOTEBOOK', 'NAO FOI COLHIDO LEITURA']);
+        expect(field.opcoes).toEqual([
+          'VISUAL E NETBOOK',
+          'APENAS VISUAL',
+          'APENAS NOTEBOOK',
+          'NAO FOI COLHIDO LEITURA',
+        ]);
         expect(field.condicional).toEqual({ campoRef: 'medidor_afericao', valor: 'SUBSTITUIDO' });
       });
 
@@ -363,14 +387,21 @@ describe('fields', () => {
         const fields = getRetornoFields('AFERIÇÃO DE MEDIDOR');
         const field = fields.find(f => f.nome === 'motivo_nao_colher');
         expect(field.tipo).toBe('text');
-        expect(field.condicional).toEqual({ campoRef: 'leitura_afericao', valor: 'NAO FOI COLHIDO LEITURA' });
+        expect(field.condicional).toEqual({
+          campoRef: 'leitura_afericao',
+          valor: 'NAO FOI COLHIDO LEITURA',
+        });
       });
 
       it('should have toi_afericao conditional on medidor_afericao = SUBSTITUIDO', () => {
         const fields = getRetornoFields('AFERIÇÃO DE MEDIDOR');
         const field = fields.find(f => f.nome === 'toi_afericao');
         expect(field.tipo).toBe('select');
-        expect(field.opcoes).toEqual(['APLICADO TOI', 'PERDAS JA APLICOU TOI', 'NAO FOI APLICADO TOI']);
+        expect(field.opcoes).toEqual([
+          'APLICADO TOI',
+          'PERDAS JA APLICOU TOI',
+          'NAO FOI APLICADO TOI',
+        ]);
         expect(field.condicional).toEqual({ campoRef: 'medidor_afericao', valor: 'SUBSTITUIDO' });
       });
 
@@ -385,7 +416,10 @@ describe('fields', () => {
         const fields = getRetornoFields('AFERIÇÃO DE MEDIDOR');
         const field = fields.find(f => f.nome === 'porque_nao_aplicado_toi');
         expect(field.tipo).toBe('text');
-        expect(field.condicional).toEqual({ campoRef: 'toi_afericao', valor: 'NAO FOI APLICADO TOI' });
+        expect(field.condicional).toEqual({
+          campoRef: 'toi_afericao',
+          valor: 'NAO FOI APLICADO TOI',
+        });
       });
 
       it('should have descricao as last field', () => {
@@ -427,7 +461,7 @@ describe('fields', () => {
     ];
 
     it('should have exactly 6 fields for each TELEMEDIÇÃO tipo (5 + descricao)', () => {
-      telemetriaTipos.forEach((tipo) => {
+      telemetriaTipos.forEach(tipo => {
         const fields = getRetornoFields(tipo);
         expect(fields.length).toBe(6);
       });
@@ -454,7 +488,12 @@ describe('fields', () => {
       const fields = getRetornoFields('TELEMEDIÇÃO MANUTENÇÃO');
       const field = fields.find(f => f.nome === 'motivo_cancelamento_telemedicao');
       expect(field.tipo).toBe('select');
-      expect(field.opcoes).toEqual(['SEM ACESSO', 'MEDICAO COM BY-PASS', 'MEDICAO AVARIADA', 'OUTRO MOTIVO']);
+      expect(field.opcoes).toEqual([
+        'SEM ACESSO',
+        'MEDICAO COM BY-PASS',
+        'MEDICAO AVARIADA',
+        'OUTRO MOTIVO',
+      ]);
       expect(field.condicional).toEqual({ campoRef: 'executado_telemedicao', valor: 'NAO' });
     });
 
@@ -462,7 +501,10 @@ describe('fields', () => {
       const fields = getRetornoFields('TELEMEDIÇÃO MANUTENÇÃO');
       const field = fields.find(f => f.nome === 'descreva_problema_telemedicao');
       expect(field.tipo).toBe('textarea');
-      expect(field.condicional).toEqual({ campoRef: 'motivo_cancelamento_telemedicao', valor: ['SEM ACESSO', 'OUTRO MOTIVO'] });
+      expect(field.condicional).toEqual({
+        campoRef: 'motivo_cancelamento_telemedicao',
+        valor: ['SEM ACESSO', 'OUTRO MOTIVO'],
+      });
     });
 
     it('should have atentende_com with label "Atendente (COM)" and conditional on executado_telemedicao = SIM', () => {
@@ -508,7 +550,13 @@ describe('fields', () => {
       const fields = getRetornoFields('CORTE DE UC POR DEF TECNICO');
       const field = fields.find(f => f.nome === 'motivo_cancelamento_corte_por_defeito_tecnico');
       expect(field.tipo).toBe('select');
-      expect(field.opcoes).toEqual(['SEM ACESSO', 'SOLICITACAO ENEL', 'CLIENTE NAO PERMITIU', 'CLIENTE CORRIGIU PROBLEMA', 'OUTRO PROBLEMA']);
+      expect(field.opcoes).toEqual([
+        'SEM ACESSO',
+        'SOLICITACAO ENEL',
+        'CLIENTE NAO PERMITIU',
+        'CLIENTE CORRIGIU PROBLEMA',
+        'OUTRO PROBLEMA',
+      ]);
       expect(field.condicional).toEqual({ campoRef: 'corte_por_defeito_tecnico', valor: 'NAO' });
     });
 
@@ -516,7 +564,10 @@ describe('fields', () => {
       const fields = getRetornoFields('CORTE DE UC POR DEF TECNICO');
       const field = fields.find(f => f.nome === 'descreva_problema_corte_por_defeito_tecnico');
       expect(field.tipo).toBe('textarea');
-      expect(field.condicional).toEqual({ campoRef: 'motivo_cancelamento_corte_por_defeito_tecnico', valor: ['SEM ACESSO', 'OUTRO PROBLEMA'] });
+      expect(field.condicional).toEqual({
+        campoRef: 'motivo_cancelamento_corte_por_defeito_tecnico',
+        valor: ['SEM ACESSO', 'OUTRO PROBLEMA'],
+      });
     });
 
     it('should have descricao as last field', () => {

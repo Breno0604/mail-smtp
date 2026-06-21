@@ -12,7 +12,6 @@ import {
 } from './helpers/persistence.js';
 
 test.describe('Persistence — IndexedDB', () => {
-
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('#uc');
@@ -102,8 +101,7 @@ test.describe('Persistence — IndexedDB', () => {
 
     records = await readIndexedDB(page);
     expect(records).toHaveLength(2);
-    const uuid2 = records.find((r) => r.iniciais.uc === '33333').uuid;
+    const uuid2 = records.find(r => r.iniciais.uc === '33333').uuid;
     expect(uuid2).not.toBe(uuid1);
   });
-
 });

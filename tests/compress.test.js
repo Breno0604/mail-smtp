@@ -6,8 +6,10 @@ vi.mock('../scripts/utils.js', async () => {
   const actual = await vi.importActual('../scripts/utils.js');
   return {
     ...actual,
-    toBase64: vi.fn((file) => Promise.resolve(`base64_${file.name}`)),
-    loadImage: vi.fn(() => Promise.reject(new Error('mock loadImage - should not be called for skipped files'))),
+    toBase64: vi.fn(file => Promise.resolve(`base64_${file.name}`)),
+    loadImage: vi.fn(() =>
+      Promise.reject(new Error('mock loadImage - should not be called for skipped files'))
+    ),
     blobToBase64: vi.fn(() => Promise.resolve('compressed_base64')),
   };
 });

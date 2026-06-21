@@ -1,4 +1,4 @@
-import { MAX_SIZE, SKIP_SIZE, toBase64, blobToBase64, loadImage } from "./utils.js";
+import { MAX_SIZE, SKIP_SIZE, toBase64, blobToBase64, loadImage } from './utils.js';
 
 // Helper privado: desenha a imagem no canvas e retorna um blob JPEG
 async function drawAndBlob(ctx, canvas, img, width, quality) {
@@ -6,25 +6,25 @@ async function drawAndBlob(ctx, canvas, img, width, quality) {
   canvas.width = width;
   canvas.height = Math.round(img.naturalHeight * ratio);
   ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-  return new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", quality));
+  return new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
 }
 
 export async function compressAttachments(files) {
   const attachments = [];
 
   for (const file of files) {
-    if (file.size <= SKIP_SIZE || !file.type.startsWith("image/")) {
+    if (file.size <= SKIP_SIZE || !file.type.startsWith('image/')) {
       attachments.push({
         filename: file.name,
         content: await toBase64(file),
-        encoding: "base64",
+        encoding: 'base64',
       });
       continue;
     }
 
     const img = await loadImage(file);
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
     let width = img.naturalWidth;
     let blob;
 
@@ -38,12 +38,12 @@ export async function compressAttachments(files) {
       if (!isFallback) width = Math.round(width * 0.8);
     }
 
-    const dot = file.name.lastIndexOf(".");
+    const dot = file.name.lastIndexOf('.');
     const basename = dot > -1 ? file.name.slice(0, dot) : file.name;
     attachments.push({
-      filename: basename + "_red.jpg",
+      filename: basename + '_red.jpg',
       content: await blobToBase64(blob),
-      encoding: "base64",
+      encoding: 'base64',
     });
   }
 

@@ -60,18 +60,58 @@ describe('reset', () => {
       </div>
     `;
     cacheDOM();
-    
+
     // Set up populated state
     state.iniciais = { uc: '12345', os: '67890' };
     state.equipamentos = {
       instaladoEquip: 'SIM',
       retiradoEquip: 'NAO',
-      instalados: { medidor: '1', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
-      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      instalados: {
+        medidor: '1',
+        conjunto: '',
+        display: '',
+        tc_fase_a: '',
+        tc_fase_b: '',
+        tc_fase_c: '',
+        tp_fase_a: '',
+        tp_fase_b: '',
+        tp_fase_c: '',
+      },
+      retirados: {
+        medidor: '',
+        conjunto: '',
+        display: '',
+        tc_fase_a: '',
+        tc_fase_b: '',
+        tc_fase_c: '',
+        tp_fase_a: '',
+        tp_fase_b: '',
+        tp_fase_c: '',
+      },
       checkboxes: {
-        instalados: { medidor: true, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
-        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
-      }
+        instalados: {
+          medidor: true,
+          conjunto: false,
+          display: false,
+          tc_fase_a: false,
+          tc_fase_b: false,
+          tc_fase_c: false,
+          tp_fase_a: false,
+          tp_fase_b: false,
+          tp_fase_c: false,
+        },
+        retirados: {
+          medidor: false,
+          conjunto: false,
+          display: false,
+          tc_fase_a: false,
+          tc_fase_b: false,
+          tc_fase_c: false,
+          tp_fase_a: false,
+          tp_fase_b: false,
+          tp_fase_c: false,
+        },
+      },
     };
     state.attachments = [new File(['test'], 'test.jpg', { type: 'image/jpeg' })];
     state.lastTipoOrdem = 'ADEQUACAO SMF';

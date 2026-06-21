@@ -9,7 +9,6 @@ import {
 } from './helpers/persistence.js';
 
 test.describe('Persistence — Stateful Flows', () => {
-
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('#uc');
@@ -69,7 +68,7 @@ test.describe('Persistence — Stateful Flows', () => {
     }
 
     // All UUIDs are unique
-    const uuids = records.map((r) => r.uuid);
+    const uuids = records.map(r => r.uuid);
     const uniqueUuids = new Set(uuids);
     expect(uniqueUuids.size).toBe(5);
   });
@@ -111,5 +110,4 @@ test.describe('Persistence — Stateful Flows', () => {
     await restoreViaSidebar(page, '99999-22222');
     await expect(page.locator('#uc')).toHaveValue('99999');
   });
-
 });

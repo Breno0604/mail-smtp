@@ -64,18 +64,58 @@ describe('restore', () => {
       </div>
     `;
     cacheDOM();
-    
+
     // Reset state
     state.iniciais = {};
     state.equipamentos = {
       instaladoEquip: 'NAO',
       retiradoEquip: 'NAO',
-      instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
-      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      instalados: {
+        medidor: '',
+        conjunto: '',
+        display: '',
+        tc_fase_a: '',
+        tc_fase_b: '',
+        tc_fase_c: '',
+        tp_fase_a: '',
+        tp_fase_b: '',
+        tp_fase_c: '',
+      },
+      retirados: {
+        medidor: '',
+        conjunto: '',
+        display: '',
+        tc_fase_a: '',
+        tc_fase_b: '',
+        tc_fase_c: '',
+        tp_fase_a: '',
+        tp_fase_b: '',
+        tp_fase_c: '',
+      },
       checkboxes: {
-        instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
-        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
-      }
+        instalados: {
+          medidor: false,
+          conjunto: false,
+          display: false,
+          tc_fase_a: false,
+          tc_fase_b: false,
+          tc_fase_c: false,
+          tp_fase_a: false,
+          tp_fase_b: false,
+          tp_fase_c: false,
+        },
+        retirados: {
+          medidor: false,
+          conjunto: false,
+          display: false,
+          tc_fase_a: false,
+          tc_fase_b: false,
+          tc_fase_c: false,
+          tp_fase_a: false,
+          tp_fase_b: false,
+          tp_fase_c: false,
+        },
+      },
     };
     state.attachments = [];
     state.lastTipoOrdem = '';
@@ -107,19 +147,57 @@ describe('restore', () => {
       equipamentos: {
         instaladoEquip: 'SIM',
         retiradoEquip: 'SIM',
-        instalados: { medidor: '111', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
-        retirados: { medidor: '', conjunto: '', display: '222', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+        instalados: {
+          medidor: '111',
+          conjunto: '',
+          display: '',
+          tc_fase_a: '',
+          tc_fase_b: '',
+          tc_fase_c: '',
+          tp_fase_a: '',
+          tp_fase_b: '',
+          tp_fase_c: '',
+        },
+        retirados: {
+          medidor: '',
+          conjunto: '',
+          display: '222',
+          tc_fase_a: '',
+          tc_fase_b: '',
+          tc_fase_c: '',
+          tp_fase_a: '',
+          tp_fase_b: '',
+          tp_fase_c: '',
+        },
         checkboxes: {
-          instalados: { medidor: true, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
-          retirados: { medidor: false, conjunto: false, display: true, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
-        }
+          instalados: {
+            medidor: true,
+            conjunto: false,
+            display: false,
+            tc_fase_a: false,
+            tc_fase_b: false,
+            tc_fase_c: false,
+            tp_fase_a: false,
+            tp_fase_b: false,
+            tp_fase_c: false,
+          },
+          retirados: {
+            medidor: false,
+            conjunto: false,
+            display: true,
+            tc_fase_a: false,
+            tc_fase_b: false,
+            tc_fase_c: false,
+            tp_fase_a: false,
+            tp_fase_b: false,
+            tp_fase_c: false,
+          },
+        },
       },
       retorno: { descricao: 'Restored description' },
       lastTipoOrdem: 'ADEQUACAO SMF',
       tipoOrdem: 'ADEQUACAO SMF',
-      attachments: [
-        { name: 'photo.jpg', type: 'image/jpeg', data: btoa('fake-image-data') },
-      ],
+      attachments: [{ name: 'photo.jpg', type: 'image/jpeg', data: btoa('fake-image-data') }],
       createdAt: '2024-01-01T10:00:00.000Z',
     };
 

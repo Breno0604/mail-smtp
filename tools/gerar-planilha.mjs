@@ -7,12 +7,12 @@ const h = (ord, nome, label, tipo, opcoes, iv, gc, gv, placeholder, grupo) => ({
   campo_nome: nome,
   campo_label: label,
   tipo,
-  opcoes: opcoes||'',
-  inicia_visivel: iv||'SIM',
-  gatilho_campo: gc||'',
-  gatilho_valor: gv||'',
-  placeholder: placeholder||'',
-  grupo: grupo||''
+  opcoes: opcoes || '',
+  inicia_visivel: iv || 'SIM',
+  gatilho_campo: gc || '',
+  gatilho_valor: gv || '',
+  placeholder: placeholder || '',
+  grupo: grupo || '',
 });
 
 const tipoRow = (tipo, hObj, gv, tr) => {
@@ -24,12 +24,45 @@ const tipoRow = (tipo, hObj, gv, tr) => {
 
 // Group 1 — Ligação Nova (Tela_Execucao_Ligacao_Nova) — gv=1
 const grupo1Fields = [
-  h(1,  'tombamento',          'Tombamento',                    'TEXT',    '',       'SIM','','','','Ligação Nova'),
-  h(2,  'coord_x',             'Coordenada X',                  'TEXT',    '',       'SIM','','','','Ligação Nova'),
-  h(3,  'coord_y',             'Coordenada Y',                  'TEXT',    '',       'SIM','','','','Ligação Nova'),
-  h(4,  'qtde_medidor_bt',     'Qtde Medidor BT',               'SELECT',  '1,2,3,4','SIM','','','','Ligação Nova'),
-  h(5,  'medidor_bt_ret_cort', 'Medidor BT Retirado/Cortado',   'SELECT',  'SIM,NÃO','SIM','','','','Ligação Nova'),
-  h(6,  'ligacao_executada',   'Ligação Executada',             'SELECT',  'SIM,NÃO','SIM','','','','Ligação Nova'),
+  h(1, 'tombamento', 'Tombamento', 'TEXT', '', 'SIM', '', '', '', 'Ligação Nova'),
+  h(2, 'coord_x', 'Coordenada X', 'TEXT', '', 'SIM', '', '', '', 'Ligação Nova'),
+  h(3, 'coord_y', 'Coordenada Y', 'TEXT', '', 'SIM', '', '', '', 'Ligação Nova'),
+  h(
+    4,
+    'qtde_medidor_bt',
+    'Qtde Medidor BT',
+    'SELECT',
+    '1,2,3,4',
+    'SIM',
+    '',
+    '',
+    '',
+    'Ligação Nova'
+  ),
+  h(
+    5,
+    'medidor_bt_ret_cort',
+    'Medidor BT Retirado/Cortado',
+    'SELECT',
+    'SIM,NÃO',
+    'SIM',
+    '',
+    '',
+    '',
+    'Ligação Nova'
+  ),
+  h(
+    6,
+    'ligacao_executada',
+    'Ligação Executada',
+    'SELECT',
+    'SIM,NÃO',
+    'SIM',
+    '',
+    '',
+    '',
+    'Ligação Nova'
+  ),
 ];
 const grupo1Tipos = [
   'LIGAÇÃO NOVA SIMULTÂNEA',
@@ -39,7 +72,18 @@ const grupo1Tipos = [
 
 // Group 2 — Substituição de Equipamentos (Tela_Substituicao_de_Equipamentos) — gv=2
 const grupo2Fields = [
-  h(1,  'servico_executado',               'Serviço Executado',                      'SELECT',  'INSTALAR CONJUNTO,RETIRADO,TROCA DE CONJUNTO SEM CRIME,INSTALADO RETIRADO NAO ALTERADO','SIM','','','','Substituição'),
+  h(
+    1,
+    'servico_executado',
+    'Serviço Executado',
+    'SELECT',
+    'INSTALAR CONJUNTO,RETIRADO,TROCA DE CONJUNTO SEM CRIME,INSTALADO RETIRADO NAO ALTERADO',
+    'SIM',
+    '',
+    '',
+    '',
+    'Substituição'
+  ),
 ];
 const grupo2Tipos = [
   'LIGACAO NOVA MT - CLIENTE LIVRE',
@@ -53,9 +97,20 @@ const grupo2Tipos = [
 
 // Group 3 — Substituição de Display — gv=3
 const grupo3Fields = [
-  h(1, 'servico_executado_display', 'Serviço Executado', 'SELECT', 'INSTALAR CONJUNTO,RETIRADO,TROCA','SIM','','','','Display'),
-  h(2, 'numero_display',            'Número Display',    'TEXT',   '','SIM','','','','Display'),
-  h(3, 'observacao_display',        'Observação Display','TEXTAREA','','SIM','','','','Display'),
+  h(
+    1,
+    'servico_executado_display',
+    'Serviço Executado',
+    'SELECT',
+    'INSTALAR CONJUNTO,RETIRADO,TROCA',
+    'SIM',
+    '',
+    '',
+    '',
+    'Display'
+  ),
+  h(2, 'numero_display', 'Número Display', 'TEXT', '', 'SIM', '', '', '', 'Display'),
+  h(3, 'observacao_display', 'Observação Display', 'TEXTAREA', '', 'SIM', '', '', '', 'Display'),
 ];
 const grupo3Tipos = ['SUBSTITUIÇÃO DE DISPLAY'];
 
@@ -64,10 +119,54 @@ const grupo4Tipos = ['INSTALACAO DO DISPLAY'];
 
 // Group 5 — Inspeção UC Cortada — gv=5
 const grupo5Fields = [
-  h(1, 'toi',                  'TOI',                    'SELECT',   'APLICADO TOI,NAO FOI APLICADO TOI,PERDAS JÁ APLICOU TOI','SIM','','','','Inspeção UC Cortada'),
-  h(2, 'numero_toi',           'Número TOI',             'TEXT',     '','NÃO','toi','APLICADO TOI','','Inspeção UC Cortada'),
-  h(3, 'pq_nao_aplicado_toi',  'Por que não aplicado TOI','TEXTAREA','','NÃO','toi','NAO FOI APLICADO TOI','','Inspeção UC Cortada'),
-  h(4, 'observacao_inspecao',  'Observação Inspeção',    'TEXTAREA', '','SIM','','','','Inspeção UC Cortada'),
+  h(
+    1,
+    'toi',
+    'TOI',
+    'SELECT',
+    'APLICADO TOI,NAO FOI APLICADO TOI,PERDAS JÁ APLICOU TOI',
+    'SIM',
+    '',
+    '',
+    '',
+    'Inspeção UC Cortada'
+  ),
+  h(
+    2,
+    'numero_toi',
+    'Número TOI',
+    'TEXT',
+    '',
+    'NÃO',
+    'toi',
+    'APLICADO TOI',
+    '',
+    'Inspeção UC Cortada'
+  ),
+  h(
+    3,
+    'pq_nao_aplicado_toi',
+    'Por que não aplicado TOI',
+    'TEXTAREA',
+    '',
+    'NÃO',
+    'toi',
+    'NAO FOI APLICADO TOI',
+    '',
+    'Inspeção UC Cortada'
+  ),
+  h(
+    4,
+    'observacao_inspecao',
+    'Observação Inspeção',
+    'TEXTAREA',
+    '',
+    'SIM',
+    '',
+    '',
+    '',
+    'Inspeção UC Cortada'
+  ),
 ];
 const grupo5Tipos = [
   'INSPECAO UC CORTADA (I15)',
@@ -79,63 +178,459 @@ const grupo5Tipos = [
 
 // Group 6 — Vistoria Ligação MT — gv=6
 const grupo6Fields = [
-  h(1, 'tombamento_vistoria',  'Tombamento Vistoria',   'TEXT',    '','SIM','','','','Vistoria Ligação'),
-  h(2, 'coord_x_vistoria',     'Coordenada X Vistoria', 'TEXT',    '','SIM','','','','Vistoria Ligação'),
-  h(3, 'coord_y_vistoria',     'Coordenada Y Vistoria', 'TEXT',    '','SIM','','','','Vistoria Ligação'),
-  h(4, 'observacao_vistoria',  'Observação Vistoria',   'TEXTAREA','','SIM','','','','Vistoria Ligação'),
+  h(
+    1,
+    'tombamento_vistoria',
+    'Tombamento Vistoria',
+    'TEXT',
+    '',
+    'SIM',
+    '',
+    '',
+    '',
+    'Vistoria Ligação'
+  ),
+  h(
+    2,
+    'coord_x_vistoria',
+    'Coordenada X Vistoria',
+    'TEXT',
+    '',
+    'SIM',
+    '',
+    '',
+    '',
+    'Vistoria Ligação'
+  ),
+  h(
+    3,
+    'coord_y_vistoria',
+    'Coordenada Y Vistoria',
+    'TEXT',
+    '',
+    'SIM',
+    '',
+    '',
+    '',
+    'Vistoria Ligação'
+  ),
+  h(
+    4,
+    'observacao_vistoria',
+    'Observação Vistoria',
+    'TEXTAREA',
+    '',
+    'SIM',
+    '',
+    '',
+    '',
+    'Vistoria Ligação'
+  ),
 ];
 const grupo6Tipos = ['ET: VISTORIA - LIGACAO NOVA MEDIA TENSAO'];
 
 // Group 7 — Corte por Falta de Pagamento — gv=7
 const grupo7Fields = [
-  h(1, 'corte_religacao',          'Corte/Religação',                'SELECT',   'EXECUTOU CORTE,EXECUTOU RELIGAÇÃO','SIM','','','','Corte Falta Pagamento'),
-  h(2, 'observacao_corte_pagamento','Observação Corte Pagamento',    'TEXTAREA', '','SIM','','','','Corte Falta Pagamento'),
+  h(
+    1,
+    'corte_religacao',
+    'Corte/Religação',
+    'SELECT',
+    'EXECUTOU CORTE,EXECUTOU RELIGAÇÃO',
+    'SIM',
+    '',
+    '',
+    '',
+    'Corte Falta Pagamento'
+  ),
+  h(
+    2,
+    'observacao_corte_pagamento',
+    'Observação Corte Pagamento',
+    'TEXTAREA',
+    '',
+    'SIM',
+    '',
+    '',
+    '',
+    'Corte Falta Pagamento'
+  ),
 ];
 const grupo7Tipos = ['CORTE POR FALTA DE PAGAMENTO'];
 
 // Group 8 — Corte de UC por Def Técnico — gv=8
 const grupo8Fields = [
-  h(1,  'motivo_pre_apr',         'Motivo da PRE APR',              'TEXT',     '','SIM','','','','Corte Def Técnico'),
-  h(2,  'medicao_avariada',       'Medição Avariada?',              'SELECT',   'SIM,NÃO','SIM','','','','Corte Def Técnico'),
-  h(3,  'problema_medicao',       'Qual o problema da medição?',    'TEXTAREA', '','NÃO','medicao_avariada','SIM','','Corte Def Técnico'),
-  h(4,  'necessario_linha_viva',  'Necessário Linha Viva?',         'SELECT',   'SIM,NÃO','SIM','','','','Corte Def Técnico'),
-  h(5,  'porque_linha_viva',      'Por que linha viva?',            'TEXTAREA', '','NÃO','necessario_linha_viva','SIM','','Corte Def Técnico'),
-  h(6,  'chave_corte',            'Tombamento Chave de Corte',      'TEXT',     '','SIM','','','','Corte Def Técnico'),
-  h(7,  'chave_cliente',          'Tombamento Chave Cliente',       'TEXT',     '','SIM','','','','Corte Def Técnico'),
-  h(8,  'qtd_aterramentos',       'Quantidade Aterramentos',        'SELECT',   '1,2,3,4,5,6,7,8,9,10','SIM','','','','Corte Def Técnico'),
-  h(9,  'contato_cliente',        'Contato Cliente',                'SELECT',   'SIM,NÃO,N/A','SIM','','','','Corte Def Técnico'),
-  h(10, 'nome_responsavel',       'Nome do Responsável',            'TEXT',     '','NÃO','contato_cliente','SIM','','Corte Def Técnico'),
-  h(11, 'celular',                'Celular com DDD',                'TEXT',     '','NÃO','contato_cliente','SIM','','Corte Def Técnico'),
-  h(12, 'telefone_fixo',          'Telefone Fixo',                  'TEXT',     '','NÃO','contato_cliente','SIM','','Corte Def Técnico'),
-  h(13, 'email_contato',          'Email Contato',                  'TEXT',     '','NÃO','contato_cliente','SIM','','Corte Def Técnico'),
-  h(14, 'corte_religacao_def',    'Corte/Religação após Corte',     'SELECT',   'EXECUTOU CORTE,EXECUTOU RELIGAÇÃO','SIM','','','','Corte Def Técnico'),
+  h(1, 'motivo_pre_apr', 'Motivo da PRE APR', 'TEXT', '', 'SIM', '', '', '', 'Corte Def Técnico'),
+  h(
+    2,
+    'medicao_avariada',
+    'Medição Avariada?',
+    'SELECT',
+    'SIM,NÃO',
+    'SIM',
+    '',
+    '',
+    '',
+    'Corte Def Técnico'
+  ),
+  h(
+    3,
+    'problema_medicao',
+    'Qual o problema da medição?',
+    'TEXTAREA',
+    '',
+    'NÃO',
+    'medicao_avariada',
+    'SIM',
+    '',
+    'Corte Def Técnico'
+  ),
+  h(
+    4,
+    'necessario_linha_viva',
+    'Necessário Linha Viva?',
+    'SELECT',
+    'SIM,NÃO',
+    'SIM',
+    '',
+    '',
+    '',
+    'Corte Def Técnico'
+  ),
+  h(
+    5,
+    'porque_linha_viva',
+    'Por que linha viva?',
+    'TEXTAREA',
+    '',
+    'NÃO',
+    'necessario_linha_viva',
+    'SIM',
+    '',
+    'Corte Def Técnico'
+  ),
+  h(
+    6,
+    'chave_corte',
+    'Tombamento Chave de Corte',
+    'TEXT',
+    '',
+    'SIM',
+    '',
+    '',
+    '',
+    'Corte Def Técnico'
+  ),
+  h(
+    7,
+    'chave_cliente',
+    'Tombamento Chave Cliente',
+    'TEXT',
+    '',
+    'SIM',
+    '',
+    '',
+    '',
+    'Corte Def Técnico'
+  ),
+  h(
+    8,
+    'qtd_aterramentos',
+    'Quantidade Aterramentos',
+    'SELECT',
+    '1,2,3,4,5,6,7,8,9,10',
+    'SIM',
+    '',
+    '',
+    '',
+    'Corte Def Técnico'
+  ),
+  h(
+    9,
+    'contato_cliente',
+    'Contato Cliente',
+    'SELECT',
+    'SIM,NÃO,N/A',
+    'SIM',
+    '',
+    '',
+    '',
+    'Corte Def Técnico'
+  ),
+  h(
+    10,
+    'nome_responsavel',
+    'Nome do Responsável',
+    'TEXT',
+    '',
+    'NÃO',
+    'contato_cliente',
+    'SIM',
+    '',
+    'Corte Def Técnico'
+  ),
+  h(
+    11,
+    'celular',
+    'Celular com DDD',
+    'TEXT',
+    '',
+    'NÃO',
+    'contato_cliente',
+    'SIM',
+    '',
+    'Corte Def Técnico'
+  ),
+  h(
+    12,
+    'telefone_fixo',
+    'Telefone Fixo',
+    'TEXT',
+    '',
+    'NÃO',
+    'contato_cliente',
+    'SIM',
+    '',
+    'Corte Def Técnico'
+  ),
+  h(
+    13,
+    'email_contato',
+    'Email Contato',
+    'TEXT',
+    '',
+    'NÃO',
+    'contato_cliente',
+    'SIM',
+    '',
+    'Corte Def Técnico'
+  ),
+  h(
+    14,
+    'corte_religacao_def',
+    'Corte/Religação após Corte',
+    'SELECT',
+    'EXECUTOU CORTE,EXECUTOU RELIGAÇÃO',
+    'SIM',
+    '',
+    '',
+    '',
+    'Corte Def Técnico'
+  ),
 ];
 const grupo8Tipos = ['CORTE DE UC POR DEF TECNICO'];
 
 // Group 9 — Desligamento Programado — gv=9
 const grupo9Fields = [
-  h(1, 'data_desligamento',       'Data Desligamento',       'TEXT', '','SIM','','','','Desligamento Programado'),
-  h(2, 'hora_desligamento',       'Hora Desligamento',       'TEXT', '','SIM','','','','Desligamento Programado'),
-  h(3, 'previsao_retorno',        'Previsão Retorno',        'TEXT', '','SIM','','','','Desligamento Programado'),
-  h(4, 'observacao_desligamento', 'Observação Desligamento', 'TEXTAREA','','SIM','','','','Desligamento Programado'),
+  h(
+    1,
+    'data_desligamento',
+    'Data Desligamento',
+    'TEXT',
+    '',
+    'SIM',
+    '',
+    '',
+    '',
+    'Desligamento Programado'
+  ),
+  h(
+    2,
+    'hora_desligamento',
+    'Hora Desligamento',
+    'TEXT',
+    '',
+    'SIM',
+    '',
+    '',
+    '',
+    'Desligamento Programado'
+  ),
+  h(
+    3,
+    'previsao_retorno',
+    'Previsão Retorno',
+    'TEXT',
+    '',
+    'SIM',
+    '',
+    '',
+    '',
+    'Desligamento Programado'
+  ),
+  h(
+    4,
+    'observacao_desligamento',
+    'Observação Desligamento',
+    'TEXTAREA',
+    '',
+    'SIM',
+    '',
+    '',
+    '',
+    'Desligamento Programado'
+  ),
 ];
 const grupo9Tipos = ['DESLIG.PROG.MANUTENÇÃO'];
 
 // ─── tela_inicial ───────────────────────────────────────────────────────────
 const telaInicialFields = [
-  { ordem:1, campo_nome:'tipo_ordem',  campo_label:'Tipo de Ordem',  tipo:'SELECT',   opcoes:'(50 tipos)',             inicia_visivel:'SIM', gatilho_campo:'', gatilho_valor:'', placeholder:'Selecione o tipo',          obrigatorio:'SIM' },
-  { ordem:2, campo_nome:'cliente',     campo_label:'Cliente',        tipo:'SELECT',   opcoes:'(~140 clientes)',        inicia_visivel:'SIM', gatilho_campo:'', gatilho_valor:'', placeholder:'Selecione o cliente',        obrigatorio:'SIM' },
-  { ordem:3, campo_nome:'ordem',       campo_label:'Ordem',          tipo:'TEXT',     opcoes:'',                         inicia_visivel:'SIM', gatilho_campo:'', gatilho_valor:'', placeholder:'Número da Ordem de Serviço', obrigatorio:'SIM' },
-  { ordem:4, campo_nome:'uc',          campo_label:'UC',             tipo:'TEXT',     opcoes:'',                         inicia_visivel:'SIM', gatilho_campo:'', gatilho_valor:'', placeholder:'Número da UC',               obrigatorio:'SIM' },
-  { ordem:5, campo_nome:'municipio',   campo_label:'Município',      tipo:'SELECT',   opcoes:'(lista de municípios)',   inicia_visivel:'SIM', gatilho_campo:'', gatilho_valor:'', placeholder:'Selecione o município',      obrigatorio:'SIM' },
-  { ordem:6, campo_nome:'apr',         campo_label:'APR',            tipo:'TEXT',     opcoes:'',                         inicia_visivel:'NÃO', gatilho_campo:'', gatilho_valor:'', placeholder:'Número APR',                obrigatorio:'NÃO' },
-  { ordem:7, campo_nome:'pre_apr',     campo_label:'PRE APR',        tipo:'TEXT',     opcoes:'',                         inicia_visivel:'NÃO', gatilho_campo:'', gatilho_valor:'', placeholder:'Número PRE APR',            obrigatorio:'NÃO' },
-  { ordem:8, campo_nome:'notificado',  campo_label:'Notificado',     tipo:'SELECT',   opcoes:'SIM,NÃO',                   inicia_visivel:'SIM', gatilho_campo:'', gatilho_valor:'', placeholder:'',                           obrigatorio:'NÃO' },
-  { ordem:9, campo_nome:'muck_bq',     campo_label:'Muck B&Q',       tipo:'TEXT',     opcoes:'',                         inicia_visivel:'NÃO', gatilho_campo:'', gatilho_valor:'', placeholder:'Muck B&Q',                 obrigatorio:'NÃO' },
-  { ordem:10,campo_nome:'placa',       campo_label:'Placa',          tipo:'TEXT',     opcoes:'',                         inicia_visivel:'NÃO', gatilho_campo:'', gatilho_valor:'', placeholder:'Placa do veículo',          obrigatorio:'NÃO' },
-  { ordem:11,campo_nome:'tecnicos',    campo_label:'Técnico(s)',     tipo:'TEXT',     opcoes:'',                         inicia_visivel:'SIM', gatilho_campo:'', gatilho_valor:'', placeholder:'Nome do(s) técnico(s)',      obrigatorio:'NÃO' },
-  { ordem:12,campo_nome:'data_hora',   campo_label:'Data/Hora',      tipo:'TEXT',     opcoes:'',                         inicia_visivel:'SIM', gatilho_campo:'', gatilho_valor:'', placeholder:'Data e hora (automático)',    obrigatorio:'NÃO' },
-  { ordem:13,campo_nome:'observacao',  campo_label:'Observação',     tipo:'TEXTAREA', opcoes:'',                         inicia_visivel:'SIM', gatilho_campo:'', gatilho_valor:'', placeholder:'Observação geral',           obrigatorio:'NÃO' },
+  {
+    ordem: 1,
+    campo_nome: 'tipo_ordem',
+    campo_label: 'Tipo de Ordem',
+    tipo: 'SELECT',
+    opcoes: '(50 tipos)',
+    inicia_visivel: 'SIM',
+    gatilho_campo: '',
+    gatilho_valor: '',
+    placeholder: 'Selecione o tipo',
+    obrigatorio: 'SIM',
+  },
+  {
+    ordem: 2,
+    campo_nome: 'cliente',
+    campo_label: 'Cliente',
+    tipo: 'SELECT',
+    opcoes: '(~140 clientes)',
+    inicia_visivel: 'SIM',
+    gatilho_campo: '',
+    gatilho_valor: '',
+    placeholder: 'Selecione o cliente',
+    obrigatorio: 'SIM',
+  },
+  {
+    ordem: 3,
+    campo_nome: 'ordem',
+    campo_label: 'Ordem',
+    tipo: 'TEXT',
+    opcoes: '',
+    inicia_visivel: 'SIM',
+    gatilho_campo: '',
+    gatilho_valor: '',
+    placeholder: 'Número da Ordem de Serviço',
+    obrigatorio: 'SIM',
+  },
+  {
+    ordem: 4,
+    campo_nome: 'uc',
+    campo_label: 'UC',
+    tipo: 'TEXT',
+    opcoes: '',
+    inicia_visivel: 'SIM',
+    gatilho_campo: '',
+    gatilho_valor: '',
+    placeholder: 'Número da UC',
+    obrigatorio: 'SIM',
+  },
+  {
+    ordem: 5,
+    campo_nome: 'municipio',
+    campo_label: 'Município',
+    tipo: 'SELECT',
+    opcoes: '(lista de municípios)',
+    inicia_visivel: 'SIM',
+    gatilho_campo: '',
+    gatilho_valor: '',
+    placeholder: 'Selecione o município',
+    obrigatorio: 'SIM',
+  },
+  {
+    ordem: 6,
+    campo_nome: 'apr',
+    campo_label: 'APR',
+    tipo: 'TEXT',
+    opcoes: '',
+    inicia_visivel: 'NÃO',
+    gatilho_campo: '',
+    gatilho_valor: '',
+    placeholder: 'Número APR',
+    obrigatorio: 'NÃO',
+  },
+  {
+    ordem: 7,
+    campo_nome: 'pre_apr',
+    campo_label: 'PRE APR',
+    tipo: 'TEXT',
+    opcoes: '',
+    inicia_visivel: 'NÃO',
+    gatilho_campo: '',
+    gatilho_valor: '',
+    placeholder: 'Número PRE APR',
+    obrigatorio: 'NÃO',
+  },
+  {
+    ordem: 8,
+    campo_nome: 'notificado',
+    campo_label: 'Notificado',
+    tipo: 'SELECT',
+    opcoes: 'SIM,NÃO',
+    inicia_visivel: 'SIM',
+    gatilho_campo: '',
+    gatilho_valor: '',
+    placeholder: '',
+    obrigatorio: 'NÃO',
+  },
+  {
+    ordem: 9,
+    campo_nome: 'muck_bq',
+    campo_label: 'Muck B&Q',
+    tipo: 'TEXT',
+    opcoes: '',
+    inicia_visivel: 'NÃO',
+    gatilho_campo: '',
+    gatilho_valor: '',
+    placeholder: 'Muck B&Q',
+    obrigatorio: 'NÃO',
+  },
+  {
+    ordem: 10,
+    campo_nome: 'placa',
+    campo_label: 'Placa',
+    tipo: 'TEXT',
+    opcoes: '',
+    inicia_visivel: 'NÃO',
+    gatilho_campo: '',
+    gatilho_valor: '',
+    placeholder: 'Placa do veículo',
+    obrigatorio: 'NÃO',
+  },
+  {
+    ordem: 11,
+    campo_nome: 'tecnicos',
+    campo_label: 'Técnico(s)',
+    tipo: 'TEXT',
+    opcoes: '',
+    inicia_visivel: 'SIM',
+    gatilho_campo: '',
+    gatilho_valor: '',
+    placeholder: 'Nome do(s) técnico(s)',
+    obrigatorio: 'NÃO',
+  },
+  {
+    ordem: 12,
+    campo_nome: 'data_hora',
+    campo_label: 'Data/Hora',
+    tipo: 'TEXT',
+    opcoes: '',
+    inicia_visivel: 'SIM',
+    gatilho_campo: '',
+    gatilho_valor: '',
+    placeholder: 'Data e hora (automático)',
+    obrigatorio: 'NÃO',
+  },
+  {
+    ordem: 13,
+    campo_nome: 'observacao',
+    campo_label: 'Observação',
+    tipo: 'TEXTAREA',
+    opcoes: '',
+    inicia_visivel: 'SIM',
+    gatilho_campo: '',
+    gatilho_valor: '',
+    placeholder: 'Observação geral',
+    obrigatorio: 'NÃO',
+  },
 ];
 
 // ─── tipos com template fixo (tipo_retorno=template) ────────────────────────
@@ -177,21 +672,63 @@ const diretoTipos = [
 // ─── templates de texto (Sheet 2) ───────────────────────────────────────────
 // Fonte: ordens_servico.md §Templates (linhas 118-140)
 const textosTemplate = [
-  { tipo_ordem: 'ADEQUACAO SMF', template_texto: `\nADEQUACAO DATA: \nHORÁRIO: \nINSTALADO GPS Nº: \nMARCA: \nSINCRONISMO REALIZADO COM SUCESSO. \nFOI INSTALADO MEDIDOR DA MARCA ION NC: \nMEDIDOR DE MARCA LANDIS NC:\nPERMANECE ACOPLADO AO CONJUNTO DE MEDIÇÃO: \nUC FOI DESLIGADO AS: \nRELIGADA AS: \nIP Nº: \nMASK: \nGW: \nCARGA IMPOSTA: \nEQUIPE: \nCADASTRO ENVIADO PARA APROVACAO SCDE EM: \nCADASTRO SCDE APROVADO EM: \nPROCESSO FINALIZADO PARA \nOBSERVAÇÃO: \nEQUIPE: \n` },
-  { tipo_ordem: 'COLHER LEITURA', template_texto: `\n MEDIDOR SUBSTITUIDO NC: \n MEDIDOR RETIRADO NC: \n PELO MOTIVO: \n MEDIDOR INSTALADO NC: \n COLHIDO LEITURA VIA OU NOTEBOOK: \n OBSERVAÇÃO: \n` },
-  { tipo_ordem: 'CORTE DEFINITIVO A PEDIDO', template_texto: `\n COLHIDO LEITURA VIA: \n RETIRADO MEDIDOR NC: \n CONJUNTO: \n TC: \n TP: \n REMOTA (Landis / V2): \n PORTA: \n REMOTA: \n OBSERVACAO: \n` },
-  { tipo_ordem: 'EXECUÇÃO DE MUDANÇA DE TARIFA', template_texto: `\n REALIZADA VERIFICAÇÃO NOS DADOS DA MEDIÇÃO ATRAVÉS DA TELEMEDIÇÃO E EXECUTADA MUDANCA DE TARIFA DE: \n PARA TARIFA: \n OBSERVAÇÃO: \n` },
-  { tipo_ordem: 'GRANDES CLIENTES SEM MEDIÇÃO', template_texto: `\n CLIENTE ENCONTRA-SE COM QUAL TIPO DE MEDICAO BY PASSADOS: \n NOME DO RESPONSAVEL: \n CELULAR: \n FIXO: \n E-MAIL: \n OBSERVACAO: \n` },
+  {
+    tipo_ordem: 'ADEQUACAO SMF',
+    template_texto: `\nADEQUACAO DATA: \nHORÁRIO: \nINSTALADO GPS Nº: \nMARCA: \nSINCRONISMO REALIZADO COM SUCESSO. \nFOI INSTALADO MEDIDOR DA MARCA ION NC: \nMEDIDOR DE MARCA LANDIS NC:\nPERMANECE ACOPLADO AO CONJUNTO DE MEDIÇÃO: \nUC FOI DESLIGADO AS: \nRELIGADA AS: \nIP Nº: \nMASK: \nGW: \nCARGA IMPOSTA: \nEQUIPE: \nCADASTRO ENVIADO PARA APROVACAO SCDE EM: \nCADASTRO SCDE APROVADO EM: \nPROCESSO FINALIZADO PARA \nOBSERVAÇÃO: \nEQUIPE: \n`,
+  },
+  {
+    tipo_ordem: 'COLHER LEITURA',
+    template_texto: `\n MEDIDOR SUBSTITUIDO NC: \n MEDIDOR RETIRADO NC: \n PELO MOTIVO: \n MEDIDOR INSTALADO NC: \n COLHIDO LEITURA VIA OU NOTEBOOK: \n OBSERVAÇÃO: \n`,
+  },
+  {
+    tipo_ordem: 'CORTE DEFINITIVO A PEDIDO',
+    template_texto: `\n COLHIDO LEITURA VIA: \n RETIRADO MEDIDOR NC: \n CONJUNTO: \n TC: \n TP: \n REMOTA (Landis / V2): \n PORTA: \n REMOTA: \n OBSERVACAO: \n`,
+  },
+  {
+    tipo_ordem: 'EXECUÇÃO DE MUDANÇA DE TARIFA',
+    template_texto: `\n REALIZADA VERIFICAÇÃO NOS DADOS DA MEDIÇÃO ATRAVÉS DA TELEMEDIÇÃO E EXECUTADA MUDANCA DE TARIFA DE: \n PARA TARIFA: \n OBSERVAÇÃO: \n`,
+  },
+  {
+    tipo_ordem: 'GRANDES CLIENTES SEM MEDIÇÃO',
+    template_texto: `\n CLIENTE ENCONTRA-SE COM QUAL TIPO DE MEDICAO BY PASSADOS: \n NOME DO RESPONSAVEL: \n CELULAR: \n FIXO: \n E-MAIL: \n OBSERVACAO: \n`,
+  },
   { tipo_ordem: 'GRANDES CLIENTES SELO ROMPIDO', template_texto: `\n CONFORME INSPECAO: \n` },
-  { tipo_ordem: 'LIBERAÇÃO DE PULSO', template_texto: `ABERTURA DO QUADRO PARA CONECTAR CABO DO EQUIPAMENTO DE DEMANDA DO CLIENTE. \n OBSERVAÇÃO: \n` },
-  { tipo_ordem: 'RELIGAÇÃO (RURAL/URBANA)', template_texto: `\n RELIGACAO EXECUTADA DIA \n HORÁRIO: \n` },
-  { tipo_ordem: 'RETIRAR RAMAL', template_texto: `\n CONJUNTO DE MEDICAO CONTINUA: \n MEDICAO EM BAIXO CONTINUA: \n RETIRADA E VIAVEL COM: \n OBSERVAÇÃO: \n` },
-  { tipo_ordem: 'SERVIÇO ESPECIAL OPERAÇÃO', template_texto: `\n CONFORME VISITA FOI REALIZADO: \n` },
-  { tipo_ordem: 'SUBSTITUIÇÃO DA BATERIA/MEDIDOR', template_texto: `\n BATERIA DO MEDIDOR QUE ENCONTRAVA-SE COM \n OBSERVAÇÃO: \n` },
-  { tipo_ordem: 'VISTORIA (ACRESCIMO/DECRESCIMO/DA UC/GERAÇÃO/PONTO ENTREGA/MIGRAÇÃO)', template_texto: `\n VAI SER NO MESMO RAMAL: \n VAI SER NA MESMA MEDIÇÃO: \n LIBERADA PARA EXECUTAR ACRESCIMO/DECRESCIMO DE POTENCIA: \n REALIZOU AS DEVIDAS ALTERAÇÕES NA SUBESTAÇÃO:\n NOME DO RESPONSAVEL: \n CELULAR: \n FIXO: \n E-MAIL: \n OBSERVAÇÃO: \n` },
-  { tipo_ordem: 'VISITA TECNICA MIGRAÇÃO', template_texto: `\n CONFORME VISITA MIGRAÇÃO: \n REALIZADA DIA: \n HORÁRIO: \n EQUIPE: \n` },
-  { tipo_ordem: 'TELEMEDIÇÃO MANUTENÇÃO', template_texto: `\n Nº DA REMOTA RETIRADA: \n CHIP E OPERADORA RETIRADA: \n Nº DO CHIP RETIRADO: \n Nº DA REMOTA INSTALADA: \n CHIP E OPERADORA INSTALADA: \n Nº DO CHIP INSTALADA: \n RESTABELECEU A COMUNICAÇÃO COM A BASE AS: \n CONFORME CONTATO (COM): \n FOI COLHIDA LEITURA VISUAL E NETBOOK: \n OBSERVAÇÃO: \n` },
-  { tipo_ordem: 'TELEMEDIÇÃO MANUTENÇÃO LOTE', template_texto: `\n Nº DA REMOTA RETIRADA: \n CHIP E OPERADORA RETIRADA: \n Nº DO CHIP RETIRADO: \n Nº DA REMOTA INSTALADA: \n CHIP E OPERADORA INSTALADA: \n Nº DO CHIP INSTALADA: \n RESTABELECEU A COMUNICAÇÃO COM A BASE AS: \n CONFORME CONTATO (COM): \n FOI COLHIDA LEITURA VISUAL E NETBOOK: \n OBSERVAÇÃO: \n` },
+  {
+    tipo_ordem: 'LIBERAÇÃO DE PULSO',
+    template_texto: `ABERTURA DO QUADRO PARA CONECTAR CABO DO EQUIPAMENTO DE DEMANDA DO CLIENTE. \n OBSERVAÇÃO: \n`,
+  },
+  {
+    tipo_ordem: 'RELIGAÇÃO (RURAL/URBANA)',
+    template_texto: `\n RELIGACAO EXECUTADA DIA \n HORÁRIO: \n`,
+  },
+  {
+    tipo_ordem: 'RETIRAR RAMAL',
+    template_texto: `\n CONJUNTO DE MEDICAO CONTINUA: \n MEDICAO EM BAIXO CONTINUA: \n RETIRADA E VIAVEL COM: \n OBSERVAÇÃO: \n`,
+  },
+  {
+    tipo_ordem: 'SERVIÇO ESPECIAL OPERAÇÃO',
+    template_texto: `\n CONFORME VISITA FOI REALIZADO: \n`,
+  },
+  {
+    tipo_ordem: 'SUBSTITUIÇÃO DA BATERIA/MEDIDOR',
+    template_texto: `\n BATERIA DO MEDIDOR QUE ENCONTRAVA-SE COM \n OBSERVAÇÃO: \n`,
+  },
+  {
+    tipo_ordem: 'VISTORIA (ACRESCIMO/DECRESCIMO/DA UC/GERAÇÃO/PONTO ENTREGA/MIGRAÇÃO)',
+    template_texto: `\n VAI SER NO MESMO RAMAL: \n VAI SER NA MESMA MEDIÇÃO: \n LIBERADA PARA EXECUTAR ACRESCIMO/DECRESCIMO DE POTENCIA: \n REALIZOU AS DEVIDAS ALTERAÇÕES NA SUBESTAÇÃO:\n NOME DO RESPONSAVEL: \n CELULAR: \n FIXO: \n E-MAIL: \n OBSERVAÇÃO: \n`,
+  },
+  {
+    tipo_ordem: 'VISITA TECNICA MIGRAÇÃO',
+    template_texto: `\n CONFORME VISITA MIGRAÇÃO: \n REALIZADA DIA: \n HORÁRIO: \n EQUIPE: \n`,
+  },
+  {
+    tipo_ordem: 'TELEMEDIÇÃO MANUTENÇÃO',
+    template_texto: `\n Nº DA REMOTA RETIRADA: \n CHIP E OPERADORA RETIRADA: \n Nº DO CHIP RETIRADO: \n Nº DA REMOTA INSTALADA: \n CHIP E OPERADORA INSTALADA: \n Nº DO CHIP INSTALADA: \n RESTABELECEU A COMUNICAÇÃO COM A BASE AS: \n CONFORME CONTATO (COM): \n FOI COLHIDA LEITURA VISUAL E NETBOOK: \n OBSERVAÇÃO: \n`,
+  },
+  {
+    tipo_ordem: 'TELEMEDIÇÃO MANUTENÇÃO LOTE',
+    template_texto: `\n Nº DA REMOTA RETIRADA: \n CHIP E OPERADORA RETIRADA: \n Nº DO CHIP RETIRADO: \n Nº DA REMOTA INSTALADA: \n CHIP E OPERADORA INSTALADA: \n Nº DO CHIP INSTALADA: \n RESTABELECEU A COMUNICAÇÃO COM A BASE AS: \n CONFORME CONTATO (COM): \n FOI COLHIDA LEITURA VISUAL E NETBOOK: \n OBSERVAÇÃO: \n`,
+  },
 ];
 
 // ─── especiais / variações ───────────────────────────────────────────────────
@@ -199,7 +736,12 @@ const textosTemplate = [
 // "RELIGACAO NORMAL RURAL" e "RELIGAÇÃO NORMAL URBANA" são variações do template RELIGAÇÃO
 // "VISTORIA (ACRESCIMO/DECRESCIMO/DA UC/GERAÇÃO/PONTO ENTREGA/MIGRAÇÃO)" template
 // Sub-tipos de VISTORIA que são direto:
-const vistoriaDireto = ['VISTORIA DA UC', 'VISTORIA GERAÇÃO DISTRIBUIDA', 'VISTORIA PONTO DE ENTREGA CLIENTE', 'VISTORIA ACRESCIMO DECRESCIMO'];
+const vistoriaDireto = [
+  'VISTORIA DA UC',
+  'VISTORIA GERAÇÃO DISTRIBUIDA',
+  'VISTORIA PONTO DE ENTREGA CLIENTE',
+  'VISTORIA ACRESCIMO DECRESCIMO',
+];
 
 // ─── build rows ──────────────────────────────────────────────────────────────
 
@@ -228,18 +770,74 @@ function buildRows() {
 
   // templates — 1 linha cada (sem campos específicos)
   for (const tipo of templatesTipos)
-    rows.push({ tipo_ordem: tipo, ordem: 0, campo_nome: '', campo_label: '', tipo: '', opcoes: '', inicia_visivel: '', gatilho_campo: '', gatilho_valor: '', placeholder: '', grupo: '', grupo_verificacao: 10, tipo_retorno: 'template' });
+    rows.push({
+      tipo_ordem: tipo,
+      ordem: 0,
+      campo_nome: '',
+      campo_label: '',
+      tipo: '',
+      opcoes: '',
+      inicia_visivel: '',
+      gatilho_campo: '',
+      gatilho_valor: '',
+      placeholder: '',
+      grupo: '',
+      grupo_verificacao: 10,
+      tipo_retorno: 'template',
+    });
 
   // direto — 1 linha cada
   for (const tipo of diretoTipos)
-    rows.push({ tipo_ordem: tipo, ordem: 0, campo_nome: '', campo_label: '', tipo: '', opcoes: '', inicia_visivel: '', gatilho_campo: '', gatilho_valor: '', placeholder: '', grupo: '', grupo_verificacao: 10, tipo_retorno: 'direto' });
+    rows.push({
+      tipo_ordem: tipo,
+      ordem: 0,
+      campo_nome: '',
+      campo_label: '',
+      tipo: '',
+      opcoes: '',
+      inicia_visivel: '',
+      gatilho_campo: '',
+      gatilho_valor: '',
+      placeholder: '',
+      grupo: '',
+      grupo_verificacao: 10,
+      tipo_retorno: 'direto',
+    });
 
   // vistoria direto (não estão no combo VISTORIA geral, são entradas separadas)
   for (const tipo of vistoriaDireto)
-    rows.push({ tipo_ordem: tipo, ordem: 0, campo_nome: '', campo_label: '', tipo: '', opcoes: '', inicia_visivel: '', gatilho_campo: '', gatilho_valor: '', placeholder: '', grupo: '', grupo_verificacao: 10, tipo_retorno: 'direto' });
+    rows.push({
+      tipo_ordem: tipo,
+      ordem: 0,
+      campo_nome: '',
+      campo_label: '',
+      tipo: '',
+      opcoes: '',
+      inicia_visivel: '',
+      gatilho_campo: '',
+      gatilho_valor: '',
+      placeholder: '',
+      grupo: '',
+      grupo_verificacao: 10,
+      tipo_retorno: 'direto',
+    });
 
   // LIGAÇÃO NOVA (SIMULTÂNEA/ISOLADA/MT) é direto (item genérico do spinner)
-  rows.push({ tipo_ordem: 'LIGAÇÃO NOVA (SIMULTÂNEA/ISOLADA/MT)', ordem: 0, campo_nome: '', campo_label: '', tipo: '', opcoes: '', inicia_visivel: '', gatilho_campo: '', gatilho_valor: '', placeholder: '', grupo: '', grupo_verificacao: 10, tipo_retorno: 'direto' });
+  rows.push({
+    tipo_ordem: 'LIGAÇÃO NOVA (SIMULTÂNEA/ISOLADA/MT)',
+    ordem: 0,
+    campo_nome: '',
+    campo_label: '',
+    tipo: '',
+    opcoes: '',
+    inicia_visivel: '',
+    gatilho_campo: '',
+    gatilho_valor: '',
+    placeholder: '',
+    grupo: '',
+    grupo_verificacao: 10,
+    tipo_retorno: 'direto',
+  });
 
   return rows;
 }
@@ -252,19 +850,19 @@ async function main() {
   // ─── Sheet 1: tipos_ordem ─────────────────────────────────────────────────
   const s1 = wb.addWorksheet('tipos_ordem');
   s1.columns = [
-    { header: 'tipo_ordem',         key: 'tipo_ordem',         width: 45 },
-    { header: 'ordem',              key: 'ordem',              width: 8 },
-    { header: 'campo_nome',         key: 'campo_nome',         width: 30 },
-    { header: 'campo_label',        key: 'campo_label',        width: 35 },
-    { header: 'tipo',               key: 'tipo',               width: 12 },
-    { header: 'opcoes',             key: 'opcoes',             width: 50 },
-    { header: 'inicia_visivel',     key: 'inicia_visivel',     width: 14 },
-    { header: 'gatilho_campo',      key: 'gatilho_campo',      width: 25 },
-    { header: 'gatilho_valor',      key: 'gatilho_valor',      width: 25 },
-    { header: 'placeholder',        key: 'placeholder',        width: 30 },
-    { header: 'grupo',              key: 'grupo',              width: 25 },
-    { header: 'grupo_verificacao',  key: 'grupo_verificacao',  width: 18 },
-    { header: 'tipo_retorno',       key: 'tipo_retorno',       width: 18 },
+    { header: 'tipo_ordem', key: 'tipo_ordem', width: 45 },
+    { header: 'ordem', key: 'ordem', width: 8 },
+    { header: 'campo_nome', key: 'campo_nome', width: 30 },
+    { header: 'campo_label', key: 'campo_label', width: 35 },
+    { header: 'tipo', key: 'tipo', width: 12 },
+    { header: 'opcoes', key: 'opcoes', width: 50 },
+    { header: 'inicia_visivel', key: 'inicia_visivel', width: 14 },
+    { header: 'gatilho_campo', key: 'gatilho_campo', width: 25 },
+    { header: 'gatilho_valor', key: 'gatilho_valor', width: 25 },
+    { header: 'placeholder', key: 'placeholder', width: 30 },
+    { header: 'grupo', key: 'grupo', width: 25 },
+    { header: 'grupo_verificacao', key: 'grupo_verificacao', width: 18 },
+    { header: 'tipo_retorno', key: 'tipo_retorno', width: 18 },
   ];
 
   const rows = buildRows();
@@ -277,7 +875,7 @@ async function main() {
   // ─── Sheet 2: Texto_ordem ─────────────────────────────────────────────────
   const s2 = wb.addWorksheet('Texto_ordem');
   s2.columns = [
-    { header: 'tipo_ordem',   key: 'tipo_ordem',   width: 50 },
+    { header: 'tipo_ordem', key: 'tipo_ordem', width: 50 },
     { header: 'template_texto', key: 'template_texto', width: 120 },
   ];
 
@@ -287,16 +885,16 @@ async function main() {
   // ─── Sheet 3: tela_inicial ────────────────────────────────────────────────
   const s3 = wb.addWorksheet('tela_inicial');
   s3.columns = [
-    { header: 'ordem',           key: 'ordem',           width: 8 },
-    { header: 'campo_nome',      key: 'campo_nome',      width: 25 },
-    { header: 'campo_label',     key: 'campo_label',     width: 25 },
-    { header: 'tipo',            key: 'tipo',            width: 12 },
-    { header: 'opcoes',          key: 'opcoes',          width: 40 },
-    { header: 'inicia_visivel',  key: 'inicia_visivel',  width: 14 },
-    { header: 'gatilho_campo',   key: 'gatilho_campo',   width: 20 },
-    { header: 'gatilho_valor',   key: 'gatilho_valor',   width: 20 },
-    { header: 'placeholder',     key: 'placeholder',     width: 30 },
-    { header: 'obrigatorio',     key: 'obrigatorio',     width: 14 },
+    { header: 'ordem', key: 'ordem', width: 8 },
+    { header: 'campo_nome', key: 'campo_nome', width: 25 },
+    { header: 'campo_label', key: 'campo_label', width: 25 },
+    { header: 'tipo', key: 'tipo', width: 12 },
+    { header: 'opcoes', key: 'opcoes', width: 40 },
+    { header: 'inicia_visivel', key: 'inicia_visivel', width: 14 },
+    { header: 'gatilho_campo', key: 'gatilho_campo', width: 20 },
+    { header: 'gatilho_valor', key: 'gatilho_valor', width: 20 },
+    { header: 'placeholder', key: 'placeholder', width: 30 },
+    { header: 'obrigatorio', key: 'obrigatorio', width: 14 },
   ];
 
   for (const f of telaInicialFields) s3.addRow(f);

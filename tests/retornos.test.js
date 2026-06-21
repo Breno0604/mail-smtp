@@ -373,7 +373,7 @@ describe('retornos', () => {
         expect(group.style.display).toBe('');
       });
 
-it('should initially hide acesso_desligamento when no value selected in control field', () => {
+      it('should initially hide acesso_desligamento when no value selected in control field', () => {
         DOM.tipoOrdem.value = 'DESLIG.PROG.MANUTENÇÃO';
         renderRetorno();
         const group = document.querySelector('[data-field-nome="acesso_desligamento"]');
@@ -482,12 +482,20 @@ it('should initially hide acesso_desligamento when no value selected in control 
     it('should hide condicional fields initially', () => {
       DOM.tipoOrdem.value = 'AFERIÇÃO DE MEDIDOR';
       renderRetorno();
-      expect(document.querySelector('[data-field-nome="Motivo_cancel_afericao"]').style.display).toBe('none');
-      expect(document.querySelector('[data-field-nome="leitura_afericao"]').style.display).toBe('none');
-      expect(document.querySelector('[data-field-nome="motivo_nao_colher"]').style.display).toBe('none');
+      expect(
+        document.querySelector('[data-field-nome="Motivo_cancel_afericao"]').style.display
+      ).toBe('none');
+      expect(document.querySelector('[data-field-nome="leitura_afericao"]').style.display).toBe(
+        'none'
+      );
+      expect(document.querySelector('[data-field-nome="motivo_nao_colher"]').style.display).toBe(
+        'none'
+      );
       expect(document.querySelector('[data-field-nome="toi_afericao"]').style.display).toBe('none');
       expect(document.querySelector('[data-field-nome="numero_toi"]').style.display).toBe('none');
-      expect(document.querySelector('[data-field-nome="porque_nao_aplicado_toi"]').style.display).toBe('none');
+      expect(
+        document.querySelector('[data-field-nome="porque_nao_aplicado_toi"]').style.display
+      ).toBe('none');
     });
 
     it('should show Motivo_cancel_afericao when medidor_afericao = NAO SUBSTITUIDO', () => {
@@ -496,7 +504,9 @@ it('should initially hide acesso_desligamento when no value selected in control 
       const medidor = document.getElementById('medidor_afericao');
       medidor.value = 'NAO SUBSTITUIDO';
       medidor.dispatchEvent(new Event('change'));
-      expect(document.querySelector('[data-field-nome="Motivo_cancel_afericao"]').style.display).toBe('');
+      expect(
+        document.querySelector('[data-field-nome="Motivo_cancel_afericao"]').style.display
+      ).toBe('');
     });
 
     it('should show leitura_afericao and toi_afericao when medidor_afericao = SUBSTITUIDO', () => {
@@ -518,7 +528,9 @@ it('should initially hide acesso_desligamento when no value selected in control 
       const leitura = document.getElementById('leitura_afericao');
       leitura.value = 'NAO FOI COLHIDO LEITURA';
       leitura.dispatchEvent(new Event('change'));
-      expect(document.querySelector('[data-field-nome="motivo_nao_colher"]').style.display).toBe('');
+      expect(document.querySelector('[data-field-nome="motivo_nao_colher"]').style.display).toBe(
+        ''
+      );
     });
 
     it('should show numero_toi when toi_afericao = APLICADO TOI', () => {
@@ -542,7 +554,9 @@ it('should initially hide acesso_desligamento when no value selected in control 
       const toi = document.getElementById('toi_afericao');
       toi.value = 'NAO FOI APLICADO TOI';
       toi.dispatchEvent(new Event('change'));
-      expect(document.querySelector('[data-field-nome="porque_nao_aplicado_toi"]').style.display).toBe('');
+      expect(
+        document.querySelector('[data-field-nome="porque_nao_aplicado_toi"]').style.display
+      ).toBe('');
     });
 
     it('should collect visible fields but skip hidden ones', () => {
@@ -584,10 +598,18 @@ it('should initially hide acesso_desligamento when no value selected in control 
     it('should hide conditional fields initially', () => {
       DOM.tipoOrdem.value = 'TELEMEDIÇÃO MANUTENÇÃO';
       renderRetorno();
-      expect(document.querySelector('[data-field-nome="motivo_cancelamento_telemedicao"]').style.display).toBe('none');
-      expect(document.querySelector('[data-field-nome="descreva_problema_telemedicao"]').style.display).toBe('none');
-      expect(document.querySelector('[data-field-nome="atentende_com"]').style.display).toBe('none');
-      expect(document.querySelector('[data-field-nome="realizado_telemedicao"]').style.display).toBe('none');
+      expect(
+        document.querySelector('[data-field-nome="motivo_cancelamento_telemedicao"]').style.display
+      ).toBe('none');
+      expect(
+        document.querySelector('[data-field-nome="descreva_problema_telemedicao"]').style.display
+      ).toBe('none');
+      expect(document.querySelector('[data-field-nome="atentende_com"]').style.display).toBe(
+        'none'
+      );
+      expect(
+        document.querySelector('[data-field-nome="realizado_telemedicao"]').style.display
+      ).toBe('none');
     });
 
     it('should show motivo_cancelamento_telemedicao when executado_telemedicao = NAO', () => {
@@ -596,7 +618,9 @@ it('should initially hide acesso_desligamento when no value selected in control 
       const executado = document.getElementById('executado_telemedicao');
       executado.value = 'NAO';
       executado.dispatchEvent(new Event('change'));
-      expect(document.querySelector('[data-field-nome="motivo_cancelamento_telemedicao"]').style.display).toBe('');
+      expect(
+        document.querySelector('[data-field-nome="motivo_cancelamento_telemedicao"]').style.display
+      ).toBe('');
     });
 
     it('should show atentende_com and realizado_telemedicao when executado_telemedicao = SIM', () => {
@@ -606,7 +630,9 @@ it('should initially hide acesso_desligamento when no value selected in control 
       executado.value = 'SIM';
       executado.dispatchEvent(new Event('change'));
       expect(document.querySelector('[data-field-nome="atentende_com"]').style.display).toBe('');
-      expect(document.querySelector('[data-field-nome="realizado_telemedicao"]').style.display).toBe('');
+      expect(
+        document.querySelector('[data-field-nome="realizado_telemedicao"]').style.display
+      ).toBe('');
     });
 
     it('should show descreva_problema_telemedicao when motivo = SEM ACESSO', () => {
@@ -618,7 +644,9 @@ it('should initially hide acesso_desligamento when no value selected in control 
       const motivo = document.getElementById('motivo_cancelamento_telemedicao');
       motivo.value = 'SEM ACESSO';
       motivo.dispatchEvent(new Event('change'));
-      expect(document.querySelector('[data-field-nome="descreva_problema_telemedicao"]').style.display).toBe('');
+      expect(
+        document.querySelector('[data-field-nome="descreva_problema_telemedicao"]').style.display
+      ).toBe('');
     });
 
     it('should show descreva_problema_telemedicao when motivo = OUTRO MOTIVO', () => {
@@ -630,7 +658,9 @@ it('should initially hide acesso_desligamento when no value selected in control 
       const motivo = document.getElementById('motivo_cancelamento_telemedicao');
       motivo.value = 'OUTRO MOTIVO';
       motivo.dispatchEvent(new Event('change'));
-      expect(document.querySelector('[data-field-nome="descreva_problema_telemedicao"]').style.display).toBe('');
+      expect(
+        document.querySelector('[data-field-nome="descreva_problema_telemedicao"]').style.display
+      ).toBe('');
     });
 
     it('should hide descreva_problema_telemedicao when motivo = MEDICAO COM BY-PASS', () => {
@@ -642,7 +672,9 @@ it('should initially hide acesso_desligamento when no value selected in control 
       const motivo = document.getElementById('motivo_cancelamento_telemedicao');
       motivo.value = 'MEDICAO COM BY-PASS';
       motivo.dispatchEvent(new Event('change'));
-      expect(document.querySelector('[data-field-nome="descreva_problema_telemedicao"]').style.display).toBe('none');
+      expect(
+        document.querySelector('[data-field-nome="descreva_problema_telemedicao"]').style.display
+      ).toBe('none');
     });
 
     it('should render same fields for TELEMEDIÇÃO MANUTENÇÃO CLIENTE LIVRE', () => {
@@ -699,8 +731,14 @@ it('should initially hide acesso_desligamento when no value selected in control 
     it('should hide conditional fields initially', () => {
       DOM.tipoOrdem.value = 'CORTE DE UC POR DEF TECNICO';
       renderRetorno();
-      expect(document.querySelector('[data-field-nome="motivo_cancelamento_corte_por_defeito_tecnico"]').style.display).toBe('none');
-      expect(document.querySelector('[data-field-nome="descreva_problema_corte_por_defeito_tecnico"]').style.display).toBe('none');
+      expect(
+        document.querySelector('[data-field-nome="motivo_cancelamento_corte_por_defeito_tecnico"]')
+          .style.display
+      ).toBe('none');
+      expect(
+        document.querySelector('[data-field-nome="descreva_problema_corte_por_defeito_tecnico"]')
+          .style.display
+      ).toBe('none');
     });
 
     it('should show motivo when corte_por_defeito_tecnico = NAO', () => {
@@ -709,7 +747,10 @@ it('should initially hide acesso_desligamento when no value selected in control 
       const executado = document.getElementById('corte_por_defeito_tecnico');
       executado.value = 'NAO';
       executado.dispatchEvent(new Event('change'));
-      expect(document.querySelector('[data-field-nome="motivo_cancelamento_corte_por_defeito_tecnico"]').style.display).toBe('');
+      expect(
+        document.querySelector('[data-field-nome="motivo_cancelamento_corte_por_defeito_tecnico"]')
+          .style.display
+      ).toBe('');
     });
 
     it('should show descreva_problema when motivo = SEM ACESSO', () => {
@@ -721,7 +762,10 @@ it('should initially hide acesso_desligamento when no value selected in control 
       const motivo = document.getElementById('motivo_cancelamento_corte_por_defeito_tecnico');
       motivo.value = 'SEM ACESSO';
       motivo.dispatchEvent(new Event('change'));
-      expect(document.querySelector('[data-field-nome="descreva_problema_corte_por_defeito_tecnico"]').style.display).toBe('');
+      expect(
+        document.querySelector('[data-field-nome="descreva_problema_corte_por_defeito_tecnico"]')
+          .style.display
+      ).toBe('');
     });
 
     it('should show descreva_problema when motivo = OUTRO PROBLEMA', () => {
@@ -733,7 +777,10 @@ it('should initially hide acesso_desligamento when no value selected in control 
       const motivo = document.getElementById('motivo_cancelamento_corte_por_defeito_tecnico');
       motivo.value = 'OUTRO PROBLEMA';
       motivo.dispatchEvent(new Event('change'));
-      expect(document.querySelector('[data-field-nome="descreva_problema_corte_por_defeito_tecnico"]').style.display).toBe('');
+      expect(
+        document.querySelector('[data-field-nome="descreva_problema_corte_por_defeito_tecnico"]')
+          .style.display
+      ).toBe('');
     });
 
     it('should hide descreva_problema when motivo = SOLICITACAO ENEL', () => {
@@ -745,7 +792,10 @@ it('should initially hide acesso_desligamento when no value selected in control 
       const motivo = document.getElementById('motivo_cancelamento_corte_por_defeito_tecnico');
       motivo.value = 'SOLICITACAO ENEL';
       motivo.dispatchEvent(new Event('change'));
-      expect(document.querySelector('[data-field-nome="descreva_problema_corte_por_defeito_tecnico"]').style.display).toBe('none');
+      expect(
+        document.querySelector('[data-field-nome="descreva_problema_corte_por_defeito_tecnico"]')
+          .style.display
+      ).toBe('none');
     });
 
     it('should collect visible fields but skip hidden ones', () => {
@@ -757,7 +807,8 @@ it('should initially hide acesso_desligamento when no value selected in control 
       const motivo = document.getElementById('motivo_cancelamento_corte_por_defeito_tecnico');
       motivo.value = 'SEM ACESSO';
       motivo.dispatchEvent(new Event('change'));
-      document.getElementById('descreva_problema_corte_por_defeito_tecnico').value = 'Rua bloqueada';
+      document.getElementById('descreva_problema_corte_por_defeito_tecnico').value =
+        'Rua bloqueada';
       const data = collectRetorno();
       expect(data.corte_por_defeito_tecnico).toBe('NAO');
       expect(data.motivo_cancelamento_corte_por_defeito_tecnico).toBe('SEM ACESSO');
@@ -774,7 +825,9 @@ it('should initially hide acesso_desligamento when no value selected in control 
       motivo.value = 'SEM ACESSO';
       motivo.dispatchEvent(new Event('change'));
       const descricaoGroup = document.querySelector('[data-field-nome="descricao"]');
-      const problemaGroup = document.querySelector('[data-field-nome="descreva_problema_corte_por_defeito_tecnico"]');
+      const problemaGroup = document.querySelector(
+        '[data-field-nome="descreva_problema_corte_por_defeito_tecnico"]'
+      );
       expect(descricaoGroup.parentElement).not.toBe(problemaGroup.parentElement);
       expect(descricaoGroup.parentElement.classList.contains('flex')).toBe(false);
     });

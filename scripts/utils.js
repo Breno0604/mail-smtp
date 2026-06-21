@@ -4,16 +4,16 @@ export const SKIP_SIZE = 670 * 1024;
 export function toBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result.split(",")[1]);
+    reader.onloadend = () => resolve(reader.result.split(',')[1]);
     reader.onerror = reject;
     reader.readAsDataURL(file);
   });
 }
 
 export function blobToBase64(blob) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result.split(",")[1]);
+    reader.onloadend = () => resolve(reader.result.split(',')[1]);
     reader.readAsDataURL(blob);
   });
 }
@@ -22,16 +22,22 @@ export function loadImage(file) {
   return new Promise((resolve, reject) => {
     const img = new Image();
     const url = URL.createObjectURL(file);
-    img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
-    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Failed to load image")); };
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      resolve(img);
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error('Failed to load image'));
+    };
     img.src = url;
   });
 }
 
 export function formatDate(iso) {
-  if (!iso) return "";
+  if (!iso) return '';
   const d = new Date(iso);
-  const pad = (n) => String(n).padStart(2, "0");
+  const pad = n => String(n).padStart(2, '0');
   return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
@@ -46,11 +52,11 @@ export function base64ToBlob(base64, type) {
 }
 
 export async function captureCoordinates() {
-  const coordEl = document.getElementById("coordenadas");
+  const coordEl = document.getElementById('coordenadas');
   if (!coordEl) return;
 
   if (!navigator.geolocation) {
-    coordEl.value = "Não disponível";
+    coordEl.value = 'Não disponível';
     coordEl.dispatchEvent(new Event('input'));
     return;
   }
@@ -67,8 +73,8 @@ export async function captureCoordinates() {
     const lon = position.coords.longitude.toFixed(4);
     coordEl.value = `${lat}, ${lon}`;
     coordEl.dispatchEvent(new Event('input'));
-  } catch (err) {
-    coordEl.value = "Não disponível";
+  } catch (_err) {
+    coordEl.value = 'Não disponível';
     coordEl.dispatchEvent(new Event('input'));
   }
 }

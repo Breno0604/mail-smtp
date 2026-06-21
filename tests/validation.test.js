@@ -68,19 +68,39 @@ describe('validation', () => {
     // Set select values in DOM
     DOM.instaladoEquip.value = instaladoValue || '';
     DOM.retiradoEquip.value = retiradoValue || '';
-    
+
     // Set state
     state.equipamentos.instaladoEquip = instaladoValue || 'NAO';
     state.equipamentos.retiradoEquip = retiradoValue || 'NAO';
-    state.equipamentos.instalados = instaladosData || { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' };
-    state.equipamentos.retirados = retiradosData || { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' };
-    
+    state.equipamentos.instalados = instaladosData || {
+      medidor: '',
+      conjunto: '',
+      display: '',
+      tc_fase_a: '',
+      tc_fase_b: '',
+      tc_fase_c: '',
+      tp_fase_a: '',
+      tp_fase_b: '',
+      tp_fase_c: '',
+    };
+    state.equipamentos.retirados = retiradosData || {
+      medidor: '',
+      conjunto: '',
+      display: '',
+      tc_fase_a: '',
+      tc_fase_b: '',
+      tc_fase_c: '',
+      tp_fase_a: '',
+      tp_fase_b: '',
+      tp_fase_c: '',
+    };
+
     // Create input fields in DOM for checked checkboxes
     const camposInstalados = document.getElementById('campos-instalados');
     const camposRetirados = document.getElementById('campos-retirados');
     camposInstalados.innerHTML = '';
     camposRetirados.innerHTML = '';
-    
+
     // Simulate checkbox states based on what has values
     if (instaladoValue === 'SIM') {
       Object.entries(state.equipamentos.instalados).forEach(([key, val]) => {
@@ -97,7 +117,7 @@ describe('validation', () => {
         }
       });
     }
-    
+
     if (retiradoValue === 'SIM') {
       Object.entries(state.equipamentos.retirados).forEach(([key, val]) => {
         if (val && val.trim() !== '') {
@@ -120,7 +140,7 @@ describe('validation', () => {
     renderIniciais();
     // Now get the tipo-ordem select and set DOM reference
     DOM.tipoOrdem = document.getElementById('tipo-ordem');
-    
+
     document.getElementById('lider').value = 'ANDRE DE SOUSA CARVALHO';
     document.getElementById('parceiro').value = 'ANTONIO MAURIELLTON DE ARAUJO MARTINS';
     document.getElementById('municipio').value = 'FORTALEZA';
@@ -142,12 +162,52 @@ describe('validation', () => {
     state.equipamentos = {
       instaladoEquip: 'NAO',
       retiradoEquip: 'NAO',
-      instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
-      retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
+      instalados: {
+        medidor: '',
+        conjunto: '',
+        display: '',
+        tc_fase_a: '',
+        tc_fase_b: '',
+        tc_fase_c: '',
+        tp_fase_a: '',
+        tp_fase_b: '',
+        tp_fase_c: '',
+      },
+      retirados: {
+        medidor: '',
+        conjunto: '',
+        display: '',
+        tc_fase_a: '',
+        tc_fase_b: '',
+        tc_fase_c: '',
+        tp_fase_a: '',
+        tp_fase_b: '',
+        tp_fase_c: '',
+      },
       checkboxes: {
-        instalados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false },
-        retirados: { medidor: false, conjunto: false, display: false, tc_fase_a: false, tc_fase_b: false, tc_fase_c: false, tp_fase_a: false, tp_fase_b: false, tp_fase_c: false }
-      }
+        instalados: {
+          medidor: false,
+          conjunto: false,
+          display: false,
+          tc_fase_a: false,
+          tc_fase_b: false,
+          tc_fase_c: false,
+          tp_fase_a: false,
+          tp_fase_b: false,
+          tp_fase_c: false,
+        },
+        retirados: {
+          medidor: false,
+          conjunto: false,
+          display: false,
+          tc_fase_a: false,
+          tc_fase_b: false,
+          tc_fase_c: false,
+          tp_fase_a: false,
+          tp_fase_b: false,
+          tp_fase_c: false,
+        },
+      },
     };
   });
 
@@ -185,7 +245,19 @@ describe('validation', () => {
       renderIniciais();
       DOM.tipoOrdem = document.getElementById('tipo-ordem');
       validateSection(1);
-      const fieldsWithRequired = ['lider', 'parceiro', 'municipio', 'uc', 'os', 'notificado', 'placa', 'data', 'hora_inicio', 'hora_fim', 'tipo-ordem'];
+      const fieldsWithRequired = [
+        'lider',
+        'parceiro',
+        'municipio',
+        'uc',
+        'os',
+        'notificado',
+        'placa',
+        'data',
+        'hora_inicio',
+        'hora_fim',
+        'tipo-ordem',
+      ];
       fieldsWithRequired.forEach(name => {
         const el = document.getElementById(name);
         if (el) {
@@ -313,61 +385,132 @@ describe('validation', () => {
   });
 
   describe('validateSection(2) - Equipamentos', () => {
-    
     it('should return true when both control fields are NAO', () => {
       setupEquipmentDOM('NAO', 'NAO');
       const result = validateSection(2);
       expect(result).toBe(true);
     });
-    
+
     it('should return false when instalado select is empty', () => {
       setupEquipmentDOM('', 'NAO');
       const result = validateSection(2);
       expect(result).toBe(false);
     });
-    
+
     it('should return false when retirado select is empty', () => {
       setupEquipmentDOM('NAO', '');
       const result = validateSection(2);
       expect(result).toBe(false);
     });
-    
+
     it('should return false when instalado is SIM but no equipment fields filled', () => {
-      setupEquipmentDOM('SIM', 'NAO', { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' });
+      setupEquipmentDOM('SIM', 'NAO', {
+        medidor: '',
+        conjunto: '',
+        display: '',
+        tc_fase_a: '',
+        tc_fase_b: '',
+        tc_fase_c: '',
+        tp_fase_a: '',
+        tp_fase_b: '',
+        tp_fase_c: '',
+      });
       const result = validateSection(2);
       expect(result).toBe(false);
     });
-    
+
     it('should return true when instalado is SIM with at least one value', () => {
-      setupEquipmentDOM('SIM', 'NAO', { medidor: '12345', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' });
+      setupEquipmentDOM('SIM', 'NAO', {
+        medidor: '12345',
+        conjunto: '',
+        display: '',
+        tc_fase_a: '',
+        tc_fase_b: '',
+        tc_fase_c: '',
+        tp_fase_a: '',
+        tp_fase_b: '',
+        tp_fase_c: '',
+      });
       const result = validateSection(2);
       expect(result).toBe(true);
     });
-    
+
     it('should return false when retirado is SIM but no equipment fields filled', () => {
-      setupEquipmentDOM('NAO', 'SIM', undefined, { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' });
+      setupEquipmentDOM('NAO', 'SIM', undefined, {
+        medidor: '',
+        conjunto: '',
+        display: '',
+        tc_fase_a: '',
+        tc_fase_b: '',
+        tc_fase_c: '',
+        tp_fase_a: '',
+        tp_fase_b: '',
+        tp_fase_c: '',
+      });
       const result = validateSection(2);
       expect(result).toBe(false);
     });
-    
+
     it('should return true when retirado is SIM with at least one value', () => {
-      setupEquipmentDOM('NAO', 'SIM', undefined, { display: '67890', medidor: '', conjunto: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' });
+      setupEquipmentDOM('NAO', 'SIM', undefined, {
+        display: '67890',
+        medidor: '',
+        conjunto: '',
+        tc_fase_a: '',
+        tc_fase_b: '',
+        tc_fase_c: '',
+        tp_fase_a: '',
+        tp_fase_b: '',
+        tp_fase_c: '',
+      });
       const result = validateSection(2);
       expect(result).toBe(true);
     });
-    
+
     it('should hide global error when validation finds empty fields', () => {
-      setupEquipmentDOM('SIM', 'NAO', { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' });
+      setupEquipmentDOM('SIM', 'NAO', {
+        medidor: '',
+        conjunto: '',
+        display: '',
+        tc_fase_a: '',
+        tc_fase_b: '',
+        tc_fase_c: '',
+        tp_fase_a: '',
+        tp_fase_b: '',
+        tp_fase_c: '',
+      });
       validateSection(2);
       const errorMsg = document.getElementById('error-msg');
       expect(errorMsg.style.display).toBe('none');
       expect(errorMsg.textContent).toBe('');
     });
-    
+
     it('should return true for valid equipment with both instalado and retirado', () => {
-      setupEquipmentDOM('SIM', 'SIM', 
-        { medidor: '111', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
-        { display: '222', medidor: '', conjunto: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' }
+      setupEquipmentDOM(
+        'SIM',
+        'SIM',
+        {
+          medidor: '111',
+          conjunto: '',
+          display: '',
+          tc_fase_a: '',
+          tc_fase_b: '',
+          tc_fase_c: '',
+          tp_fase_a: '',
+          tp_fase_b: '',
+          tp_fase_c: '',
+        },
+        {
+          display: '222',
+          medidor: '',
+          conjunto: '',
+          tc_fase_a: '',
+          tc_fase_b: '',
+          tc_fase_c: '',
+          tp_fase_a: '',
+          tp_fase_b: '',
+          tp_fase_c: '',
+        }
       );
       const result = validateSection(2);
       expect(result).toBe(true);
@@ -378,7 +521,8 @@ describe('validation', () => {
     beforeEach(() => {
       const select = document.createElement('select');
       select.id = 'tipo-ordem';
-      select.innerHTML = '<option value="">Selecione</option><option value="ADEQUACAO SMF">ADEQUACAO SMF</option>';
+      select.innerHTML =
+        '<option value="">Selecione</option><option value="ADEQUACAO SMF">ADEQUACAO SMF</option>';
       document.body.appendChild(select);
       DOM.tipoOrdem = select;
       DOM.tipoOrdem.value = 'ADEQUACAO SMF';
@@ -611,7 +755,17 @@ describe('validation', () => {
     });
 
     it('should validate section 2 with valid installed equipment', () => {
-      setupEquipmentDOM('SIM', 'NAO', { medidor: '111', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' });
+      setupEquipmentDOM('SIM', 'NAO', {
+        medidor: '111',
+        conjunto: '',
+        display: '',
+        tc_fase_a: '',
+        tc_fase_b: '',
+        tc_fase_c: '',
+        tp_fase_a: '',
+        tp_fase_b: '',
+        tp_fase_c: '',
+      });
       const result = validateSection(2);
       expect(result).toBe(true);
     });
@@ -619,7 +773,8 @@ describe('validation', () => {
     it('should populate state.retorno after valid section 3', () => {
       const select = document.createElement('select');
       select.id = 'tipo-ordem';
-      select.innerHTML = '<option value="">Selecione</option><option value="ADEQUACAO SMF">ADEQUACAO SMF</option>';
+      select.innerHTML =
+        '<option value="">Selecione</option><option value="ADEQUACAO SMF">ADEQUACAO SMF</option>';
       document.body.appendChild(select);
       DOM.tipoOrdem = select;
       DOM.tipoOrdem.value = 'ADEQUACAO SMF';
@@ -633,7 +788,8 @@ describe('validation', () => {
     it('should not populate state.retorno when section 3 validation fails', () => {
       const select = document.createElement('select');
       select.id = 'tipo-ordem';
-      select.innerHTML = '<option value="">Selecione</option><option value="ADEQUACAO SMF">ADEQUACAO SMF</option>';
+      select.innerHTML =
+        '<option value="">Selecione</option><option value="ADEQUACAO SMF">ADEQUACAO SMF</option>';
       document.body.appendChild(select);
       DOM.tipoOrdem = select;
       DOM.tipoOrdem.value = 'ADEQUACAO SMF';

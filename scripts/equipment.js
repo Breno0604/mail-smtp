@@ -1,6 +1,6 @@
-import { state } from "./state.js";
-import { debouncedSave } from "./persistence.js";
-import { INPUT_CLASS } from "./styles.js";
+import { state } from './state.js';
+import { debouncedSave } from './persistence.js';
+import { INPUT_CLASS } from './styles.js';
 
 const EQUIPMENT_LIST = [
   { key: 'medidor', label: 'MEDIDOR' },
@@ -11,7 +11,7 @@ const EQUIPMENT_LIST = [
   { key: 'tc_fase_c', label: 'TC FASE C' },
   { key: 'tp_fase_a', label: 'TP FASE A' },
   { key: 'tp_fase_b', label: 'TP FASE B' },
-  { key: 'tp_fase_c', label: 'TP FASE C' }
+  { key: 'tp_fase_c', label: 'TP FASE C' },
 ];
 
 /**
@@ -37,22 +37,23 @@ function renderCheckboxes(tipo) {
   // Grid de 3 colunas usando classe CSS customizada (Tailwind estático não tem grid-cols-3)
   container.className = 'equip-checkboxes-grid';
 
-  EQUIPMENT_LIST.forEach((equip) => {
+  EQUIPMENT_LIST.forEach(equip => {
     const wrapper = document.createElement('label');
     wrapper.setAttribute('for', `checkbox-${tipo}-${equip.key}`);
     wrapper.className = 'flex items-center gap-2 cursor-pointer';
-    
+
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.id = `checkbox-${tipo}-${equip.key}`;
     checkbox.setAttribute('data-tipo', tipo);
     checkbox.setAttribute('data-equip', equip.key);
-    checkbox.className = 'equip-checkbox w-4 h-4 flex-shrink-0 border-slate-300 rounded cursor-pointer accent-blue-600';
-    
+    checkbox.className =
+      'equip-checkbox w-4 h-4 flex-shrink-0 border-slate-300 rounded cursor-pointer accent-blue-600';
+
     const label = document.createElement('span');
     label.className = 'font-semibold text-[13px] text-slate-600 select-none';
     label.textContent = equip.label;
-    
+
     wrapper.appendChild(checkbox);
     wrapper.appendChild(label);
     container.appendChild(wrapper);
@@ -60,8 +61,8 @@ function renderCheckboxes(tipo) {
 }
 
 function restoreCheckboxStates() {
-  ['instalados', 'retirados'].forEach((tipo) => {
-    Object.keys(state.equipamentos.checkboxes[tipo]).forEach((key) => {
+  ['instalados', 'retirados'].forEach(tipo => {
+    Object.keys(state.equipamentos.checkboxes[tipo]).forEach(key => {
       if (state.equipamentos.checkboxes[tipo][key]) {
         const checkbox = document.querySelector(`[data-tipo="${tipo}"][data-equip="${key}"]`);
         if (checkbox) {
@@ -74,8 +75,8 @@ function restoreCheckboxStates() {
 }
 
 function restoreFieldStates() {
-  ['instalados', 'retirados'].forEach((tipo) => {
-    Object.keys(state.equipamentos[tipo]).forEach((key) => {
+  ['instalados', 'retirados'].forEach(tipo => {
+    Object.keys(state.equipamentos[tipo]).forEach(key => {
       const wrapper = document.querySelector(`#campos-${tipo} [data-equip="${key}"]`);
       if (wrapper) {
         const input = wrapper.querySelector('input');
@@ -111,7 +112,7 @@ export function toggleSectionVisibility(tipo) {
 
 function clearSection(tipo) {
   // Reset all checkbox states
-  Object.keys(state.equipamentos.checkboxes[tipo]).forEach((key) => {
+  Object.keys(state.equipamentos.checkboxes[tipo]).forEach(key => {
     state.equipamentos.checkboxes[tipo][key] = false;
     state.equipamentos[tipo][key] = '';
   });
@@ -122,7 +123,7 @@ function clearSection(tipo) {
 
   // Uncheck all checkboxes in DOM
   const checkboxes = document.querySelectorAll(`[data-tipo="${tipo}"]`);
-  checkboxes.forEach((cb) => {
+  checkboxes.forEach(cb => {
     cb.checked = false;
   });
 }
@@ -153,7 +154,7 @@ function showField(tipo, equipKey) {
   // Avoid duplicates
   if (container.querySelector(`[data-equip="${equipKey}"]`)) return;
 
-  const equip = EQUIPMENT_LIST.find((e) => e.key === equipKey);
+  const equip = EQUIPMENT_LIST.find(e => e.key === equipKey);
   if (!equip) return;
 
   const wrapper = document.createElement('div');

@@ -71,8 +71,28 @@ describe('email', () => {
       equipamentos: {
         instaladoEquip: 'NAO',
         retiradoEquip: 'NAO',
-        instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
-        retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' }
+        instalados: {
+          medidor: '',
+          conjunto: '',
+          display: '',
+          tc_fase_a: '',
+          tc_fase_b: '',
+          tc_fase_c: '',
+          tp_fase_a: '',
+          tp_fase_b: '',
+          tp_fase_c: '',
+        },
+        retirados: {
+          medidor: '',
+          conjunto: '',
+          display: '',
+          tc_fase_a: '',
+          tc_fase_b: '',
+          tc_fase_c: '',
+          tp_fase_a: '',
+          tp_fase_b: '',
+          tp_fase_c: '',
+        },
       },
       retorno: { descricao: '' },
     };
@@ -111,8 +131,28 @@ describe('email', () => {
         equipamentos: {
           instaladoEquip: 'SIM',
           retiradoEquip: 'NAO',
-          instalados: { medidor: '12345', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
-          retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' }
+          instalados: {
+            medidor: '12345',
+            conjunto: '',
+            display: '',
+            tc_fase_a: '',
+            tc_fase_b: '',
+            tc_fase_c: '',
+            tp_fase_a: '',
+            tp_fase_b: '',
+            tp_fase_c: '',
+          },
+          retirados: {
+            medidor: '',
+            conjunto: '',
+            display: '',
+            tc_fase_a: '',
+            tc_fase_b: '',
+            tc_fase_c: '',
+            tp_fase_a: '',
+            tp_fase_b: '',
+            tp_fase_c: '',
+          },
         },
       };
       const body = composeEmail(data);
@@ -128,8 +168,28 @@ describe('email', () => {
         equipamentos: {
           instaladoEquip: 'SIM',
           retiradoEquip: 'NAO',
-          instalados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' },
-          retirados: { medidor: '', conjunto: '', display: '', tc_fase_a: '', tc_fase_b: '', tc_fase_c: '', tp_fase_a: '', tp_fase_b: '', tp_fase_c: '' }
+          instalados: {
+            medidor: '',
+            conjunto: '',
+            display: '',
+            tc_fase_a: '',
+            tc_fase_b: '',
+            tc_fase_c: '',
+            tp_fase_a: '',
+            tp_fase_b: '',
+            tp_fase_c: '',
+          },
+          retirados: {
+            medidor: '',
+            conjunto: '',
+            display: '',
+            tc_fase_a: '',
+            tc_fase_b: '',
+            tc_fase_c: '',
+            tp_fase_a: '',
+            tp_fase_b: '',
+            tp_fase_c: '',
+          },
         },
       };
       const body = composeEmail(data);

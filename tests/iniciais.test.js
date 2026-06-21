@@ -203,7 +203,7 @@ describe('iniciais', () => {
       lider.value = 'ANDRE DE SOUSA CARVALHO';
       const uc = document.getElementById('uc');
       uc.value = '12345';
-      
+
       const data = collectIniciais();
       expect(data.lider).toBe('ANDRE DE SOUSA CARVALHO');
       expect(data.uc).toBe('12345');

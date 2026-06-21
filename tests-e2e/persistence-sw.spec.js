@@ -1,14 +1,8 @@
 // tests-e2e/persistence-sw.spec.js
 import { test, expect } from '@playwright/test';
-import {
-  readIndexedDB,
-  clearIndexedDB,
-  fillMinimal,
-  waitForSave,
-} from './helpers/persistence.js';
+import { readIndexedDB, clearIndexedDB, fillMinimal, waitForSave } from './helpers/persistence.js';
 
 test.describe('Persistence — Service Worker', () => {
-
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('#uc');
@@ -49,5 +43,4 @@ test.describe('Persistence — Service Worker', () => {
     // Even if not granted, the request was made (app.js L115-117)
     expect(typeof isPersisted).toBe('boolean');
   });
-
 });

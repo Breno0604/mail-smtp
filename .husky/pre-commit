@@ -1,6 +1,9 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
+# Run lint-staged on staged files
+npx lint-staged
+
 # Arquivos que exigem cache bump (JS, CSS, HTML, assets estáticos)
 # Ignora testes, dist, node_modules, arquivos de config
 STATIC_FILES=$(git diff --cached --name-only | grep -E '\.(js|css|html|json|png|ico|svg|woff2?)$' | grep -v '^tests/' | grep -v '^dist/' | grep -v '^node_modules/' | grep -v '^\.husky/' || true)

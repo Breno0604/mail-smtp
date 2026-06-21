@@ -11,7 +11,6 @@ import {
 } from './helpers/persistence.js';
 
 test.describe('Persistence — Reload', () => {
-
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('#uc');
@@ -126,5 +125,4 @@ test.describe('Persistence — Reload', () => {
     await expect(page.locator('#uc')).toHaveValue('33333');
     await expect(page.locator('#lider')).toHaveValue('ANDRE DE SOUSA CARVALHO');
   });
-
 });

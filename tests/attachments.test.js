@@ -1,5 +1,12 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { handleUploadClick, handleFileChange, removeFile, renderPreviews, updateFileCount, closeLightbox } from '../scripts/attachments.js';
+import {
+  handleUploadClick,
+  handleFileChange,
+  removeFile,
+  renderPreviews,
+  updateFileCount,
+  closeLightbox,
+} from '../scripts/attachments.js';
 import { cacheDOM, DOM } from '../scripts/dom.js';
 import { state } from '../scripts/state.js';
 

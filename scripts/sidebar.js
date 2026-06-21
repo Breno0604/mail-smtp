@@ -1,34 +1,34 @@
-import { DOM } from "./dom.js";
-import { state } from "./state.js";
-import { getAllRecords, deleteRecord, getRecord } from "./db.js";
-import { formatDate } from "./utils.js";
-import { applyRecord } from "./restore.js";
-import { resetForm } from "./reset.js";
-import { showConfirm } from "./ui.js";
+import { DOM } from './dom.js';
+import { state } from './state.js';
+import { getAllRecords, deleteRecord, getRecord } from './db.js';
+import { formatDate } from './utils.js';
+import { applyRecord } from './restore.js';
+import { resetForm } from './reset.js';
+import { showConfirm } from './ui.js';
 
 export function closeSidebar() {
-  document.body.classList.remove("sidebar-open");
+  document.body.classList.remove('sidebar-open');
 }
 
 function getRecordSummary(record) {
-  const uc = record.iniciais?.uc || "";
-  const os = record.iniciais?.os || "";
-  const tipoOrdem = record.tipoOrdem || "";
+  const uc = record.iniciais?.uc || '';
+  const os = record.iniciais?.os || '';
+  const tipoOrdem = record.tipoOrdem || '';
   if (uc && os && tipoOrdem) return `${uc}-${os}-${tipoOrdem}`;
   if (uc && os) return `${uc}-${os}`;
   if (os) return `OS #${os}`;
   if (uc) return `UC ${uc}`;
-  return "(rascunho vazio)";
+  return '(rascunho vazio)';
 }
 
-export async function renderSidebar(filterTerm = "") {
+export async function renderSidebar(filterTerm = '') {
   const list = DOM.sidebarList;
-  list.innerHTML = "";
+  list.innerHTML = '';
 
   let records;
   try {
     records = await getAllRecords();
-  } catch (e) {
+  } catch (_e) {
     list.innerHTML = '<div class="sidebar-empty">Erro ao carregar registros.</div>';
     return;
   }
@@ -42,10 +42,10 @@ export async function renderSidebar(filterTerm = "") {
 
   if (filterTerm) {
     const term = filterTerm.toString().toLowerCase();
-    records = records.filter((r) => {
-      const uc = (r.iniciais?.uc ?? "").toString().toLowerCase();
-      const os = (r.iniciais?.os ?? "").toLowerCase();
-      const tipoOrdem = (r.tipoOrdem ?? "").toLowerCase();
+    records = records.filter(r => {
+      const uc = (r.iniciais?.uc ?? '').toString().toLowerCase();
+      const os = (r.iniciais?.os ?? '').toLowerCase();
+      const tipoOrdem = (r.tipoOrdem ?? '').toLowerCase();
       return uc.includes(term) || os.includes(term) || tipoOrdem.includes(term);
     });
     if (records.length === 0) {
@@ -54,50 +54,52 @@ export async function renderSidebar(filterTerm = "") {
     }
   }
 
-  records.forEach((record) => {
-    const item = document.createElement("div");
-    item.className = "sidebar-item";
+  records.forEach(record => {
+    const item = document.createElement('div');
+    item.className = 'sidebar-item';
 
-    const header = document.createElement("div");
-    header.className = "sidebar-item-header";
+    const header = document.createElement('div');
+    header.className = 'sidebar-item-header';
 
-    const title = document.createElement("span");
-    title.className = "sidebar-item-title";
+    const title = document.createElement('span');
+    title.className = 'sidebar-item-title';
     title.textContent = getRecordSummary(record);
 
-    const status = document.createElement("span");
-    status.className = `sidebar-status ${record.status === "sent" ? "status-sent" : "status-draft"}`;
-    status.textContent = record.status === "sent" ? "Enviado" : "Rascunho";
+    const status = document.createElement('span');
+    status.className = `sidebar-status ${record.status === 'sent' ? 'status-sent' : 'status-draft'}`;
+    status.textContent = record.status === 'sent' ? 'Enviado' : 'Rascunho';
 
     header.appendChild(title);
     header.appendChild(status);
 
-    const meta = document.createElement("div");
-    meta.className = "sidebar-item-meta";
+    const meta = document.createElement('div');
+    meta.className = 'sidebar-item-meta';
     meta.textContent = formatDate(record.updatedAt);
 
-    const actions = document.createElement("div");
-    actions.className = "sidebar-item-actions";
+    const actions = document.createElement('div');
+    actions.className = 'sidebar-item-actions';
 
-    const editBtn = document.createElement("button");
-    editBtn.className = "sidebar-btn sidebar-btn-edit";
-    editBtn.textContent = "\u270F\uFE0F Editar";
-    editBtn.addEventListener("click", async (e) => {
+    const editBtn = document.createElement('button');
+    editBtn.className = 'sidebar-btn sidebar-btn-edit';
+    editBtn.textContent = '\u270F\uFE0F Editar';
+    editBtn.addEventListener('click', async e => {
       e.stopPropagation();
       try {
         const full = await getRecord(record.uuid);
         if (!full) return;
         loadRecord(full);
-      } catch (err) { /* ignore */ }
+      } catch (_err) {
+        /* ignore */
+      }
     });
 
-    const deleteBtn = document.createElement("button");
-    deleteBtn.className = "sidebar-btn sidebar-btn-delete";
-    deleteBtn.textContent = "\uD83D\uDDD1\uFE0F Excluir";
-    deleteBtn.addEventListener("click", async (e) => {
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'sidebar-btn sidebar-btn-delete';
+    deleteBtn.textContent = '\uD83D\uDDD1\uFE0F Excluir';
+    deleteBtn.addEventListener('click', async e => {
       e.stopPropagation();
       closeSidebar();
-      const ok = await showConfirm("Excluir este registro? Esta ação não pode ser desfeita.");
+      const ok = await showConfirm('Excluir este registro? Esta ação não pode ser desfeita.');
       if (!ok) return;
       try {
         await deleteRecord(record.uuid);
@@ -105,7 +107,9 @@ export async function renderSidebar(filterTerm = "") {
           resetForm();
         }
         renderSidebar(DOM.sidebarFilter.value);
-      } catch (err) { /* ignore */ }
+      } catch (_err) {
+        /* ignore */
+      }
     });
 
     actions.appendChild(editBtn);
@@ -121,11 +125,11 @@ export async function renderSidebar(filterTerm = "") {
 function loadRecord(record) {
   applyRecord(record);
   closeSidebar();
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 export function initSidebarFilter() {
-  DOM.sidebarFilter.addEventListener("input", () => {
+  DOM.sidebarFilter.addEventListener('input', () => {
     renderSidebar(DOM.sidebarFilter.value);
   });
 }

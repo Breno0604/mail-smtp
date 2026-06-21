@@ -16,7 +16,7 @@ test.describe('Form Fill and Preview E2E', () => {
     await page.selectOption('#municipio', { label: 'FORTALEZA' });
     await page.selectOption('#notificado', { label: 'SIM' });
     await page.selectOption('#placa', { label: 'RHS6G02' });
-    
+
     // Fill Date/Time fields
     await page.fill('#data', '2026-06-13');
     await page.fill('#hora_inicio', '08:00');
@@ -37,15 +37,15 @@ test.describe('Form Fill and Preview E2E', () => {
 
     // Add Equipment
     await page.click('#btn-add-equip');
-    
+
     // Wait for the equipment row to appear
     await page.waitForSelector('.equip-row');
-    
+
     // Fill equipment row
     const statusSelect = page.locator('.equip-row select').first();
     const catSelect = page.locator('.equip-row select').nth(1);
     const numInput = page.locator('.equip-row input.equip-numero').first();
-    
+
     await statusSelect.selectOption('Instalado');
     await catSelect.selectOption('Medidor');
     await numInput.fill('99999');
@@ -56,7 +56,7 @@ test.describe('Form Fill and Preview E2E', () => {
     // Check Live Preview
     const preview = page.locator('#preview-corpo');
     await expect(preview).toBeVisible();
-    
+
     // Get text content of preview
     const previewText = await preview.innerText();
     expect(previewText).toContain('123456');
@@ -64,9 +64,11 @@ test.describe('Form Fill and Preview E2E', () => {
     expect(previewText).toContain('ANDRE DE SOUSA CARVALHO');
     expect(previewText).toContain('CLIENTE CORTADO');
     expect(previewText).toContain('99999');
-    
+
     // Verify complemento-corpo value directly
-    await expect(page.locator('#complemento-corpo')).toHaveValue('Complemento E2E de teste automatizado');
+    await expect(page.locator('#complemento-corpo')).toHaveValue(
+      'Complemento E2E de teste automatizado'
+    );
 
     // Keep browser open so user can inspect the final state
     // Pressione F8 ou clique em "Resume" no Playwright Inspector para fechar

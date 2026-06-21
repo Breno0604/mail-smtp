@@ -1,6 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import 'fake-indexeddb/auto';
-import { state, setCurrentUUID, clearCurrentUUID, createDefaultEquipamentos } from '../scripts/state.js';
+import {
+  state,
+  setCurrentUUID,
+  clearCurrentUUID,
+  createDefaultEquipamentos,
+} from '../scripts/state.js';
 import { getCurrentUUID } from '../scripts/uuid.js';
 import { debouncedSave, saveState } from '../scripts/persistence.js';
 import { getRecord } from '../scripts/db.js';
@@ -190,7 +195,18 @@ describe('state', () => {
       os.value = '67890';
       document.body.appendChild(os);
       // Set up other required fields
-      const fields = ['lider','parceiro','municipio','notificado','placa','tipo-ordem','coordenadas','data','hora_inicio','hora_fim'];
+      const fields = [
+        'lider',
+        'parceiro',
+        'municipio',
+        'notificado',
+        'placa',
+        'tipo-ordem',
+        'coordenadas',
+        'data',
+        'hora_inicio',
+        'hora_fim',
+      ];
       fields.forEach(n => {
         const el = document.createElement('input');
         el.id = n;
@@ -222,7 +238,18 @@ describe('state', () => {
       os.id = 'os';
       os.value = '67890';
       document.body.appendChild(os);
-      const fields = ['lider','parceiro','municipio','notificado','placa','tipo-ordem','coordenadas','data','hora_inicio','hora_fim'];
+      const fields = [
+        'lider',
+        'parceiro',
+        'municipio',
+        'notificado',
+        'placa',
+        'tipo-ordem',
+        'coordenadas',
+        'data',
+        'hora_inicio',
+        'hora_fim',
+      ];
       fields.forEach(n => {
         const el = document.createElement('input');
         el.id = n;
@@ -252,7 +279,18 @@ describe('state', () => {
       os.id = 'os';
       os.value = '67890';
       document.body.appendChild(os);
-      const fields = ['lider','parceiro','municipio','notificado','placa','tipo-ordem','coordenadas','data','hora_inicio','hora_fim'];
+      const fields = [
+        'lider',
+        'parceiro',
+        'municipio',
+        'notificado',
+        'placa',
+        'tipo-ordem',
+        'coordenadas',
+        'data',
+        'hora_inicio',
+        'hora_fim',
+      ];
       fields.forEach(n => {
         const el = document.createElement('input');
         el.id = n;

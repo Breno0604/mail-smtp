@@ -16,88 +16,121 @@ const INDEX_UUID = 'uuid';
  * Runs inside the browser context via page.evaluate().
  */
 export async function readIndexedDB(page) {
-  return page.evaluate(({ DB_NAME, DB_VERSION, STORE_RECORDS }) => {
-    return new Promise((resolve, reject) => {
-      const req = indexedDB.open(DB_NAME, DB_VERSION);
-      req.onupgradeneeded = () => {
-        const db = req.result;
-        if (!db.objectStoreNames.contains(STORE_RECORDS)) {
-          db.createObjectStore(STORE_RECORDS, { keyPath: 'uuid' });
-        }
-      };
-      req.onsuccess = () => {
-        try {
+  return page.evaluate(
+    ({ DB_NAME, DB_VERSION, STORE_RECORDS }) => {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open(DB_NAME, DB_VERSION);
+        req.onupgradeneeded = () => {
           const db = req.result;
-          const tx = db.transaction(STORE_RECORDS, 'readonly');
-          const getAll = tx.objectStore(STORE_RECORDS).getAll();
-          getAll.onsuccess = () => { resolve(getAll.result); db.close(); };
-          getAll.onerror = () => { reject(getAll.error); db.close(); };
-        } catch (e) { reject(e); }
-      };
-      req.onerror = () => reject(req.error);
-    });
-  }, { DB_NAME, DB_VERSION, STORE_RECORDS });
+          if (!db.objectStoreNames.contains(STORE_RECORDS)) {
+            db.createObjectStore(STORE_RECORDS, { keyPath: 'uuid' });
+          }
+        };
+        req.onsuccess = () => {
+          try {
+            const db = req.result;
+            const tx = db.transaction(STORE_RECORDS, 'readonly');
+            const getAll = tx.objectStore(STORE_RECORDS).getAll();
+            getAll.onsuccess = () => {
+              resolve(getAll.result);
+              db.close();
+            };
+            getAll.onerror = () => {
+              reject(getAll.error);
+              db.close();
+            };
+          } catch (e) {
+            reject(e);
+          }
+        };
+        req.onerror = () => reject(req.error);
+      });
+    },
+    { DB_NAME, DB_VERSION, STORE_RECORDS }
+  );
 }
 
 /**
  * Read attachments for a given UUID from IndexedDB (attachments store).
  */
 export async function readAttachments(page, uuid) {
-  return page.evaluate(({ uuid, DB_NAME, DB_VERSION, STORE_ATTACHMENTS, INDEX_UUID }) => {
-    return new Promise((resolve, reject) => {
-      const req = indexedDB.open(DB_NAME, DB_VERSION);
-      req.onupgradeneeded = () => {
-        const db = req.result;
-        if (!db.objectStoreNames.contains(STORE_ATTACHMENTS)) {
-          const attStore = db.createObjectStore(STORE_ATTACHMENTS, { keyPath: 'id' });
-          attStore.createIndex(INDEX_UUID, 'uuid', { unique: false });
-        }
-      };
-      req.onsuccess = () => {
-        try {
+  return page.evaluate(
+    ({ uuid, DB_NAME, DB_VERSION, STORE_ATTACHMENTS, INDEX_UUID }) => {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open(DB_NAME, DB_VERSION);
+        req.onupgradeneeded = () => {
           const db = req.result;
-          const tx = db.transaction(STORE_ATTACHMENTS, 'readonly');
-          const index = tx.objectStore(STORE_ATTACHMENTS).index(INDEX_UUID);
-          const getAll = index.getAll(uuid);
-          getAll.onsuccess = () => { resolve(getAll.result); db.close(); };
-          getAll.onerror = () => { reject(getAll.error); db.close(); };
-        } catch (e) { reject(e); }
-      };
-      req.onerror = () => reject(req.error);
-    });
-  }, { uuid, DB_NAME, DB_VERSION, STORE_ATTACHMENTS, INDEX_UUID });
+          if (!db.objectStoreNames.contains(STORE_ATTACHMENTS)) {
+            const attStore = db.createObjectStore(STORE_ATTACHMENTS, { keyPath: 'id' });
+            attStore.createIndex(INDEX_UUID, 'uuid', { unique: false });
+          }
+        };
+        req.onsuccess = () => {
+          try {
+            const db = req.result;
+            const tx = db.transaction(STORE_ATTACHMENTS, 'readonly');
+            const index = tx.objectStore(STORE_ATTACHMENTS).index(INDEX_UUID);
+            const getAll = index.getAll(uuid);
+            getAll.onsuccess = () => {
+              resolve(getAll.result);
+              db.close();
+            };
+            getAll.onerror = () => {
+              reject(getAll.error);
+              db.close();
+            };
+          } catch (e) {
+            reject(e);
+          }
+        };
+        req.onerror = () => reject(req.error);
+      });
+    },
+    { uuid, DB_NAME, DB_VERSION, STORE_ATTACHMENTS, INDEX_UUID }
+  );
 }
 
 /**
  * Delete all records from IndexedDB (cleanup before/after tests).
  */
 export async function clearIndexedDB(page) {
-  return page.evaluate(({ DB_NAME, DB_VERSION, STORE_RECORDS, STORE_ATTACHMENTS }) => {
-    return new Promise((resolve, reject) => {
-      const req = indexedDB.open(DB_NAME, DB_VERSION);
-      req.onupgradeneeded = () => {
-        const db = req.result;
-        if (!db.objectStoreNames.contains(STORE_RECORDS)) {
-          db.createObjectStore(STORE_RECORDS, { keyPath: 'uuid' });
-        }
-        if (!db.objectStoreNames.contains(STORE_ATTACHMENTS)) {
-          const attStore = db.createObjectStore(STORE_ATTACHMENTS, { keyPath: 'id' });
-          attStore.createIndex('uuid', 'uuid', { unique: false });
-        }
-      };
-      req.onsuccess = () => {
-        try {
+  return page.evaluate(
+    ({ DB_NAME, DB_VERSION, STORE_RECORDS, STORE_ATTACHMENTS }) => {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open(DB_NAME, DB_VERSION);
+        req.onupgradeneeded = () => {
           const db = req.result;
-          const tx = db.transaction([STORE_RECORDS, STORE_ATTACHMENTS], 'readwrite');
-          tx.objectStore(STORE_RECORDS).clear();
-          tx.objectStore(STORE_ATTACHMENTS).clear();
-          tx.oncomplete = () => { resolve(); db.close(); };
-          tx.onerror = () => { reject(tx.error); db.close(); };
-        } catch (e) { reject(e); }
-      };
-      req.onerror = () => reject(req.error);
-    });
-  }, { DB_NAME, DB_VERSION, STORE_RECORDS, STORE_ATTACHMENTS });
+          if (!db.objectStoreNames.contains(STORE_RECORDS)) {
+            db.createObjectStore(STORE_RECORDS, { keyPath: 'uuid' });
+          }
+          if (!db.objectStoreNames.contains(STORE_ATTACHMENTS)) {
+            const attStore = db.createObjectStore(STORE_ATTACHMENTS, { keyPath: 'id' });
+            attStore.createIndex('uuid', 'uuid', { unique: false });
+          }
+        };
+        req.onsuccess = () => {
+          try {
+            const db = req.result;
+            const tx = db.transaction([STORE_RECORDS, STORE_ATTACHMENTS], 'readwrite');
+            tx.objectStore(STORE_RECORDS).clear();
+            tx.objectStore(STORE_ATTACHMENTS).clear();
+            tx.oncomplete = () => {
+              resolve();
+              db.close();
+            };
+            tx.onerror = () => {
+              reject(tx.error);
+              db.close();
+            };
+          } catch (e) {
+            reject(e);
+          }
+        };
+        req.onerror = () => reject(req.error);
+      });
+    },
+    { DB_NAME, DB_VERSION, STORE_RECORDS, STORE_ATTACHMENTS }
+  );
 }
 
 // ── Form Fill Helpers ─────────────────────────────────────────────────────────
@@ -207,14 +240,10 @@ export async function waitForSave(page, ms = 1500) {
  */
 export function createPngBuffer() {
   return Buffer.from([
-    0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,
-    0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52,
-    0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
-    0x08, 0x02, 0x00, 0x00, 0x00, 0x90, 0x77, 0x53,
-    0xDE, 0x00, 0x00, 0x00, 0x0C, 0x49, 0x44, 0x41,
-    0x54, 0x08, 0xD7, 0x63, 0xF8, 0xCF, 0xC0, 0x00,
-    0x00, 0x00, 0x02, 0x00, 0x01, 0xE2, 0x21, 0xBC,
-    0x33, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4E,
-    0x44, 0xAE, 0x42, 0x60, 0x82
+    0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d, 0x49, 0x48, 0x44, 0x52,
+    0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x08, 0x02, 0x00, 0x00, 0x00, 0x90, 0x77, 0x53,
+    0xde, 0x00, 0x00, 0x00, 0x0c, 0x49, 0x44, 0x41, 0x54, 0x08, 0xd7, 0x63, 0xf8, 0xcf, 0xc0, 0x00,
+    0x00, 0x00, 0x02, 0x00, 0x01, 0xe2, 0x21, 0xbc, 0x33, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e,
+    0x44, 0xae, 0x42, 0x60, 0x82,
   ]);
 }

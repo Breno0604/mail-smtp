@@ -17,7 +17,7 @@ vi.mock('../scripts/reset.js', () => ({
 }));
 
 // Helper para aguardar microtasks assíncronas (promises pendentes)
-const flushPromises = () => new Promise((r) => setTimeout(r, 0));
+const flushPromises = () => new Promise(r => setTimeout(r, 0));
 
 describe('sidebar', () => {
   async function clearDB() {
@@ -286,7 +286,7 @@ describe('sidebar', () => {
       // Find the delete button for 'delete-other' by looking at sidebar items
       const items = DOM.sidebarList.querySelectorAll('.sidebar-item');
       let deleteBtnForOther = null;
-      items.forEach((item) => {
+      items.forEach(item => {
         const title = item.querySelector('.sidebar-item-title');
         if (title && title.textContent.includes('333')) {
           deleteBtnForOther = item.querySelector('.sidebar-btn-delete');

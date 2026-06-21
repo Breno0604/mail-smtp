@@ -1,6 +1,6 @@
-import { DOM } from "./dom.js";
-import { iniciaisFields, getRetornoFields } from "./fields.js";
-import { collectAllData } from "./collectors.js";
+import { DOM } from './dom.js';
+import { iniciaisFields, getRetornoFields } from './fields.js';
+import { collectAllData } from './collectors.js';
 
 /**
  * Normaliza texto: remove acentos, substitui ç→c, converte para MAIÚSCULAS
@@ -8,10 +8,10 @@ import { collectAllData } from "./collectors.js";
 function normalizeText(str) {
   if (typeof str !== 'string' || !str) return str;
   return str
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/ç/g, "c")
-    .replace(/Ç/g, "C")
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/ç/g, 'c')
+    .replace(/Ç/g, 'C')
     .toUpperCase();
 }
 
@@ -24,53 +24,55 @@ const EQUIP_LABELS = {
   tc_fase_c: 'TC FASE C',
   tp_fase_a: 'TP FASE A',
   tp_fase_b: 'TP FASE B',
-  tp_fase_c: 'TP FASE C'
+  tp_fase_c: 'TP FASE C',
 };
 
 export function composeEmail(data) {
-  let body = "";
+  let body = '';
 
-  iniciaisFields.forEach((field) => {
-    const raw = data.iniciais?.[field.nome] || "";
-    const val = raw && field.tipo === "date"
-      ? raw.split("-").reverse().join("-")
-      : (raw || "\u2014");
+  iniciaisFields.forEach(field => {
+    const raw = data.iniciais?.[field.nome] || '';
+    const val = raw && field.tipo === 'date' ? raw.split('-').reverse().join('-') : raw || '\u2014';
     body += `${normalizeText(field.label)}: ${normalizeText(val)}\n`;
   });
 
   // Equipment section
-  body += "\n\nEQUIPAMENTOS:";
-  
+  body += '\n\nEQUIPAMENTOS:';
+
   if (data.equipamentos.instaladoEquip === 'SIM') {
     const installedItems = Object.keys(data.equipamentos.instalados)
-      .filter((key) => data.equipamentos.instalados[key] && data.equipamentos.instalados[key].trim() !== '')
-      .map((key) => `${EQUIP_LABELS[key]}: ${normalizeText(data.equipamentos.instalados[key])}`);
-    
+      .filter(
+        key => data.equipamentos.instalados[key] && data.equipamentos.instalados[key].trim() !== ''
+      )
+      .map(key => `${EQUIP_LABELS[key]}: ${normalizeText(data.equipamentos.instalados[key])}`);
+
     if (installedItems.length > 0) {
-      body += "\nEQUIPAMENTOS INSTALADOS:";
-      body += "\n" + installedItems.join("\n");
+      body += '\nEQUIPAMENTOS INSTALADOS:';
+      body += '\n' + installedItems.join('\n');
     }
   }
-  
+
   if (data.equipamentos.retiradoEquip === 'SIM') {
     const removedItems = Object.keys(data.equipamentos.retirados)
-      .filter((key) => data.equipamentos.retirados[key] && data.equipamentos.retirados[key].trim() !== '')
-      .map((key) => `${EQUIP_LABELS[key]}: ${normalizeText(data.equipamentos.retirados[key])}`);
-    
+      .filter(
+        key => data.equipamentos.retirados[key] && data.equipamentos.retirados[key].trim() !== ''
+      )
+      .map(key => `${EQUIP_LABELS[key]}: ${normalizeText(data.equipamentos.retirados[key])}`);
+
     if (removedItems.length > 0) {
-      body += "\nEQUIPAMENTOS RETIRADOS:";
-      body += "\n" + removedItems.join("\n");
+      body += '\nEQUIPAMENTOS RETIRADOS:';
+      body += '\n' + removedItems.join('\n');
     }
   }
 
-  body += "\n\nRETORNO:";
-  const tipo = data.iniciais?.["tipo-ordem"] || "";
+  body += '\n\nRETORNO:';
+  const tipo = data.iniciais?.['tipo-ordem'] || '';
   const retornoFields = getRetornoFields(tipo);
 
-  retornoFields.forEach((field) => {
+  retornoFields.forEach(field => {
     if (!data.retorno || !(field.nome in data.retorno)) return;
     const val = data.retorno[field.nome];
-    body += `\n${normalizeText(field.label)}: ${normalizeText(val || "(nao preenchido)")}`;
+    body += `\n${normalizeText(field.label)}: ${normalizeText(val || '(nao preenchido)')}`;
   });
 
   return body;

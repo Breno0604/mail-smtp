@@ -6,7 +6,15 @@ import { state } from '../scripts/state.js';
 
 // Usar vi.hoisted() para criar referências compartilhadas entre o factory
 // do vi.mock e o escopo do teste, garantindo isolation de mocks.
-const { showToastMock, validateAllMock, checkDuplicateMock, compressMock, updateStatusMock, collectAllDataMock, composeEmailMock } = vi.hoisted(() => ({
+const {
+  showToastMock,
+  validateAllMock,
+  checkDuplicateMock,
+  compressMock,
+  updateStatusMock,
+  collectAllDataMock,
+  composeEmailMock,
+} = vi.hoisted(() => ({
   showToastMock: vi.fn(),
   validateAllMock: vi.fn(() => true),
   checkDuplicateMock: vi.fn(() => Promise.resolve(true)),
@@ -132,10 +140,13 @@ describe('sendEmail', () => {
     });
 
     await sendEmail();
-    expect(fetch).toHaveBeenCalledWith('/api/send', expect.objectContaining({
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-    }));
+    expect(fetch).toHaveBeenCalledWith(
+      '/api/send',
+      expect.objectContaining({
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      })
+    );
   });
 
   it('should build correct subject from state', async () => {

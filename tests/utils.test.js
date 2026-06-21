@@ -86,7 +86,9 @@ describe('utils', () => {
     it('should handle binary data', () => {
       const bytes = new Uint8Array([0, 1, 2, 255, 254]);
       let binary = '';
-      bytes.forEach(b => { binary += String.fromCharCode(b); });
+      bytes.forEach(b => {
+        binary += String.fromCharCode(b);
+      });
       const base64 = btoa(binary);
       const blob = base64ToBlob(base64, 'application/octet-stream');
       expect(blob.size).toBe(5);

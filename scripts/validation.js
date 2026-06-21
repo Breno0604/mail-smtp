@@ -1,18 +1,18 @@
-import { DOM } from "./dom.js";
-import { state } from "./state.js";
-import { showError, hideError, setFieldError, clearFieldError } from "./ui.js";
-import { collectIniciais, collectRetorno, collectEquipamentos } from "./collectors.js";
-import { iniciaisFields as fieldsIniciais } from "./fields.js";
+import { DOM } from './dom.js';
+import { state } from './state.js';
+import { showError, hideError, setFieldError, clearFieldError } from './ui.js';
+import { collectRetorno } from './collectors.js';
+import { iniciaisFields as fieldsIniciais } from './fields.js';
 
 // ── helpers locais ────────────────────────────────────────────────────────────
 
 function markError(el, msg) {
-  el.classList.add("error");
+  el.classList.add('error');
   setFieldError(el, msg);
 }
 
 function clearError(el) {
-  el.classList.remove("error");
+  el.classList.remove('error');
   clearFieldError(el);
 }
 
@@ -23,14 +23,14 @@ function validateSection1() {
   const data = {};
   let valid = true;
 
-  fieldsIniciais.forEach((field) => {
+  fieldsIniciais.forEach(field => {
     const el = document.getElementById(field.nome);
     if (!el) return;
     data[field.nome] = el.value;
 
     if (!field.obrigatorio) return;
-    if (!data[field.nome] || data[field.nome].trim() === "") {
-      markError(el, "Campo obrigatório");
+    if (!data[field.nome] || data[field.nome].trim() === '') {
+      markError(el, 'Campo obrigatório');
       valid = false;
     } else {
       clearError(el);
@@ -43,35 +43,35 @@ function validateSection1() {
   let hasSpecialError = false;
 
   // Validação de UC: apenas números
-  const ucEl = document.getElementById("uc");
+  const ucEl = document.getElementById('uc');
   if (ucEl && data.uc) {
     if (!/^\d+$/.test(data.uc)) {
-      markError(ucEl, "UC deve conter apenas números");
+      markError(ucEl, 'UC deve conter apenas números');
       hasSpecialError = true;
     } else {
       clearError(ucEl);
     }
   }
 
-  const dataEl = document.getElementById("data");
+  const dataEl = document.getElementById('data');
   if (dataEl && data.data) {
     const selectedDate = new Date(data.data);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     if (selectedDate > today) {
-      markError(dataEl, "Data não pode ser futura.");
+      markError(dataEl, 'Data não pode ser futura.');
       hasSpecialError = true;
     } else {
       clearError(dataEl);
     }
   }
 
-  const horaInicioEl = document.getElementById("hora_inicio");
-  const horaFimEl = document.getElementById("hora_fim");
+  const horaInicioEl = document.getElementById('hora_inicio');
+  const horaFimEl = document.getElementById('hora_fim');
   if (horaInicioEl && horaFimEl && data.hora_inicio && data.hora_fim) {
     // Permitir overnight (ex: 23:00 → 01:00), mas impedir duração zero (ex: 10:00 → 10:00)
     if (data.hora_fim === data.hora_inicio) {
-      markError(horaFimEl, "Hora fim deve ser diferente da hora início.");
+      markError(horaFimEl, 'Hora fim deve ser diferente da hora início.');
       hasSpecialError = true;
     } else {
       clearError(horaFimEl);
@@ -90,108 +90,108 @@ function validateSection1() {
 function validateSection2() {
   const instaladoSelect = DOM.instaladoEquip;
   const retiradoSelect = DOM.retiradoEquip;
-  
+
   let hasError = false;
-  
+
   // Validate control selects (required fields)
-  if (!instaladoSelect.value || instaladoSelect.value.trim() === "") {
-    markError(instaladoSelect, "Campo obrigatório");
+  if (!instaladoSelect.value || instaladoSelect.value.trim() === '') {
+    markError(instaladoSelect, 'Campo obrigatório');
     hasError = true;
   } else {
     clearError(instaladoSelect);
   }
-  
-  if (!retiradoSelect.value || retiradoSelect.value.trim() === "") {
-    markError(retiradoSelect, "Campo obrigatório");
+
+  if (!retiradoSelect.value || retiradoSelect.value.trim() === '') {
+    markError(retiradoSelect, 'Campo obrigatório');
     hasError = true;
   } else {
     clearError(retiradoSelect);
   }
-  
+
   const instalado = state.equipamentos.instaladoEquip;
   const retirado = state.equipamentos.retiradoEquip;
-  
+
   // If both NAO, no further validation needed for equipment fields
   if (instalado === 'NAO' && retirado === 'NAO') {
     return !hasError;
   }
-  
+
   // Validate installed equipment (when SIM, at least one checkbox must be checked and filled)
   if (instalado === 'SIM') {
     const installedInputs = document.querySelectorAll('#campos-instalados input[type="number"]');
     let hasAtLeastOneFilled = false;
-    
+
     if (installedInputs.length === 0) {
       // SIM selected but no equipment fields filled (no checkboxes checked)
       markError(DOM.instaladoEquip, 'Selecione e preencha pelo menos um equipamento');
       hasError = true;
     } else {
-      installedInputs.forEach((input) => {
-        if (!input.value || input.value.trim() === "") {
-          markError(input, "Campo obrigatório");
+      installedInputs.forEach(input => {
+        if (!input.value || input.value.trim() === '') {
+          markError(input, 'Campo obrigatório');
           hasError = true;
         } else {
           clearError(input);
           hasAtLeastOneFilled = true;
         }
       });
-      
+
       // If section visible but no inputs filled, error
       if (!hasAtLeastOneFilled) {
         hasError = true;
       }
     }
   }
-  
+
   // Validate removed equipment (when SIM, at least one checkbox must be checked and filled)
   if (retirado === 'SIM') {
     const removedInputs = document.querySelectorAll('#campos-retirados input[type="number"]');
     let hasAtLeastOneFilled = false;
-    
+
     if (removedInputs.length === 0) {
       // SIM selected but no equipment fields filled (no checkboxes checked)
       markError(DOM.retiradoEquip, 'Selecione e preencha pelo menos um equipamento');
       hasError = true;
     } else {
-      removedInputs.forEach((input) => {
-        if (!input.value || input.value.trim() === "") {
-          markError(input, "Campo obrigatório");
+      removedInputs.forEach(input => {
+        if (!input.value || input.value.trim() === '') {
+          markError(input, 'Campo obrigatório');
           hasError = true;
         } else {
           clearError(input);
           hasAtLeastOneFilled = true;
         }
       });
-      
+
       if (!hasAtLeastOneFilled) {
         hasError = true;
       }
     }
   }
-  
+
   if (hasError) return false;
-  
+
   return true;
 }
 
 function validateSection3() {
-  const tipo = DOM.tipoOrdem?.value || "";
+  const tipo = DOM.tipoOrdem?.value || '';
   if (!tipo) return true;
 
   // Iterar sobre todos os campos individuais usando [data-field-nome]
   // Isso funciona tanto para layout antigo (um campo por .mb-4) quanto novo (múltiplos campos por linha flex)
-  const fieldGroups = DOM.retornoCampos.querySelectorAll("[data-field-nome]");
+  const fieldGroups = DOM.retornoCampos.querySelectorAll('[data-field-nome]');
   let valid = true;
 
-  fieldGroups.forEach((group) => {
+  fieldGroups.forEach(group => {
     // Skip hidden conditional fields
-    if (group.style.display === "none") return;
+    if (group.style.display === 'none') return;
 
-    const input = group.querySelector("input, select, textarea");
+    const input = group.querySelector('input, select, textarea');
     if (!input) return;
 
-    if (!input.value || input.value.trim() === "") {
-      markError(input, "Campo obrigatório");
+    if (!input.value || input.value.trim() === '') {
+      markError(input, 'Campo obrigatório');
       valid = false;
     } else {
       clearError(input);
@@ -207,16 +207,12 @@ function validateSection3() {
 
 function validateSection4() {
   if (state.attachments.length > 12) {
-    showError("Máximo de 12 anexos permitido.");
+    showError('Máximo de 12 anexos permitido.');
     return false;
   }
-  const oversized = state.attachments.filter((f) => f.size > 8 * 1024 * 1024);
+  const oversized = state.attachments.filter(f => f.size > 8 * 1024 * 1024);
   if (oversized.length > 0) {
-    showError(
-      "Anexo(s) excedem 8 MB: " +
-        oversized.map((f) => f.name).join(", ") +
-        "."
-    );
+    showError('Anexo(s) excedem 8 MB: ' + oversized.map(f => f.name).join(', ') + '.');
     return false;
   }
   return true;
@@ -248,16 +244,16 @@ export function validateAll() {
   // Section 1: Iniciais
   const s1Valid = validateSection1();
   if (!s1Valid && !firstError) {
-    firstError = document.querySelector("#sec-inicio .error");
+    firstError = document.querySelector('#sec-inicio .error');
   }
   valid = valid && s1Valid;
 
   // Section 3: Retorno (only if tipo is selected)
-  const tipo = DOM.tipoOrdem?.value || "";
+  const tipo = DOM.tipoOrdem?.value || '';
   if (tipo) {
     const s3Valid = validateSection3();
     if (!s3Valid && !firstError) {
-      firstError = document.querySelector("#sec-retorno .error");
+      firstError = document.querySelector('#sec-retorno .error');
     }
     valid = valid && s3Valid;
   }
@@ -265,38 +261,38 @@ export function validateAll() {
   // Section 2: Equipamentos (validate if SIM selected)
   const s2Valid = validateSection2();
   if (!s2Valid && !firstError) {
-    firstError = document.querySelector("#sec-equipamentos .error");
+    firstError = document.querySelector('#sec-equipamentos .error');
   }
   valid = valid && s2Valid;
 
   // Section 4: Anexos
   const s4Valid = validateSection4();
   if (!s4Valid && !firstError) {
-    firstError = document.querySelector("#sec-anexos .error");
+    firstError = document.querySelector('#sec-anexos .error');
   }
   valid = valid && s4Valid;
 
   // Scroll to first error
   if (firstError) {
-    firstError.scrollIntoView({ behavior: "smooth", block: "center" });
+    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
   return valid;
 }
 
 export function addBlurValidation(el) {
-  el.addEventListener("blur", () => {
-    if (el.hasAttribute("required") || el.hasAttribute("data-required")) {
-      const empty = !el.value || el.value.trim() === "";
+  el.addEventListener('blur', () => {
+    if (el.hasAttribute('required') || el.hasAttribute('data-required')) {
+      const empty = !el.value || el.value.trim() === '';
       if (empty) {
-        markError(el, "Campo obrigatório");
+        markError(el, 'Campo obrigatório');
       } else {
         clearError(el);
       }
     }
   });
-  el.addEventListener("input", () => clearError(el));
-  el.addEventListener("change", () => {
-    if (el.value && el.value.trim() !== "") clearError(el);
+  el.addEventListener('input', () => clearError(el));
+  el.addEventListener('change', () => {
+    if (el.value && el.value.trim() !== '') clearError(el);
   });
 }

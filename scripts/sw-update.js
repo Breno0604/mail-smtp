@@ -1,12 +1,13 @@
-import { DOM } from "./dom.js";
+import { DOM } from './dom.js';
 
 export function initSW() {
   if (!('serviceWorker' in navigator)) return;
 
   const hadController = !!navigator.serviceWorker.controller;
 
-  navigator.serviceWorker.register('/sw.js')
-    .then((registration) => {
+  navigator.serviceWorker
+    .register('/sw.js')
+    .then(registration => {
       registration.update();
 
       navigator.serviceWorker.addEventListener('controllerchange', () => {
@@ -15,7 +16,7 @@ export function initSW() {
         }
       });
     })
-    .catch((err) => {
+    .catch(err => {
       console.warn('[SW] Registration failed:', err);
     });
 }

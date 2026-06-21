@@ -1,7 +1,7 @@
-const DB_NAME = "mail-mvp";
+const DB_NAME = 'mail-mvp';
 const DB_VERSION = 3;
-const STORE_RECORDS = "records";
-const STORE_ATTACHMENTS = "attachments";
+const STORE_RECORDS = 'records';
+const STORE_ATTACHMENTS = 'attachments';
 
 let _db = null;
 
@@ -14,19 +14,19 @@ function openDB() {
       const db = req.result;
 
       // Migração v1→v2: remover store legado
-      if (db.objectStoreNames.contains("sent_emails")) {
-        db.deleteObjectStore("sent_emails");
+      if (db.objectStoreNames.contains('sent_emails')) {
+        db.deleteObjectStore('sent_emails');
       }
 
       // Store de registros (sempre presente desde v1)
       if (!db.objectStoreNames.contains(STORE_RECORDS)) {
-        db.createObjectStore(STORE_RECORDS, { keyPath: "uuid" });
+        db.createObjectStore(STORE_RECORDS, { keyPath: 'uuid' });
       }
 
       // Store de anexos (novo em v3): chave composta uuid+index
       if (!db.objectStoreNames.contains(STORE_ATTACHMENTS)) {
-        const attStore = db.createObjectStore(STORE_ATTACHMENTS, { keyPath: "id" });
-        attStore.createIndex("uuid", "uuid", { unique: false });
+        const attStore = db.createObjectStore(STORE_ATTACHMENTS, { keyPath: 'id' });
+        attStore.createIndex('uuid', 'uuid', { unique: false });
       }
     };
     req.onsuccess = () => {
@@ -55,13 +55,13 @@ async function withTransaction(stores, mode, fn) {
 
 // Compatibilidade: withStore para operações em um único store
 async function withStore(mode, fn) {
-  return withTransaction(STORE_RECORDS, mode, (tx) => fn(tx.objectStore(STORE_RECORDS), tx));
+  return withTransaction(STORE_RECORDS, mode, tx => fn(tx.objectStore(STORE_RECORDS), tx));
 }
 
 async function readFromStore(fn) {
   const db = await openDB();
   return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_RECORDS, "readonly");
+    const tx = db.transaction(STORE_RECORDS, 'readonly');
     const req = fn(tx.objectStore(STORE_RECORDS));
     req.onsuccess = () => resolve(req.result || null);
     req.onerror = () => reject(req.error);
@@ -71,22 +71,22 @@ async function readFromStore(fn) {
 // ── Records CRUD ─────────────────────────────────────────────────────────────
 
 export function saveDraft(record) {
-  return withStore("readwrite", (store) => store.put(record));
+  return withStore('readwrite', store => store.put(record));
 }
 
 export function getRecord(uuid) {
-  return readFromStore((store) => store.get(uuid));
+  return readFromStore(store => store.get(uuid));
 }
 
 export function getAllRecords() {
-  return readFromStore((store) => store.getAll()).then((r) => r || []);
+  return readFromStore(store => store.getAll()).then(r => r || []);
 }
 
 /**
  * Deleta um registro E seus anexos em transação atômica.
  */
 export function deleteRecord(uuid) {
-  return withTransaction([STORE_RECORDS, STORE_ATTACHMENTS], "readwrite", (tx) => {
+  return withTransaction([STORE_RECORDS, STORE_ATTACHMENTS], 'readwrite', tx => {
     const recordStore = tx.objectStore(STORE_RECORDS);
     const attStore = tx.objectStore(STORE_ATTACHMENTS);
 
@@ -94,7 +94,7 @@ export function deleteRecord(uuid) {
     recordStore.delete(uuid);
 
     // Deletar todos os anexos associados via index
-    const index = attStore.index("uuid");
+    const index = attStore.index('uuid');
     const cursorReq = index.openCursor(IDBKeyRange.only(uuid));
     cursorReq.onsuccess = () => {
       const cursor = cursorReq.result;
@@ -107,18 +107,18 @@ export function deleteRecord(uuid) {
 }
 
 export function updateRecordStatus(uuid, sentData) {
-  return withStore("readwrite", (store, tx) => {
+  return withStore('readwrite', (store, _tx) => {
     const req = store.get(uuid);
     req.onsuccess = () => {
       const record = req.result;
       if (record) {
-        record.status = "sent";
+        record.status = 'sent';
         record.sentData = sentData;
         record.updatedAt = new Date().toISOString();
         store.put(record);
       }
     };
-    req.onerror = () => {}; // propagado pelo tx.onerror
+    req.onerror = () => {}; // propagado pelo _tx.onerror
   });
 }
 
@@ -131,14 +131,14 @@ export function updateRecordStatus(uuid, sentData) {
  * @param {Array<{name: string, type: string, data: string}>} attachments - Anexos serializados
  */
 export function saveAttachments(uuid, attachments) {
-  return withTransaction(STORE_ATTACHMENTS, "readwrite", (tx) => {
+  return withTransaction(STORE_ATTACHMENTS, 'readwrite', tx => {
     const store = tx.objectStore(STORE_ATTACHMENTS);
-    const index = store.index("uuid");
+    const index = store.index('uuid');
 
     // Deletar anexos antigos e depois inserir novos na mesma transação.
     // Usamos uma flag para garantir que os puts só acontecem após o cursor terminar.
-    let deletesDone = false;
-    const pendingPuts = [];
+    let _deletesDone = false;
+    const _pendingPuts = [];
 
     const cursorReq = index.openCursor(IDBKeyRange.only(uuid));
     cursorReq.onsuccess = () => {
@@ -148,7 +148,7 @@ export function saveAttachments(uuid, attachments) {
         cursor.continue();
       } else {
         // Cursor terminou — agora inserir novos anexos
-        deletesDone = true;
+        _deletesDone = true;
         attachments.forEach((att, i) => {
           store.put({
             id: `${uuid}_${i}`,
@@ -172,9 +172,9 @@ export function saveAttachments(uuid, attachments) {
 export function getAttachmentsByUuid(uuid) {
   return new Promise(async (resolve, reject) => {
     const db = await openDB();
-    const tx = db.transaction(STORE_ATTACHMENTS, "readonly");
+    const tx = db.transaction(STORE_ATTACHMENTS, 'readonly');
     const store = tx.objectStore(STORE_ATTACHMENTS);
-    const index = store.index("uuid");
+    const index = store.index('uuid');
     const req = index.getAll(IDBKeyRange.only(uuid));
     req.onsuccess = () => {
       const results = (req.result || []).sort((a, b) => a.index - b.index);
@@ -188,9 +188,9 @@ export function getAttachmentsByUuid(uuid) {
  * Deleta todos os anexos de um registro pelo UUID.
  */
 export function deleteAttachmentsByUuid(uuid) {
-  return withTransaction(STORE_ATTACHMENTS, "readwrite", (tx) => {
+  return withTransaction(STORE_ATTACHMENTS, 'readwrite', tx => {
     const store = tx.objectStore(STORE_ATTACHMENTS);
-    const index = store.index("uuid");
+    const index = store.index('uuid');
     const cursorReq = index.openCursor(IDBKeyRange.only(uuid));
     cursorReq.onsuccess = () => {
       const cursor = cursorReq.result;

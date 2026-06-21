@@ -4,7 +4,6 @@ import { saveDraft, getRecord, saveAttachments } from './db.js';
 import { toBase64 } from './utils.js';
 import { generateUUID } from './uuid.js';
 import { collectIniciais, collectRetorno, collectEquipamentos } from './collectors.js';
-import { DOM } from './dom.js';
 
 let saveTimer = null;
 let attachmentsDirty = true;
@@ -26,11 +25,12 @@ export async function saveState() {
   collectEquipamentos();
 
   // Check if there's any data to save
-  const hasData = Object.values(state.iniciais).some(v => v && v.trim() !== '') ||
-                  state.equipamentos.instaladoEquip === 'SIM' ||
-                  state.equipamentos.retiradoEquip === 'SIM' ||
-                  state.attachments.length > 0 ||
-                  state.currentUUID;
+  const hasData =
+    Object.values(state.iniciais).some(v => v && v.trim() !== '') ||
+    state.equipamentos.instaladoEquip === 'SIM' ||
+    state.equipamentos.retiradoEquip === 'SIM' ||
+    state.attachments.length > 0 ||
+    state.currentUUID;
 
   if (!hasData) return;
 
@@ -58,7 +58,7 @@ export async function saveState() {
   };
 
   // Save record
-  saveDraft(data).catch((err) => {
+  saveDraft(data).catch(err => {
     console.error('saveDraft error:', err);
     if (err?.name === 'QuotaExceededError' || err?.message?.includes('quota')) {
       import('./ui.js').then(({ showToast }) => {
@@ -70,7 +70,7 @@ export async function saveState() {
   // Save attachments if dirty
   if (attachmentsDirty) {
     attachmentsDirty = false;
-    serializeAndSaveAttachments(state.currentUUID, state.attachments).catch((err) => {
+    serializeAndSaveAttachments(state.currentUUID, state.attachments).catch(err => {
       console.error('saveAttachments error:', err);
       attachmentsDirty = true;
     });
@@ -92,7 +92,7 @@ export function debouncedSave() {
  */
 async function resolveCreatedAt(uuid) {
   if (state._createdAt) return state._createdAt;
-  
+
   try {
     const existing = await getRecord(uuid);
     if (existing?.createdAt) {
@@ -102,7 +102,7 @@ async function resolveCreatedAt(uuid) {
   } catch (err) {
     console.error('getRecord in saveState:', err);
   }
-  
+
   state._createdAt = new Date().toISOString();
   return state._createdAt;
 }
@@ -119,7 +119,7 @@ async function serializeAndSaveAttachments(uuid, files) {
   }
 
   const serialized = await Promise.all(
-    files.map(async (file) => ({
+    files.map(async file => ({
       name: file.name,
       type: file.type,
       data: await toBase64(file),
