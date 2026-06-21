@@ -535,3 +535,12 @@ input, select, textarea {
   opacity: 0;
   display: none;
 }
+
+/* === Equipment checkboxes grid ─────────────────────────────────────────── */
+/* Tailwind static não inclui grid-cols-3, definimos aqui */
+.equip-checkboxes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
