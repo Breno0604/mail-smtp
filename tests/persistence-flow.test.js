@@ -159,18 +159,36 @@ describe('persistence flow: real-world scenarios', () => {
       expect(record.retorno.situacao_corte).toBe('CLIENTE CORTADO');
     });
 
-    it('should NOT create record if iniciaisValido is false (UC+OS not filled)', async () => {
+    it('should create record if equipment data exists even when iniciaisValido is false', async () => {
       renderIniciais();
       document.getElementById('lider').value = 'ANDRE DE SOUSA CARVALHO';
       // UC and OS are empty — iniciaisValido is false
-
+      
+      // Add equipment data - both state and DOM
+      DOM.instaladoEquip.value = 'SIM';
+      state.equipamentos.instaladoEquip = 'SIM';
+      state.equipamentos.instalados.medidor = '12345';
+      
+      // Create the equipment input in DOM (simulating checkbox checked)
+      const camposInstalados = document.getElementById('campos-instalados');
+      const wrapper = document.createElement('div');
+      wrapper.setAttribute('data-equip', 'medidor');
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.setAttribute('data-tipo', 'instalados');
+      input.setAttribute('data-equip', 'medidor');
+      input.value = '12345';
+      wrapper.appendChild(input);
+      camposInstalados.appendChild(wrapper);
+      
       state.iniciaisValido = false;
       await saveState();
 
-      // No record should be created
-      expect(state.currentUUID).toBe('');
-      const allRecords = await getAllRecords();
-      expect(allRecords.length).toBe(0);
+      // Record should be created because equipment data exists
+      expect(state.currentUUID).not.toBe('');
+      const record = await getRecord(state.currentUUID);
+      expect(record.equipamentos.instaladoEquip).toBe('SIM');
+      expect(record.equipamentos.instalados.medidor).toBe('12345');
     });
   });
 

@@ -55,11 +55,13 @@ function initEvents() {
   // Equipment control fields
   DOM.instaladoEquip.addEventListener("change", () => {
     toggleSectionVisibility('instalados');
+    debouncedSave();
     updateLivePreview();
   });
   
   DOM.retiradoEquip.addEventListener("change", () => {
     toggleSectionVisibility('retirados');
+    debouncedSave();
     updateLivePreview();
   });
 

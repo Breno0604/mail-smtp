@@ -190,7 +190,8 @@ describe('retornos', () => {
       state.retorno = { descricao: 'old' };
       DOM.tipoOrdem.value = 'ADEQUACAO SMF';
       handleTipoChange();
-      expect(state.retorno).toEqual({});
+      // After tipo change, retorno is cleared then re-collected from DOM (empty fields)
+      expect(state.retorno).toEqual({ descricao: '' });
     });
 
     it('should not change when tipo matches lastTipoOrdem', () => {

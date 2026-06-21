@@ -20,8 +20,6 @@ export function markAttachmentsDirty() {
  * Save current state to IndexedDB
  */
 export async function saveState() {
-  if (!state.iniciaisValido) return;
-
   // Sync state from DOM as safety net (event listeners normally keep state in sync)
   collectIniciais();
   collectRetorno();
