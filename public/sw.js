@@ -1,4 +1,4 @@
-const CACHE_NAME = 'retorno-v118';
+const CACHE_NAME = 'retorno-v120';
 
 // Com Vite, os assets têm hash no nome - não fazemos precache estático
 // Usamos network-first com cache como fallback
