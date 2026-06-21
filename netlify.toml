@@ -1,10 +1,15 @@
 [build]
-  command = "npm install"
+  command = "npm run build"
   functions = "netlify/functions"
-  publish = "."
+  publish = "dist"
 
 [[headers]]
   for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/sw-update.js"
   [headers.values]
     Cache-Control = "no-cache"
 
@@ -15,6 +20,11 @@
 
 [[headers]]
   for = "/icons/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
