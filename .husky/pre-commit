@@ -10,16 +10,16 @@ STATIC_FILES=$(git diff --cached --name-only | grep -E '\.(js|css|html|json|png|
 
 if [ -n "$STATIC_FILES" ]; then
   # Lê versão atual do CACHE_NAME
-  CURRENT=$(grep -oE "retorno-v[0-9]+" sw.js | sed 's/retorno-v//')
+  CURRENT=$(grep -oE "retorno-v[0-9]+" public/sw.js | sed 's/retorno-v//')
   
   if [ -n "$CURRENT" ]; then
     NEXT=$((CURRENT + 1))
     
     # Atualiza sw.js
-    sed -i "s/retorno-v${CURRENT}/retorno-v${NEXT}/" sw.js
+    sed -i "s/retorno-v${CURRENT}/retorno-v${NEXT}/" public/sw.js
     
     # Re-adiciona ao commit
-    git add sw.js
+    git add public/sw.js
     
     echo "🔄 CACHE_NAME bumpado: v${CURRENT} → v${NEXT} (arquivos: $(echo $STATIC_FILES | tr '\n' ' '))"
   fi
