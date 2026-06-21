@@ -34,8 +34,8 @@ function renderCheckboxes(tipo) {
   if (!container) return;
   container.innerHTML = '';
 
-  // Grid de 3 colunas usando classe CSS customizada (Tailwind estático não tem grid-cols-3)
-  container.className = 'equip-checkboxes-grid';
+  // Grid de 3 colunas usando Tailwind nativo (JIT detecta)
+  container.className = 'grid grid-cols-3 gap-3 mb-4';
 
   EQUIPMENT_LIST.forEach(equip => {
     const wrapper = document.createElement('label');
