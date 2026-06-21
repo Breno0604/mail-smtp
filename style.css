@@ -6,6 +6,22 @@
 @source "../scripts/**/*.js";
 @source "../src/**/*.js";
 
+/* === Custom Input Styles (dynamically constructed) === */
+.input-custom {
+  width: 100%;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid;
+  border-radius: 10px;
+  font-size: 15px;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.input-custom:focus {
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
 /* === Reset === */
 *,
 *::before,
