@@ -452,6 +452,10 @@ textarea.is-filled:hover {
   background: #d1fae5;
   color: #065f46;
 }
+.status-changed {
+  background: #fef3c7;
+  color: #92400e;
+}
 .sidebar-item-meta {
   font-size: 0.75rem;
   color: #94a3b8;
