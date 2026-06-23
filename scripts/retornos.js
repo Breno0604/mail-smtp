@@ -26,7 +26,7 @@ export function renderRetorno() {
   linhas.forEach(camposLinha => {
     const isMultiCampo = camposLinha.length > 1;
     const rowDiv = document.createElement('div');
-    rowDiv.className = isMultiCampo ? 'flex gap-3 mb-6' : 'mb-6';
+    rowDiv.className = isMultiCampo ? 'flex gap-3 mb-4' : 'mb-4';
 
     camposLinha.forEach(field => {
       const group = document.createElement('div');

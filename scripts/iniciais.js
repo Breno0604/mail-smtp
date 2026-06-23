@@ -6,9 +6,9 @@ import { captureCoordinates } from './utils.js';
 import { INPUT_CLASS, SELECT_CLASS } from './styles.js';
 
 const linhaConfig = {
-  4: 'grid grid-cols-2 gap-3 mb-6',
-  5: 'grid grid-cols-2 gap-3 mb-6',
-  6: 'linha-data gap-3 mb-6',
+  4: 'grid grid-cols-2 gap-3 mb-4',
+  5: 'grid grid-cols-2 gap-3 mb-4',
+  6: 'linha-data gap-3 mb-4',
 };
 
 // ── criadores de campo por tipo ───────────────────────────────────────────────
@@ -143,7 +143,7 @@ export function renderIniciais() {
 
   iniciaisFields.forEach(field => {
     if (field.linha !== currentLinha) {
-      const config = linhaConfig[field.linha] || 'mb-6';
+      const config = linhaConfig[field.linha] || 'mb-4';
       wrapper = document.createElement('div');
       wrapper.className = config;
       DOM.iniciaisCampos.appendChild(wrapper);

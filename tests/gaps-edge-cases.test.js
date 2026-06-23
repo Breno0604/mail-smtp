@@ -848,7 +848,7 @@ describe('G10: styles.js constants', () => {
   it('INPUT_CLASS should be a non-empty string', () => {
     expect(typeof INPUT_CLASS).toBe('string');
     expect(INPUT_CLASS.length).toBeGreaterThan(0);
-    expect(INPUT_CLASS).toContain('input-custom');
+    expect(INPUT_CLASS).toContain('w-full');
   });
 
   it('SELECT_CLASS should include INPUT_CLASS', () => {
