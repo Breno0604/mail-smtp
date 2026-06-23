@@ -70,6 +70,9 @@ export async function saveState() {
     console.error('getRecord in saveState:', err);
   }
 
+  // Keep in-memory state.status in sync with what we're saving
+  state.status = recordStatus;
+
   // Build record from state (single source of truth)
   const data = {
     uuid: state.currentUUID,
