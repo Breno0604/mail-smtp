@@ -195,7 +195,8 @@ describe('sendEmail', () => {
     await sendEmail();
     expect(updateStatusMock).toHaveBeenCalledWith(
       'test-uuid-123',
-      expect.objectContaining({ to: 'test@example.com', subject: expect.any(String) })
+      expect.objectContaining({ to: 'test@example.com', subject: expect.any(String) }),
+      'sent'
     );
   });
 

@@ -1,7 +1,7 @@
 import { DOM } from './dom.js';
 import { state } from './state.js';
 import { updateRecordStatus } from './db.js';
-import { showToast } from './ui.js';
+import { showToast, showConfirm } from './ui.js';
 import { checkDuplicate } from './duplicate.js';
 import { compressAttachments } from './compress.js';
 import { validateAll } from './validation.js';
@@ -13,6 +13,13 @@ export async function sendEmail() {
 
   const canProceed = await checkDuplicate();
   if (!canProceed) return false;
+
+  if (state.status === 'changed') {
+    const confirmed = await showConfirm(
+      'Este registro já foi enviado anteriormente e sofreu alterações após o envio. Deseja reenviá-lo?'
+    );
+    if (!confirmed) return false;
+  }
 
   const btn = DOM.btnEnviar;
   btn.disabled = true;
@@ -40,11 +47,15 @@ export async function sendEmail() {
     if (res.ok && responseData.success) {
       showToast('Email enviado com sucesso!', true);
       if (state.currentUUID) {
-        await updateRecordStatus(state.currentUUID, {
-          to: responseData.to,
-          subject,
-          sentAt: new Date().toISOString(),
-        });
+        await updateRecordStatus(
+          state.currentUUID,
+          {
+            to: responseData.to,
+            subject,
+            sentAt: new Date().toISOString(),
+          },
+          'sent'
+        );
       }
       return true;
     } else {
