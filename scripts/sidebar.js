@@ -54,6 +54,12 @@ export async function renderSidebar(filterTerm = '') {
     }
   }
 
+  const statusConfig = {
+    sent: { class: 'status-sent', text: 'Enviado' },
+    changed: { class: 'status-changed', text: 'Alterado' },
+    draft: { class: 'status-draft', text: 'Rascunho' },
+  };
+
   records.forEach(record => {
     const item = document.createElement('div');
     item.className = 'sidebar-item';
@@ -66,15 +72,9 @@ export async function renderSidebar(filterTerm = '') {
     title.textContent = getRecordSummary(record);
 
     const status = document.createElement('span');
-    status.className = `sidebar-status ${
-      record.status === 'sent'
-        ? 'status-sent'
-        : record.status === 'changed'
-          ? 'status-changed'
-          : 'status-draft'
-    }`;
-    status.textContent =
-      record.status === 'sent' ? 'Enviado' : record.status === 'changed' ? 'Alterado' : 'Rascunho';
+    const cfg = statusConfig[record.status] || statusConfig.draft;
+    status.className = `sidebar-status ${cfg.class}`;
+    status.textContent = cfg.text;
 
     header.appendChild(title);
     header.appendChild(status);
