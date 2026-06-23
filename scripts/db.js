@@ -106,13 +106,13 @@ export function deleteRecord(uuid) {
   });
 }
 
-export function updateRecordStatus(uuid, sentData) {
+export function updateRecordStatus(uuid, sentData, status = 'sent') {
   return withStore('readwrite', (store, _tx) => {
     const req = store.get(uuid);
     req.onsuccess = () => {
       const record = req.result;
       if (record) {
-        record.status = 'sent';
+        record.status = status;
         record.sentData = sentData;
         record.updatedAt = new Date().toISOString();
         store.put(record);
