@@ -8,6 +8,7 @@ import { state } from '../scripts/state.js';
 // do vi.mock e o escopo do teste, garantindo isolation de mocks.
 const {
   showToastMock,
+  showConfirmMock,
   validateAllMock,
   checkDuplicateMock,
   compressMock,
@@ -16,6 +17,7 @@ const {
   composeEmailMock,
 } = vi.hoisted(() => ({
   showToastMock: vi.fn(),
+  showConfirmMock: vi.fn(() => Promise.resolve(true)),
   validateAllMock: vi.fn(() => true),
   checkDuplicateMock: vi.fn(() => Promise.resolve(true)),
   compressMock: vi.fn(() => Promise.resolve([])),
@@ -44,6 +46,7 @@ vi.mock('../scripts/compress.js', () => ({
 
 vi.mock('../scripts/ui.js', () => ({
   showToast: showToastMock,
+  showConfirm: showConfirmMock,
 }));
 
 vi.mock('../scripts/db.js', () => ({
@@ -90,6 +93,7 @@ describe('sendEmail', () => {
     };
     state.attachments = [];
     state.currentUUID = 'test-uuid-123';
+    state.status = 'draft';
 
     DOM.tipoOrdem.value = 'CORTE POR FALTA DE PAGAMENTO';
 
@@ -223,6 +227,54 @@ describe('sendEmail', () => {
     const result = await sendEmail();
     expect(result).toBe(false);
     expect(fetch).not.toHaveBeenCalled();
+  });
+
+  // ── CENÁRIO 2B: Confirmação para registro alterado ──────────────────
+
+  it('should prompt confirmation when status is changed and proceed on confirm', async () => {
+    state.status = 'changed';
+    showConfirmMock.mockResolvedValue(true);
+    fetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ success: true, to: 'test@example.com' }),
+    });
+
+    const result = await sendEmail();
+    expect(showConfirmMock).toHaveBeenCalledWith(
+      'Este registro já foi enviado anteriormente e sofreu alterações após o envio. Deseja reenviá-lo?'
+    );
+    expect(result).toBe(true);
+  });
+
+  it('should return false when user declines confirmation', async () => {
+    state.status = 'changed';
+    showConfirmMock.mockResolvedValue(false);
+
+    const result = await sendEmail();
+    expect(result).toBe(false);
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
+  it('should NOT prompt confirmation when status is draft', async () => {
+    state.status = 'draft';
+    fetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ success: true, to: 'test@example.com' }),
+    });
+
+    await sendEmail();
+    expect(showConfirmMock).not.toHaveBeenCalled();
+  });
+
+  it('should NOT prompt confirmation when status is sent', async () => {
+    state.status = 'sent';
+    fetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ success: true, to: 'test@example.com' }),
+    });
+
+    await sendEmail();
+    expect(showConfirmMock).not.toHaveBeenCalled();
   });
 
   // ── CENÁRIO 3: Duplicata detectada ────────────────────────────────────
