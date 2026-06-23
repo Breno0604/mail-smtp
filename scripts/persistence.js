@@ -45,8 +45,9 @@ export async function saveState() {
 
   // Determine record status based on existing record and sentData
   let recordStatus = 'draft';
+  let existing = null;
   try {
-    const existing = await getRecord(state.currentUUID);
+    existing = await getRecord(state.currentUUID);
     if (existing) {
       if (existing.sentData) {
         // Already sent — check if current data differs from what was sent
@@ -80,7 +81,7 @@ export async function saveState() {
     tipoOrdem: state.iniciais['tipo-ordem'] || '',
     equipamentos: state.equipamentos,
     attachmentCount: state.attachments.length,
-    sentData: null, // keep existing sentData intact
+    sentData: existing?.sentData ?? null,
   };
 
   // Save record
