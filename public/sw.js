@@ -1,9 +1,8 @@
-const CACHE_NAME = 'retorno-v116';
+const CACHE_NAME = 'retorno-v117';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/style.css',
-  '/tailwind.css',
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
