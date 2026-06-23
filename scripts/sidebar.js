@@ -66,8 +66,15 @@ export async function renderSidebar(filterTerm = '') {
     title.textContent = getRecordSummary(record);
 
     const status = document.createElement('span');
-    status.className = `sidebar-status ${record.status === 'sent' ? 'status-sent' : 'status-draft'}`;
-    status.textContent = record.status === 'sent' ? 'Enviado' : 'Rascunho';
+    status.className = `sidebar-status ${
+      record.status === 'sent'
+        ? 'status-sent'
+        : record.status === 'changed'
+          ? 'status-changed'
+          : 'status-draft'
+    }`;
+    status.textContent =
+      record.status === 'sent' ? 'Enviado' : record.status === 'changed' ? 'Alterado' : 'Rascunho';
 
     header.appendChild(title);
     header.appendChild(status);
