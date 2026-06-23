@@ -31,6 +31,7 @@ export async function applyRecord(record) {
   state.iniciais = record.iniciais || {};
   state.retorno = record.retorno || {};
   state._createdAt = record.createdAt;
+  state.status = record.status || 'draft';
 
   // ── Restaurar anexos com migração transparente ──────────────────────────
   if (record.attachments && Array.isArray(record.attachments) && record.attachments.length > 0) {
