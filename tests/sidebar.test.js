@@ -119,6 +119,22 @@ describe('sidebar', () => {
       expect(list.innerHTML).toContain('Rascunho');
     });
 
+    it('should show changed status for changed records', async () => {
+      await saveDraft({
+        uuid: 'test-changed',
+        status: 'changed',
+        iniciais: { uc: '555', os: '666' },
+        updatedAt: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+        equipamentos: [],
+        attachments: [],
+      });
+
+      await renderSidebar();
+      const list = DOM.sidebarList;
+      expect(list.innerHTML).toContain('Alterado');
+    });
+
     it('should filter by UC term', async () => {
       await saveDraft({
         uuid: 'uc-match',
