@@ -13,7 +13,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { state, clearCurrentUUID, setCurrentUUID } from '../scripts/state.js';
 import { saveState, debouncedSave, markAttachmentsDirty } from '../scripts/persistence.js';
 import { cacheDOM, DOM } from '../scripts/dom.js';
-import { getAllRecords, deleteRecord } from '../scripts/db.js';
+import { getAllRecords, deleteRecord, saveDraft, getRecord } from '../scripts/db.js';
 
 describe('persistence — API contract', () => {
   it('should export expected functions', () => {
@@ -211,5 +211,139 @@ describe('persistence — markAttachmentsDirty', () => {
   it('should be callable without errors', () => {
     expect(() => markAttachmentsDirty()).not.toThrow();
     expect(() => markAttachmentsDirty()).not.toThrow(); // idempotent
+  });
+});
+
+describe('persistence — status transitions', () => {
+  beforeEach(async () => {
+    document.body.innerHTML = `
+      <div id="iniciais-campos"></div>
+      <div id="equipamentos-list"></div>
+      <div id="retorno-campos"></div>
+      <select id="tipo-ordem"><option value="">Selecione</option><option value="ADEQUACAO SMF">ADEQUACAO SMF</option></select>
+      <textarea id="complemento-corpo"></textarea>
+      <input id="coordenadas">
+      <select id="lider"></select>
+      <select id="parceiro"></select>
+      <select id="municipio"></select>
+      <input id="uc">
+      <input id="os">
+      <select id="notificado"></select>
+      <select id="placa"></select>
+      <input id="data" type="date">
+      <input id="hora_inicio" type="time">
+      <input id="hora_fim" type="time">
+    `;
+    cacheDOM();
+    state.iniciais = {};
+    state.equipamentos = [];
+    state.attachments = [];
+    state.currentUUID = '';
+    state.iniciaisValido = false;
+    state.retorno = {};
+    state._createdAt = null;
+    localStorage.clear();
+  });
+
+  afterEach(async () => {
+    const all = await getAllRecords();
+    for (const r of all) {
+      await deleteRecord(r.uuid);
+    }
+  });
+
+  it('should set status to draft when record has no sentData', async () => {
+    state.iniciaisValido = true;
+    state.currentUUID = 'draft-status-test';
+    document.getElementById('uc').value = '11111';
+    document.getElementById('os').value = '22222';
+
+    await saveState();
+    const record = await getRecord('draft-status-test');
+    expect(record.status).toBe('draft');
+  });
+
+  it('should keep status sent when record has sentData and no changes', async () => {
+    // Pre-save a record with sentData - include all iniciaisFields to match collectIniciais()
+    const baseIniciais = {
+      coordenadas: '',
+      lider: '',
+      parceiro: '',
+      municipio: '',
+      uc: '12345',
+      os: '67890',
+      notificado: '',
+      placa: '',
+      data: '',
+      hora_inicio: '',
+      hora_fim: '',
+      'tipo-ordem': '',
+    };
+    await saveDraft({
+      uuid: 'sent-no-change',
+      status: 'sent',
+      iniciais: baseIniciais,
+      retorno: {},
+      equipamentos: [],
+      updatedAt: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+      sentData: { to: ['test@test.com'], subject: 'test', sentAt: new Date().toISOString() },
+    });
+
+    // Load and re-save without changes
+    state.iniciaisValido = true;
+    state.currentUUID = 'sent-no-change';
+    state._createdAt = new Date().toISOString();
+    document.getElementById('uc').value = '12345';
+    document.getElementById('os').value = '67890';
+
+    await saveState();
+    const record = await getRecord('sent-no-change');
+    expect(record.status).toBe('sent');
+    // sentData should be preserved
+    expect(record.sentData).toBeTruthy();
+  });
+
+  it('should set status to changed when record has sentData and data changes', async () => {
+    // Pre-save a record with sentData - include all iniciaisFields to match collectIniciais()
+    const baseIniciais = {
+      coordenadas: '',
+      lider: '',
+      parceiro: '',
+      municipio: '',
+      uc: '12345',
+      os: '67890',
+      notificado: '',
+      placa: '',
+      data: '',
+      hora_inicio: '',
+      hora_fim: '',
+      'tipo-ordem': '',
+    };
+    await saveDraft({
+      uuid: 'sent-with-change',
+      status: 'sent',
+      iniciais: baseIniciais,
+      retorno: {},
+      equipamentos: [],
+      updatedAt: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+      sentData: { to: ['test@test.com'], subject: 'test', sentAt: new Date().toISOString() },
+    });
+
+    // Load and modify a field (coordenadas is an input, not a select)
+    state.iniciaisValido = true;
+    state.currentUUID = 'sent-with-change';
+    state._createdAt = new Date().toISOString();
+    document.getElementById('uc').value = '12345';
+    document.getElementById('os').value = '67890';
+    // Change a field
+    document.getElementById('coordenadas').value = 'NEW COORDINATES';
+
+    await saveState();
+    const record = await getRecord('sent-with-change');
+    expect(record.status).toBe('changed');
+    // sentData should still be preserved
+    expect(record.sentData).toBeTruthy();
   });
 });
