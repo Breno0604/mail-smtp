@@ -43,10 +43,36 @@ export async function saveState() {
   // Resolve createdAt
   const createdAt = await resolveCreatedAt(state.currentUUID);
 
+  // Determine record status based on existing record and sentData
+  let recordStatus = 'draft';
+  try {
+    const existing = await getRecord(state.currentUUID);
+    if (existing) {
+      if (existing.sentData) {
+        // Already sent — check if current data differs from what was sent
+        const prev = JSON.stringify({
+          iniciais: existing.iniciais,
+          retorno: existing.retorno,
+          equipamentos: existing.equipamentos,
+        });
+        const curr = JSON.stringify({
+          iniciais: state.iniciais,
+          retorno: state.retorno,
+          equipamentos: state.equipamentos,
+        });
+        recordStatus = prev !== curr ? 'changed' : 'sent';
+      } else {
+        recordStatus = existing.status || 'draft';
+      }
+    }
+  } catch (err) {
+    console.error('getRecord in saveState:', err);
+  }
+
   // Build record from state (single source of truth)
   const data = {
     uuid: state.currentUUID,
-    status: 'draft',
+    status: recordStatus,
     createdAt,
     updatedAt: new Date().toISOString(),
     iniciais: state.iniciais,
@@ -54,7 +80,7 @@ export async function saveState() {
     tipoOrdem: state.iniciais['tipo-ordem'] || '',
     equipamentos: state.equipamentos,
     attachmentCount: state.attachments.length,
-    sentData: null,
+    sentData: null, // keep existing sentData intact
   };
 
   // Save record
