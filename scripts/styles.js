@@ -2,7 +2,6 @@
 // Evita a duplicação de strings longas de Tailwind em iniciais.js e retornos.js.
 // Nota: Cores de fundo/borda são controladas via CSS (style.css) para estados dinâmicos.
 
-export const INPUT_CLASS =
-  'input-custom w-full border rounded-[10px] text-[15px] font-sans outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10';
+export const INPUT_CLASS = 'input-custom';
 
 export const SELECT_CLASS = INPUT_CLASS + ' py-3';
