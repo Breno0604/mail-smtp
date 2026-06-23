@@ -3,6 +3,6 @@
 // Nota: Cores de fundo/borda são controladas via CSS (style.css) para estados dinâmicos.
 
 export const INPUT_CLASS =
-  'input-custom w-full border rounded-[10px] text-[15px] font-sans outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10';
+  'w-full px-3.5 py-3 border rounded-[10px] text-[15px] font-sans outline-none transition-all duration-200 focus:ring-4 focus:ring-blue-500/10';
 
 export const SELECT_CLASS = INPUT_CLASS + ' py-3';
