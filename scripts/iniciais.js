@@ -71,43 +71,23 @@ function createTextareaInput() {
 // Retorna o group diretamente (já inclui o wrapper interno) e atualiza DOM.tipoOrdem se aplicável.
 function createCoordinatesGroup(field, label) {
   const coordWrapper = document.createElement('div');
-  coordWrapper.style.position = 'relative';
-  coordWrapper.style.display = 'inline-block';
-  coordWrapper.style.width = '100%';
+  coordWrapper.className = 'coord-wrapper';
 
   const input = document.createElement('input');
   input.id = field.nome;
   input.type = 'text';
   input.readOnly = true;
-  input.className = INPUT_CLASS + ' bg-gray-100 cursor-not-allowed';
-  input.style.paddingRight = '40px';
+  input.className = INPUT_CLASS + ' bg-gray-100 cursor-not-allowed coord-input';
   input.placeholder = 'Coletando coordenadas...';
 
   const refreshBtn = document.createElement('button');
   refreshBtn.type = 'button';
   refreshBtn.className = 'coord-refresh';
-  refreshBtn.style.cssText =
-    'position:absolute;right:8px;top:50%;transform:translateY(-50%);width:36px;height:36px;' +
-    'display:flex;align-items:center;justify-content:center;border:1px solid #d1d5db;border-radius:8px;' +
-    'background:#f9fafb;color:#2563eb;font-size:20px;cursor:pointer;transition:all 0.15s;z-index:10;' +
-    'box-shadow:0 1px 3px rgba(0,0,0,0.08);';
   refreshBtn.innerHTML = '&#x21BB;';
   refreshBtn.title = 'Atualizar coordenadas';
   refreshBtn.addEventListener('click', e => {
     e.preventDefault();
     captureCoordinates();
-  });
-  refreshBtn.addEventListener('mouseenter', () => {
-    refreshBtn.style.color = '#2563eb';
-    refreshBtn.style.background = '#eff6ff';
-    refreshBtn.style.borderColor = '#3b82f6';
-    refreshBtn.style.boxShadow = '0 2px 8px rgba(59,130,246,0.15)';
-  });
-  refreshBtn.addEventListener('mouseleave', () => {
-    refreshBtn.style.color = '#2563eb';
-    refreshBtn.style.background = '#f9fafb';
-    refreshBtn.style.borderColor = '#d1d5db';
-    refreshBtn.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)';
   });
 
   const coordError = document.createElement('span');
@@ -169,9 +149,8 @@ export function renderIniciais() {
     input.placeholder = field.label;
     if (field.obrigatorio) input.setAttribute('data-required', '');
 
-    // Mantém o cache DOM atualizado para elementos criados dinamicamente.
-    // Necessário porque tipo-ordem é criado por renderIniciais() após cacheDOM().
-    if (field.nome === 'tipo-ordem') DOM.tipoOrdem = input;
+    // tipoOrdem tem getter no DOM que sempre consulta o DOM ao vivo.
+    // Não é necessário (nem possível, pois DOM está congelado) reassigná-lo.
 
     addBlurValidation(input);
     input.addEventListener('input', debouncedSave);

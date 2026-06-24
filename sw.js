@@ -1,4 +1,4 @@
-const CACHE_NAME = 'retorno-v131';
+const CACHE_NAME = 'retorno-v132';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -15,6 +15,7 @@ const STATIC_ASSETS = [
   '/scripts/email.js',
   '/scripts/equipment.js',
   '/scripts/fields.js',
+  '/scripts/data/fields-data.js',
   '/scripts/iniciais.js',
   '/scripts/persistence.js',
   '/scripts/reset.js',

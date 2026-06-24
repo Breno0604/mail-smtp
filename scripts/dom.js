@@ -2,77 +2,109 @@
 // Convention: DOM elements are cached once via cacheDOM() and never reassigned.
 // Individual element properties (textContent, className, value) may be mutated.
 
-const DOM = {};
+// Cache interno recriado a cada cacheDOM() para suportar múltiplas chamadas (testes).
+// DOM é um Proxy que delega leituras ao cache atual e ignora escritas externas.
+let _cache = {};
 
 export function cacheDOM() {
+  const fresh = {};
+
   // Header
-  DOM.hamburger = document.getElementById('hamburger');
-  DOM.btnNovoForm = document.getElementById('btn-novo-form');
+  fresh.hamburger = document.getElementById('hamburger');
+  fresh.btnNovoForm = document.getElementById('btn-novo-form');
 
   // Sections
-  DOM.secInicio = document.getElementById('sec-inicio');
-  DOM.secRetorno = document.getElementById('sec-retorno');
-  DOM.secEquipamentos = document.getElementById('sec-equipamentos');
-  DOM.secAnexos = document.getElementById('sec-anexos');
-  DOM.secRevisao = document.getElementById('sec-revisao');
+  fresh.secInicio = document.getElementById('sec-inicio');
+  fresh.secRetorno = document.getElementById('sec-retorno');
+  fresh.secEquipamentos = document.getElementById('sec-equipamentos');
+  fresh.secAnexos = document.getElementById('sec-anexos');
+  fresh.secRevisao = document.getElementById('sec-revisao');
 
   // Error & Toast
-  DOM.errorMsg = document.getElementById('error-msg');
-  DOM.toast = document.getElementById('toast');
+  fresh.errorMsg = document.getElementById('error-msg');
+  fresh.toast = document.getElementById('toast');
 
   // Início
-  DOM.iniciaisCampos = document.getElementById('iniciais-campos');
-  DOM.tipoOrdem = document.getElementById('tipo-ordem');
+  fresh.iniciaisCampos = document.getElementById('iniciais-campos');
+  // tipoOrdem usa getter porque renderIniciais() recria o elemento após cacheDOM().
+  // O getter sempre consulta o DOM ao vivo, sem referências obsoletas.
+  Object.defineProperty(fresh, 'tipoOrdem', {
+    get() {
+      return document.getElementById('tipo-ordem');
+    },
+    enumerable: true,
+    configurable: false,
+  });
 
   // Retorno
-  DOM.retornoDesc = document.getElementById('retorno-desc');
-  DOM.retornoPlaceholder = document.getElementById('retorno-placeholder');
-  DOM.retornoCampos = document.getElementById('retorno-campos');
+  fresh.retornoDesc = document.getElementById('retorno-desc');
+  fresh.retornoPlaceholder = document.getElementById('retorno-placeholder');
+  fresh.retornoCampos = document.getElementById('retorno-campos');
 
   // Equipamentos
-  DOM.instaladoEquip = document.getElementById('instalado-equip');
-  DOM.retiradoEquip = document.getElementById('retirado-equip');
-  DOM.secEquipInstalados = document.getElementById('sec-equip-instalados');
-  DOM.secEquipRetirados = document.getElementById('sec-equip-retirados');
-  DOM.checkboxesInstalados = document.getElementById('checkboxes-instalados');
-  DOM.checkboxesRetirados = document.getElementById('checkboxes-retirados');
-  DOM.camposInstalados = document.getElementById('campos-instalados');
-  DOM.camposRetirados = document.getElementById('campos-retirados');
+  fresh.instaladoEquip = document.getElementById('instalado-equip');
+  fresh.retiradoEquip = document.getElementById('retirado-equip');
+  fresh.secEquipInstalados = document.getElementById('sec-equip-instalados');
+  fresh.secEquipRetirados = document.getElementById('sec-equip-retirados');
+  fresh.checkboxesInstalados = document.getElementById('checkboxes-instalados');
+  fresh.checkboxesRetirados = document.getElementById('checkboxes-retirados');
+  fresh.camposInstalados = document.getElementById('campos-instalados');
+  fresh.camposRetirados = document.getElementById('campos-retirados');
 
   // Anexos
-  DOM.fileInput = document.getElementById('file-input');
-  DOM.fileCount = document.getElementById('file-count');
-  DOM.previewGrid = document.getElementById('preview-grid');
-  DOM.fileUploadArea = document.getElementById('file-upload-area');
+  fresh.fileInput = document.getElementById('file-input');
+  fresh.fileCount = document.getElementById('file-count');
+  fresh.previewGrid = document.getElementById('preview-grid');
+  fresh.fileUploadArea = document.getElementById('file-upload-area');
 
   // Revisão
-  DOM.previewCorpo = document.getElementById('preview-corpo');
+  fresh.previewCorpo = document.getElementById('preview-corpo');
 
   // Send
-  DOM.btnEnviar = document.getElementById('btn-enviar');
+  fresh.btnEnviar = document.getElementById('btn-enviar');
 
   // Sidebar
-  DOM.sidebar = document.getElementById('sidebar');
-  DOM.sidebarOverlay = document.getElementById('sidebar-overlay');
-  DOM.sidebarClose = document.getElementById('sidebar-close');
-  DOM.sidebarList = document.getElementById('sidebar-list');
-  DOM.sidebarFilter = document.getElementById('sidebar-filter');
+  fresh.sidebar = document.getElementById('sidebar');
+  fresh.sidebarOverlay = document.getElementById('sidebar-overlay');
+  fresh.sidebarClose = document.getElementById('sidebar-close');
+  fresh.sidebarList = document.getElementById('sidebar-list');
+  fresh.sidebarFilter = document.getElementById('sidebar-filter');
 
   // Modals
-  DOM.dupModal = document.getElementById('dup-modal');
-  DOM.dupModalTitle = document.getElementById('dup-modal-title');
-  DOM.dupModalBody = document.getElementById('dup-modal-body');
-  DOM.dupModalCancel = document.getElementById('dup-modal-cancel');
-  DOM.dupModalConfirm = document.getElementById('dup-modal-confirm');
-  DOM.lightbox = document.getElementById('lightbox');
-  DOM.lightboxImg = document.getElementById('lightbox-img');
-  DOM.lightboxClose = document.getElementById('lightbox-close');
-  DOM.confirmModal = document.getElementById('confirm-modal');
-  DOM.confirmModalText = document.getElementById('confirm-modal-text');
-  DOM.confirmModalOk = document.getElementById('confirm-modal-ok');
-  DOM.confirmModalCancel = document.getElementById('confirm-modal-cancel');
-  DOM.updateModal = document.getElementById('update-modal');
-  DOM.updateModalOk = document.getElementById('update-modal-ok');
+  fresh.dupModal = document.getElementById('dup-modal');
+  fresh.dupModalTitle = document.getElementById('dup-modal-title');
+  fresh.dupModalBody = document.getElementById('dup-modal-body');
+  fresh.dupModalCancel = document.getElementById('dup-modal-cancel');
+  fresh.dupModalConfirm = document.getElementById('dup-modal-confirm');
+  fresh.lightbox = document.getElementById('lightbox');
+  fresh.lightboxImg = document.getElementById('lightbox-img');
+  fresh.lightboxClose = document.getElementById('lightbox-close');
+  fresh.confirmModal = document.getElementById('confirm-modal');
+  fresh.confirmModalText = document.getElementById('confirm-modal-text');
+  fresh.confirmModalOk = document.getElementById('confirm-modal-ok');
+  fresh.confirmModalCancel = document.getElementById('confirm-modal-cancel');
+  fresh.updateModal = document.getElementById('update-modal');
+  fresh.updateModalOk = document.getElementById('update-modal-ok');
+
+  // Congela o cache para prevenir mutações acidentais nas chaves do objeto.
+  // Propriedades de elementos DOM individuais (textContent, className, value) ainda podem ser alteradas.
+  Object.freeze(fresh);
+
+  // Atualiza o cache — chamadas subsequentes a cacheDOM() criam um novo objeto fresco.
+  _cache = fresh;
 }
 
-export { DOM };
+// Proxy que delega leituras ao cache atual e ignora escritas externas.
+// Isso permite que cacheDOM() seja chamado múltiplas vezes (ex: testes com beforeEach)
+// sem que o módulo precise reexportar um novo objeto a cada chamada.
+export const DOM = new Proxy(
+  {},
+  {
+    get(_, prop) {
+      return _cache[prop];
+    },
+    set() {
+      return true;
+    },
+  }
+);

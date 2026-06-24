@@ -138,8 +138,8 @@ describe('validation', () => {
   function fillAllRequiredFields() {
     // renderIniciais creates all the fields
     renderIniciais();
-    // Now get the tipo-ordem select and set DOM reference
-    DOM.tipoOrdem = document.getElementById('tipo-ordem');
+    // DOM.tipoOrdem now has a getter that queries the DOM live.
+    // No reassignment needed – the getter finds the element automatically.
 
     document.getElementById('lider').value = 'ANDRE DE SOUSA CARVALHO';
     document.getElementById('parceiro').value = 'ANTONIO MAURIELLTON DE ARAUJO MARTINS';
@@ -167,14 +167,12 @@ describe('validation', () => {
   describe('validateSection(1) - Iniciais', () => {
     it('should return false when all required fields are empty', () => {
       renderIniciais();
-      DOM.tipoOrdem = document.getElementById('tipo-ordem');
       const result = validateSection(1);
       expect(result).toBe(false);
     });
 
     it('should hide global error when required fields are empty (per-field shown)', () => {
       renderIniciais();
-      DOM.tipoOrdem = document.getElementById('tipo-ordem');
       validateSection(1);
       const errorMsg = document.getElementById('error-msg');
       expect(errorMsg.style.display).toBe('none');
@@ -196,7 +194,6 @@ describe('validation', () => {
 
     it('should add error class to empty required fields', () => {
       renderIniciais();
-      DOM.tipoOrdem = document.getElementById('tipo-ordem');
       validateSection(1);
       const fieldsWithRequired = [
         'lider',
@@ -266,7 +263,6 @@ describe('validation', () => {
 
     it('should show inline error span on empty required field', () => {
       renderIniciais();
-      DOM.tipoOrdem = document.getElementById('tipo-ordem');
       validateSection(1);
       const lider = document.getElementById('lider');
       const errorSpan = lider.nextElementSibling;
@@ -319,7 +315,6 @@ describe('validation', () => {
 
     it('should handle coordinates field (readonly, not required)', () => {
       renderIniciais();
-      DOM.tipoOrdem = document.getElementById('tipo-ordem');
       // Fill all required fields except coordinates (which is not required)
       document.getElementById('lider').value = 'ANDRE DE SOUSA CARVALHO';
       document.getElementById('parceiro').value = 'ANTONIO MAURIELLTON DE ARAUJO MARTINS';
@@ -477,8 +472,7 @@ describe('validation', () => {
       select.innerHTML =
         '<option value="">Selecione</option><option value="ADEQUACAO SMF">ADEQUACAO SMF</option>';
       document.body.appendChild(select);
-      DOM.tipoOrdem = select;
-      DOM.tipoOrdem.value = 'ADEQUACAO SMF';
+      select.value = 'ADEQUACAO SMF';
     });
 
     it('should return false when textarea with data-required is empty', () => {
@@ -702,7 +696,6 @@ describe('validation', () => {
 
     it('should not populate state.iniciais when section 1 validation fails', () => {
       renderIniciais();
-      DOM.tipoOrdem = document.getElementById('tipo-ordem');
       validateSection(1);
       expect(state.iniciais.lider).toBeUndefined();
     });
@@ -729,8 +722,7 @@ describe('validation', () => {
       select.innerHTML =
         '<option value="">Selecione</option><option value="ADEQUACAO SMF">ADEQUACAO SMF</option>';
       document.body.appendChild(select);
-      DOM.tipoOrdem = select;
-      DOM.tipoOrdem.value = 'ADEQUACAO SMF';
+      select.value = 'ADEQUACAO SMF';
       renderRetorno();
       const textarea = document.getElementById('descricao');
       textarea.value = 'descricao valida';
@@ -744,8 +736,7 @@ describe('validation', () => {
       select.innerHTML =
         '<option value="">Selecione</option><option value="ADEQUACAO SMF">ADEQUACAO SMF</option>';
       document.body.appendChild(select);
-      DOM.tipoOrdem = select;
-      DOM.tipoOrdem.value = 'ADEQUACAO SMF';
+      select.value = 'ADEQUACAO SMF';
       renderRetorno();
       validateSection(3);
       expect(state.retorno.descricao).toBeUndefined();

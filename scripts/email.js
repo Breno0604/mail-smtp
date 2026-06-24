@@ -2,6 +2,7 @@ import { DOM } from './dom.js';
 import { iniciaisFields, getRetornoFields } from './fields.js';
 import { collectAllData } from './collectors.js';
 import { EQUIPMENT_KEYS } from './equipment-keys.js';
+import { formatDate } from './utils.js';
 
 /**
  * Normaliza texto: remove acentos, substitui ç→c, converte para MAIÚSCULAS
@@ -27,7 +28,8 @@ export function composeEmail(data) {
 
   iniciaisFields.forEach(field => {
     const raw = data.iniciais?.[field.nome] || '';
-    const val = raw && field.tipo === 'date' ? raw.split('-').reverse().join('-') : raw || '\u2014';
+    const val =
+      raw && field.tipo === 'date' ? formatDate(raw, { dateOnly: true }) : raw || '\u2014';
     body += `${normalizeText(field.label)}: ${normalizeText(val)}\n`;
   });
 

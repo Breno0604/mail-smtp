@@ -8,7 +8,6 @@ import {
   updateRecordStatus,
   saveAttachments,
   getAttachmentsByUuid,
-  deleteAttachmentsByUuid,
 } from '../scripts/db.js';
 
 describe('db', () => {
@@ -220,35 +219,6 @@ describe('db', () => {
       expect(retrieved1[0].name).toBe('a.jpg');
       expect(retrieved2).toHaveLength(1);
       expect(retrieved2[0].name).toBe('b.jpg');
-    });
-  });
-
-  describe('deleteAttachmentsByUuid', () => {
-    it('should delete all attachments for a UUID', async () => {
-      await saveAttachments('test-uuid-1', [
-        { name: 'a.jpg', type: 'image/jpeg', data: 'data1' },
-        { name: 'b.jpg', type: 'image/jpeg', data: 'data2' },
-      ]);
-      await deleteAttachmentsByUuid('test-uuid-1');
-      const retrieved = await getAttachmentsByUuid('test-uuid-1');
-      expect(retrieved).toHaveLength(0);
-    });
-
-    it('should not throw when deleting non-existent UUID', async () => {
-      await expect(deleteAttachmentsByUuid('non-existent')).resolves.toBeUndefined();
-    });
-
-    it('should only delete attachments for specific UUID', async () => {
-      await saveAttachments('uuid-1', [{ name: 'a.jpg', type: 'image/jpeg', data: 'data1' }]);
-      await saveAttachments('uuid-2', [{ name: 'b.jpg', type: 'image/jpeg', data: 'data2' }]);
-
-      await deleteAttachmentsByUuid('uuid-1');
-
-      const retrieved1 = await getAttachmentsByUuid('uuid-1');
-      const retrieved2 = await getAttachmentsByUuid('uuid-2');
-
-      expect(retrieved1).toHaveLength(0);
-      expect(retrieved2).toHaveLength(1);
     });
   });
 

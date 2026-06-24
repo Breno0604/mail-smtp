@@ -113,10 +113,10 @@ describe('email', () => {
       expect(body).toContain('-3.123, -38.456');
     });
 
-    it('should format date field as DD-MM-YYYY', () => {
+    it('should format date field as DD/MM/YYYY', () => {
       const data = { ...sampleData, iniciais: { ...sampleData.iniciais, data: '2024-03-15' } };
       const body = composeEmail(data);
-      expect(body).toContain('15-03-2024');
+      expect(body).toContain('15/03/2024');
     });
 
     it('should include "—" for empty iniciais fields', () => {

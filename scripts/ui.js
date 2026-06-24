@@ -37,25 +37,60 @@ export function clearFieldError(el) {
   }
 }
 
-export function showConfirm(message) {
+/**
+ * Generic Promise-based modal interaction.
+ * Shows an overlay modal with a message and confirm/cancel buttons,
+ * resolves with true (confirm) or false (cancel).
+ *
+ * @param {HTMLElement} overlay - Modal overlay element
+ * @param {HTMLElement} bodyEl - Element to set message content on
+ * @param {HTMLElement} confirmBtn - Confirm button element
+ * @param {HTMLElement} cancelBtn - Cancel button element
+ * @param {string} bodyContent - Message content (textContent by default)
+ * @param {object} [options]
+ * @param {boolean} [options.useHtml=false] - Use innerHTML instead of textContent
+ * @returns {Promise<boolean>}
+ */
+export function showModalElements(
+  overlay,
+  bodyEl,
+  confirmBtn,
+  cancelBtn,
+  bodyContent,
+  options = {}
+) {
   return new Promise(resolve => {
-    DOM.confirmModalText.textContent = message;
-    DOM.confirmModal.classList.remove('hidden');
+    if (options.useHtml) {
+      bodyEl.innerHTML = bodyContent;
+    } else {
+      bodyEl.textContent = bodyContent;
+    }
+    overlay.classList.remove('hidden');
 
     const cleanup = () => {
-      DOM.confirmModal.classList.add('hidden');
-      DOM.confirmModalOk.onclick = null;
-      DOM.confirmModalCancel.onclick = null;
+      overlay.classList.add('hidden');
+      confirmBtn.onclick = null;
+      cancelBtn.onclick = null;
     };
 
-    DOM.confirmModalOk.onclick = () => {
+    confirmBtn.onclick = () => {
       cleanup();
       resolve(true);
     };
 
-    DOM.confirmModalCancel.onclick = () => {
+    cancelBtn.onclick = () => {
       cleanup();
       resolve(false);
     };
   });
+}
+
+export function showConfirm(message) {
+  return showModalElements(
+    DOM.confirmModal,
+    DOM.confirmModalText,
+    DOM.confirmModalOk,
+    DOM.confirmModalCancel,
+    message
+  );
 }

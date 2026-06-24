@@ -58,28 +58,26 @@ async function withStore(mode, fn) {
   return withTransaction(STORE_RECORDS, mode, tx => fn(tx.objectStore(STORE_RECORDS), tx));
 }
 
-async function readFromStore(fn) {
-  const db = await openDB();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_RECORDS, 'readonly');
-    const req = fn(tx.objectStore(STORE_RECORDS));
-    req.onsuccess = () => resolve(req.result || null);
-    req.onerror = () => reject(req.error);
-  });
-}
-
 // ── Records CRUD ─────────────────────────────────────────────────────────────
 
 export function saveDraft(record) {
   return withStore('readwrite', store => store.put(record));
 }
 
+/**
+ * Busca um registro pelo UUID.
+ * O IDBRequest retornado por store.get() tem seu .result populado quando a transação completa.
+ */
 export function getRecord(uuid) {
-  return readFromStore(store => store.get(uuid));
+  return withStore('readonly', store => store.get(uuid)).then(req => req?.result || null);
 }
 
+/**
+ * Busca todos os registros.
+ * O IDBRequest retornado por store.getAll() tem seu .result populado quando a transação completa.
+ */
 export function getAllRecords() {
-  return readFromStore(store => store.getAll()).then(r => r || []);
+  return withStore('readonly', store => store.getAll()).then(req => req?.result || []);
 }
 
 /**
@@ -181,23 +179,5 @@ export function getAttachmentsByUuid(uuid) {
       resolve(results.map(({ name, type, data }) => ({ name, type, data })));
     };
     req.onerror = () => reject(req.error);
-  });
-}
-
-/**
- * Deleta todos os anexos de um registro pelo UUID.
- */
-export function deleteAttachmentsByUuid(uuid) {
-  return withTransaction(STORE_ATTACHMENTS, 'readwrite', tx => {
-    const store = tx.objectStore(STORE_ATTACHMENTS);
-    const index = store.index('uuid');
-    const cursorReq = index.openCursor(IDBKeyRange.only(uuid));
-    cursorReq.onsuccess = () => {
-      const cursor = cursorReq.result;
-      if (cursor) {
-        cursor.delete();
-        cursor.continue();
-      }
-    };
   });
 }

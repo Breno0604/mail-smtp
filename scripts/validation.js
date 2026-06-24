@@ -87,6 +87,40 @@ function validateSection1() {
   return true;
 }
 
+/**
+ * Validate a single equipment group (instalados or retirados).
+ * Checks that all visible numeric inputs in the group are filled.
+ * @param {'instalados'|'retirados'} tipo - The equipment group type
+ * @param {HTMLElement} selectEl - The control select element to mark error on
+ * @returns {boolean} Whether the group passed validation
+ */
+function validateEquipmentGroup(tipo, selectEl) {
+  const inputs = document.querySelectorAll(`#campos-${tipo} input[type="number"]`);
+  let hasAtLeastOneFilled = false;
+  let hasError = false;
+
+  if (inputs.length === 0) {
+    markError(selectEl, 'Selecione e preencha pelo menos um equipamento');
+    return false;
+  }
+
+  inputs.forEach(input => {
+    if (!input.value || input.value.trim() === '') {
+      markError(input, 'Campo obrigatório');
+      hasError = true;
+    } else {
+      clearError(input);
+      hasAtLeastOneFilled = true;
+    }
+  });
+
+  if (!hasAtLeastOneFilled) {
+    hasError = true;
+  }
+
+  return !hasError;
+}
+
 function validateSection2() {
   const instaladoSelect = DOM.instaladoEquip;
   const retiradoSelect = DOM.retiradoEquip;
@@ -116,62 +150,19 @@ function validateSection2() {
     return !hasError;
   }
 
-  // Validate installed equipment (when SIM, at least one checkbox must be checked and filled)
   if (instalado === 'SIM') {
-    const installedInputs = document.querySelectorAll('#campos-instalados input[type="number"]');
-    let hasAtLeastOneFilled = false;
-
-    if (installedInputs.length === 0) {
-      // SIM selected but no equipment fields filled (no checkboxes checked)
-      markError(DOM.instaladoEquip, 'Selecione e preencha pelo menos um equipamento');
+    if (!validateEquipmentGroup('instalados', DOM.instaladoEquip)) {
       hasError = true;
-    } else {
-      installedInputs.forEach(input => {
-        if (!input.value || input.value.trim() === '') {
-          markError(input, 'Campo obrigatório');
-          hasError = true;
-        } else {
-          clearError(input);
-          hasAtLeastOneFilled = true;
-        }
-      });
-
-      // If section visible but no inputs filled, error
-      if (!hasAtLeastOneFilled) {
-        hasError = true;
-      }
     }
   }
 
-  // Validate removed equipment (when SIM, at least one checkbox must be checked and filled)
   if (retirado === 'SIM') {
-    const removedInputs = document.querySelectorAll('#campos-retirados input[type="number"]');
-    let hasAtLeastOneFilled = false;
-
-    if (removedInputs.length === 0) {
-      // SIM selected but no equipment fields filled (no checkboxes checked)
-      markError(DOM.retiradoEquip, 'Selecione e preencha pelo menos um equipamento');
+    if (!validateEquipmentGroup('retirados', DOM.retiradoEquip)) {
       hasError = true;
-    } else {
-      removedInputs.forEach(input => {
-        if (!input.value || input.value.trim() === '') {
-          markError(input, 'Campo obrigatório');
-          hasError = true;
-        } else {
-          clearError(input);
-          hasAtLeastOneFilled = true;
-        }
-      });
-
-      if (!hasAtLeastOneFilled) {
-        hasError = true;
-      }
     }
   }
 
-  if (hasError) return false;
-
-  return true;
+  return !hasError;
 }
 
 function validateSection3() {
