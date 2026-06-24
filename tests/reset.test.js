@@ -142,8 +142,8 @@ describe('reset', () => {
 
     it('should clear state.equipamentos', () => {
       resetForm();
-      expect(state.equipamentos.instaladoEquip).toBe('NAO');
-      expect(state.equipamentos.retiradoEquip).toBe('NAO');
+      expect(state.equipamentos.instaladoEquip).toBe('');
+      expect(state.equipamentos.retiradoEquip).toBe('');
       expect(state.equipamentos.instalados.medidor).toBe('');
       expect(state.equipamentos.checkboxes.instalados.medidor).toBe(false);
     });

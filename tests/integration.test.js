@@ -279,8 +279,8 @@ describe('integration: full record lifecycle', () => {
     expect(state.iniciais.uc).toBe('');
     expect(state.iniciais.os).toBe('');
     expect(state.retorno).toEqual({});
-    expect(state.equipamentos.instaladoEquip).toBe('NAO');
-    expect(state.equipamentos.retiradoEquip).toBe('NAO');
+    expect(state.equipamentos.instaladoEquip).toBe('');
+    expect(state.equipamentos.retiradoEquip).toBe('');
     expect(state.equipamentos.instalados.medidor).toBe('');
     expect(state.attachments).toEqual([]);
     expect(state.lastTipoOrdem).toBe('');

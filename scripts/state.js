@@ -26,8 +26,8 @@ export const state = {
  */
 export function createDefaultEquipamentos() {
   return {
-    instaladoEquip: 'NAO',
-    retiradoEquip: 'NAO',
+    instaladoEquip: '',
+    retiradoEquip: '',
     instalados: {
       medidor: '',
       conjunto: '',

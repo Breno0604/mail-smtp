@@ -101,10 +101,14 @@ export function toggleSectionVisibility(tipo) {
   if (value === 'SIM') {
     section.classList.remove('hidden');
     state.equipamentos[tipo === 'instalados' ? 'instaladoEquip' : 'retiradoEquip'] = 'SIM';
-  } else {
+  } else if (value === 'NAO') {
     section.classList.add('hidden');
     state.equipamentos[tipo === 'instalados' ? 'instaladoEquip' : 'retiradoEquip'] = 'NAO';
     clearSection(tipo);
+  } else {
+    // Value is empty ("Selecione") - keep section hidden but don't set to NAO
+    section.classList.add('hidden');
+    state.equipamentos[tipo === 'instalados' ? 'instaladoEquip' : 'retiradoEquip'] = '';
   }
 
   debouncedSave();

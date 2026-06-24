@@ -342,8 +342,9 @@ textarea.is-filled:hover {
 .sidebar {
   position: fixed;
   top: 0;
-  left: -320px;
-  width: 320px;
+  left: -100%;
+  width: 100%;
+  max-width: 100%;
   height: 100%;
   height: 100dvh;
   background: #fff;
@@ -390,14 +391,15 @@ textarea.is-filled:hover {
   background: none;
   border: none;
   font-size: 1.5rem;
+  font-weight: 700;
   cursor: pointer;
-  color: #64748b;
+  color: #dc2626;
   padding: 4px;
   line-height: 1;
   transition: color 0.2s;
 }
 .sidebar-close:hover {
-  color: #0f172a;
+  color: #b91c1c;
 }
 .sidebar-list {
   flex: 1;

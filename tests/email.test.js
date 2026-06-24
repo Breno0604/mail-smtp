@@ -156,7 +156,6 @@ describe('email', () => {
         },
       };
       const body = composeEmail(data);
-      expect(body).toContain('EQUIPAMENTOS:');
       expect(body).toContain('EQUIPAMENTOS INSTALADOS:');
       expect(body).toContain('MEDIDOR');
       expect(body).toContain('12345');
@@ -193,14 +192,12 @@ describe('email', () => {
         },
       };
       const body = composeEmail(data);
-      expect(body).toContain('EQUIPAMENTOS:');
       expect(body).not.toContain('EQUIPAMENTOS INSTALADOS:');
     });
 
-    it('should include retorno section', () => {
+    it('should include retorno fields without header', () => {
       const data = { ...sampleData, retorno: { descricao: 'Retorno test description' } };
       const body = composeEmail(data);
-      expect(body).toContain('RETORNO:');
       expect(body).toContain('DESCRICAO DO SERVICO:');
       expect(body).toContain('RETORNO TEST DESCRIPTION');
     });

@@ -124,8 +124,8 @@ describe('state', () => {
     });
 
     it('should have installed and removed control fields', () => {
-      expect(state.equipamentos.instaladoEquip).toBe('NAO');
-      expect(state.equipamentos.retiradoEquip).toBe('NAO');
+      expect(state.equipamentos.instaladoEquip).toBe('');
+      expect(state.equipamentos.retiradoEquip).toBe('');
     });
 
     it('should have installed equipment fields', () => {

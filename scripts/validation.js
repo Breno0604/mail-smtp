@@ -111,8 +111,8 @@ function validateSection2() {
   const instalado = state.equipamentos.instaladoEquip;
   const retirado = state.equipamentos.retiradoEquip;
 
-  // If both NAO, no further validation needed for equipment fields
-  if (instalado === 'NAO' && retirado === 'NAO') {
+  // If both NAO or empty (not selected yet), no further validation needed for equipment fields
+  if ((instalado === 'NAO' || instalado === '') && (retirado === 'NAO' || retirado === '')) {
     return !hasError;
   }
 

@@ -41,8 +41,8 @@ export function resetForm() {
   DOM.retornoDesc.innerHTML = '—';
 
   // Reset equipment control fields
-  DOM.instaladoEquip.value = 'NAO';
-  DOM.retiradoEquip.value = 'NAO';
+  DOM.instaladoEquip.value = '';
+  DOM.retiradoEquip.value = '';
   DOM.secEquipInstalados.classList.add('hidden');
   DOM.secEquipRetirados.classList.add('hidden');
 

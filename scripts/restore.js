@@ -94,7 +94,7 @@ export async function applyRecord(record) {
     DOM.instaladoEquip.value = 'SIM';
     DOM.secEquipInstalados.classList.remove('hidden');
   } else {
-    DOM.instaladoEquip.value = state.equipamentos.instaladoEquip || 'NAO';
+    DOM.instaladoEquip.value = state.equipamentos.instaladoEquip || '';
     DOM.secEquipInstalados.classList.add('hidden');
   }
 
@@ -102,7 +102,7 @@ export async function applyRecord(record) {
     DOM.retiradoEquip.value = 'SIM';
     DOM.secEquipRetirados.classList.remove('hidden');
   } else {
-    DOM.retiradoEquip.value = state.equipamentos.retiradoEquip || 'NAO';
+    DOM.retiradoEquip.value = state.equipamentos.retiradoEquip || '';
     DOM.secEquipRetirados.classList.add('hidden');
   }
 

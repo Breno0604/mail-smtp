@@ -36,9 +36,6 @@ export function composeEmail(data) {
     body += `${normalizeText(field.label)}: ${normalizeText(val)}\n`;
   });
 
-  // Equipment section
-  body += '\n\nEQUIPAMENTOS:';
-
   if (data.equipamentos.instaladoEquip === 'SIM') {
     const installedItems = Object.keys(data.equipamentos.instalados)
       .filter(
@@ -65,7 +62,6 @@ export function composeEmail(data) {
     }
   }
 
-  body += '\n\nRETORNO:';
   const tipo = data.iniciais?.['tipo-ordem'] || '';
   const retornoFields = getRetornoFields(tipo);
 
