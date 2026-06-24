@@ -74,7 +74,7 @@ body {
   font-weight: 700;
 }
 .sec-body {
-  padding: 1rem;
+  padding: 1rem 0.5rem;
 }
 
 /* ── Retorno placeholder ────────────────────────────────────────────────── */
@@ -289,19 +289,10 @@ textarea.is-filled:hover {
 .linha-data {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 0.75rem;
 }
-.linha-data > div {
-  min-width: 0;
-}
-
-/* Em telas muito estreitas, Data ocupa linha inteira, Início + Fim lado a lado */
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .linha-data {
-    grid-template-columns: 1fr 1fr;
-  }
-  .linha-data > div:first-child {
-    grid-column: 1 / -1;
+    grid-template-columns: 1.4fr 1fr 1fr;
   }
 }
 
@@ -665,19 +656,6 @@ textarea {
   grid-template-columns: repeat(3, 1fr);
   gap: 0.75rem;
   margin-bottom: 1rem;
-}
-
-@media (max-width: 480px) {
-  .equip-checkboxes-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* Labels dentro das seções do formulário — altura mínima uniforme para alinhamento */
-.sec-body label {
-  min-height: 2.5rem;
-  display: flex;
-  align-items: center;
 }
 
 /* === Coordinates widget ────────────────────────────────────────────────── */
