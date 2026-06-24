@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { applyRecord } from '../scripts/restore.js';
 import { cacheDOM, DOM } from '../scripts/dom.js';
-import { state } from '../scripts/state.js';
+import { state, createDefaultEquipamentos } from '../scripts/state.js';
 
 // Mock navigation to prevent side effects
 vi.mock('../scripts/navigation.js', () => ({
@@ -67,56 +67,7 @@ describe('restore', () => {
 
     // Reset state
     state.iniciais = {};
-    state.equipamentos = {
-      instaladoEquip: 'NAO',
-      retiradoEquip: 'NAO',
-      instalados: {
-        medidor: '',
-        conjunto: '',
-        display: '',
-        tc_fase_a: '',
-        tc_fase_b: '',
-        tc_fase_c: '',
-        tp_fase_a: '',
-        tp_fase_b: '',
-        tp_fase_c: '',
-      },
-      retirados: {
-        medidor: '',
-        conjunto: '',
-        display: '',
-        tc_fase_a: '',
-        tc_fase_b: '',
-        tc_fase_c: '',
-        tp_fase_a: '',
-        tp_fase_b: '',
-        tp_fase_c: '',
-      },
-      checkboxes: {
-        instalados: {
-          medidor: false,
-          conjunto: false,
-          display: false,
-          tc_fase_a: false,
-          tc_fase_b: false,
-          tc_fase_c: false,
-          tp_fase_a: false,
-          tp_fase_b: false,
-          tp_fase_c: false,
-        },
-        retirados: {
-          medidor: false,
-          conjunto: false,
-          display: false,
-          tc_fase_a: false,
-          tc_fase_b: false,
-          tc_fase_c: false,
-          tp_fase_a: false,
-          tp_fase_b: false,
-          tp_fase_c: false,
-        },
-      },
-    };
+    state.equipamentos = createDefaultEquipamentos();
     state.attachments = [];
     state.lastTipoOrdem = '';
     state.iniciaisValido = false;

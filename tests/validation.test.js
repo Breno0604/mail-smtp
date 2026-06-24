@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { validateSection, addBlurValidation } from '../scripts/validation.js';
 import { cacheDOM, DOM } from '../scripts/dom.js';
-import { state } from '../scripts/state.js';
+import { state, createDefaultEquipamentos } from '../scripts/state.js';
 import { renderIniciais } from '../scripts/iniciais.js';
 import { renderRetorno } from '../scripts/retornos.js';
 
@@ -159,56 +159,9 @@ describe('validation', () => {
     state.iniciais = {};
     state.iniciaisValido = false;
     state.retorno = {};
-    state.equipamentos = {
-      instaladoEquip: 'NAO',
-      retiradoEquip: 'NAO',
-      instalados: {
-        medidor: '',
-        conjunto: '',
-        display: '',
-        tc_fase_a: '',
-        tc_fase_b: '',
-        tc_fase_c: '',
-        tp_fase_a: '',
-        tp_fase_b: '',
-        tp_fase_c: '',
-      },
-      retirados: {
-        medidor: '',
-        conjunto: '',
-        display: '',
-        tc_fase_a: '',
-        tc_fase_b: '',
-        tc_fase_c: '',
-        tp_fase_a: '',
-        tp_fase_b: '',
-        tp_fase_c: '',
-      },
-      checkboxes: {
-        instalados: {
-          medidor: false,
-          conjunto: false,
-          display: false,
-          tc_fase_a: false,
-          tc_fase_b: false,
-          tc_fase_c: false,
-          tp_fase_a: false,
-          tp_fase_b: false,
-          tp_fase_c: false,
-        },
-        retirados: {
-          medidor: false,
-          conjunto: false,
-          display: false,
-          tc_fase_a: false,
-          tc_fase_b: false,
-          tc_fase_c: false,
-          tp_fase_a: false,
-          tp_fase_b: false,
-          tp_fase_c: false,
-        },
-      },
-    };
+    state.equipamentos = createDefaultEquipamentos();
+    state.equipamentos.instaladoEquip = 'NAO';
+    state.equipamentos.retiradoEquip = 'NAO';
   });
 
   describe('validateSection(1) - Iniciais', () => {

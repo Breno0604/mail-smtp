@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { resetForm } from '../scripts/reset.js';
 import { cacheDOM, DOM } from '../scripts/dom.js';
-import { state } from '../scripts/state.js';
+import { state, createDefaultEquipamentos } from '../scripts/state.js';
 
 // Mock the coordinate capture function
 vi.mock('../scripts/app.js', () => ({
@@ -63,56 +63,10 @@ describe('reset', () => {
 
     // Set up populated state
     state.iniciais = { uc: '12345', os: '67890' };
-    state.equipamentos = {
-      instaladoEquip: 'SIM',
-      retiradoEquip: 'NAO',
-      instalados: {
-        medidor: '1',
-        conjunto: '',
-        display: '',
-        tc_fase_a: '',
-        tc_fase_b: '',
-        tc_fase_c: '',
-        tp_fase_a: '',
-        tp_fase_b: '',
-        tp_fase_c: '',
-      },
-      retirados: {
-        medidor: '',
-        conjunto: '',
-        display: '',
-        tc_fase_a: '',
-        tc_fase_b: '',
-        tc_fase_c: '',
-        tp_fase_a: '',
-        tp_fase_b: '',
-        tp_fase_c: '',
-      },
-      checkboxes: {
-        instalados: {
-          medidor: true,
-          conjunto: false,
-          display: false,
-          tc_fase_a: false,
-          tc_fase_b: false,
-          tc_fase_c: false,
-          tp_fase_a: false,
-          tp_fase_b: false,
-          tp_fase_c: false,
-        },
-        retirados: {
-          medidor: false,
-          conjunto: false,
-          display: false,
-          tc_fase_a: false,
-          tc_fase_b: false,
-          tc_fase_c: false,
-          tp_fase_a: false,
-          tp_fase_b: false,
-          tp_fase_c: false,
-        },
-      },
-    };
+    state.equipamentos = createDefaultEquipamentos();
+    state.equipamentos.instaladoEquip = 'SIM';
+    state.equipamentos.instalados.medidor = '1';
+    state.equipamentos.checkboxes.instalados.medidor = true;
     state.attachments = [new File(['test'], 'test.jpg', { type: 'image/jpeg' })];
     state.lastTipoOrdem = 'ADEQUACAO SMF';
     state.currentUUID = 'test-uuid-123';

@@ -1,6 +1,7 @@
 import { DOM } from './dom.js';
 import { iniciaisFields, getRetornoFields } from './fields.js';
 import { collectAllData } from './collectors.js';
+import { EQUIPMENT_KEYS } from './equipment-keys.js';
 
 /**
  * Normaliza texto: remove acentos, substitui ç→c, converte para MAIÚSCULAS
@@ -15,17 +16,11 @@ function normalizeText(str) {
     .toUpperCase();
 }
 
-const EQUIP_LABELS = {
-  medidor: 'MEDIDOR',
-  conjunto: 'CONJUNTO',
-  display: 'DISPLAY',
-  tc_fase_a: 'TC FASE A',
-  tc_fase_b: 'TC FASE B',
-  tc_fase_c: 'TC FASE C',
-  tp_fase_a: 'TP FASE A',
-  tp_fase_b: 'TP FASE B',
-  tp_fase_c: 'TP FASE C',
-};
+// Build EQUIP_LABELS from EQUIPMENT_KEYS (single source of truth)
+const EQUIP_LABELS = {};
+EQUIPMENT_KEYS.forEach(e => {
+  EQUIP_LABELS[e.key] = e.label;
+});
 
 export function composeEmail(data) {
   let body = '';

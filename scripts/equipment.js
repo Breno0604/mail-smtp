@@ -1,18 +1,7 @@
 import { state } from './state.js';
 import { debouncedSave } from './persistence.js';
 import { INPUT_CLASS } from './styles.js';
-
-const EQUIPMENT_LIST = [
-  { key: 'medidor', label: 'MEDIDOR' },
-  { key: 'conjunto', label: 'CONJUNTO' },
-  { key: 'display', label: 'DISPLAY' },
-  { key: 'tc_fase_a', label: 'TC FASE A' },
-  { key: 'tc_fase_b', label: 'TC FASE B' },
-  { key: 'tc_fase_c', label: 'TC FASE C' },
-  { key: 'tp_fase_a', label: 'TP FASE A' },
-  { key: 'tp_fase_b', label: 'TP FASE B' },
-  { key: 'tp_fase_c', label: 'TP FASE C' },
-];
+import { EQUIPMENT_KEYS } from './equipment-keys.js';
 
 /**
  * Render all equipment checkboxes into the DOM
@@ -37,7 +26,7 @@ function renderCheckboxes(tipo) {
   // Grid de 3 colunas usando classe CSS customizada (Tailwind estático não tem grid-cols-3)
   container.className = 'equip-checkboxes-grid';
 
-  EQUIPMENT_LIST.forEach(equip => {
+  EQUIPMENT_KEYS.forEach(equip => {
     const wrapper = document.createElement('label');
     wrapper.setAttribute('for', `checkbox-${tipo}-${equip.key}`);
     wrapper.className = 'flex items-center gap-2 cursor-pointer';
@@ -158,7 +147,7 @@ function showField(tipo, equipKey) {
   // Avoid duplicates
   if (container.querySelector(`[data-equip="${equipKey}"]`)) return;
 
-  const equip = EQUIPMENT_LIST.find(e => e.key === equipKey);
+  const equip = EQUIPMENT_KEYS.find(e => e.key === equipKey);
   if (!equip) return;
 
   const wrapper = document.createElement('div');

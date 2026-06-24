@@ -19,6 +19,7 @@ import { INPUT_CLASS, SELECT_CLASS } from '../scripts/styles.js';
 import { iniciaisFields } from '../scripts/fields.js';
 import * as dbModule from '../scripts/db.js';
 import * as collectors from '../scripts/collectors.js';
+import { createDefaultEquipamentos } from '../scripts/state.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // G2: QuotaExceededError em saveState()
@@ -77,56 +78,7 @@ describe('G2: saveState QuotaExceededError', () => {
     cacheDOM();
 
     state.iniciais = {};
-    state.equipamentos = {
-      instaladoEquip: 'NAO',
-      retiradoEquip: 'NAO',
-      instalados: {
-        medidor: '',
-        conjunto: '',
-        display: '',
-        tc_fase_a: '',
-        tc_fase_b: '',
-        tc_fase_c: '',
-        tp_fase_a: '',
-        tp_fase_b: '',
-        tp_fase_c: '',
-      },
-      retirados: {
-        medidor: '',
-        conjunto: '',
-        display: '',
-        tc_fase_a: '',
-        tc_fase_b: '',
-        tc_fase_c: '',
-        tp_fase_a: '',
-        tp_fase_b: '',
-        tp_fase_c: '',
-      },
-      checkboxes: {
-        instalados: {
-          medidor: false,
-          conjunto: false,
-          display: false,
-          tc_fase_a: false,
-          tc_fase_b: false,
-          tc_fase_c: false,
-          tp_fase_a: false,
-          tp_fase_b: false,
-          tp_fase_c: false,
-        },
-        retirados: {
-          medidor: false,
-          conjunto: false,
-          display: false,
-          tc_fase_a: false,
-          tc_fase_b: false,
-          tc_fase_c: false,
-          tp_fase_a: false,
-          tp_fase_b: false,
-          tp_fase_c: false,
-        },
-      },
-    };
+    state.equipamentos = createDefaultEquipamentos();
     state.attachments = [];
     state.lastTipoOrdem = '';
     state.iniciaisValido = false;
@@ -308,56 +260,7 @@ describe('G4: applyRecord attachment migration fallback', () => {
     cacheDOM();
     localStorage.clear();
     state.iniciais = {};
-    state.equipamentos = {
-      instaladoEquip: 'NAO',
-      retiradoEquip: 'NAO',
-      instalados: {
-        medidor: '',
-        conjunto: '',
-        display: '',
-        tc_fase_a: '',
-        tc_fase_b: '',
-        tc_fase_c: '',
-        tp_fase_a: '',
-        tp_fase_b: '',
-        tp_fase_c: '',
-      },
-      retirados: {
-        medidor: '',
-        conjunto: '',
-        display: '',
-        tc_fase_a: '',
-        tc_fase_b: '',
-        tc_fase_c: '',
-        tp_fase_a: '',
-        tp_fase_b: '',
-        tp_fase_c: '',
-      },
-      checkboxes: {
-        instalados: {
-          medidor: false,
-          conjunto: false,
-          display: false,
-          tc_fase_a: false,
-          tc_fase_b: false,
-          tc_fase_c: false,
-          tp_fase_a: false,
-          tp_fase_b: false,
-          tp_fase_c: false,
-        },
-        retirados: {
-          medidor: false,
-          conjunto: false,
-          display: false,
-          tc_fase_a: false,
-          tc_fase_b: false,
-          tc_fase_c: false,
-          tp_fase_a: false,
-          tp_fase_b: false,
-          tp_fase_c: false,
-        },
-      },
-    };
+    state.equipamentos = createDefaultEquipamentos();
     state.attachments = [];
     state.retorno = {};
     state.lastTipoOrdem = '';
@@ -464,56 +367,7 @@ describe('G6: resolveCreatedAt failure fallback', () => {
     `;
     cacheDOM();
     state.iniciais = {};
-    state.equipamentos = {
-      instaladoEquip: 'NAO',
-      retiradoEquip: 'NAO',
-      instalados: {
-        medidor: '',
-        conjunto: '',
-        display: '',
-        tc_fase_a: '',
-        tc_fase_b: '',
-        tc_fase_c: '',
-        tp_fase_a: '',
-        tp_fase_b: '',
-        tp_fase_c: '',
-      },
-      retirados: {
-        medidor: '',
-        conjunto: '',
-        display: '',
-        tc_fase_a: '',
-        tc_fase_b: '',
-        tc_fase_c: '',
-        tp_fase_a: '',
-        tp_fase_b: '',
-        tp_fase_c: '',
-      },
-      checkboxes: {
-        instalados: {
-          medidor: false,
-          conjunto: false,
-          display: false,
-          tc_fase_a: false,
-          tc_fase_b: false,
-          tc_fase_c: false,
-          tp_fase_a: false,
-          tp_fase_b: false,
-          tp_fase_c: false,
-        },
-        retirados: {
-          medidor: false,
-          conjunto: false,
-          display: false,
-          tc_fase_a: false,
-          tc_fase_b: false,
-          tc_fase_c: false,
-          tp_fase_a: false,
-          tp_fase_b: false,
-          tp_fase_c: false,
-        },
-      },
-    };
+    state.equipamentos = createDefaultEquipamentos();
     state.attachments = [];
     state.lastTipoOrdem = '';
     state.iniciaisValido = false;
@@ -605,56 +459,7 @@ describe('G7+G8: markAttachmentsDirty and empty attachments save', () => {
     `;
     cacheDOM();
     state.iniciais = {};
-    state.equipamentos = {
-      instaladoEquip: 'NAO',
-      retiradoEquip: 'NAO',
-      instalados: {
-        medidor: '',
-        conjunto: '',
-        display: '',
-        tc_fase_a: '',
-        tc_fase_b: '',
-        tc_fase_c: '',
-        tp_fase_a: '',
-        tp_fase_b: '',
-        tp_fase_c: '',
-      },
-      retirados: {
-        medidor: '',
-        conjunto: '',
-        display: '',
-        tc_fase_a: '',
-        tc_fase_b: '',
-        tc_fase_c: '',
-        tp_fase_a: '',
-        tp_fase_b: '',
-        tp_fase_c: '',
-      },
-      checkboxes: {
-        instalados: {
-          medidor: false,
-          conjunto: false,
-          display: false,
-          tc_fase_a: false,
-          tc_fase_b: false,
-          tc_fase_c: false,
-          tp_fase_a: false,
-          tp_fase_b: false,
-          tp_fase_c: false,
-        },
-        retirados: {
-          medidor: false,
-          conjunto: false,
-          display: false,
-          tc_fase_a: false,
-          tc_fase_b: false,
-          tc_fase_c: false,
-          tp_fase_a: false,
-          tp_fase_b: false,
-          tp_fase_c: false,
-        },
-      },
-    };
+    state.equipamentos = createDefaultEquipamentos();
     state.attachments = [];
     state.lastTipoOrdem = '';
     state.iniciaisValido = false;
@@ -757,56 +562,7 @@ describe('G9: updateLivePreview DOM update', () => {
     `;
     cacheDOM();
     state.iniciais = {};
-    state.equipamentos = {
-      instaladoEquip: 'NAO',
-      retiradoEquip: 'NAO',
-      instalados: {
-        medidor: '',
-        conjunto: '',
-        display: '',
-        tc_fase_a: '',
-        tc_fase_b: '',
-        tc_fase_c: '',
-        tp_fase_a: '',
-        tp_fase_b: '',
-        tp_fase_c: '',
-      },
-      retirados: {
-        medidor: '',
-        conjunto: '',
-        display: '',
-        tc_fase_a: '',
-        tc_fase_b: '',
-        tc_fase_c: '',
-        tp_fase_a: '',
-        tp_fase_b: '',
-        tp_fase_c: '',
-      },
-      checkboxes: {
-        instalados: {
-          medidor: false,
-          conjunto: false,
-          display: false,
-          tc_fase_a: false,
-          tc_fase_b: false,
-          tc_fase_c: false,
-          tp_fase_a: false,
-          tp_fase_b: false,
-          tp_fase_c: false,
-        },
-        retirados: {
-          medidor: false,
-          conjunto: false,
-          display: false,
-          tc_fase_a: false,
-          tc_fase_b: false,
-          tc_fase_c: false,
-          tp_fase_a: false,
-          tp_fase_b: false,
-          tp_fase_c: false,
-        },
-      },
-    };
+    state.equipamentos = createDefaultEquipamentos();
     state.retorno = {};
     state.attachments = [];
     localStorage.clear();
@@ -918,56 +674,7 @@ describe('G11: resetForm preview state', () => {
     `;
     cacheDOM();
     state.iniciais = {};
-    state.equipamentos = {
-      instaladoEquip: 'NAO',
-      retiradoEquip: 'NAO',
-      instalados: {
-        medidor: '',
-        conjunto: '',
-        display: '',
-        tc_fase_a: '',
-        tc_fase_b: '',
-        tc_fase_c: '',
-        tp_fase_a: '',
-        tp_fase_b: '',
-        tp_fase_c: '',
-      },
-      retirados: {
-        medidor: '',
-        conjunto: '',
-        display: '',
-        tc_fase_a: '',
-        tc_fase_b: '',
-        tc_fase_c: '',
-        tp_fase_a: '',
-        tp_fase_b: '',
-        tp_fase_c: '',
-      },
-      checkboxes: {
-        instalados: {
-          medidor: false,
-          conjunto: false,
-          display: false,
-          tc_fase_a: false,
-          tc_fase_b: false,
-          tc_fase_c: false,
-          tp_fase_a: false,
-          tp_fase_b: false,
-          tp_fase_c: false,
-        },
-        retirados: {
-          medidor: false,
-          conjunto: false,
-          display: false,
-          tc_fase_a: false,
-          tc_fase_b: false,
-          tc_fase_c: false,
-          tp_fase_a: false,
-          tp_fase_b: false,
-          tp_fase_c: false,
-        },
-      },
-    };
+    state.equipamentos = createDefaultEquipamentos();
     state.attachments = [];
     state.retorno = {};
     state.lastTipoOrdem = '';

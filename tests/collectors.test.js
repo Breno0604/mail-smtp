@@ -7,7 +7,7 @@ import {
   collectEquipamentos,
 } from '../scripts/collectors.js';
 import { cacheDOM } from '../scripts/dom.js';
-import { state } from '../scripts/state.js';
+import { state, createDefaultEquipamentos } from '../scripts/state.js';
 
 describe('collectors', () => {
   beforeEach(() => {
@@ -33,56 +33,9 @@ describe('collectors', () => {
     // Reset state
     state.iniciais = {};
     state.retorno = {};
-    state.equipamentos = {
-      instaladoEquip: 'NAO',
-      retiradoEquip: 'NAO',
-      instalados: {
-        medidor: '',
-        conjunto: '',
-        display: '',
-        tc_fase_a: '',
-        tc_fase_b: '',
-        tc_fase_c: '',
-        tp_fase_a: '',
-        tp_fase_b: '',
-        tp_fase_c: '',
-      },
-      retirados: {
-        medidor: '',
-        conjunto: '',
-        display: '',
-        tc_fase_a: '',
-        tc_fase_b: '',
-        tc_fase_c: '',
-        tp_fase_a: '',
-        tp_fase_b: '',
-        tp_fase_c: '',
-      },
-      checkboxes: {
-        instalados: {
-          medidor: false,
-          conjunto: false,
-          display: false,
-          tc_fase_a: false,
-          tc_fase_b: false,
-          tc_fase_c: false,
-          tp_fase_a: false,
-          tp_fase_b: false,
-          tp_fase_c: false,
-        },
-        retirados: {
-          medidor: false,
-          conjunto: false,
-          display: false,
-          tc_fase_a: false,
-          tc_fase_b: false,
-          tc_fase_c: false,
-          tp_fase_a: false,
-          tp_fase_b: false,
-          tp_fase_c: false,
-        },
-      },
-    };
+    state.equipamentos = createDefaultEquipamentos();
+    state.equipamentos.instaladoEquip = 'NAO';
+    state.equipamentos.retiradoEquip = 'NAO';
     state.attachments = [];
   });
 
@@ -158,56 +111,11 @@ describe('collectors', () => {
     it('should return all data from state (single source of truth)', () => {
       // Setup state directly (state is the single source of truth)
       state.iniciais = { uc: '12345', os: '67890' };
-      state.equipamentos = {
-        instaladoEquip: 'SIM',
-        retiradoEquip: 'NAO',
-        instalados: {
-          medidor: '12345',
-          conjunto: '',
-          display: '',
-          tc_fase_a: '',
-          tc_fase_b: '',
-          tc_fase_c: '',
-          tp_fase_a: '',
-          tp_fase_b: '',
-          tp_fase_c: '',
-        },
-        retirados: {
-          medidor: '',
-          conjunto: '',
-          display: '',
-          tc_fase_a: '',
-          tc_fase_b: '',
-          tc_fase_c: '',
-          tp_fase_a: '',
-          tp_fase_b: '',
-          tp_fase_c: '',
-        },
-        checkboxes: {
-          instalados: {
-            medidor: true,
-            conjunto: false,
-            display: false,
-            tc_fase_a: false,
-            tc_fase_b: false,
-            tc_fase_c: false,
-            tp_fase_a: false,
-            tp_fase_b: false,
-            tp_fase_c: false,
-          },
-          retirados: {
-            medidor: false,
-            conjunto: false,
-            display: false,
-            tc_fase_a: false,
-            tc_fase_b: false,
-            tc_fase_c: false,
-            tp_fase_a: false,
-            tp_fase_b: false,
-            tp_fase_c: false,
-          },
-        },
-      };
+      state.equipamentos = createDefaultEquipamentos();
+      state.equipamentos.instaladoEquip = 'SIM';
+      state.equipamentos.retiradoEquip = 'NAO';
+      state.equipamentos.instalados.medidor = '12345';
+      state.equipamentos.checkboxes.instalados.medidor = true;
       state.retorno = { situacao_corte: 'CLIENTE CORTADO' };
       state.attachments = [new File(['test'], 'test.jpg', { type: 'image/jpeg' })];
       state.iniciais['tipo-ordem'] = 'CORTE POR FALTA DE PAGAMENTO';
