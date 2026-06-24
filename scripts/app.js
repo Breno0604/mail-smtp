@@ -35,13 +35,13 @@ function updateFilledClass(el) {
  * Verifica se UC e OS estão preenchidos e habilita o auto-save inicial.
  * Quando ambos estão preenchidos, seta iniciaisValido = true e dispara saveState().
  */
-function checkInitialPersistence() {
+export async function checkInitialPersistence() {
   const ucPreenchido = state.iniciais.uc && state.iniciais.uc.trim() !== '';
   const osPreenchido = state.iniciais.os && state.iniciais.os.trim() !== '';
 
   if (ucPreenchido && osPreenchido && !state.iniciaisValido) {
     state.iniciaisValido = true;
-    saveState();
+    await saveState();
   }
 }
 

@@ -1,12 +1,7 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { applyRecord } from '../scripts/restore.js';
 import { cacheDOM, DOM } from '../scripts/dom.js';
 import { state, createDefaultEquipamentos } from '../scripts/state.js';
-
-// Mock navigation to prevent side effects
-vi.mock('../scripts/navigation.js', () => ({
-  showSection: vi.fn(),
-}));
 
 describe('restore', () => {
   beforeEach(() => {

@@ -73,7 +73,6 @@ describe('state', () => {
     state.equipamentos = createDefaultEquipamentos();
     state.attachments = [];
     state.lastTipoOrdem = '';
-    state.visitedRetorno = false;
     state.retorno = {};
     state.currentUUID = '';
     state.iniciaisValido = false;

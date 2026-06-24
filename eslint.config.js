@@ -120,6 +120,7 @@ export default [
     },
     rules: {
       'no-unused-vars': 'off',
+      'no-console': 'off',
     },
   },
   {

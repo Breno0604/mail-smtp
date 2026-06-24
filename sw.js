@@ -1,4 +1,4 @@
-const CACHE_NAME = 'retorno-v132';
+const CACHE_NAME = 'retorno-v133';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -36,7 +36,6 @@ self.addEventListener('install', event => {
     caches
       .open(CACHE_NAME)
       .then(cache => {
-        console.log('[SW] Caching static assets');
         return cache.addAll(STATIC_ASSETS);
       })
       .then(() => self.skipWaiting())
@@ -52,7 +51,6 @@ self.addEventListener('activate', event => {
           cacheNames
             .filter(name => name !== CACHE_NAME)
             .map(name => {
-              console.log('[SW] Deleting old cache:', name);
               return caches.delete(name);
             })
         );

@@ -1,12 +1,7 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { resetForm } from '../scripts/reset.js';
 import { cacheDOM, DOM } from '../scripts/dom.js';
 import { state, createDefaultEquipamentos } from '../scripts/state.js';
-
-// Mock the coordinate capture function
-vi.mock('../scripts/app.js', () => ({
-  captureCoordinates: vi.fn(),
-}));
 
 describe('reset', () => {
   beforeEach(() => {

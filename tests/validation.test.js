@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { validateSection, addBlurValidation } from '../scripts/validation.js';
+import { validateSection, validateAll, addBlurValidation } from '../scripts/validation.js';
 import { cacheDOM, DOM } from '../scripts/dom.js';
 import { state, createDefaultEquipamentos } from '../scripts/state.js';
 import { renderIniciais } from '../scripts/iniciais.js';
@@ -581,6 +581,73 @@ describe('validation', () => {
     it('should always return true', () => {
       const result = validateSection(5);
       expect(result).toBe(true);
+    });
+  });
+
+  describe('validateAll', () => {
+    beforeEach(() => {
+      state.attachments = [];
+    });
+
+    function setupAllSections() {
+      // Setup section elements that validateAll queries for errors
+      const secInicio = document.createElement('div');
+      secInicio.id = 'sec-inicio';
+      const secRetorno = document.createElement('div');
+      secRetorno.id = 'sec-retorno';
+      const secEquipamentos = document.createElement('div');
+      secEquipamentos.id = 'sec-equipamentos';
+      const secAnexos = document.createElement('div');
+      secAnexos.id = 'sec-anexos';
+      document.body.append(secInicio, secRetorno, secEquipamentos, secAnexos);
+
+      renderIniciais();
+
+      // Need a tipo-ordem select for section 3 validation
+      const select = document.createElement('select');
+      select.id = 'tipo-ordem';
+      select.innerHTML =
+        '<option value="">Selecione</option><option value="ADEQUACAO SMF">ADEQUACAO SMF</option>';
+      document.body.appendChild(select);
+    }
+
+    it('should return false when section 1 has empty required fields', () => {
+      setupAllSections();
+      const result = validateAll();
+      expect(result).toBe(false);
+    });
+
+    it('should return false when equipment control selects are empty', () => {
+      setupAllSections();
+      fillAllRequiredFields();
+      // Make equipment controls explicitly empty (default first-option is 'NAO')
+      DOM.instaladoEquip.value = '';
+      DOM.retiradoEquip.value = '';
+      state.equipamentos.instaladoEquip = '';
+      state.equipamentos.retiradoEquip = '';
+      const result = validateAll();
+      expect(result).toBe(false);
+    });
+
+    it('should return true when all sections pass', () => {
+      setupAllSections();
+      fillAllRequiredFields();
+      // Fill equipment controls
+      DOM.instaladoEquip.value = 'NAO';
+      DOM.retiradoEquip.value = 'NAO';
+      state.equipamentos.instaladoEquip = 'NAO';
+      state.equipamentos.retiradoEquip = 'NAO';
+      const result = validateAll();
+      expect(result).toBe(true);
+    });
+
+    it('should hide global error before validation', () => {
+      setupAllSections();
+      DOM.errorMsg.textContent = 'Previous error';
+      DOM.errorMsg.style.display = 'block';
+      expect(DOM.errorMsg.style.display).toBe('block');
+      validateAll();
+      expect(DOM.errorMsg.style.display).toBe('none');
     });
   });
 

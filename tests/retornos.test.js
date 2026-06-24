@@ -1,3 +1,4 @@
+import 'fake-indexeddb/auto';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { renderRetorno, setRetornoData, handleTipoChange } from '../scripts/retornos.js';
 import { cacheDOM, DOM } from '../scripts/dom.js';
