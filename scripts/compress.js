@@ -1,4 +1,4 @@
-import { MAX_SIZE, SKIP_SIZE, toBase64, blobToBase64, loadImage } from './utils.js';
+import { MAX_SIZE, SKIP_SIZE, toBase64, loadImage } from './utils.js';
 
 // Helper privado: desenha a imagem no canvas e retorna um blob JPEG
 async function drawAndBlob(ctx, canvas, img, width, quality) {
@@ -42,7 +42,7 @@ export async function compressAttachments(files) {
     const basename = dot > -1 ? file.name.slice(0, dot) : file.name;
     attachments.push({
       filename: basename + '_red.jpg',
-      content: await blobToBase64(blob),
+      content: await toBase64(blob),
       encoding: 'base64',
     });
   }
