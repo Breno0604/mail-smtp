@@ -583,6 +583,11 @@ textarea {
   opacity: 1;
 }
 
+/* Preview do email em negrito (seção Revisão) */
+#preview-corpo {
+  font-weight: 700;
+}
+
 /* Headings com contraste máximo */
 h1, h2, h3 {
   color: #000000;
