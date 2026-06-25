@@ -16,6 +16,17 @@ function clearError(el) {
   clearFieldError(el);
 }
 
+// ── Validações específicas por campo (configurável) ─────────────────────────
+// Adicione novas regras aqui em vez de criar else-if no loop de validação.
+const FIELD_VALIDATIONS = {
+  descricao: {
+    minLength: 5,
+    maxLength: 2000,
+    minMessage: 'Descrição deve ter no mínimo 5 caracteres',
+    maxMessage: 'Descrição deve ter no máximo 2000 caracteres',
+  },
+};
+
 // ── validadores por seção (Strategy pattern) ─────────────────────────────────
 
 function validateSection1() {
@@ -42,14 +53,31 @@ function validateSection1() {
   // Validações especiais usando os dados já coletados
   let hasSpecialError = false;
 
-  // Validação de UC: apenas números
+  // Validação de UC: apenas números, 5 a 10 dígitos
   const ucEl = document.getElementById('uc');
   if (ucEl && data.uc) {
     if (!/^\d+$/.test(data.uc)) {
       markError(ucEl, 'UC deve conter apenas números');
       hasSpecialError = true;
+    } else if (data.uc.length < 5 || data.uc.length > 10) {
+      markError(ucEl, 'UC deve ter entre 5 e 10 dígitos');
+      hasSpecialError = true;
     } else {
       clearError(ucEl);
+    }
+  }
+
+  // Validação de OS: apenas números e letra A (somente no início), 5 a 10 caracteres
+  const osEl = document.getElementById('os');
+  if (osEl && data.os) {
+    if (!/^A?\d+$/.test(data.os)) {
+      markError(osEl, 'OS deve conter apenas números e a letra A (apenas no início)');
+      hasSpecialError = true;
+    } else if (data.os.length < 5 || data.os.length > 10) {
+      markError(osEl, 'OS deve ter entre 5 e 10 dígitos');
+      hasSpecialError = true;
+    } else {
+      clearError(osEl);
     }
   }
 
@@ -185,7 +213,21 @@ function validateSection3() {
       markError(input, 'Campo obrigatório');
       valid = false;
     } else {
-      clearError(input);
+      const rules = FIELD_VALIDATIONS[input.id];
+      if (rules) {
+        const trimmed = input.value.trim();
+        if (rules.minLength && trimmed.length < rules.minLength) {
+          markError(input, rules.minMessage);
+          valid = false;
+        } else if (rules.maxLength && input.value.length > rules.maxLength) {
+          markError(input, rules.maxMessage);
+          valid = false;
+        } else {
+          clearError(input);
+        }
+      } else {
+        clearError(input);
+      }
     }
   });
 

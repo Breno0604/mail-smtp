@@ -313,6 +313,219 @@ describe('validation', () => {
       expect(errorSpan.textContent).toBe('');
     });
 
+    // ── Validação de UC (5 a 10 dígitos, apenas números) ──
+
+    it('should reject UC with non-numeric characters', () => {
+      renderIniciais();
+      document.getElementById('lider').value = 'ANDRE DE SOUSA CARVALHO';
+      document.getElementById('parceiro').value = 'ANTONIO MAURIELLTON DE ARAUJO MARTINS';
+      document.getElementById('municipio').value = 'FORTALEZA';
+      document.getElementById('uc').value = 'ABC12';
+      document.getElementById('os').value = '67890';
+      document.getElementById('notificado').value = 'SIM';
+      document.getElementById('placa').value = 'RHS6G02';
+      document.getElementById('tipo-ordem').value = 'ADEQUACAO SMF';
+      document.getElementById('data').value = '2024-03-15';
+      document.getElementById('hora_inicio').value = '08:00';
+      document.getElementById('hora_fim').value = '17:00';
+      const result = validateSection(1);
+      expect(result).toBe(false);
+      const ucEl = document.getElementById('uc');
+      const errorSpan = ucEl.nextElementSibling;
+      expect(errorSpan.textContent).toContain('apenas números');
+    });
+
+    it('should reject UC with fewer than 5 digits', () => {
+      renderIniciais();
+      document.getElementById('lider').value = 'ANDRE DE SOUSA CARVALHO';
+      document.getElementById('parceiro').value = 'ANTONIO MAURIELLTON DE ARAUJO MARTINS';
+      document.getElementById('municipio').value = 'FORTALEZA';
+      document.getElementById('uc').value = '1234';
+      document.getElementById('os').value = '67890';
+      document.getElementById('notificado').value = 'SIM';
+      document.getElementById('placa').value = 'RHS6G02';
+      document.getElementById('tipo-ordem').value = 'ADEQUACAO SMF';
+      document.getElementById('data').value = '2024-03-15';
+      document.getElementById('hora_inicio').value = '08:00';
+      document.getElementById('hora_fim').value = '17:00';
+      const result = validateSection(1);
+      expect(result).toBe(false);
+      const ucEl = document.getElementById('uc');
+      const errorSpan = ucEl.nextElementSibling;
+      expect(errorSpan.textContent).toContain('entre 5 e 10');
+    });
+
+    it('should reject UC with more than 10 digits', () => {
+      renderIniciais();
+      document.getElementById('lider').value = 'ANDRE DE SOUSA CARVALHO';
+      document.getElementById('parceiro').value = 'ANTONIO MAURIELLTON DE ARAUJO MARTINS';
+      document.getElementById('municipio').value = 'FORTALEZA';
+      document.getElementById('uc').value = '12345678901';
+      document.getElementById('os').value = '67890';
+      document.getElementById('notificado').value = 'SIM';
+      document.getElementById('placa').value = 'RHS6G02';
+      document.getElementById('tipo-ordem').value = 'ADEQUACAO SMF';
+      document.getElementById('data').value = '2024-03-15';
+      document.getElementById('hora_inicio').value = '08:00';
+      document.getElementById('hora_fim').value = '17:00';
+      const result = validateSection(1);
+      expect(result).toBe(false);
+      const ucEl = document.getElementById('uc');
+      const errorSpan = ucEl.nextElementSibling;
+      expect(errorSpan.textContent).toContain('entre 5 e 10');
+    });
+
+    it('should accept UC with exactly 5 digits', () => {
+      renderIniciais();
+      document.getElementById('lider').value = 'ANDRE DE SOUSA CARVALHO';
+      document.getElementById('parceiro').value = 'ANTONIO MAURIELLTON DE ARAUJO MARTINS';
+      document.getElementById('municipio').value = 'FORTALEZA';
+      document.getElementById('uc').value = '12345';
+      document.getElementById('os').value = '67890';
+      document.getElementById('notificado').value = 'SIM';
+      document.getElementById('placa').value = 'RHS6G02';
+      document.getElementById('tipo-ordem').value = 'ADEQUACAO SMF';
+      document.getElementById('data').value = '2024-03-15';
+      document.getElementById('hora_inicio').value = '08:00';
+      document.getElementById('hora_fim').value = '17:00';
+      const result = validateSection(1);
+      expect(result).toBe(true);
+      expect(document.getElementById('uc').classList.contains('error')).toBe(false);
+    });
+
+    it('should accept UC with exactly 10 digits', () => {
+      renderIniciais();
+      document.getElementById('lider').value = 'ANDRE DE SOUSA CARVALHO';
+      document.getElementById('parceiro').value = 'ANTONIO MAURIELLTON DE ARAUJO MARTINS';
+      document.getElementById('municipio').value = 'FORTALEZA';
+      document.getElementById('uc').value = '1234567890';
+      document.getElementById('os').value = '67890';
+      document.getElementById('notificado').value = 'SIM';
+      document.getElementById('placa').value = 'RHS6G02';
+      document.getElementById('tipo-ordem').value = 'ADEQUACAO SMF';
+      document.getElementById('data').value = '2024-03-15';
+      document.getElementById('hora_inicio').value = '08:00';
+      document.getElementById('hora_fim').value = '17:00';
+      const result = validateSection(1);
+      expect(result).toBe(true);
+    });
+
+    // ── Validação de OS (5 a 10 caracteres, números e A no início) ──
+
+    it('should reject OS with non-numeric non-A characters', () => {
+      renderIniciais();
+      document.getElementById('lider').value = 'ANDRE DE SOUSA CARVALHO';
+      document.getElementById('parceiro').value = 'ANTONIO MAURIELLTON DE ARAUJO MARTINS';
+      document.getElementById('municipio').value = 'FORTALEZA';
+      document.getElementById('uc').value = '12345';
+      document.getElementById('os').value = '6789B';
+      document.getElementById('notificado').value = 'SIM';
+      document.getElementById('placa').value = 'RHS6G02';
+      document.getElementById('tipo-ordem').value = 'ADEQUACAO SMF';
+      document.getElementById('data').value = '2024-03-15';
+      document.getElementById('hora_inicio').value = '08:00';
+      document.getElementById('hora_fim').value = '17:00';
+      const result = validateSection(1);
+      expect(result).toBe(false);
+      const osEl = document.getElementById('os');
+      const errorSpan = osEl.nextElementSibling;
+      expect(errorSpan.textContent).toContain('apenas números');
+    });
+
+    it('should reject OS with A not at the start', () => {
+      renderIniciais();
+      document.getElementById('lider').value = 'ANDRE DE SOUSA CARVALHO';
+      document.getElementById('parceiro').value = 'ANTONIO MAURIELLTON DE ARAUJO MARTINS';
+      document.getElementById('municipio').value = 'FORTALEZA';
+      document.getElementById('uc').value = '12345';
+      document.getElementById('os').value = '1234A';
+      document.getElementById('notificado').value = 'SIM';
+      document.getElementById('placa').value = 'RHS6G02';
+      document.getElementById('tipo-ordem').value = 'ADEQUACAO SMF';
+      document.getElementById('data').value = '2024-03-15';
+      document.getElementById('hora_inicio').value = '08:00';
+      document.getElementById('hora_fim').value = '17:00';
+      const result = validateSection(1);
+      expect(result).toBe(false);
+      const osEl = document.getElementById('os');
+      const errorSpan = osEl.nextElementSibling;
+      expect(errorSpan.textContent).toContain('apenas números');
+    });
+
+    it('should reject OS with fewer than 5 characters', () => {
+      renderIniciais();
+      document.getElementById('lider').value = 'ANDRE DE SOUSA CARVALHO';
+      document.getElementById('parceiro').value = 'ANTONIO MAURIELLTON DE ARAUJO MARTINS';
+      document.getElementById('municipio').value = 'FORTALEZA';
+      document.getElementById('uc').value = '12345';
+      document.getElementById('os').value = '1234';
+      document.getElementById('notificado').value = 'SIM';
+      document.getElementById('placa').value = 'RHS6G02';
+      document.getElementById('tipo-ordem').value = 'ADEQUACAO SMF';
+      document.getElementById('data').value = '2024-03-15';
+      document.getElementById('hora_inicio').value = '08:00';
+      document.getElementById('hora_fim').value = '17:00';
+      const result = validateSection(1);
+      expect(result).toBe(false);
+      const osEl = document.getElementById('os');
+      const errorSpan = osEl.nextElementSibling;
+      expect(errorSpan.textContent).toContain('entre 5 e 10');
+    });
+
+    it('should reject OS with more than 10 characters', () => {
+      renderIniciais();
+      document.getElementById('lider').value = 'ANDRE DE SOUSA CARVALHO';
+      document.getElementById('parceiro').value = 'ANTONIO MAURIELLTON DE ARAUJO MARTINS';
+      document.getElementById('municipio').value = 'FORTALEZA';
+      document.getElementById('uc').value = '12345';
+      document.getElementById('os').value = '12345678901';
+      document.getElementById('notificado').value = 'SIM';
+      document.getElementById('placa').value = 'RHS6G02';
+      document.getElementById('tipo-ordem').value = 'ADEQUACAO SMF';
+      document.getElementById('data').value = '2024-03-15';
+      document.getElementById('hora_inicio').value = '08:00';
+      document.getElementById('hora_fim').value = '17:00';
+      const result = validateSection(1);
+      expect(result).toBe(false);
+      const osEl = document.getElementById('os');
+      const errorSpan = osEl.nextElementSibling;
+      expect(errorSpan.textContent).toContain('entre 5 e 10');
+    });
+
+    it('should accept OS starting with A followed by numbers (5-10 total)', () => {
+      renderIniciais();
+      document.getElementById('lider').value = 'ANDRE DE SOUSA CARVALHO';
+      document.getElementById('parceiro').value = 'ANTONIO MAURIELLTON DE ARAUJO MARTINS';
+      document.getElementById('municipio').value = 'FORTALEZA';
+      document.getElementById('uc').value = '12345';
+      document.getElementById('os').value = 'A1234';
+      document.getElementById('notificado').value = 'SIM';
+      document.getElementById('placa').value = 'RHS6G02';
+      document.getElementById('tipo-ordem').value = 'ADEQUACAO SMF';
+      document.getElementById('data').value = '2024-03-15';
+      document.getElementById('hora_inicio').value = '08:00';
+      document.getElementById('hora_fim').value = '17:00';
+      const result = validateSection(1);
+      expect(result).toBe(true);
+    });
+
+    it('should accept OS with only numbers (5-10 dígitos)', () => {
+      renderIniciais();
+      document.getElementById('lider').value = 'ANDRE DE SOUSA CARVALHO';
+      document.getElementById('parceiro').value = 'ANTONIO MAURIELLTON DE ARAUJO MARTINS';
+      document.getElementById('municipio').value = 'FORTALEZA';
+      document.getElementById('uc').value = '12345';
+      document.getElementById('os').value = '67890';
+      document.getElementById('notificado').value = 'SIM';
+      document.getElementById('placa').value = 'RHS6G02';
+      document.getElementById('tipo-ordem').value = 'ADEQUACAO SMF';
+      document.getElementById('data').value = '2024-03-15';
+      document.getElementById('hora_inicio').value = '08:00';
+      document.getElementById('hora_fim').value = '17:00';
+      const result = validateSection(1);
+      expect(result).toBe(true);
+    });
+
     it('should handle coordinates field (readonly, not required)', () => {
       renderIniciais();
       // Fill all required fields except coordinates (which is not required)
@@ -520,6 +733,56 @@ describe('validation', () => {
       expect(errorSpan.classList.contains('field-error')).toBe(true);
       expect(errorSpan.classList.contains('show')).toBe(true);
       expect(errorSpan.textContent).toBe('Campo obrigatório');
+    });
+
+    // ── Validação de tamanho da Descrição do Serviço ──
+
+    it('should reject descricao with fewer than 5 characters', () => {
+      renderRetorno();
+      const textarea = document.getElementById('descricao');
+      textarea.value = 'abcd';
+      const result = validateSection(3);
+      expect(result).toBe(false);
+      const errorSpan = textarea.nextElementSibling;
+      expect(errorSpan.textContent).toContain('no mínimo 5');
+    });
+
+    it('should reject descricao with more than 2000 characters', () => {
+      renderRetorno();
+      const textarea = document.getElementById('descricao');
+      textarea.value = 'x'.repeat(2001);
+      const result = validateSection(3);
+      expect(result).toBe(false);
+      const errorSpan = textarea.nextElementSibling;
+      expect(errorSpan.textContent).toContain('no máximo 2000');
+    });
+
+    it('should accept descricao with exactly 5 characters', () => {
+      renderRetorno();
+      const textarea = document.getElementById('descricao');
+      textarea.value = 'abcde';
+      const result = validateSection(3);
+      expect(result).toBe(true);
+      expect(textarea.classList.contains('error')).toBe(false);
+    });
+
+    it('should accept descricao with exactly 2000 characters', () => {
+      renderRetorno();
+      const textarea = document.getElementById('descricao');
+      textarea.value = 'x'.repeat(2000);
+      const result = validateSection(3);
+      expect(result).toBe(true);
+      expect(textarea.classList.contains('error')).toBe(false);
+    });
+
+    it('should reject descricao with only spaces (caught by required check before min)', () => {
+      renderRetorno();
+      const textarea = document.getElementById('descricao');
+      textarea.value = '   ';
+      const result = validateSection(3);
+      expect(result).toBe(false);
+      const errorSpan = textarea.nextElementSibling;
+      expect(errorSpan.textContent).toContain('Campo obrigatório');
     });
   });
 
