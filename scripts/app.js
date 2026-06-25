@@ -57,7 +57,7 @@ function initEvents() {
   DOM.btnNovoForm.addEventListener('click', async () => {
     await saveState();
     resetForm();
-    await captureCoordinates();
+    captureCoordinates();
     updateAllFilledClasses();
   });
 
@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initEvents();
   updateFileCount();
   renderPreviews();
-  await captureCoordinates();
+  captureCoordinates();
   updateLivePreview();
   updateAllFilledClasses();
   // Limpar UUID ao iniciar (sempre começa limpo)
