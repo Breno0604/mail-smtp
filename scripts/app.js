@@ -108,6 +108,21 @@ function initEvents() {
       e.target.tagName !== 'TEXTAREA'
     )
       return;
+
+    // Converte o valor digitado para upperCase em tempo real (input/textarea)
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+      const start = e.target.selectionStart;
+      const end = e.target.selectionEnd;
+      const upperValue = e.target.value.toUpperCase();
+      if (upperValue !== e.target.value) {
+        e.target.value = upperValue;
+        // Preserva posição do cursor para não atrapalhar digitação
+        if (document.activeElement === e.target) {
+          e.target.setSelectionRange(start, end);
+        }
+      }
+    }
+
     updateFilledClass(e.target);
     syncIniciaisField(e.target);
     debouncedSave();

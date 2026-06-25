@@ -545,32 +545,58 @@ textarea.is-filled:hover {
   }
 }
 
-/* === Outdoor / High Contrast (sol intenso) === */
-/* Texto mais escuro e pesado para legibilidade */
+/* === UPPERCASE + BOLD — APENAS PARA RÓTULOS E TEXTOS CURTOS === */
+/* Aplica uppercase e negrito apenas a elementos de texto curto (rótulos,
+   botões, títulos e cabeçalhos). Textos longos como preview do email,
+   placeholders e mensagens mantêm-se normais para preservar legibilidade. */
+label,
+.button-label,
+input,
+select,
+textarea,
+button,
+h1, h2, h3, h4, h5, h6,
+.sec-head,
+.sidebar-title,
+.sidebar-item-title,
+.sidebar-btn,
+.btn,
+.ret-placeholder,
+.preview-name,
+.orientation-text,
+.orientation-sub,
+.sidebar-head,
+#retorno-desc,
+.ret-icon {
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+/* Inputs e placeholders — cor escura para alto contraste, sem uppercase */
+input,
+select,
+textarea {
+  color: #0f172a;
+}
+::placeholder {
+  color: #64748b;
+  opacity: 1;
+}
+
+/* Headings com contraste máximo */
+h1, h2, h3 {
+  color: #000000;
+}
+
+/* Outdoor / High Contrast (sol intenso) — ajustes de contraste */
 body {
   color: #0f172a;
 }
 
-/* Labels mais escuros e em negrito */
-label,
-.sidebar-title {
-  color: #0f172a !important;
-  font-weight: 700 !important;
-}
-
-/* Títulos com máximo contraste */
-h1,
-h2,
-h3 {
-  color: #000000 !important;
-}
-
-/* Container com sombra mais pronunciada para profundidade */
 .container {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
 }
 
-/* Botões com sombras mais escuras */
 .btn-primary {
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4) !important;
 }
@@ -578,64 +604,35 @@ h3 {
   box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4) !important;
 }
 
-/* Inputs com texto mais escuro */
-input,
-select,
-textarea {
-  color: #0f172a !important;
-  font-weight: 500 !important;
-}
-
-/* Placeholders mais visíveis */
-::placeholder {
-  color: #64748b !important;
-  opacity: 1 !important;
-}
-
-/* Sidebar com mais contraste */
 .sidebar-item {
   border-width: 2px !important;
   border-color: #cbd5e1 !important;
 }
-.sidebar-item-title {
-  color: #0f172a !important;
-  font-weight: 700 !important;
-}
 
-/* Toast com mais contraste */
 .toast {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
 }
 
-/* Preview de imagens com borda mais grossa */
 .preview-item {
   border-width: 2px !important;
   border-color: #94a3b8 !important;
 }
 
-/* File upload area com mais contraste */
 .file-upload-area {
   border-width: 3px !important;
   border-color: #64748b !important;
   background: #f8fafc !important;
 }
 
-/* Equipment rows com borda mais visível */
 .equip-row {
   border-width: 2px !important;
   border-color: #94a3b8 !important;
 }
 
-/* Email preview com mais contraste */
 .email-preview {
   border-width: 2px !important;
   border-color: #94a3b8 !important;
   background: #f8fafc !important;
-}
-
-/* Texto do email em negrito (seção Revisão) */
-#preview-corpo {
-  font-weight: 700 !important;
 }
 
 /* === Equipment section animation ───────────────────────────────────────── */
