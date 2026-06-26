@@ -1,595 +1,981 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tipos de Ordem &mdash; Campos de Retorno</title>
-<style>
-  :root {
-    --primary: #1e40af;
-    --primary-light: #dbeafe;
-    --success: #15803d;
-    --success-bg: #dcfce7;
-    --danger: #b91c1c;
-    --danger-bg: #fee2e2;
-    --warning: #a16207;
-    --warning-bg: #fef9c3;
-    --gray-50: #f9fafb;
-    --gray-100: #f3f4f6;
-    --gray-200: #e5e7eb;
-    --gray-300: #d1d5db;
-    --gray-500: #6b7280;
-    --gray-700: #374151;
-    --gray-900: #111827;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: var(--gray-100);
-    color: var(--gray-900);
-    line-height: 1.6;
-    padding: 2rem;
-  }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tipos de Ordem &mdash; Campos de Retorno</title>
+    <style>
+      :root {
+        --primary: #1e40af;
+        --primary-light: #dbeafe;
+        --success: #15803d;
+        --success-bg: #dcfce7;
+        --danger: #b91c1c;
+        --danger-bg: #fee2e2;
+        --warning: #a16207;
+        --warning-bg: #fef9c3;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-500: #6b7280;
+        --gray-700: #374151;
+        --gray-900: #111827;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family:
+          'Segoe UI',
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background: var(--gray-100);
+        color: var(--gray-900);
+        line-height: 1.6;
+        padding: 2rem;
+      }
 
-  /* ── Container ── */
-  .container { max-width: 1200px; margin: 0 auto; }
+      /* ── Container ── */
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
 
-  /* ── Header ── */
-  header {
-    text-align: center;
-    padding: 2.5rem 1rem;
-    background: linear-gradient(135deg, #1e3a5f, #1e40af);
-    color: #fff;
-    border-radius: 12px;
-    margin-bottom: 2rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,.15);
-  }
-  header h1 { font-size: 1.8rem; margin-bottom: .5rem; }
-  header p { opacity: .85; font-size: .95rem; }
+      /* ── Header ── */
+      header {
+        text-align: center;
+        padding: 2.5rem 1rem;
+        background: linear-gradient(135deg, #1e3a5f, #1e40af);
+        color: #fff;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+      header h1 {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+      }
+      header p {
+        opacity: 0.85;
+        font-size: 0.95rem;
+      }
 
-  /* ── Stats row ── */
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-  .stat-card {
-    background: #fff;
-    border-radius: 10px;
-    padding: 1.25rem;
-    text-align: center;
-    box-shadow: 0 1px 4px rgba(0,0,0,.08);
-    border-top: 4px solid var(--primary);
-  }
-  .stat-card .num {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--primary);
-  }
-  .stat-card .label {
-    font-size: .85rem;
-    color: var(--gray-500);
-    margin-top: .25rem;
-  }
-  .stat-card.success { border-top-color: var(--success); }
-  .stat-card.success .num { color: var(--success); }
-  .stat-card.danger { border-top-color: var(--danger); }
-  .stat-card.danger .num { color: var(--danger); }
+      /* ── Stats row ── */
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      .stat-card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 1.25rem;
+        text-align: center;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        border-top: 4px solid var(--primary);
+      }
+      .stat-card .num {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+      .stat-card .label {
+        font-size: 0.85rem;
+        color: var(--gray-500);
+        margin-top: 0.25rem;
+      }
+      .stat-card.success {
+        border-top-color: var(--success);
+      }
+      .stat-card.success .num {
+        color: var(--success);
+      }
+      .stat-card.danger {
+        border-top-color: var(--danger);
+      }
+      .stat-card.danger .num {
+        color: var(--danger);
+      }
 
-  /* ── Filter / search ── */
-  .filter-bar {
-    background: #fff;
-    border-radius: 10px;
-    padding: 1rem 1.25rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 1px 4px rgba(0,0,0,.08);
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    align-items: center;
-  }
-  .filter-bar label { font-weight: 600; font-size: .9rem; color: var(--gray-700); }
-  .filter-bar input, .filter-bar select {
-    padding: .5rem .75rem;
-    border: 1px solid var(--gray-300);
-    border-radius: 6px;
-    font-size: .9rem;
-    flex: 1 1 220px;
-    min-width: 0;
-  }
-  .filter-bar input:focus, .filter-bar select:focus {
-    outline: 2px solid var(--primary);
-    outline-offset: -1px;
-  }
+      /* ── Filter / search ── */
+      .filter-bar {
+        background: #fff;
+        border-radius: 10px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: center;
+      }
+      .filter-bar label {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: var(--gray-700);
+      }
+      .filter-bar input,
+      .filter-bar select {
+        padding: 0.5rem 0.75rem;
+        border: 1px solid var(--gray-300);
+        border-radius: 6px;
+        font-size: 0.9rem;
+        flex: 1 1 220px;
+        min-width: 0;
+      }
+      .filter-bar input:focus,
+      .filter-bar select:focus {
+        outline: 2px solid var(--primary);
+        outline-offset: -1px;
+      }
 
-  /* ── Ordem card ── */
-  .ordem-card {
-    background: #fff;
-    border-radius: 10px;
-    margin-bottom: 1rem;
-    box-shadow: 0 1px 4px rgba(0,0,0,.08);
-    overflow: hidden;
-    transition: box-shadow .2s;
-  }
-  .ordem-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,.12); }
+      /* ── Ordem card ── */
+      .ordem-card {
+        background: #fff;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        transition: box-shadow 0.2s;
+      }
+      .ordem-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      }
 
-  .ordem-header {
-    display: flex;
-    align-items: center;
-    gap: .75rem;
-    padding: 1rem 1.25rem;
-    cursor: pointer;
-    user-select: none;
-    transition: background .15s;
-  }
-  .ordem-header:hover { background: var(--gray-50); }
+      .ordem-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 1.25rem;
+        cursor: pointer;
+        user-select: none;
+        transition: background 0.15s;
+      }
+      .ordem-header:hover {
+        background: var(--gray-50);
+      }
 
-  .ordem-header .index {
-    width: 2rem;
-    height: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    font-size: .75rem;
-    font-weight: 700;
-    color: #fff;
-    flex-shrink: 0;
-  }
-  .index.has-retorno { background: var(--success); }
-  .index.no-retorno { background: var(--gray-500); }
+      .ordem-header .index {
+        width: 2rem;
+        height: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #fff;
+        flex-shrink: 0;
+      }
+      .index.has-retorno {
+        background: var(--success);
+      }
+      .index.no-retorno {
+        background: var(--gray-500);
+      }
 
-  .ordem-header .name {
-    flex: 1;
-    font-weight: 600;
-    font-size: 1rem;
-  }
+      .ordem-header .name {
+        flex: 1;
+        font-weight: 600;
+        font-size: 1rem;
+      }
 
-  .ordem-header .badge {
-    font-size: .75rem;
-    font-weight: 600;
-    padding: .25rem .65rem;
-    border-radius: 999px;
-    flex-shrink: 0;
-  }
-  .badge.has-retorno {
-    background: var(--success-bg);
-    color: var(--success);
-  }
-  .badge.no-retorno {
-    background: var(--gray-200);
-    color: var(--gray-500);
-  }
+      .ordem-header .badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.25rem 0.65rem;
+        border-radius: 999px;
+        flex-shrink: 0;
+      }
+      .badge.has-retorno {
+        background: var(--success-bg);
+        color: var(--success);
+      }
+      .badge.no-retorno {
+        background: var(--gray-200);
+        color: var(--gray-500);
+      }
 
-  .ordem-header .toggle-icon {
-    font-size: .8rem;
-    color: var(--gray-500);
-    transition: transform .25s;
-    flex-shrink: 0;
-  }
-  .ordem-card.open .toggle-icon { transform: rotate(180deg); }
+      .ordem-header .toggle-icon {
+        font-size: 0.8rem;
+        color: var(--gray-500);
+        transition: transform 0.25s;
+        flex-shrink: 0;
+      }
+      .ordem-card.open .toggle-icon {
+        transform: rotate(180deg);
+      }
 
-  /* ── Retorno body ── */
-  .ordem-body {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height .35s ease;
-  }
-  .ordem-card.open .ordem-body {
-    max-height: 2000px;
-  }
-  .ordem-body-inner {
-    padding: 0 1.25rem 1.25rem;
-    border-top: 1px solid var(--gray-200);
-  }
+      /* ── Retorno body ── */
+      .ordem-body {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.35s ease;
+      }
+      .ordem-card.open .ordem-body {
+        max-height: 2000px;
+      }
+      .ordem-body-inner {
+        padding: 0 1.25rem 1.25rem;
+        border-top: 1px solid var(--gray-200);
+      }
 
-  .field-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: .75rem;
-    font-size: .88rem;
-  }
-  .field-table th {
-    text-align: left;
-    font-weight: 600;
-    color: var(--gray-500);
-    font-size: .78rem;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-    padding: .5rem .6rem;
-    border-bottom: 2px solid var(--gray-200);
-  }
-  .field-table td {
-    padding: .5rem .6rem;
-    border-bottom: 1px solid var(--gray-100);
-    vertical-align: top;
-  }
-  .field-table tr:last-child td { border-bottom: none; }
+      .field-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 0.75rem;
+        font-size: 0.88rem;
+      }
+      .field-table th {
+        text-align: left;
+        font-weight: 600;
+        color: var(--gray-500);
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        padding: 0.5rem 0.6rem;
+        border-bottom: 2px solid var(--gray-200);
+      }
+      .field-table td {
+        padding: 0.5rem 0.6rem;
+        border-bottom: 1px solid var(--gray-100);
+        vertical-align: top;
+      }
+      .field-table tr:last-child td {
+        border-bottom: none;
+      }
 
-  .field-table .field-name {
-    font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
-    font-size: .82rem;
-    color: var(--primary);
-    word-break: break-all;
-  }
-  .field-table .field-label {
-    font-weight: 500;
-  }
-  .field-table .field-type {
-    display: inline-block;
-    font-size: .72rem;
-    padding: .15rem .45rem;
-    border-radius: 4px;
-    background: var(--gray-100);
-    color: var(--gray-700);
-  }
-  .field-table .field-cond {
-    font-size: .78rem;
-    color: var(--warning);
-    background: var(--warning-bg);
-    padding: .15rem .45rem;
-    border-radius: 4px;
-    white-space: nowrap;
-  }
-  .field-table .field-negado {
-    font-size: .78rem;
-    color: var(--danger);
-    background: var(--danger-bg);
-    padding: .15rem .45rem;
-    border-radius: 4px;
-    white-space: nowrap;
-  }
-  .field-table .field-opcoes {
-    font-size: .78rem;
-    color: var(--gray-700);
-  }
-  .field-table .field-opcoes code {
-    display: inline-block;
-    background: var(--gray-50);
-    padding: .1rem .3rem;
-    border-radius: 3px;
-    font-size: .75rem;
-    margin: .1rem .15rem;
-  }
+      .field-table .field-name {
+        font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+        font-size: 0.82rem;
+        color: var(--primary);
+        word-break: break-all;
+      }
+      .field-table .field-label {
+        font-weight: 500;
+      }
+      .field-table .field-type {
+        display: inline-block;
+        font-size: 0.72rem;
+        padding: 0.15rem 0.45rem;
+        border-radius: 4px;
+        background: var(--gray-100);
+        color: var(--gray-700);
+      }
+      .field-table .field-cond {
+        font-size: 0.78rem;
+        color: var(--warning);
+        background: var(--warning-bg);
+        padding: 0.15rem 0.45rem;
+        border-radius: 4px;
+        white-space: nowrap;
+      }
+      .field-table .field-negado {
+        font-size: 0.78rem;
+        color: var(--danger);
+        background: var(--danger-bg);
+        padding: 0.15rem 0.45rem;
+        border-radius: 4px;
+        white-space: nowrap;
+      }
+      .field-table .field-opcoes {
+        font-size: 0.78rem;
+        color: var(--gray-700);
+      }
+      .field-table .field-opcoes code {
+        display: inline-block;
+        background: var(--gray-50);
+        padding: 0.1rem 0.3rem;
+        border-radius: 3px;
+        font-size: 0.75rem;
+        margin: 0.1rem 0.15rem;
+      }
 
-  /* ── Fallback info ── */
-  .fallback-note {
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-    margin-top: .75rem;
-    padding: .6rem .9rem;
-    background: var(--gray-50);
-    border-radius: 6px;
-    font-size: .85rem;
-    color: var(--gray-500);
-  }
+      /* ── Fallback info ── */
+      .fallback-note {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+        padding: 0.6rem 0.9rem;
+        background: var(--gray-50);
+        border-radius: 6px;
+        font-size: 0.85rem;
+        color: var(--gray-500);
+      }
 
-  /* ── Summary section ── */
-  .summary-section {
-    background: #fff;
-    border-radius: 10px;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 1px 4px rgba(0,0,0,.08);
-  }
-  .summary-section h2 {
-    font-size: 1.15rem;
-    margin-bottom: 1rem;
-    padding-bottom: .5rem;
-    border-bottom: 2px solid var(--gray-200);
-  }
-  .summary-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: .6rem;
-  }
-  .summary-item {
-    padding: .4rem .7rem;
-    border-radius: 6px;
-    font-size: .85rem;
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-  }
-  .summary-item .dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .dot.green { background: var(--success); }
-  .dot.gray { background: var(--gray-300); }
-  .summary-item .count-badge {
-    margin-left: auto;
-    font-size: .72rem;
-    font-weight: 600;
-    padding: .1rem .45rem;
-    border-radius: 999px;
-    flex-shrink: 0;
-  }
-  .count-badge.green-badge {
-    background: var(--success-bg);
-    color: var(--success);
-  }
-  .count-badge.gray-badge {
-    background: var(--gray-200);
-    color: var(--gray-500);
-  }
+      /* ── Summary section ── */
+      .summary-section {
+        background: #fff;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+      }
+      .summary-section h2 {
+        font-size: 1.15rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--gray-200);
+      }
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 0.6rem;
+      }
+      .summary-item {
+        padding: 0.4rem 0.7rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .summary-item .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .dot.green {
+        background: var(--success);
+      }
+      .dot.gray {
+        background: var(--gray-300);
+      }
+      .summary-item .count-badge {
+        margin-left: auto;
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 0.1rem 0.45rem;
+        border-radius: 999px;
+        flex-shrink: 0;
+      }
+      .count-badge.green-badge {
+        background: var(--success-bg);
+        color: var(--success);
+      }
+      .count-badge.gray-badge {
+        background: var(--gray-200);
+        color: var(--gray-500);
+      }
 
-  /* ── Responsive ── */
-  @media (max-width: 640px) {
-    body { padding: 1rem; }
-    header h1 { font-size: 1.3rem; }
-    .ordem-header { flex-wrap: wrap; }
-    .field-table { font-size: .82rem; }
-    .field-table td, .field-table th { padding: .4rem .4rem; }
-  }
-</style>
-</head>
-<body>
-<div class="container">
+      /* ── Responsive ── */
+      @media (max-width: 640px) {
+        body {
+          padding: 1rem;
+        }
+        header h1 {
+          font-size: 1.3rem;
+        }
+        .ordem-header {
+          flex-wrap: wrap;
+        }
+        .field-table {
+          font-size: 0.82rem;
+        }
+        .field-table td,
+        .field-table th {
+          padding: 0.4rem 0.4rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- ═══ HEADER ═══ -->
+      <header>
+        <h1>Tipos de Ordem &mdash; Campos de Retorno</h1>
+        <p>Referência completa dos 43 tipos de ordem do sistema Mail MVP</p>
+      </header>
 
-  <!-- ═══ HEADER ═══ -->
-  <header>
-    <h1>Tipos de Ordem &mdash; Campos de Retorno</h1>
-    <p>Referência completa dos 43 tipos de ordem do sistema Mail MVP</p>
-  </header>
+      <!-- ═══ STATS ═══ -->
+      <div class="stats">
+        <div class="stat-card">
+          <div class="num">43</div>
+          <div class="label">Total de Tipos</div>
+        </div>
+        <div class="stat-card success">
+          <div class="num" id="totalComRetorno">16</div>
+          <div class="label">Com Campos Customizados</div>
+        </div>
+        <div class="stat-card danger">
+          <div class="num" id="totalSemRetorno">27</div>
+          <div class="label">Apenas Descri&ccedil;&atilde;o (default)</div>
+        </div>
+        <div class="stat-card" style="border-top-color: #7c3aed">
+          <div class="num" id="totalCampos">0</div>
+          <div class="label">Campos de Retorno no Total</div>
+        </div>
+      </div>
 
-  <!-- ═══ STATS ═══ -->
-  <div class="stats">
-    <div class="stat-card">
-      <div class="num">43</div>
-      <div class="label">Total de Tipos</div>
+      <!-- ═══ FILTER ═══ -->
+      <div class="filter-bar">
+        <label for="filterNome">Filtrar</label>
+        <input
+          type="text"
+          id="filterNome"
+          placeholder="Digite parte do nome do tipo de ordem&hellip;"
+          oninput="aplicarFiltro()"
+        />
+        <select id="filterStatus" onchange="aplicarFiltro()">
+          <option value="todos">Todos</option>
+          <option value="com">Com campos customizados</option>
+          <option value="sem">Apenas descri&ccedil;&atilde;o (default)</option>
+        </select>
+      </div>
+
+      <!-- ═══ ORDENS LIST ═══ -->
+      <div id="lista"></div>
+
+      <!-- ═══ FOOTNOTE ═══ -->
+      <p style="text-align: center; font-size: 0.8rem; color: var(--gray-500); margin-top: 2rem">
+        Fonte: <code>scripts/fields.js</code> &mdash; Gerado em <span id="dataGeracao"></span>
+      </p>
     </div>
-    <div class="stat-card success">
-      <div class="num" id="totalComRetorno">16</div>
-      <div class="label">Com Campos Customizados</div>
-    </div>
-    <div class="stat-card danger">
-      <div class="num" id="totalSemRetorno">27</div>
-      <div class="label">Apenas Descri&ccedil;&atilde;o (default)</div>
-    </div>
-    <div class="stat-card" style="border-top-color:#7c3aed;">
-      <div class="num" id="totalCampos">0</div>
-      <div class="label">Campos de Retorno no Total</div>
-    </div>
-  </div>
 
-  <!-- ═══ FILTER ═══ -->
-  <div class="filter-bar">
-    <label for="filterNome">Filtrar</label>
-    <input type="text" id="filterNome" placeholder="Digite parte do nome do tipo de ordem&hellip;" oninput="aplicarFiltro()">
-    <select id="filterStatus" onchange="aplicarFiltro()">
-      <option value="todos">Todos</option>
-      <option value="com">Com campos customizados</option>
-      <option value="sem">Apenas descri&ccedil;&atilde;o (default)</option>
-    </select>
-  </div>
+    <script>
+      // ═══════════════════════════════════════════════════════════════════
+      //  DATA  (mesmo conteúdo de fields.js)
+      // ═══════════════════════════════════════════════════════════════════
 
-  <!-- ═══ ORDENS LIST ═══ -->
-  <div id="lista"></div>
+      const FIELD_DESCRICAO = {
+        nome: 'descricao',
+        label: 'Descrição do Serviço',
+        tipo: 'textarea',
+      };
 
-  <!-- ═══ FOOTNOTE ═══ -->
-  <p style="text-align:center;font-size:.8rem;color:var(--gray-500);margin-top:2rem;">
-    Fonte: <code>scripts/fields.js</code> &mdash; Gerado em <span id="dataGeracao"></span>
-  </p>
-</div>
+      const UC_CORTADA_FIELDS = [
+        {
+          linha: 1,
+          nome: 'situacao-cliente',
+          label: 'Situação',
+          tipo: 'select',
+          opcoes: [
+            'CORTADO',
+            'AUTO RELIGADO CORTE EXECUTADO',
+            'AUTO RELIGADO',
+            'SOLICITOU RELIGACAO',
+            'NOVO CLIENTE NO LOCAL',
+          ],
+        },
+        {
+          linha: 2,
+          nome: 'viavel-retirar',
+          label: 'Viável Retirar',
+          tipo: 'select',
+          opcoes: ['COM MUNK OU GUINCHO', 'COM MUNK', 'COM LINHA VIVA', 'N/A'],
+        },
+        {
+          linha: 3,
+          nome: 'ramal',
+          label: 'Ramal',
+          tipo: 'select',
+          opcoes: ['COM RAMAL', 'SEM RAMAL'],
+        },
+        {
+          linha: 3,
+          nome: 'medicao',
+          label: 'Medição',
+          tipo: 'select',
+          opcoes: ['COM MEDIÇÃO', 'SEM MEDIÇÃO'],
+        },
+        { linha: 4, nome: 'jump', label: 'Jump', tipo: 'select', opcoes: ['COM JUMP', 'SEM JUMP'] },
+        {
+          linha: 4,
+          nome: 'chaves',
+          label: 'Chaves',
+          tipo: 'select',
+          opcoes: ['COM CHAVE', 'SEM CHAVE'],
+        },
+        {
+          linha: 5,
+          nome: 'aplicado-toi',
+          label: 'Aplicado TOI',
+          tipo: 'select',
+          opcoes: ['SIM', 'NAO'],
+        },
+        {
+          linha: 5,
+          nome: 'toi',
+          label: 'TOI',
+          tipo: 'text',
+          condicional: { campoRef: 'aplicado-toi', valor: 'SIM' },
+        },
+        { linha: 6, nome: 'descricao', label: 'Descrição do Serviço', tipo: 'textarea' },
+      ];
 
-<script>
-// ═══════════════════════════════════════════════════════════════════
-//  DATA  (mesmo conteúdo de fields.js)
-// ═══════════════════════════════════════════════════════════════════
+      const LIGACAO_NOVA_MT_FIELDS = [
+        {
+          linha: 1,
+          nome: 'retorno_ligacao',
+          label: 'Executado',
+          tipo: 'select',
+          opcoes: ['VISTORIA', 'VISTORIA + LIGAÇÃO', 'LIGAÇÃO'],
+        },
+        {
+          linha: 2,
+          nome: 'obra',
+          label: 'Obra',
+          tipo: 'select',
+          opcoes: ['CONCLUIDA', 'NAO CONCLUIDA'],
+          condicional: { campoRef: 'retorno_ligacao', valor: ['VISTORIA', 'VISTORIA + LIGAÇÃO'] },
+        },
+        {
+          linha: 2,
+          nome: 'ligacao',
+          label: 'Ligação',
+          tipo: 'select',
+          opcoes: ['CONCLUIDA', 'NAO CONCLUIDA'],
+          condicional: { campoRef: 'retorno_ligacao', valor: ['LIGAÇÃO', 'VISTORIA + LIGAÇÃO'] },
+        },
+        {
+          linha: 3,
+          nome: 'tipo_medicao',
+          label: 'Medição',
+          tipo: 'select',
+          opcoes: ['ACOPLADA', 'CUBICULO', 'SEMI-DIRETA', 'DIRETA'],
+          condicional: { campoRef: 'retorno_ligacao', valor: ['VISTORIA', 'VISTORIA + LIGAÇÃO'] },
+        },
+        {
+          linha: 3,
+          nome: 'status_medicao',
+          label: 'Status Medição',
+          tipo: 'select',
+          opcoes: ['COM MEDICAO', 'SEM MEDICAO'],
+          condicional: { campoRef: 'retorno_ligacao', valor: ['VISTORIA', 'VISTORIA + LIGAÇÃO'] },
+        },
+        {
+          linha: 4,
+          nome: 'ponto_de_entrega',
+          label: 'Ponto de Entrega',
+          tipo: 'select',
+          opcoes: ['DE ACORDO', 'EM DESACORDO', 'NÃO CONSTRUIDO'],
+          condicional: { campoRef: 'retorno_ligacao', valor: ['VISTORIA', 'VISTORIA + LIGAÇÃO'] },
+        },
+        {
+          linha: 4,
+          nome: 'tombamento',
+          label: 'Tombamento',
+          tipo: 'text',
+          condicional: { campoRef: 'retorno_ligacao', valor: ['LIGAÇÃO', 'VISTORIA + LIGAÇÃO'] },
+        },
+        {
+          linha: 5,
+          nome: 'medidor_bt',
+          label: 'Medidor de BT',
+          tipo: 'select',
+          opcoes: ['COM MEDIDOR BT', 'SEM MEDIDOR BT'],
+          condicional: { campoRef: 'retorno_ligacao', valor: ['VISTORIA', 'VISTORIA + LIGAÇÃO'] },
+        },
+        {
+          linha: 5,
+          nome: 'qtd_medidor_bt',
+          label: 'Quantidade',
+          tipo: 'number',
+          condicional: { campoRef: 'medidor_bt', valor: 'COM MEDIDOR BT' },
+        },
+        {
+          linha: 6,
+          nome: 'acesso_medicao',
+          label: 'Acesso',
+          tipo: 'select',
+          opcoes: ['REGULAR', 'IRREGULAR', 'SEM ACESSO'],
+          condicional: { campoRef: 'retorno_ligacao', valor: ['VISTORIA', 'VISTORIA + LIGAÇÃO'] },
+        },
+        {
+          linha: 6,
+          nome: 'acesso_ponto_de_entrega',
+          label: 'Descreva o Problema',
+          tipo: 'text',
+          condicional: { campoRef: 'acesso_medicao', valor: ['IRREGULAR', 'SEM ACESSO'] },
+        },
+        { linha: 7, nome: 'descricao', label: 'Descrição do Serviço', tipo: 'textarea' },
+      ];
 
-const FIELD_DESCRICAO = { nome: "descricao", label: "Descrição do Serviço", tipo: "textarea" };
+      const AFERICAO_MEDIDOR_FIELDS = [
+        {
+          linha: 1,
+          nome: 'medidor_afericao',
+          label: 'Medidor',
+          tipo: 'select',
+          opcoes: ['SUBSTITUIDO', 'NAO SUBSTITUIDO'],
+        },
+        {
+          linha: 2,
+          nome: 'Motivo_cancel_afericao',
+          label: 'Motivo Cancelamento',
+          tipo: 'text',
+          condicional: { campoRef: 'medidor_afericao', valor: 'NAO SUBSTITUIDO' },
+        },
+        {
+          linha: 3,
+          nome: 'leitura_afericao',
+          label: 'Leitura',
+          tipo: 'select',
+          opcoes: [
+            'VISUAL E NETBOOK',
+            'APENAS VISUAL',
+            'APENAS NOTEBOOK',
+            'NAO FOI COLHIDO LEITURA',
+          ],
+          condicional: { campoRef: 'medidor_afericao', valor: 'SUBSTITUIDO' },
+        },
+        {
+          linha: 4,
+          nome: 'motivo_nao_colher',
+          label: 'Porque não foi colhido',
+          tipo: 'text',
+          condicional: { campoRef: 'leitura_afericao', valor: 'NAO FOI COLHIDO LEITURA' },
+        },
+        {
+          linha: 5,
+          nome: 'toi_afericao',
+          label: 'TOI',
+          tipo: 'select',
+          opcoes: ['APLICADO TOI', 'PERDAS JA APLICOU TOI', 'NAO FOI APLICADO TOI'],
+          condicional: { campoRef: 'medidor_afericao', valor: 'SUBSTITUIDO' },
+        },
+        {
+          linha: 6,
+          nome: 'numero_toi',
+          label: 'Nº TOI',
+          tipo: 'text',
+          condicional: { campoRef: 'toi_afericao', valor: 'APLICADO TOI' },
+        },
+        {
+          linha: 7,
+          nome: 'porque_nao_aplicado_toi',
+          label: 'Porque não foi aplicado TOI',
+          tipo: 'text',
+          condicional: { campoRef: 'toi_afericao', valor: 'NAO FOI APLICADO TOI' },
+        },
+        { linha: 8, nome: 'descricao', label: 'Descrição do Serviço', tipo: 'textarea' },
+      ];
 
-const UC_CORTADA_FIELDS = [
-  { linha: 1, nome: "situacao-cliente", label: "Situação", tipo: "select", opcoes: ["CORTADO", "AUTO RELIGADO CORTE EXECUTADO", "AUTO RELIGADO", "SOLICITOU RELIGACAO", "NOVO CLIENTE NO LOCAL"] },
-  { linha: 2, nome: "viavel-retirar", label: "Viável Retirar", tipo: "select", opcoes: ["COM MUNK OU GUINCHO", "COM MUNK", "COM LINHA VIVA", "N/A"] },
-  { linha: 3, nome: "ramal", label: "Ramal", tipo: "select", opcoes: ["COM RAMAL", "SEM RAMAL"] },
-  { linha: 3, nome: "medicao", label: "Medição", tipo: "select", opcoes: ["COM MEDIÇÃO", "SEM MEDIÇÃO"] },
-  { linha: 4, nome: "jump", label: "Jump", tipo: "select", opcoes: ["COM JUMP", "SEM JUMP"] },
-  { linha: 4, nome: "chaves", label: "Chaves", tipo: "select", opcoes: ["COM CHAVE", "SEM CHAVE"] },
-  { linha: 5, nome: "aplicado-toi", label: "Aplicado TOI", tipo: "select", opcoes: ["SIM", "NAO"] },
-  { linha: 5, nome: "toi", label: "TOI", tipo: "text", condicional: { campoRef: "aplicado-toi", valor: "SIM" } },
-];
+      const TELEMEDICAO_FIELDS = [
+        {
+          linha: 1,
+          nome: 'executado_telemedicao',
+          label: 'Executado',
+          tipo: 'select',
+          opcoes: ['SIM', 'NAO'],
+        },
+        {
+          linha: 2,
+          nome: 'motivo_cancelamento_telemedicao',
+          label: 'Motivo',
+          tipo: 'select',
+          opcoes: ['SEM ACESSO', 'MEDICAO COM BY-PASS', 'MEDICAO AVARIADA', 'OUTRO MOTIVO'],
+          condicional: { campoRef: 'executado_telemedicao', valor: 'NAO' },
+        },
+        {
+          linha: 3,
+          nome: 'descreva_problema_telemedicao',
+          label: 'Descreva Problema',
+          tipo: 'textarea',
+          condicional: {
+            campoRef: 'motivo_cancelamento_telemedicao',
+            valor: ['SEM ACESSO', 'OUTRO MOTIVO'],
+          },
+        },
+        {
+          linha: 4,
+          nome: 'atentende_com',
+          label: 'Atendente (COM)',
+          tipo: 'text',
+          condicional: { campoRef: 'executado_telemedicao', valor: 'SIM' },
+        },
+        {
+          linha: 5,
+          nome: 'realizado_telemedicao',
+          label: 'O que foi realizado',
+          tipo: 'textarea',
+          condicional: { campoRef: 'executado_telemedicao', valor: 'SIM' },
+        },
+        { linha: 6, nome: 'descricao', label: 'Descrição do Serviço', tipo: 'textarea' },
+      ];
 
-const LIGACAO_NOVA_MT_FIELDS = [
-  { linha: 1, nome: "retorno_ligacao", label: "Executado", tipo: "select", opcoes: ["VISTORIA", "VISTORIA + LIGAÇÃO", "LIGAÇÃO"] },
-  { linha: 2, nome: "obra", label: "Obra", tipo: "select", opcoes: ["CONCLUIDA", "NAO CONCLUIDA"], condicional: { campoRef: "retorno_ligacao", valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"] } },
-  { linha: 2, nome: "ligacao", label: "Ligação", tipo: "select", opcoes: ["CONCLUIDA", "NAO CONCLUIDA"], condicional: { campoRef: "retorno_ligacao", valor: ["LIGAÇÃO", "VISTORIA + LIGAÇÃO"] } },
-  { linha: 3, nome: "tipo_medicao", label: "Medição", tipo: "select", opcoes: ["ACOPLADA", "CUBICULO", "SEMI-DIRETA", "DIRETA"], condicional: { campoRef: "retorno_ligacao", valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"] } },
-  { linha: 3, nome: "status_medicao", label: "Status Medição", tipo: "select", opcoes: ["COM MEDICAO", "SEM MEDICAO"], condicional: { campoRef: "retorno_ligacao", valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"] } },
-  { linha: 4, nome: "ponto_de_entrega", label: "Ponto de Entrega", tipo: "select", opcoes: ["DE ACORDO", "EM DESACORDO", "NÃO CONSTRUIDO"], condicional: { campoRef: "retorno_ligacao", valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"] } },
-  { linha: 4, nome: "tombamento", label: "Tombamento", tipo: "text", condicional: { campoRef: "retorno_ligacao", valor: ["LIGAÇÃO", "VISTORIA + LIGAÇÃO"] } },
-  { linha: 5, nome: "medidor_bt", label: "Medidor de BT", tipo: "select", opcoes: ["COM MEDIDOR BT", "SEM MEDIDOR BT"], condicional: { campoRef: "retorno_ligacao", valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"] } },
-  { linha: 5, nome: "qtd_medidor_bt", label: "Quantidade", tipo: "number", condicional: { campoRef: "medidor_bt", valor: "COM MEDIDOR BT" } },
-  { linha: 6, nome: "acesso_medicao", label: "Acesso", tipo: "select", opcoes: ["REGULAR", "IRREGULAR", "SEM ACESSO"], condicional: { campoRef: "retorno_ligacao", valor: ["VISTORIA", "VISTORIA + LIGAÇÃO"] } },
-  { linha: 6, nome: "acesso_ponto_de_entrega", label: "Descreva o Problema", tipo: "text", condicional: { campoRef: "acesso_medicao", valor: ["IRREGULAR", "SEM ACESSO"] } },
-];
+      const retornoFieldsByTipo = {
+        default: [FIELD_DESCRICAO],
 
-const AFERICAO_MEDIDOR_FIELDS = [
-  { linha: 1, nome: "medidor_afericao", label: "Medidor", tipo: "select", opcoes: ["SUBSTITUIDO", "NAO SUBSTITUIDO"] },
-  { linha: 2, nome: "Motivo_cancel_afericao", label: "Motivo Cancelamento", tipo: "text", condicional: { campoRef: "medidor_afericao", valor: "NAO SUBSTITUIDO" } },
-  { linha: 3, nome: "leitura_afericao", label: "Leitura", tipo: "select", opcoes: ["VISUAL E NETBOOK", "APENAS VISUAL", "APENAS NOTEBOOK", "NAO FOI COLHIDO LEITURA"], condicional: { campoRef: "medidor_afericao", valor: "SUBSTITUIDO" } },
-  { linha: 4, nome: "motivo_nao_colher", label: "Porque não foi colhido", tipo: "text", condicional: { campoRef: "leitura_afericao", valor: "NAO FOI COLHIDO LEITURA" } },
-  { linha: 5, nome: "toi_afericao", label: "TOI", tipo: "select", opcoes: ["APLICADO TOI", "PERDAS JA APLICOU TOI", "NAO FOI APLICADO TOI"], condicional: { campoRef: "medidor_afericao", valor: "SUBSTITUIDO" } },
-  { linha: 6, nome: "numero_toi", label: "Nº TOI", tipo: "text", condicional: { campoRef: "toi_afericao", valor: "APLICADO TOI" } },
-  { linha: 7, nome: "porque_nao_aplicado_toi", label: "Porque não foi aplicado TOI", tipo: "text", condicional: { campoRef: "toi_afericao", valor: "NAO FOI APLICADO TOI" } },
-];
+        'INSPECAO UC CORTADA I15': UC_CORTADA_FIELDS,
+        'INSPECAO UC CORTADA I30': UC_CORTADA_FIELDS,
+        'INSPECAO UC CORTADA I90': UC_CORTADA_FIELDS,
+        'INSPECAO UC CORTADA I180': UC_CORTADA_FIELDS,
 
-const retornoFieldsByTipo = {
-  "default": [FIELD_DESCRICAO],
+        'SUBST. MEDIDOR A PEDIDO': [FIELD_DESCRICAO],
 
-  "INSPECAO UC CORTADA I15": UC_CORTADA_FIELDS,
-  "INSPECAO UC CORTADA I30": UC_CORTADA_FIELDS,
-  "INSPECAO UC CORTADA I90": UC_CORTADA_FIELDS,
-  "INSPECAO UC CORTADA I180": UC_CORTADA_FIELDS,
+        'VISTORIA DA UC': [FIELD_DESCRICAO],
 
-  "SUBST. MEDIDOR A PEDIDO": [
-    FIELD_DESCRICAO,
-    { nome: "tipo-servico", label: "Tipo de Serviço", tipo: "select", opcoes: ["Troca de Medidor", "Reparo", "Aferição"] },
-    { nome: "medidor-antigo", label: "Nº do Medidor Antigo", tipo: "text", condicional: { campoRef: "tipo-servico", valor: "Troca de Medidor" } },
-    { nome: "medidor-novo", label: "Nº do Medidor Novo", tipo: "text", condicional: { campoRef: "tipo-servico", valor: "Troca de Medidor" } },
-    { nome: "marca-medidor", label: "Marca do Medidor", tipo: "select", opcoes: ["Landis+Gyr", "EDMI", "Siemens", "Itron", "Nansen", "Outra"], condicional: { campoRef: "tipo-servico", valor: "Troca de Medidor" } },
-    { nome: "leitura-anterior", label: "Leitura Anterior", tipo: "number", condicional: { campoRef: "tipo-servico", valor: "Aferição" } },
-    { nome: "leitura-atual", label: "Leitura Atual", tipo: "number", condicional: { campoRef: "tipo-servico", valor: "Aferição" } },
-  ],
+        'GRANDES CLIENTES SELO ROMPIDO': [
+          FIELD_DESCRICAO,
+          { nome: 'selo-rompido', label: 'Selo Rompido?', tipo: 'select', opcoes: ['SIM', 'NÃO'] },
+          {
+            nome: 'medidor-substituido',
+            label: 'Medidor Substituído?',
+            tipo: 'select',
+            opcoes: ['SIM', 'NÃO'],
+            condicional: { campoRef: 'selo-rompido', valor: 'SIM' },
+          },
+          {
+            nome: 'num-novo-medidor',
+            label: 'Nº do Novo Medidor',
+            tipo: 'text',
+            condicional: { campoRef: 'medidor-substituido', valor: 'SIM' },
+          },
+        ],
 
-  "VISTORIA DA UC": [
-    FIELD_DESCRICAO,
-    { nome: "resultado", label: "Resultado da Vistoria", tipo: "select", opcoes: ["Regular", "Irregularidade Leve", "Irregularidade Grave", "Cliente Ausente", "Recusou", "Outro"] },
-    { nome: "motivo-recusa", label: "Motivo da Recusa", tipo: "text", condicional: { campoRef: "resultado", valor: "Recusou" } },
-    { nome: "desc-irregularidade", label: "Descrição da Irregularidade", tipo: "textarea", condicional: { campoRef: "resultado", valor: "Irregularidade Leve" } },
-    { nome: "desc-irregularidade-grave", label: "Descrição da Irregularidade", tipo: "textarea", condicional: { campoRef: "resultado", valor: "Irregularidade Grave" } },
-  ],
+        'GRANDES CLIENTES SELO ROMPIDO': [
+          FIELD_DESCRICAO,
+          { nome: 'selo-rompido', label: 'Selo Rompido?', tipo: 'select', opcoes: ['SIM', 'NÃO'] },
+          {
+            nome: 'medidor-substituido',
+            label: 'Medidor Substituído?',
+            tipo: 'select',
+            opcoes: ['SIM', 'NÃO'],
+            condicional: { campoRef: 'selo-rompido', valor: 'SIM' },
+          },
+          {
+            nome: 'num-novo-medidor',
+            label: 'Nº do Novo Medidor',
+            tipo: 'text',
+            condicional: { campoRef: 'medidor-substituido', valor: 'SIM' },
+          },
+        ],
 
-  "GRANDES CLIENTES SELO ROMPIDO": [
-    FIELD_DESCRICAO,
-    { nome: "selo-rompido", label: "Selo Rompido?", tipo: "select", opcoes: ["SIM", "NÃO"] },
-    { nome: "medidor-substituido", label: "Medidor Substituído?", tipo: "select", opcoes: ["SIM", "NÃO"], condicional: { campoRef: "selo-rompido", valor: "SIM" } },
-    { nome: "num-novo-medidor", label: "Nº do Novo Medidor", tipo: "text", condicional: { campoRef: "medidor-substituido", valor: "SIM" } },
-  ],
+        'INSTALACAO DO DISPLAY': [
+          FIELD_DESCRICAO,
+          {
+            nome: 'display-instalado',
+            label: 'Display Instalado?',
+            tipo: 'select',
+            opcoes: ['SIM', 'NÃO'],
+          },
+          {
+            nome: 'motivo-nao-instalar',
+            label: 'Motivo de não Instalar',
+            tipo: 'text',
+            condicional: { campoRef: 'display-instalado', valor: 'NÃO' },
+          },
+        ],
 
-  "INSTALACAO DO DISPLAY": [
-    FIELD_DESCRICAO,
-    { nome: "display-instalado", label: "Display Instalado?", tipo: "select", opcoes: ["SIM", "NÃO"] },
-    { nome: "motivo-nao-instalar", label: "Motivo de não Instalar", tipo: "text", condicional: { campoRef: "display-instalado", valor: "NÃO" } },
-  ],
+        'SUBSTITUIÇÃO DE DISPLAY': [
+          FIELD_DESCRICAO,
+          {
+            nome: 'motivo-subst',
+            label: 'Motivo da Substituição',
+            tipo: 'select',
+            opcoes: ['Display Quebrado', 'Display Sem Leitura', 'Display Danificado', 'Outro'],
+          },
+          {
+            nome: 'display-funcionando',
+            label: 'Display Novo Funcionando?',
+            tipo: 'select',
+            opcoes: ['SIM', 'NÃO'],
+          },
+        ],
 
-  "SUBSTITUIÇÃO DE DISPLAY": [
-    FIELD_DESCRICAO,
-    { nome: "motivo-subst", label: "Motivo da Substituição", tipo: "select", opcoes: ["Display Quebrado", "Display Sem Leitura", "Display Danificado", "Outro"] },
-    { nome: "display-funcionando", label: "Display Novo Funcionando?", tipo: "select", opcoes: ["SIM", "NÃO"] },
-  ],
+        'AFERIÇÃO DE MEDIDOR': AFERICAO_MEDIDOR_FIELDS,
+        'AFERIÇÃO MEDIDOR CLIENTE LIVRE': AFERICAO_MEDIDOR_FIELDS,
 
-  "AFERIÇÃO DE MEDIDOR": AFERICAO_MEDIDOR_FIELDS,
-  "AFERIÇÃO MEDIDOR CLIENTE LIVRE": AFERICAO_MEDIDOR_FIELDS,
+        'CORTE POR FALTA DE PAGAMENTO': [
+          {
+            linha: 1,
+            nome: 'situacao_corte',
+            label: 'Situação',
+            tipo: 'select',
+            opcoes: [
+              'CLIENTE CORTADO',
+              'CLIENTE VISITADO CONTA PAGA',
+              'CLIENTE NAO PERMITIU O CORTE',
+              'SEM ACESSO PARA EXECUTAR O CORTE',
+            ],
+          },
+          { linha: 2, nome: 'descricao', label: 'Descrição do Serviço', tipo: 'textarea' },
+        ],
 
-  "CORTE POR FALTA DE PAGAMENTO": [
-    { linha: 1, nome: "situacao_corte", label: "Situação", tipo: "select", opcoes: ["CLIENTE CORTADO", "CLIENTE VISITADO CONTA PAGA", "CLIENTE NAO PERMITIU O CORTE", "SEM ACESSO PARA EXECUTAR O CORTE"] },
-  ],
+        'DESLIG.PROG.MANUTENÇÃO': [
+          {
+            linha: 1,
+            nome: 'desligamento',
+            label: 'Desligamento',
+            tipo: 'select',
+            opcoes: [
+              'DESLIGAMENTO EXECUTADO',
+              'CLIENTE CANCELOU DESLIGAMENTO',
+              'SEM ACESSO',
+              'NAO EXECUTADO PENDENCIA CLIENTE',
+              'NAO EXECUTADO PENDENCIA ENEL',
+            ],
+          },
+          {
+            linha: 2,
+            nome: 'acesso_desligamento',
+            label: 'Descreva o Problema',
+            tipo: 'text',
+            condicional: {
+              campoRef: 'desligamento',
+              valor: 'DESLIGAMENTO EXECUTADO',
+              negado: true,
+            },
+          },
+          { linha: 3, nome: 'descricao', label: 'Descrição do Serviço', tipo: 'textarea' },
+        ],
 
-  "DESLIG.PROG.MANUTENÇÃO": [
-    { linha: 1, nome: "desligamento", label: "Desligamento", tipo: "select", opcoes: ["DESLIGAMENTO EXECUTADO", "CLIENTE CANCELOU DESLIGAMENTO", "SEM ACESSO", "NAO EXECUTADO PENDENCIA CLIENTE", "NAO EXECUTADO PENDENCIA ENEL"] },
-    { linha: 2, nome: "acesso_desligamento", label: "Descreva o Problema", tipo: "text", condicional: { campoRef: "desligamento", valor: "DESLIGAMENTO EXECUTADO", negado: true } },
-  ],
+        'LIGACAO NOVA MEDIA TENSAO': LIGACAO_NOVA_MT_FIELDS,
+        'LIGACAO NOVA MT - CLIENTE LIVRE': LIGACAO_NOVA_MT_FIELDS,
 
-  "LIGACAO NOVA MEDIA TENSAO": LIGACAO_NOVA_MT_FIELDS,
-  "LIGACAO NOVA MT - CLIENTE LIVRE": LIGACAO_NOVA_MT_FIELDS,
+        'TELEMEDIÇÃO MANUTENÇÃO': TELEMEDICAO_FIELDS,
+        'TELEMEDIÇÃO MANUTENÇÃO CLIENTE LIVRE': TELEMEDICAO_FIELDS,
+        'TELEMEDIÇÃO MANUTENÇÃO LOTE': TELEMEDICAO_FIELDS,
 
-  "TELEMEDIÇÃO MANUTENÇÃO": [
-    FIELD_DESCRICAO,
-    { nome: "equipamento", label: "Equipamento", tipo: "select", opcoes: ["Modem", "Roteador", "Concentrador", "Fonte", "Antena", "Hub", "Outro"] },
-    { nome: "defeito", label: "Defeito Encontrado", tipo: "text" },
-    { nome: "num-serie", label: "Nº de Série", tipo: "text" },
-  ],
-};
+        'CORTE DE UC POR DEF TECNICO': [
+          {
+            linha: 1,
+            nome: 'corte_por_defeito_tecnico',
+            label: 'Executado',
+            tipo: 'select',
+            opcoes: ['SIM', 'NAO'],
+          },
+          {
+            linha: 2,
+            nome: 'motivo_cancelamento_corte_por_defeito_tecnico',
+            label: 'Motivo',
+            tipo: 'select',
+            opcoes: [
+              'SEM ACESSO',
+              'SOLICITACAO ENEL',
+              'CLIENTE NAO PERMITIU',
+              'CLIENTE CORRIGIU PROBLEMA',
+              'OUTRO PROBLEMA',
+            ],
+            condicional: { campoRef: 'corte_por_defeito_tecnico', valor: 'NAO' },
+          },
+          {
+            linha: 3,
+            nome: 'descreva_problema_corte_por_defeito_tecnico',
+            label: 'Descreva Problema',
+            tipo: 'textarea',
+            condicional: {
+              campoRef: 'motivo_cancelamento_corte_por_defeito_tecnico',
+              valor: ['SEM ACESSO', 'OUTRO PROBLEMA'],
+            },
+          },
+          { linha: 4, nome: 'descricao', label: 'Descrição do Serviço', tipo: 'textarea' },
+        ],
+      };
 
-// ──────── Ordem completa (igual ao select de iniciaisFields) ────────
-const TIPOS_ORDEM = [
-  "ADEQUACAO SMF",
-  "AFERIÇÃO DE MEDIDOR",
-  "AFERIÇÃO MEDIDOR CLIENTE LIVRE",
-  "COLHER LEITURA",
-  "CORTE DE UC POR DEF TECNICO",
-  "CORTE DEFINITIVO A PEDIDO",
-  "CORTE POR FALTA DE PAGAMENTO",
-  "DESLIG.PROG.MANUTENÇÃO",
-  "DESLOCAMENTO DE SUBESTAÇÃO",
-  "DISPON. SAIDA SERIAL MEDIDOR",
-  "EXECUÇÃO DE MUDANÇA DE TARIFA",
-  "EXECUCAO DO ACRESCIMO DE POTENCIA",
-  "EXECUCAO DO DECRESCIMO DE POTENCIA",
-  "GRANDES CLIENTES SELO ROMPIDO",
-  "GRANDES CLIENTES SEM MEDIÇÃO",
-  "INSPECAO UC CORTADA I15",
-  "INSPECAO UC CORTADA I180",
-  "INSPECAO UC CORTADA I30",
-  "INSPECAO UC CORTADA I90",
-  "INSTALACAO DO DISPLAY",
-  "LIBERAÇÃO DE PULSO",
-  "LIGAÇÃO NOVA ISOLADA",
-  "LIGACAO NOVA MEDIA TENSAO",
-  "LIGACAO NOVA MT - CLIENTE LIVRE",
-  "LIGAÇÃO NOVA SIMULTÂNEA",
-  "RELIGACAO NORMAL RURAL",
-  "RELIGAÇÃO NORMAL URBANA",
-  "RESELAR MEDICAO",
-  "RESSERVICO",
-  "RETIRAR EQUIPAMENTOS",
-  "RETIRAR RAMAL",
-  "SERVIÇO ESPECIAL OPERAÇÃO GRUPO A",
-  "SUBST. DE EQUIPAMENTO DE MEDICAO",
-  "SUBST. MEDIDOR A PEDIDO",
-  "SUBST. MEDIDOR INICIATIVA COELCE",
-  "SUBSTITUIÇÃO DA BATERIA DO MEDIDOR",
-  "SUBSTITUIÇÃO DE DISPLAY",
-  "TELEMEDIÇÃO MANUTENÇÃO",
-  "TELEMEDIÇÃO MANUTENÇÃO CLIENTE LIVRE",
-  "TELEMEDIÇÃO MANUTENÇÃO LOTE",
-  "VISITA TECNICA GRUPO A",
-  "VISTORIA DA UC",
-  "VISTORIA GERAÇÃO DISTRIBUIDA"
-];
+      // ──────── Ordem completa (igual ao select de iniciaisFields) ────────
+      const TIPOS_ORDEM = [
+        'ADEQUACAO SMF',
+        'AFERIÇÃO DE MEDIDOR',
+        'AFERIÇÃO MEDIDOR CLIENTE LIVRE',
+        'COLHER LEITURA',
+        'CORTE DE UC POR DEF TECNICO',
+        'CORTE DEFINITIVO A PEDIDO',
+        'CORTE POR FALTA DE PAGAMENTO',
+        'DESLIG.PROG.MANUTENÇÃO',
+        'DESLOCAMENTO DE SUBESTAÇÃO',
+        'DISPON. SAIDA SERIAL MEDIDOR',
+        'EXECUÇÃO DE MUDANÇA DE TARIFA',
+        'EXECUCAO DO ACRESCIMO DE POTENCIA',
+        'EXECUCAO DO DECRESCIMO DE POTENCIA',
+        'GRANDES CLIENTES SELO ROMPIDO',
+        'GRANDES CLIENTES SEM MEDIÇÃO',
+        'INSPECAO UC CORTADA I15',
+        'INSPECAO UC CORTADA I180',
+        'INSPECAO UC CORTADA I30',
+        'INSPECAO UC CORTADA I90',
+        'INSTALACAO DO DISPLAY',
+        'LIBERAÇÃO DE PULSO',
+        'LIGAÇÃO NOVA ISOLADA',
+        'LIGACAO NOVA MEDIA TENSAO',
+        'LIGACAO NOVA MT - CLIENTE LIVRE',
+        'LIGAÇÃO NOVA SIMULTÂNEA',
+        'RELIGACAO NORMAL RURAL',
+        'RELIGAÇÃO NORMAL URBANA',
+        'RESELAR MEDICAO',
+        'RESSERVICO',
+        'RETIRAR EQUIPAMENTOS',
+        'RETIRAR RAMAL',
+        'SERVIÇO ESPECIAL OPERAÇÃO GRUPO A',
+        'SUBST. DE EQUIPAMENTO DE MEDICAO',
+        'SUBST. MEDIDOR A PEDIDO',
+        'SUBST. MEDIDOR INICIATIVA COELCE',
+        'SUBSTITUIÇÃO DA BATERIA DO MEDIDOR',
+        'SUBSTITUIÇÃO DE DISPLAY',
+        'TELEMEDIÇÃO MANUTENÇÃO',
+        'TELEMEDIÇÃO MANUTENÇÃO CLIENTE LIVRE',
+        'TELEMEDIÇÃO MANUTENÇÃO LOTE',
+        'VISITA TECNICA GRUPO A',
+        'VISTORIA DA UC',
+        'VISTORIA GERAÇÃO DISTRIBUIDA',
+      ];
 
-// ═══════════════════════════════════════════════════════════════════
-//  RENDER
-// ═══════════════════════════════════════════════════════════════════
+      // ═══════════════════════════════════════════════════════════════════
+      //  RENDER
+      // ═══════════════════════════════════════════════════════════════════
 
-function getFields(tipo) {
-  return retornoFieldsByTipo[tipo] || retornoFieldsByTipo["default"];
-}
+      function getFields(tipo) {
+        return retornoFieldsByTipo[tipo] || retornoFieldsByTipo['default'];
+      }
 
-function temCustom(tipo) {
-  return tipo in retornoFieldsByTipo;
-}
+      function temCustom(tipo) {
+        return tipo in retornoFieldsByTipo;
+      }
 
-function formatCondicional(campo) {
-  if (!campo.condicional) return "";
-  const c = campo.condicional;
-  const valor = Array.isArray(c.valor) ? c.valor.join(" ou ") : c.valor;
-  const base = `Exibido quando <strong>${c.campoRef}</strong> = ${valor}`;
-  if (c.negado) {
-    return `<span class="field-negado">${base} (NEGAÇÃO)</span>`;
-  }
-  return `<span class="field-cond">${base}</span>`;
-}
+      function formatCondicional(campo) {
+        if (!campo.condicional) return '';
+        const c = campo.condicional;
+        const valor = Array.isArray(c.valor) ? c.valor.join(' ou ') : c.valor;
+        const base = `Exibido quando <strong>${c.campoRef}</strong> = ${valor}`;
+        if (c.negado) {
+          return `<span class="field-negado">${base} (NEGAÇÃO)</span>`;
+        }
+        return `<span class="field-cond">${base}</span>`;
+      }
 
-function formatOpcoes(campo) {
-  if (!campo.opcoes || campo.opcoes.length === 0) return "";
-  return campo.opcoes.map(o => `<code>${o}</code>`).join("");
-}
+      function formatOpcoes(campo) {
+        if (!campo.opcoes || campo.opcoes.length === 0) return '';
+        return campo.opcoes.map(o => `<code>${o}</code>`).join('');
+      }
 
-function renderFieldRow(campo, index) {
-  return `<tr>
+      function renderFieldRow(campo, index) {
+        return `<tr>
     <td><span class="field-name">${campo.nome}</span></td>
     <td><span class="field-label">${campo.label}</span></td>
     <td><span class="field-type">${campo.tipo}</span></td>
     <td>${formatCondicional(campo)}</td>
     <td><span class="field-opcoes">${formatOpcoes(campo)}</span></td>
   </tr>`;
-}
+      }
 
-function renderOrdem(tipo, idx) {
-  const fields = getFields(tipo);
-  const hasCustom = temCustom(tipo);
-  const isDefault = !hasCustom || (tipo in retornoFieldsByTipo && retornoFieldsByTipo[tipo] === undefined);
-  const isDefaultFallback = !hasCustom;
-  const fieldCount = fields.length;
+      function renderOrdem(tipo, idx) {
+        const fields = getFields(tipo);
+        const hasCustom = temCustom(tipo);
+        const isDefault =
+          !hasCustom || (tipo in retornoFieldsByTipo && retornoFieldsByTipo[tipo] === undefined);
+        const isDefaultFallback = !hasCustom;
+        const fieldCount = fields.length;
 
-  const headerClass = hasCustom ? "has-retorno" : "no-retorno";
-  let tableRows = fields.map((f, i) => renderFieldRow(f, i)).join("");
+        const headerClass = hasCustom ? 'has-retorno' : 'no-retorno';
+        let tableRows = fields.map((f, i) => renderFieldRow(f, i)).join('');
 
-  let fallbackHtml = "";
-  if (isDefaultFallback) {
-    fallbackHtml = `<div class="fallback-note">
+        let fallbackHtml = '';
+        if (isDefaultFallback) {
+          fallbackHtml = `<div class="fallback-note">
       <span style="font-size:1.1rem;">&#128196;</span>
       <span>Usa o fallback <strong>default</strong> &mdash; apenas o campo "Descrição do Serviço" genérico.</span>
     </div>`;
-  }
+        }
 
-  return `<div class="ordem-card ${hasCustom ? 'open' : ''}" data-tipo="${tipo}" data-has="${hasCustom ? 'com' : 'sem'}">
+        return `<div class="ordem-card ${hasCustom ? 'open' : ''}" data-tipo="${tipo}" data-has="${hasCustom ? 'com' : 'sem'}">
     <div class="ordem-header" onclick="this.parentElement.classList.toggle('open')">
       <span class="index ${headerClass}">${idx + 1}</span>
       <span class="name">${tipo}</span>
@@ -598,7 +984,9 @@ function renderOrdem(tipo, idx) {
     </div>
     <div class="ordem-body">
       <div class="ordem-body-inner">
-        ${hasCustom ? `
+        ${
+          hasCustom
+            ? `
         <table class="field-table">
           <thead>
             <tr>
@@ -612,52 +1000,54 @@ function renderOrdem(tipo, idx) {
           <tbody>
             ${tableRows}
           </tbody>
-        </table>` : fallbackHtml}
+        </table>`
+            : fallbackHtml
+        }
       </div>
     </div>
   </div>`;
-}
+      }
 
-function renderAll() {
-  const lista = document.getElementById("lista");
-  lista.innerHTML = TIPOS_ORDEM.map((t, i) => renderOrdem(t, i)).join("");
+      function renderAll() {
+        const lista = document.getElementById('lista');
+        lista.innerHTML = TIPOS_ORDEM.map((t, i) => renderOrdem(t, i)).join('');
 
-  // Stats
-  const com = TIPOS_ORDEM.filter(t => temCustom(t)).length;
-  const sem = TIPOS_ORDEM.length - com;
-  document.getElementById("totalComRetorno").textContent = com;
-  document.getElementById("totalSemRetorno").textContent = sem;
+        // Stats
+        const com = TIPOS_ORDEM.filter(t => temCustom(t)).length;
+        const sem = TIPOS_ORDEM.length - com;
+        document.getElementById('totalComRetorno').textContent = com;
+        document.getElementById('totalSemRetorno').textContent = sem;
 
-  const totalCampos = TIPOS_ORDEM.reduce((acc, t) => acc + getFields(t).length, 0);
-  document.getElementById("totalCampos").textContent = totalCampos;
+        const totalCampos = TIPOS_ORDEM.reduce((acc, t) => acc + getFields(t).length, 0);
+        document.getElementById('totalCampos').textContent = totalCampos;
 
-  document.getElementById("dataGeracao").textContent = new Date().toLocaleString("pt-BR");
-}
+        document.getElementById('dataGeracao').textContent = new Date().toLocaleString('pt-BR');
+      }
 
-// ═══════════════════════════════════════════════════════════════════
-//  FILTER
-// ═══════════════════════════════════════════════════════════════════
+      // ═══════════════════════════════════════════════════════════════════
+      //  FILTER
+      // ═══════════════════════════════════════════════════════════════════
 
-function aplicarFiltro() {
-  const nome = document.getElementById("filterNome").value.toLowerCase().trim();
-  const status = document.getElementById("filterStatus").value;
+      function aplicarFiltro() {
+        const nome = document.getElementById('filterNome').value.toLowerCase().trim();
+        const status = document.getElementById('filterStatus').value;
 
-  document.querySelectorAll(".ordem-card").forEach(card => {
-    const tipo = card.getAttribute("data-tipo").toLowerCase();
-    const has = card.getAttribute("data-has");
+        document.querySelectorAll('.ordem-card').forEach(card => {
+          const tipo = card.getAttribute('data-tipo').toLowerCase();
+          const has = card.getAttribute('data-has');
 
-    const matchNome = !nome || tipo.includes(nome);
-    const matchStatus = status === "todos" || has === status;
+          const matchNome = !nome || tipo.includes(nome);
+          const matchStatus = status === 'todos' || has === status;
 
-    card.style.display = (matchNome && matchStatus) ? "" : "none";
-  });
-}
+          card.style.display = matchNome && matchStatus ? '' : 'none';
+        });
+      }
 
-// ═══════════════════════════════════════════════════════════════════
-//  BOOT
-// ═══════════════════════════════════════════════════════════════════
+      // ═══════════════════════════════════════════════════════════════════
+      //  BOOT
+      // ═══════════════════════════════════════════════════════════════════
 
-renderAll();
-</script>
-</body>
+      renderAll();
+    </script>
+  </body>
 </html>

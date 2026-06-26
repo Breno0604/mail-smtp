@@ -354,81 +354,9 @@ export const retornoFieldsByTipo = {
   'INSPECAO UC CORTADA I90': UC_CORTADA_FIELDS,
   'INSPECAO UC CORTADA I180': UC_CORTADA_FIELDS,
 
-  'SUBST. MEDIDOR A PEDIDO': [
-    FIELD_DESCRICAO,
-    {
-      nome: 'tipo-servico',
-      label: 'Tipo de Serviço',
-      tipo: 'select',
-      opcoes: ['Troca de Medidor', 'Reparo', 'Aferição'],
-    },
-    {
-      nome: 'medidor-antigo',
-      label: 'Nº do Medidor Antigo',
-      tipo: 'text',
-      condicional: { campoRef: 'tipo-servico', valor: 'Troca de Medidor' },
-    },
-    {
-      nome: 'medidor-novo',
-      label: 'Nº do Medidor Novo',
-      tipo: 'text',
-      condicional: { campoRef: 'tipo-servico', valor: 'Troca de Medidor' },
-    },
-    {
-      nome: 'marca-medidor',
-      label: 'Marca do Medidor',
-      tipo: 'select',
-      opcoes: ['Landis+Gyr', 'EDMI', 'Siemens', 'Itron', 'Nansen', 'Outra'],
-      condicional: { campoRef: 'tipo-servico', valor: 'Troca de Medidor' },
-    },
-    {
-      nome: 'leitura-anterior',
-      label: 'Leitura Anterior',
-      tipo: 'number',
-      condicional: { campoRef: 'tipo-servico', valor: 'Aferição' },
-    },
-    {
-      nome: 'leitura-atual',
-      label: 'Leitura Atual',
-      tipo: 'number',
-      condicional: { campoRef: 'tipo-servico', valor: 'Aferição' },
-    },
-  ],
+  'SUBST. MEDIDOR A PEDIDO': [FIELD_DESCRICAO],
 
-  'VISTORIA DA UC': [
-    FIELD_DESCRICAO,
-    {
-      nome: 'resultado',
-      label: 'Resultado da Vistoria',
-      tipo: 'select',
-      opcoes: [
-        'Regular',
-        'Irregularidade Leve',
-        'Irregularidade Grave',
-        'Cliente Ausente',
-        'Recusou',
-        'Outro',
-      ],
-    },
-    {
-      nome: 'motivo-recusa',
-      label: 'Motivo da Recusa',
-      tipo: 'text',
-      condicional: { campoRef: 'resultado', valor: 'Recusou' },
-    },
-    {
-      nome: 'desc-irregularidade',
-      label: 'Descrição da Irregularidade',
-      tipo: 'textarea',
-      condicional: { campoRef: 'resultado', valor: 'Irregularidade Leve' },
-    },
-    {
-      nome: 'desc-irregularidade-grave',
-      label: 'Descrição da Irregularidade',
-      tipo: 'textarea',
-      condicional: { campoRef: 'resultado', valor: 'Irregularidade Grave' },
-    },
-  ],
+  'VISTORIA DA UC': [FIELD_DESCRICAO],
 
   'GRANDES CLIENTES SELO ROMPIDO': [
     FIELD_DESCRICAO,

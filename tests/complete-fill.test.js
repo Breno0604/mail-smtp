@@ -547,13 +547,12 @@ describe('advanced persistence scenarios', () => {
     renderIniciais();
     document.getElementById('uc').value = '11111';
     document.getElementById('os').value = '22222';
-    DOM.tipoOrdem.value = 'SUBST. MEDIDOR A PEDIDO';
+    DOM.tipoOrdem.value = 'LIGACAO NOVA MEDIA TENSAO';
     renderRetorno();
-    document.getElementById('tipo-servico').value = 'Troca de Medidor';
-    document.getElementById('tipo-servico').dispatchEvent(new Event('change'));
-    document.getElementById('medidor-antigo').value = 'MA-123';
-    document.getElementById('medidor-novo').value = 'MN-456';
-    document.getElementById('marca-medidor').value = 'Landis+Gyr';
+    document.getElementById('retorno_ligacao').value = 'VISTORIA + LIGAÇÃO';
+    document.getElementById('retorno_ligacao').dispatchEvent(new Event('change'));
+    document.getElementById('obra').value = 'CONCLUIDA';
+    document.getElementById('ligacao').value = 'CONCLUIDA';
     state.iniciaisValido = true;
     await saveState();
     const uuid = state.currentUUID;
@@ -562,10 +561,9 @@ describe('advanced persistence scenarios', () => {
     const record = await getRecord(uuid);
     await applyRecord(record);
 
-    expect(state.retorno['tipo-servico']).toBe('Troca de Medidor');
-    expect(state.retorno['medidor-antigo']).toBe('MA-123');
-    expect(state.retorno['medidor-novo']).toBe('MN-456');
-    expect(state.retorno['marca-medidor']).toBe('Landis+Gyr');
+    expect(state.retorno.retorno_ligacao).toBe('VISTORIA + LIGAÇÃO');
+    expect(state.retorno.obra).toBe('CONCLUIDA');
+    expect(state.retorno.ligacao).toBe('CONCLUIDA');
   });
 
   // ═══ TESTE 6: Retorno com campos condicionais ocultos ═══
@@ -573,11 +571,11 @@ describe('advanced persistence scenarios', () => {
     renderIniciais();
     document.getElementById('uc').value = '11111';
     document.getElementById('os').value = '22222';
-    DOM.tipoOrdem.value = 'SUBST. MEDIDOR A PEDIDO';
+    DOM.tipoOrdem.value = 'LIGACAO NOVA MEDIA TENSAO';
     renderRetorno();
-    document.getElementById('tipo-servico').value = 'Aferição';
-    document.getElementById('tipo-servico').dispatchEvent(new Event('change'));
-    // medidor-antigo, medidor-novo, marca-medidor are hidden
+    document.getElementById('retorno_ligacao').value = 'LIGAÇÃO';
+    document.getElementById('retorno_ligacao').dispatchEvent(new Event('change'));
+    // tipo_medicao, status_medicao, ponto_de_entrega, medidor_bt are hidden when retorno_ligacao = LIGAÇÃO
     state.iniciaisValido = true;
     await saveState();
     const uuid = state.currentUUID;
@@ -586,9 +584,9 @@ describe('advanced persistence scenarios', () => {
     const record = await getRecord(uuid);
     await applyRecord(record);
 
-    expect(state.retorno['tipo-servico']).toBe('Aferição');
-    expect(state.retorno['medidor-antigo']).toBeUndefined();
-    expect(state.retorno['medidor-novo']).toBeUndefined();
+    expect(state.retorno.retorno_ligacao).toBe('LIGAÇÃO');
+    expect(state.retorno.tipo_medicao).toBeUndefined();
+    expect(state.retorno.status_medicao).toBeUndefined();
   });
 
   // ═══ TESTE 7: Editar campo específico mantém outros ═══
@@ -770,9 +768,9 @@ describe('advanced persistence scenarios', () => {
     renderIniciais();
     document.getElementById('uc').value = '11111';
     document.getElementById('os').value = '22222';
-    DOM.tipoOrdem.value = 'VISTORIA DA UC';
+    DOM.tipoOrdem.value = 'CORTE POR FALTA DE PAGAMENTO';
     renderRetorno();
-    document.getElementById('resultado').value = 'Regular';
+    document.getElementById('situacao_corte').value = 'CLIENTE CORTADO';
     state.iniciaisValido = true;
     await saveState();
     const uuid = state.currentUUID;
@@ -780,15 +778,17 @@ describe('advanced persistence scenarios', () => {
     // Restore and change tipo-ordem
     const record = await getRecord(uuid);
     await applyRecord(record);
-    DOM.tipoOrdem.value = 'CORTE POR FALTA DE PAGAMENTO';
+    DOM.tipoOrdem.value = 'LIGACAO NOVA MEDIA TENSAO';
     handleTipoChange();
-    document.getElementById('situacao_corte').value = 'CLIENTE CORTADO';
+    document.getElementById('retorno_ligacao').value = 'VISTORIA';
+    document.getElementById('retorno_ligacao').dispatchEvent(new Event('change'));
+    document.getElementById('obra').value = 'CONCLUIDA';
     await saveState();
 
     const updated = await getRecord(uuid);
-    expect(updated.tipoOrdem).toBe('CORTE POR FALTA DE PAGAMENTO');
-    expect(updated.retorno.situacao_corte).toBe('CLIENTE CORTADO');
-    expect(updated.retorno.resultado).toBeUndefined();
+    expect(updated.tipoOrdem).toBe('LIGACAO NOVA MEDIA TENSAO');
+    expect(updated.retorno.retorno_ligacao).toBe('VISTORIA');
+    expect(updated.retorno.situacao_corte).toBeUndefined();
   });
 
   // ═══ TESTE 12: Múltiplos saves mantêm createdAt ═══
@@ -1056,23 +1056,22 @@ describe('advanced persistence scenarios', () => {
     state.iniciaisValido = true;
 
     // First tipo-ordem
-    DOM.tipoOrdem.value = 'VISTORIA DA UC';
-    renderRetorno();
-    document.getElementById('resultado').value = 'Regular';
-    await saveState();
-
-    // Second tipo-ordem
     DOM.tipoOrdem.value = 'CORTE POR FALTA DE PAGAMENTO';
-    handleTipoChange();
+    renderRetorno();
     document.getElementById('situacao_corte').value = 'CLIENTE CORTADO';
     await saveState();
 
-    // Third tipo-ordem
-    DOM.tipoOrdem.value = 'SUBST. MEDIDOR A PEDIDO';
+    // Second tipo-ordem
+    DOM.tipoOrdem.value = 'LIGACAO NOVA MEDIA TENSAO';
     handleTipoChange();
-    document.getElementById('tipo-servico').value = 'Troca de Medidor';
-    document.getElementById('tipo-servico').dispatchEvent(new Event('change'));
-    document.getElementById('medidor-antigo').value = 'MA-123';
+    document.getElementById('retorno_ligacao').value = 'VISTORIA + LIGAÇÃO';
+    document.getElementById('retorno_ligacao').dispatchEvent(new Event('change'));
+    document.getElementById('obra').value = 'CONCLUIDA';
+    await saveState();
+
+    // Third tipo-ordem (default — only descricao)
+    DOM.tipoOrdem.value = 'ADEQUACAO SMF';
+    handleTipoChange();
     await saveState();
 
     const uuid = state.currentUUID;
@@ -1080,10 +1079,8 @@ describe('advanced persistence scenarios', () => {
     const record = await getRecord(uuid);
     await applyRecord(record);
 
-    expect(state.retorno['tipo-servico']).toBe('Troca de Medidor');
-    expect(state.retorno['medidor-antigo']).toBe('MA-123');
-    expect(state.retorno.resultado).toBeUndefined();
     expect(state.retorno.situacao_corte).toBeUndefined();
+    expect(state.retorno.obra).toBeUndefined();
   });
 
   // ═══ TESTE 20: Preview atualiza após restore ═══

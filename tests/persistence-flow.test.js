@@ -48,6 +48,7 @@ describe('persistence flow: real-world scenarios', () => {
         <option value="CORTE POR FALTA DE PAGAMENTO">CORTE POR FALTA DE PAGAMENTO</option>
         <option value="VISTORIA DA UC">VISTORIA DA UC</option>
         <option value="SUBST. MEDIDOR A PEDIDO">SUBST. MEDIDOR A PEDIDO</option>
+        <option value="LIGACAO NOVA MEDIA TENSAO">LIGACAO NOVA MEDIA TENSAO</option>
       </select>
       <div id="preview-grid"></div>
       <div id="preview-corpo">—</div>
@@ -199,9 +200,9 @@ describe('persistence flow: real-world scenarios', () => {
       renderIniciais();
       document.getElementById('uc').value = '11111';
       document.getElementById('os').value = '22222';
-      DOM.tipoOrdem.value = 'VISTORIA DA UC';
+      DOM.tipoOrdem.value = 'CORTE POR FALTA DE PAGAMENTO';
       renderRetorno();
-      document.getElementById('resultado').value = 'Regular';
+      document.getElementById('situacao_corte').value = 'CLIENTE CORTADO';
       state.iniciaisValido = true;
       await saveState();
       const uuidA = state.currentUUID;
@@ -211,9 +212,10 @@ describe('persistence flow: real-world scenarios', () => {
       renderIniciais();
       document.getElementById('uc').value = '33333';
       document.getElementById('os').value = '44444';
-      DOM.tipoOrdem.value = 'CORTE POR FALTA DE PAGAMENTO';
+      DOM.tipoOrdem.value = 'LIGACAO NOVA MEDIA TENSAO';
       renderRetorno();
-      document.getElementById('situacao_corte').value = 'CLIENTE CORTADO';
+      document.getElementById('retorno_ligacao').value = 'VISTORIA';
+      document.getElementById('retorno_ligacao').dispatchEvent(new Event('change'));
       state.iniciaisValido = true;
       await saveState();
       const uuidB = state.currentUUID;
@@ -222,26 +224,26 @@ describe('persistence flow: real-world scenarios', () => {
       const recordA = await getRecord(uuidA);
       await applyRecord(recordA);
       expect(state.iniciais.uc).toBe('11111');
-      expect(state.retorno.resultado).toBe('Regular');
+      expect(state.retorno.situacao_corte).toBe('CLIENTE CORTADO');
 
       // Switch to Record B
       const recordB = await getRecord(uuidB);
       await applyRecord(recordB);
       expect(state.iniciais.uc).toBe('33333');
-      expect(state.retorno.situacao_corte).toBe('CLIENTE CORTADO');
+      expect(state.retorno.retorno_ligacao).toBe('VISTORIA');
 
       // Switch back to Record A
       const recordA2 = await getRecord(uuidA);
       await applyRecord(recordA2);
       expect(state.iniciais.uc).toBe('11111');
-      expect(state.retorno.resultado).toBe('Regular');
+      expect(state.retorno.situacao_corte).toBe('CLIENTE CORTADO');
       expect(document.getElementById('uc').value).toBe('11111');
 
       // Switch back to Record B
       const recordB2 = await getRecord(uuidB);
       await applyRecord(recordB2);
       expect(state.iniciais.uc).toBe('33333');
-      expect(state.retorno.situacao_corte).toBe('CLIENTE CORTADO');
+      expect(state.retorno.retorno_ligacao).toBe('VISTORIA');
       expect(document.getElementById('uc').value).toBe('33333');
     });
   });
@@ -301,37 +303,38 @@ describe('persistence flow: real-world scenarios', () => {
 
   describe('tipo-ordem change clears retorno', () => {
     it('should not leak retorno data when changing tipo-ordem', async () => {
-      // Start with VISTORIA DA UC
+      // Start with CORTE POR FALTA DE PAGAMENTO
       renderIniciais();
       document.getElementById('uc').value = '11111';
       document.getElementById('os').value = '22222';
-      DOM.tipoOrdem.value = 'VISTORIA DA UC';
+      DOM.tipoOrdem.value = 'CORTE POR FALTA DE PAGAMENTO';
       renderRetorno();
-      document.getElementById('resultado').value = 'Regular';
+      document.getElementById('situacao_corte').value = 'CLIENTE CORTADO';
       state.iniciaisValido = true;
       await saveState();
       const uuid = state.currentUUID;
 
       // Verify retorno was saved
       let record = await getRecord(uuid);
-      expect(record.retorno.resultado).toBe('Regular');
+      expect(record.retorno.situacao_corte).toBe('CLIENTE CORTADO');
 
-      // Change tipo-ordem to CORTE POR FALTA DE PAGAMENTO
-      DOM.tipoOrdem.value = 'CORTE POR FALTA DE PAGAMENTO';
+      // Change tipo-ordem to LIGACAO NOVA MEDIA TENSAO
+      DOM.tipoOrdem.value = 'LIGACAO NOVA MEDIA TENSAO';
       handleTipoChange();
-      document.getElementById('situacao_corte').value = 'CLIENTE CORTADO';
+      document.getElementById('retorno_ligacao').value = 'VISTORIA';
+      document.getElementById('retorno_ligacao').dispatchEvent(new Event('change'));
       await saveState();
 
       // Verify old retorno field is NOT in saved data
       record = await getRecord(uuid);
-      expect(record.retorno.situacao_corte).toBe('CLIENTE CORTADO');
-      expect(record.retorno.resultado).toBeUndefined();
+      expect(record.retorno.retorno_ligacao).toBe('VISTORIA');
+      expect(record.retorno.situacao_corte).toBeUndefined();
 
       // Restore and verify
       await applyRecord(record);
-      expect(state.retorno.situacao_corte).toBe('CLIENTE CORTADO');
-      expect(state.retorno.resultado).toBeUndefined();
-      expect(document.getElementById('resultado')).toBeNull();
+      expect(state.retorno.retorno_ligacao).toBe('VISTORIA');
+      expect(state.retorno.situacao_corte).toBeUndefined();
+      expect(document.getElementById('situacao_corte')).toBeNull();
     });
   });
 
@@ -627,59 +630,57 @@ describe('persistence flow: real-world scenarios', () => {
       renderIniciais();
       document.getElementById('uc').value = '11111';
       document.getElementById('os').value = '22222';
-      DOM.tipoOrdem.value = 'SUBST. MEDIDOR A PEDIDO';
+      DOM.tipoOrdem.value = 'LIGACAO NOVA MEDIA TENSAO';
       renderRetorno();
       state.iniciaisValido = true;
 
       // Fill descricao (always visible)
-      document.getElementById('descricao').value = 'Substituicao de medidor';
+      document.getElementById('descricao').value = 'Ligacao executada';
 
-      // Select tipo-servico = "Troca de Medidor" — shows conditional fields
-      document.getElementById('tipo-servico').value = 'Troca de Medidor';
-      document.getElementById('tipo-servico').dispatchEvent(new Event('change'));
+      // Select retorno_ligacao = "VISTORIA + LIGAÇÃO" — shows conditional fields
+      document.getElementById('retorno_ligacao').value = 'VISTORIA + LIGAÇÃO';
+      document.getElementById('retorno_ligacao').dispatchEvent(new Event('change'));
 
       // Fill conditional fields
-      document.getElementById('medidor-antigo').value = 'MA-123';
-      document.getElementById('medidor-novo').value = 'MN-456';
+      document.getElementById('obra').value = 'CONCLUIDA';
+      document.getElementById('ligacao').value = 'CONCLUIDA';
 
       await saveState();
       const uuid = state.currentUUID;
 
       let record = await getRecord(uuid);
-      expect(record.retorno.descricao).toBe('Substituicao de medidor');
-      expect(record.retorno['medidor-antigo']).toBe('MA-123');
-      expect(record.retorno['medidor-novo']).toBe('MN-456');
+      expect(record.retorno.descricao).toBe('Ligacao executada');
+      expect(record.retorno.obra).toBe('CONCLUIDA');
+      expect(record.retorno.ligacao).toBe('CONCLUIDA');
 
-      // Now change tipo-servico to "Afericao" — hides medidor fields, shows leitura
-      document.getElementById('tipo-servico').value = 'Aferição';
-      document.getElementById('tipo-servico').dispatchEvent(new Event('change'));
+      // Now change retorno_ligacao to "LIGAÇÃO" — hides obra, shows ligacao
+      document.getElementById('retorno_ligacao').value = 'LIGAÇÃO';
+      document.getElementById('retorno_ligacao').dispatchEvent(new Event('change'));
 
-      // Conditional fields should be hidden and cleared
-      const medidorAntigoGroup = DOM.retornoCampos.querySelector(
-        '[data-field-nome="medidor-antigo"]'
-      );
-      expect(medidorAntigoGroup.style.display).toBe('none');
+      // Conditional field should be hidden
+      const obraGroup = DOM.retornoCampos.querySelector('[data-field-nome="obra"]');
+      expect(obraGroup.style.display).toBe('none');
 
       await saveState();
       record = await getRecord(uuid);
-      // medidor-antigo and medidor-novo should NOT be in retorno (hidden fields excluded)
-      expect(record.retorno['medidor-antigo']).toBeUndefined();
-      expect(record.retorno['medidor-novo']).toBeUndefined();
+      // obra should NOT be in retorno (hidden fields excluded)
+      expect(record.retorno.obra).toBeUndefined();
+      // ligacao should still be there
+      expect(record.retorno.ligacao).toBe('CONCLUIDA');
     });
 
     it('should restore conditional fields with correct visibility', async () => {
       renderIniciais();
       document.getElementById('uc').value = '11111';
       document.getElementById('os').value = '22222';
-      DOM.tipoOrdem.value = 'SUBST. MEDIDOR A PEDIDO';
+      DOM.tipoOrdem.value = 'LIGACAO NOVA MEDIA TENSAO';
       renderRetorno();
       state.iniciaisValido = true;
 
-      document.getElementById('tipo-servico').value = 'Troca de Medidor';
-      document.getElementById('tipo-servico').dispatchEvent(new Event('change'));
-      document.getElementById('medidor-antigo').value = 'MA-123';
-      document.getElementById('medidor-novo').value = 'MN-456';
-      document.getElementById('marca-medidor').value = 'Landis+Gyr';
+      document.getElementById('retorno_ligacao').value = 'VISTORIA + LIGAÇÃO';
+      document.getElementById('retorno_ligacao').dispatchEvent(new Event('change'));
+      document.getElementById('obra').value = 'CONCLUIDA';
+      document.getElementById('ligacao').value = 'CONCLUIDA';
 
       await saveState();
       const uuid = state.currentUUID;
@@ -689,13 +690,10 @@ describe('persistence flow: real-world scenarios', () => {
       await applyRecord(record);
 
       // Verify conditional fields are visible and populated
-      const medidorAntigoGroup = DOM.retornoCampos.querySelector(
-        '[data-field-nome="medidor-antigo"]'
-      );
-      expect(medidorAntigoGroup.style.display).not.toBe('none');
-      expect(document.getElementById('medidor-antigo').value).toBe('MA-123');
-      expect(document.getElementById('medidor-novo').value).toBe('MN-456');
-      expect(document.getElementById('marca-medidor').value).toBe('Landis+Gyr');
+      const obraGroup = DOM.retornoCampos.querySelector('[data-field-nome="obra"]');
+      expect(obraGroup.style.display).not.toBe('none');
+      expect(document.getElementById('obra').value).toBe('CONCLUIDA');
+      expect(document.getElementById('ligacao').value).toBe('CONCLUIDA');
     });
   });
 

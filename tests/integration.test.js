@@ -37,6 +37,7 @@ describe('integration: full record lifecycle', () => {
         <option value="ADEQUACAO SMF">ADEQUACAO SMF</option>
         <option value="CORTE POR FALTA DE PAGAMENTO">CORTE POR FALTA DE PAGAMENTO</option>
         <option value="VISTORIA DA UC">VISTORIA DA UC</option>
+        <option value="LIGACAO NOVA MEDIA TENSAO">LIGACAO NOVA MEDIA TENSAO</option>
       </select>
       <div id="preview-grid"></div>
       <div id="preview-corpo">—</div>
@@ -252,9 +253,9 @@ describe('integration: full record lifecycle', () => {
     renderIniciais();
     document.getElementById('uc').value = '11111';
     document.getElementById('os').value = '22222';
-    DOM.tipoOrdem.value = 'VISTORIA DA UC';
+    DOM.tipoOrdem.value = 'CORTE POR FALTA DE PAGAMENTO';
     renderRetorno();
-    document.getElementById('resultado').value = 'Regular';
+    document.getElementById('situacao_corte').value = 'CLIENTE CORTADO';
 
     const recordA = {
       uuid: 'record-a-uuid',
@@ -263,7 +264,7 @@ describe('integration: full record lifecycle', () => {
       updatedAt: '2024-03-15T10:00:00.000Z',
       iniciais: collectIniciais(),
       retorno: collectRetorno(),
-      tipoOrdem: 'VISTORIA DA UC',
+      tipoOrdem: 'CORTE POR FALTA DE PAGAMENTO',
       equipamentos: {
         instaladoEquip: 'SIM',
         retiradoEquip: 'NAO',
@@ -327,9 +328,10 @@ describe('integration: full record lifecycle', () => {
     renderIniciais();
     document.getElementById('uc').value = '33333';
     document.getElementById('os').value = '44444';
-    DOM.tipoOrdem.value = 'CORTE POR FALTA DE PAGAMENTO';
+    DOM.tipoOrdem.value = 'LIGACAO NOVA MEDIA TENSAO';
     renderRetorno();
-    document.getElementById('situacao_corte').value = 'CLIENTE CORTADO';
+    document.getElementById('retorno_ligacao').value = 'VISTORIA';
+    document.getElementById('retorno_ligacao').dispatchEvent(new Event('change'));
 
     const recordB = {
       uuid: 'record-b-uuid',
@@ -338,7 +340,7 @@ describe('integration: full record lifecycle', () => {
       updatedAt: '2024-03-16T10:00:00.000Z',
       iniciais: collectIniciais(),
       retorno: collectRetorno(),
-      tipoOrdem: 'CORTE POR FALTA DE PAGAMENTO',
+      tipoOrdem: 'LIGACAO NOVA MEDIA TENSAO',
       equipamentos: {
         instaladoEquip: 'NAO',
         retiradoEquip: 'SIM',
@@ -405,20 +407,20 @@ describe('integration: full record lifecycle', () => {
     // Verify Record A data is correct
     expect(state.iniciais.uc).toBe('11111');
     expect(state.iniciais.os).toBe('22222');
-    expect(state.lastTipoOrdem).toBe('VISTORIA DA UC');
-    expect(state.retorno.resultado).toBe('Regular');
+    expect(state.lastTipoOrdem).toBe('CORTE POR FALTA DE PAGAMENTO');
+    expect(state.retorno.situacao_corte).toBe('CLIENTE CORTADO');
     expect(state.equipamentos.instalados.medidor).toBe('111');
 
     // Verify DOM matches Record A (no Record B data)
     expect(document.getElementById('uc').value).toBe('11111');
     expect(document.getElementById('os').value).toBe('22222');
-    expect(DOM.tipoOrdem.value).toBe('VISTORIA DA UC');
-    expect(document.getElementById('resultado').value).toBe('Regular');
+    expect(DOM.tipoOrdem.value).toBe('CORTE POR FALTA DE PAGAMENTO');
+    expect(document.getElementById('situacao_corte').value).toBe('CLIENTE CORTADO');
     const instaladoInputA = document.querySelector('#campos-instalados input');
     expect(instaladoInputA.value).toBe('111');
 
     // Verify Record B specific field is NOT present
-    expect(document.getElementById('situacao_corte')).toBeNull();
+    expect(document.getElementById('retorno_ligacao')).toBeNull();
 
     // ═══════════════════════════════════════════════════════════════════════
     // Edit Record B — verify no data from Record A leaks
@@ -430,19 +432,19 @@ describe('integration: full record lifecycle', () => {
     // Verify Record B data is correct
     expect(state.iniciais.uc).toBe('33333');
     expect(state.iniciais.os).toBe('44444');
-    expect(state.lastTipoOrdem).toBe('CORTE POR FALTA DE PAGAMENTO');
-    expect(state.retorno.situacao_corte).toBe('CLIENTE CORTADO');
+    expect(state.lastTipoOrdem).toBe('LIGACAO NOVA MEDIA TENSAO');
+    expect(state.retorno.retorno_ligacao).toBe('VISTORIA');
     expect(state.equipamentos.retirados.display).toBe('222');
 
     // Verify DOM matches Record B (no Record A data)
     expect(document.getElementById('uc').value).toBe('33333');
     expect(document.getElementById('os').value).toBe('44444');
-    expect(DOM.tipoOrdem.value).toBe('CORTE POR FALTA DE PAGAMENTO');
-    expect(document.getElementById('situacao_corte').value).toBe('CLIENTE CORTADO');
+    expect(DOM.tipoOrdem.value).toBe('LIGACAO NOVA MEDIA TENSAO');
+    expect(document.getElementById('retorno_ligacao').value).toBe('VISTORIA');
     const retiradoInputB = document.querySelector('#campos-retirados input');
     expect(retiradoInputB.value).toBe('222');
 
     // Verify Record A specific field is NOT present
-    expect(document.getElementById('resultado')).toBeNull();
+    expect(document.getElementById('situacao_corte')).toBeNull();
   });
 });
