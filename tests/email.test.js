@@ -301,7 +301,6 @@ describe('email', () => {
       };
       const result = applyRetornoTemplate('CORTE POR FALTA DE PAGAMENTO', data);
       expect(result).toContain('SEM ACESSO PARA EXECUTAR O CORTE.');
-      expect(result).toBeTruthy();
     });
 
     it('should handle missing descricao field', () => {
