@@ -255,6 +255,34 @@ describe('email', () => {
       expect(body).toContain('Corte efetuado na UC');
       expect(body).not.toContain('SITUACAO:');
     });
+
+    it('should use UC CORTADA template with block-level condicao', () => {
+      const data = {
+        iniciais: { ...sampleData.iniciais, 'tipo-ordem': 'INSPECAO UC CORTADA I15' },
+        equipamentos: {
+          instaladoEquip: 'NAO',
+          retiradoEquip: 'NAO',
+          instalados: {},
+          retirados: {},
+        },
+        retorno: {
+          'situacao-cliente': 'CORTADO',
+          'viavel-retirar': 'COM MUNK',
+          ramal: 'COM RAMAL',
+          medicao: 'COM MEDIÇÃO',
+          jump: 'COM JUMP',
+          chaves: 'COM CHAVE',
+          'aplicado-toi': 'SIM',
+          toi: '99999',
+          descricao: 'Inspeção finalizada',
+        },
+      };
+      const body = composeEmail(data);
+      expect(body).toContain('CLIENTE ENCONTRADO CORTADO');
+      expect(body).toContain('TOI: 99999');
+      expect(body).toContain('Inspeção finalizada');
+      expect(body).not.toContain('SITUACAO:');
+    });
   });
 
   describe('applyRetornoTemplate', () => {
@@ -311,6 +339,53 @@ describe('email', () => {
       };
       const result = applyRetornoTemplate('CORTE POR FALTA DE PAGAMENTO', data);
       expect(result).toContain('CLIENTE CORTADO.');
+    });
+
+    describe('block-level condicao', () => {
+      const ucData = {
+        retorno: {
+          'situacao-cliente': 'CORTADO',
+          'viavel-retirar': 'COM MUNK',
+          ramal: 'COM RAMAL',
+          medicao: 'COM MEDIÇÃO',
+          jump: 'COM JUMP',
+          chaves: 'COM CHAVE',
+          'aplicado-toi': 'SIM',
+          toi: '12345',
+          descricao: 'Serviço concluído',
+        },
+      };
+
+      it('should include TOI block when aplicado-toi is SIM', () => {
+        const result = applyRetornoTemplate('INSPECAO UC CORTADA I15', ucData);
+        expect(result).toContain('TOI: 12345');
+      });
+
+      it('should omit TOI block when aplicado-toi is NAO', () => {
+        const data = {
+          retorno: { ...ucData.retorno, 'aplicado-toi': 'NAO', toi: '' },
+        };
+        const result = applyRetornoTemplate('INSPECAO UC CORTADA I15', data);
+        expect(result).not.toContain('TOI:');
+      });
+
+      it('should render full UC CORTADA template correctly', () => {
+        const result = applyRetornoTemplate('INSPECAO UC CORTADA I15', ucData);
+        expect(result).toContain(
+          'CLIENTE ENCONTRADO CORTADO, COM RAMAL, COM MEDIÇÃO, COM JUMP, COM CHAVE'
+        );
+        expect(result).toContain('VIAVEL RETIRAR COM MUNK');
+        expect(result).toContain('Serviço concluído');
+      });
+
+      it('should work for all INSPECAO UC CORTADA variants', () => {
+        const resultI30 = applyRetornoTemplate('INSPECAO UC CORTADA I30', ucData);
+        const resultI90 = applyRetornoTemplate('INSPECAO UC CORTADA I90', ucData);
+        const resultI180 = applyRetornoTemplate('INSPECAO UC CORTADA I180', ucData);
+        expect(resultI30).toBe(resultI90);
+        expect(resultI90).toBe(resultI180);
+        expect(resultI180).toContain('CLIENTE ENCONTRADO CORTADO');
+      });
     });
   });
 });

@@ -24,36 +24,39 @@ EQUIPMENT_KEYS.forEach(e => {
   EQUIP_LABELS[e.key] = e.label;
 });
 
+function matchCondition(condicao, data) {
+  if (!condicao) return true;
+  const valorCampo = data.retorno?.[condicao.campo];
+  if (condicao.valor !== undefined) {
+    const valores = Array.isArray(condicao.valor) ? condicao.valor : [condicao.valor];
+    return valores.includes(valorCampo);
+  }
+  if (condicao.diferenteDe !== undefined) {
+    return valorCampo !== condicao.diferenteDe;
+  }
+  return false;
+}
+
+function resolvePlaceholders(texto, data) {
+  for (const [nome, valor] of Object.entries(data.retorno || {})) {
+    texto = texto.replaceAll(`{${nome}}`, valor || '');
+  }
+  for (const [nome, valor] of Object.entries(data.iniciais || {})) {
+    texto = texto.replaceAll(`{${nome}}`, valor || '');
+  }
+  return texto;
+}
+
 export function applyRetornoTemplate(tipo, data) {
   const template = retornoTemplates[tipo];
   if (!template) return null;
 
-  const variante = template.find(v => {
-    if (!v.condicao) return true;
-    const valorCampo = data.retorno?.[v.condicao.campo];
-    if (v.condicao.valor !== undefined) {
-      const valores = Array.isArray(v.condicao.valor) ? v.condicao.valor : [v.condicao.valor];
-      return valores.includes(valorCampo);
-    }
-    if (v.condicao.diferenteDe !== undefined) {
-      return valorCampo !== v.condicao.diferenteDe;
-    }
-    return false;
-  });
-
+  const variante = template.find(v => matchCondition(v.condicao, data));
   if (!variante) return null;
 
   return variante.blocos
-    .map(bloco => {
-      let texto = bloco.texto;
-      for (const [nome, valor] of Object.entries(data.retorno || {})) {
-        texto = texto.replaceAll(`{${nome}}`, valor || '');
-      }
-      for (const [nome, valor] of Object.entries(data.iniciais || {})) {
-        texto = texto.replaceAll(`{${nome}}`, valor || '');
-      }
-      return texto;
-    })
+    .filter(bloco => matchCondition(bloco.condicao, data))
+    .map(bloco => resolvePlaceholders(bloco.texto, data))
     .join('\n');
 }
 
