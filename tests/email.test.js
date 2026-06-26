@@ -251,7 +251,7 @@ describe('email', () => {
         retorno: { situacao_corte: 'CLIENTE CORTADO', descricao: 'Corte efetuado na UC' },
       };
       const body = composeEmail(data);
-      expect(body).toContain('CORTE EXECUTADO CONFORME ORDEM DE SERVIÇO CLIENTE CORTADO');
+      expect(body).toContain('CLIENTE CORTADO.');
       expect(body).toContain('Corte efetuado na UC');
       expect(body).not.toContain('SITUACAO:');
     });
@@ -268,7 +268,7 @@ describe('email', () => {
       expect(result).toBeNull();
     });
 
-    it('should select CLIENTE CORTADO variant and substitute placeholders', () => {
+    it('should substitute placeholders with field values', () => {
       const data = {
         retorno: {
           situacao_corte: 'CLIENTE CORTADO',
@@ -276,11 +276,11 @@ describe('email', () => {
         },
       };
       const result = applyRetornoTemplate('CORTE POR FALTA DE PAGAMENTO', data);
-      expect(result).toContain('CORTE EXECUTADO CONFORME ORDEM DE SERVIÇO CLIENTE CORTADO');
+      expect(result).toContain('CLIENTE CORTADO.');
       expect(result).toContain('Corte realizado com sucesso');
     });
 
-    it('should select else variant when situacao is not CLIENTE CORTADO', () => {
+    it('should work with any situacao_corte value', () => {
       const data = {
         retorno: {
           situacao_corte: 'CLIENTE VISITADO CONTA PAGA',
@@ -310,7 +310,7 @@ describe('email', () => {
         },
       };
       const result = applyRetornoTemplate('CORTE POR FALTA DE PAGAMENTO', data);
-      expect(result).toContain('CORTE EXECUTADO CONFORME ORDEM DE SERVIÇO CLIENTE CORTADO');
+      expect(result).toContain('CLIENTE CORTADO.');
     });
   });
 });

@@ -9,14 +9,6 @@
 export const retornoTemplates = {
   'CORTE POR FALTA DE PAGAMENTO': [
     {
-      condicao: { campo: 'situacao_corte', valor: 'CLIENTE CORTADO' },
-      blocos: [
-        { texto: 'CORTE EXECUTADO CONFORME ORDEM DE SERVIÇO {situacao_corte}' },
-        { texto: '{descricao}' },
-      ],
-    },
-    {
-      // else
       blocos: [{ texto: '{situacao_corte}.' }, { texto: '{descricao}' }],
     },
   ],
