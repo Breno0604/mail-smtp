@@ -3,6 +3,7 @@ import { iniciaisFields, getRetornoFields } from './fields.js';
 import { collectAllData } from './collectors.js';
 import { EQUIPMENT_KEYS } from './equipment-keys.js';
 import { formatDate } from './utils.js';
+import { retornoTemplates } from './data/retorno-templates.js';
 
 /**
  * Normaliza texto: remove acentos, substitui ç→c, converte para MAIÚSCULAS
@@ -22,6 +23,39 @@ const EQUIP_LABELS = {};
 EQUIPMENT_KEYS.forEach(e => {
   EQUIP_LABELS[e.key] = e.label;
 });
+
+export function applyRetornoTemplate(tipo, data) {
+  const template = retornoTemplates[tipo];
+  if (!template) return null;
+
+  const variante = template.find(v => {
+    if (!v.condicao) return true;
+    const valorCampo = data.retorno?.[v.condicao.campo];
+    if (v.condicao.valor !== undefined) {
+      const valores = Array.isArray(v.condicao.valor) ? v.condicao.valor : [v.condicao.valor];
+      return valores.includes(valorCampo);
+    }
+    if (v.condicao.diferenteDe !== undefined) {
+      return valorCampo !== v.condicao.diferenteDe;
+    }
+    return false;
+  });
+
+  if (!variante) return null;
+
+  return variante.blocos
+    .map(bloco => {
+      let texto = bloco.texto;
+      for (const [nome, valor] of Object.entries(data.retorno || {})) {
+        texto = texto.replaceAll(`{${nome}}`, valor || '');
+      }
+      for (const [nome, valor] of Object.entries(data.iniciais || {})) {
+        texto = texto.replaceAll(`{${nome}}`, valor || '');
+      }
+      return texto;
+    })
+    .join('\n');
+}
 
 export function composeEmail(data) {
   let body = '';
@@ -60,13 +94,19 @@ export function composeEmail(data) {
   }
 
   const tipo = data.iniciais?.['tipo-ordem'] || '';
-  const retornoFields = getRetornoFields(tipo);
 
-  retornoFields.forEach(field => {
-    if (!data.retorno || !(field.nome in data.retorno)) return;
-    const val = data.retorno[field.nome];
-    body += `\n${normalizeText(field.label)}: ${normalizeText(val || '(nao preenchido)')}`;
-  });
+  const textoPersonalizado = applyRetornoTemplate(tipo, data);
+
+  if (textoPersonalizado) {
+    body += '\n' + textoPersonalizado;
+  } else {
+    const retornoFields = getRetornoFields(tipo);
+    retornoFields.forEach(field => {
+      if (!data.retorno || !(field.nome in data.retorno)) return;
+      const val = data.retorno[field.nome];
+      body += `\n${normalizeText(field.label)}: ${normalizeText(val || '(nao preenchido)')}`;
+    });
+  }
 
   return body;
 }
