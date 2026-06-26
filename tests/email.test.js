@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { composeEmail } from '../scripts/email.js';
+import { composeEmail, applyRetornoTemplate } from '../scripts/email.js';
 import { cacheDOM, DOM } from '../scripts/dom.js';
 import { renderIniciais } from '../scripts/iniciais.js';
 import { renderRetorno } from '../scripts/retornos.js';
@@ -237,6 +237,81 @@ describe('email', () => {
       const body = composeEmail(data);
       expect(body).toContain('EXECUTADO:');
       expect(body).toContain('(NAO PREENCHIDO)');
+    });
+
+    it('should use template when available for CORTE POR FALTA DE PAGAMENTO', () => {
+      const data = {
+        iniciais: { ...sampleData.iniciais, 'tipo-ordem': 'CORTE POR FALTA DE PAGAMENTO' },
+        equipamentos: {
+          instaladoEquip: 'NAO',
+          retiradoEquip: 'NAO',
+          instalados: {},
+          retirados: {},
+        },
+        retorno: { situacao_corte: 'CLIENTE CORTADO', descricao: 'Corte efetuado na UC' },
+      };
+      const body = composeEmail(data);
+      expect(body).toContain('CORTE EXECUTADO CONFORME ORDEM DE SERVIÇO CLIENTE CORTADO');
+      expect(body).toContain('Corte efetuado na UC');
+      expect(body).not.toContain('SITUACAO:');
+    });
+  });
+
+  describe('applyRetornoTemplate', () => {
+    it('should return null for tipo without template', () => {
+      const result = applyRetornoTemplate('ADEQUACAO SMF', { retorno: {} });
+      expect(result).toBeNull();
+    });
+
+    it('should return null for unknown tipo', () => {
+      const result = applyRetornoTemplate('TIPO INEXISTENTE', { retorno: {} });
+      expect(result).toBeNull();
+    });
+
+    it('should select CLIENTE CORTADO variant and substitute placeholders', () => {
+      const data = {
+        retorno: {
+          situacao_corte: 'CLIENTE CORTADO',
+          descricao: 'Corte realizado com sucesso',
+        },
+      };
+      const result = applyRetornoTemplate('CORTE POR FALTA DE PAGAMENTO', data);
+      expect(result).toContain('CORTE EXECUTADO CONFORME ORDEM DE SERVIÇO CLIENTE CORTADO');
+      expect(result).toContain('Corte realizado com sucesso');
+    });
+
+    it('should select else variant when situacao is not CLIENTE CORTADO', () => {
+      const data = {
+        retorno: {
+          situacao_corte: 'CLIENTE VISITADO CONTA PAGA',
+          descricao: 'Cliente pagou a conta',
+        },
+      };
+      const result = applyRetornoTemplate('CORTE POR FALTA DE PAGAMENTO', data);
+      expect(result).toContain('CLIENTE VISITADO CONTA PAGA.');
+      expect(result).toContain('Cliente pagou a conta');
+    });
+
+    it('should handle empty field values without breaking', () => {
+      const data = {
+        retorno: {
+          situacao_corte: 'SEM ACESSO PARA EXECUTAR O CORTE',
+          descricao: '',
+        },
+      };
+      const result = applyRetornoTemplate('CORTE POR FALTA DE PAGAMENTO', data);
+      expect(result).toContain('SEM ACESSO PARA EXECUTAR O CORTE.');
+      expect(result).toBeTruthy();
+    });
+
+    it('should handle missing descricao field', () => {
+      const data = {
+        retorno: {
+          situacao_corte: 'CLIENTE CORTADO',
+        },
+      };
+      const result = applyRetornoTemplate('CORTE POR FALTA DE PAGAMENTO', data);
+      expect(result).toContain('CORTE EXECUTADO CONFORME ORDEM DE SERVIÇO CLIENTE CORTADO');
     });
   });
 });
