@@ -1,0 +1,10 @@
+﻿# archive/ - planning/specs/tools moved out of agent context
+archive/
+
+# dados_projeto - reference data, not source code
+dados_projeto/*.xlsx
+dados_projeto/tipos_ordens_e_retornos.html
+
+# docs - guides that are not needed for context
+docs/adicionar_retornos_ordens.md
+docs/fluxo-email.html

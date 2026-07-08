@@ -456,135 +456,25 @@ describe('retornos', () => {
   });
 
   describe('AFERICAO MEDIDOR - renderização', () => {
-    it('should render all 7 fields for AFERIÇÃO DE MEDIDOR', () => {
+    it('should render apenas descricao para AFERIÇÃO DE MEDIDOR', () => {
       DOM.tipoOrdem.value = 'AFERIÇÃO DE MEDIDOR';
       renderRetorno();
-      expect(document.getElementById('medidor_afericao')).toBeTruthy();
-      expect(document.getElementById('Motivo_cancel_afericao')).toBeTruthy();
-      expect(document.getElementById('leitura_afericao')).toBeTruthy();
-      expect(document.getElementById('motivo_nao_colher')).toBeTruthy();
-      expect(document.getElementById('toi_afericao')).toBeTruthy();
-      expect(document.getElementById('numero_toi')).toBeTruthy();
-      expect(document.getElementById('porque_nao_aplicado_toi')).toBeTruthy();
+      expect(document.getElementById('descricao')).toBeTruthy();
+      expect(document.getElementById('medidor_afericao')).toBeNull();
+      expect(document.getElementById('Motivo_cancel_afericao')).toBeNull();
+      expect(document.getElementById('leitura_afericao')).toBeNull();
+      expect(document.getElementById('toi_afericao')).toBeNull();
+      const fields = document.querySelectorAll('[data-field-nome]');
+      expect(fields.length).toBe(1);
     });
 
-    it('should render all 7 fields for AFERIÇÃO MEDIDOR CLIENTE LIVRE', () => {
+    it('should render apenas descricao para AFERIÇÃO MEDIDOR CLIENTE LIVRE', () => {
       DOM.tipoOrdem.value = 'AFERIÇÃO MEDIDOR CLIENTE LIVRE';
       renderRetorno();
-      expect(document.getElementById('medidor_afericao')).toBeTruthy();
-      expect(document.getElementById('Motivo_cancel_afericao')).toBeTruthy();
-      expect(document.getElementById('leitura_afericao')).toBeTruthy();
-      expect(document.getElementById('motivo_nao_colher')).toBeTruthy();
-      expect(document.getElementById('toi_afericao')).toBeTruthy();
-      expect(document.getElementById('numero_toi')).toBeTruthy();
-      expect(document.getElementById('porque_nao_aplicado_toi')).toBeTruthy();
-    });
-
-    it('should hide condicional fields initially', () => {
-      DOM.tipoOrdem.value = 'AFERIÇÃO DE MEDIDOR';
-      renderRetorno();
-      expect(
-        document.querySelector('[data-field-nome="Motivo_cancel_afericao"]').style.display
-      ).toBe('none');
-      expect(document.querySelector('[data-field-nome="leitura_afericao"]').style.display).toBe(
-        'none'
-      );
-      expect(document.querySelector('[data-field-nome="motivo_nao_colher"]').style.display).toBe(
-        'none'
-      );
-      expect(document.querySelector('[data-field-nome="toi_afericao"]').style.display).toBe('none');
-      expect(document.querySelector('[data-field-nome="numero_toi"]').style.display).toBe('none');
-      expect(
-        document.querySelector('[data-field-nome="porque_nao_aplicado_toi"]').style.display
-      ).toBe('none');
-    });
-
-    it('should show Motivo_cancel_afericao when medidor_afericao = NAO SUBSTITUIDO', () => {
-      DOM.tipoOrdem.value = 'AFERIÇÃO DE MEDIDOR';
-      renderRetorno();
-      const medidor = document.getElementById('medidor_afericao');
-      medidor.value = 'NAO SUBSTITUIDO';
-      medidor.dispatchEvent(new Event('change'));
-      expect(
-        document.querySelector('[data-field-nome="Motivo_cancel_afericao"]').style.display
-      ).toBe('');
-    });
-
-    it('should show leitura_afericao and toi_afericao when medidor_afericao = SUBSTITUIDO', () => {
-      DOM.tipoOrdem.value = 'AFERIÇÃO DE MEDIDOR';
-      renderRetorno();
-      const medidor = document.getElementById('medidor_afericao');
-      medidor.value = 'SUBSTITUIDO';
-      medidor.dispatchEvent(new Event('change'));
-      expect(document.querySelector('[data-field-nome="leitura_afericao"]').style.display).toBe('');
-      expect(document.querySelector('[data-field-nome="toi_afericao"]').style.display).toBe('');
-    });
-
-    it('should show motivo_nao_colher when leitura_afericao = NAO FOI COLHIDO LEITURA', () => {
-      DOM.tipoOrdem.value = 'AFERIÇÃO DE MEDIDOR';
-      renderRetorno();
-      const medidor = document.getElementById('medidor_afericao');
-      medidor.value = 'SUBSTITUIDO';
-      medidor.dispatchEvent(new Event('change'));
-      const leitura = document.getElementById('leitura_afericao');
-      leitura.value = 'NAO FOI COLHIDO LEITURA';
-      leitura.dispatchEvent(new Event('change'));
-      expect(document.querySelector('[data-field-nome="motivo_nao_colher"]').style.display).toBe(
-        ''
-      );
-    });
-
-    it('should show numero_toi when toi_afericao = APLICADO TOI', () => {
-      DOM.tipoOrdem.value = 'AFERIÇÃO DE MEDIDOR';
-      renderRetorno();
-      const medidor = document.getElementById('medidor_afericao');
-      medidor.value = 'SUBSTITUIDO';
-      medidor.dispatchEvent(new Event('change'));
-      const toi = document.getElementById('toi_afericao');
-      toi.value = 'APLICADO TOI';
-      toi.dispatchEvent(new Event('change'));
-      expect(document.querySelector('[data-field-nome="numero_toi"]').style.display).toBe('');
-    });
-
-    it('should show porque_nao_aplicado_toi when toi_afericao = NAO FOI APLICADO TOI', () => {
-      DOM.tipoOrdem.value = 'AFERIÇÃO DE MEDIDOR';
-      renderRetorno();
-      const medidor = document.getElementById('medidor_afericao');
-      medidor.value = 'SUBSTITUIDO';
-      medidor.dispatchEvent(new Event('change'));
-      const toi = document.getElementById('toi_afericao');
-      toi.value = 'NAO FOI APLICADO TOI';
-      toi.dispatchEvent(new Event('change'));
-      expect(
-        document.querySelector('[data-field-nome="porque_nao_aplicado_toi"]').style.display
-      ).toBe('');
-    });
-
-    it('should collect visible fields but skip hidden ones', () => {
-      DOM.tipoOrdem.value = 'AFERIÇÃO DE MEDIDOR';
-      renderRetorno();
-      // Set medidor = SUBSTITUIDO to show leitura and toi
-      const medidor = document.getElementById('medidor_afericao');
-      medidor.value = 'SUBSTITUIDO';
-      medidor.dispatchEvent(new Event('change'));
-      const leitura = document.getElementById('leitura_afericao');
-      leitura.value = 'VISUAL E NETBOOK';
-      leitura.dispatchEvent(new Event('change'));
-      const toi = document.getElementById('toi_afericao');
-      toi.value = 'APLICADO TOI';
-      toi.dispatchEvent(new Event('change'));
-      document.getElementById('numero_toi').value = '12345';
-      // Set cancel field (should be hidden since medidor != NAO SUBSTITUIDO)
-      document.getElementById('Motivo_cancel_afericao').value = 'teste';
-      const data = collectRetorno();
-      expect(data.medidor_afericao).toBe('SUBSTITUIDO');
-      expect(data.leitura_afericao).toBe('VISUAL E NETBOOK');
-      expect(data.toi_afericao).toBe('APLICADO TOI');
-      expect(data.numero_toi).toBe('12345');
-      // Hidden fields should NOT be collected
-      expect(data.Motivo_cancel_afericao).toBeUndefined();
-      expect(data.motivo_nao_colher).toBeUndefined();
-      expect(data.porque_nao_aplicado_toi).toBeUndefined();
+      expect(document.getElementById('descricao')).toBeTruthy();
+      expect(document.getElementById('medidor_afericao')).toBeNull();
+      const fields = document.querySelectorAll('[data-field-nome]');
+      expect(fields.length).toBe(1);
     });
   });
 

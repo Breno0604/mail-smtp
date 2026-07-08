@@ -248,61 +248,6 @@ export const LIGACAO_NOVA_MT_FIELDS = [
   { linha: 7, nome: 'descricao', label: 'Descrição do Serviço', tipo: 'textarea' },
 ];
 
-export const AFERICAO_MEDIDOR_FIELDS = [
-  {
-    linha: 1,
-    nome: 'medidor_afericao',
-    label: 'Medidor',
-    tipo: 'select',
-    opcoes: ['SUBSTITUIDO', 'NAO SUBSTITUIDO'],
-  },
-  {
-    linha: 2,
-    nome: 'Motivo_cancel_afericao',
-    label: 'Motivo Cancelamento',
-    tipo: 'text',
-    condicional: { campoRef: 'medidor_afericao', valor: 'NAO SUBSTITUIDO' },
-  },
-  {
-    linha: 3,
-    nome: 'leitura_afericao',
-    label: 'Leitura',
-    tipo: 'select',
-    opcoes: ['VISUAL E NETBOOK', 'APENAS VISUAL', 'APENAS NOTEBOOK', 'NAO FOI COLHIDO LEITURA'],
-    condicional: { campoRef: 'medidor_afericao', valor: 'SUBSTITUIDO' },
-  },
-  {
-    linha: 4,
-    nome: 'motivo_nao_colher',
-    label: 'Porque não foi colhido',
-    tipo: 'text',
-    condicional: { campoRef: 'leitura_afericao', valor: 'NAO FOI COLHIDO LEITURA' },
-  },
-  {
-    linha: 5,
-    nome: 'toi_afericao',
-    label: 'TOI',
-    tipo: 'select',
-    opcoes: ['APLICADO TOI', 'PERDAS JA APLICOU TOI', 'NAO FOI APLICADO TOI'],
-    condicional: { campoRef: 'medidor_afericao', valor: 'SUBSTITUIDO' },
-  },
-  {
-    linha: 6,
-    nome: 'numero_toi',
-    label: 'Nº TOI',
-    tipo: 'text',
-    condicional: { campoRef: 'toi_afericao', valor: 'APLICADO TOI' },
-  },
-  {
-    linha: 7,
-    nome: 'porque_nao_aplicado_toi',
-    label: 'Porque não foi aplicado TOI',
-    tipo: 'text',
-    condicional: { campoRef: 'toi_afericao', valor: 'NAO FOI APLICADO TOI' },
-  },
-  { linha: 8, nome: 'descricao', label: 'Descrição do Serviço', tipo: 'textarea' },
-];
-
 export const TELEMEDICAO_FIELDS = [
   {
     linha: 1,
@@ -408,8 +353,8 @@ export const retornoFieldsByTipo = {
     },
   ],
 
-  'AFERIÇÃO DE MEDIDOR': AFERICAO_MEDIDOR_FIELDS,
-  'AFERIÇÃO MEDIDOR CLIENTE LIVRE': AFERICAO_MEDIDOR_FIELDS,
+  'AFERIÇÃO DE MEDIDOR': [FIELD_DESCRICAO],
+  'AFERIÇÃO MEDIDOR CLIENTE LIVRE': [FIELD_DESCRICAO],
 
   'CORTE POR FALTA DE PAGAMENTO': [
     {

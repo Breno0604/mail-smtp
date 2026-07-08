@@ -345,110 +345,22 @@ describe('fields', () => {
   });
 
   describe('Campos da aba afericao', () => {
-    describe('AFERIÇÃO DE MEDIDOR', () => {
-      it('should have exactly 8 fields (including descricao)', () => {
-        const fields = getRetornoFields('AFERIÇÃO DE MEDIDOR');
-        expect(fields.length).toBe(8);
-      });
+    const afericaoTipos = ['AFERIÇÃO DE MEDIDOR', 'AFERIÇÃO MEDIDOR CLIENTE LIVRE'];
 
-      it('should have medidor_afericao as first field (select, 2 options)', () => {
-        const fields = getRetornoFields('AFERIÇÃO DE MEDIDOR');
-        const field = fields[0];
-        expect(field.nome).toBe('medidor_afericao');
-        expect(field.tipo).toBe('select');
-        expect(field.opcoes).toEqual(['SUBSTITUIDO', 'NAO SUBSTITUIDO']);
-        expect(field.condicional).toBeUndefined();
-      });
-
-      it('should have Motivo_cancel_afericao conditional on medidor_afericao = NAO SUBSTITUIDO', () => {
-        const fields = getRetornoFields('AFERIÇÃO DE MEDIDOR');
-        const field = fields.find(f => f.nome === 'Motivo_cancel_afericao');
-        expect(field.tipo).toBe('text');
-        expect(field.condicional).toEqual({
-          campoRef: 'medidor_afericao',
-          valor: 'NAO SUBSTITUIDO',
-        });
-      });
-
-      it('should have leitura_afericao conditional on medidor_afericao = SUBSTITUIDO', () => {
-        const fields = getRetornoFields('AFERIÇÃO DE MEDIDOR');
-        const field = fields.find(f => f.nome === 'leitura_afericao');
-        expect(field.tipo).toBe('select');
-        expect(field.opcoes).toEqual([
-          'VISUAL E NETBOOK',
-          'APENAS VISUAL',
-          'APENAS NOTEBOOK',
-          'NAO FOI COLHIDO LEITURA',
-        ]);
-        expect(field.condicional).toEqual({ campoRef: 'medidor_afericao', valor: 'SUBSTITUIDO' });
-      });
-
-      it('should have motivo_nao_colher conditional on leitura_afericao = NAO FOI COLHIDO LEITURA', () => {
-        const fields = getRetornoFields('AFERIÇÃO DE MEDIDOR');
-        const field = fields.find(f => f.nome === 'motivo_nao_colher');
-        expect(field.tipo).toBe('text');
-        expect(field.condicional).toEqual({
-          campoRef: 'leitura_afericao',
-          valor: 'NAO FOI COLHIDO LEITURA',
-        });
-      });
-
-      it('should have toi_afericao conditional on medidor_afericao = SUBSTITUIDO', () => {
-        const fields = getRetornoFields('AFERIÇÃO DE MEDIDOR');
-        const field = fields.find(f => f.nome === 'toi_afericao');
-        expect(field.tipo).toBe('select');
-        expect(field.opcoes).toEqual([
-          'APLICADO TOI',
-          'PERDAS JA APLICOU TOI',
-          'NAO FOI APLICADO TOI',
-        ]);
-        expect(field.condicional).toEqual({ campoRef: 'medidor_afericao', valor: 'SUBSTITUIDO' });
-      });
-
-      it('should have numero_toi conditional on toi_afericao = APLICADO TOI', () => {
-        const fields = getRetornoFields('AFERIÇÃO DE MEDIDOR');
-        const field = fields.find(f => f.nome === 'numero_toi');
-        expect(field.tipo).toBe('text');
-        expect(field.condicional).toEqual({ campoRef: 'toi_afericao', valor: 'APLICADO TOI' });
-      });
-
-      it('should have porque_nao_aplicado_toi conditional on toi_afericao = NAO FOI APLICADO TOI', () => {
-        const fields = getRetornoFields('AFERIÇÃO DE MEDIDOR');
-        const field = fields.find(f => f.nome === 'porque_nao_aplicado_toi');
-        expect(field.tipo).toBe('text');
-        expect(field.condicional).toEqual({
-          campoRef: 'toi_afericao',
-          valor: 'NAO FOI APLICADO TOI',
-        });
-      });
-
-      it('should have descricao as last field', () => {
-        const fields = getRetornoFields('AFERIÇÃO DE MEDIDOR');
-        const lastField = fields[fields.length - 1];
-        expect(lastField.nome).toBe('descricao');
-        expect(lastField.label).toBe('Descrição do Serviço');
-        expect(lastField.tipo).toBe('textarea');
-        expect(lastField.linha).toBe(8);
+    it('should have exactly 1 field (descricao) for each AFERIÇÃO tipo', () => {
+      afericaoTipos.forEach(tipo => {
+        const fields = getRetornoFields(tipo);
+        expect(fields.length).toBe(1);
       });
     });
 
-    describe('AFERIÇÃO MEDIDOR CLIENTE LIVRE', () => {
-      it('should have exactly 8 fields (including descricao)', () => {
-        const fields = getRetornoFields('AFERIÇÃO MEDIDOR CLIENTE LIVRE');
-        expect(fields.length).toBe(8);
-      });
-
-      it('should return the same array reference as AFERIÇÃO DE MEDIDOR', () => {
-        const fields1 = getRetornoFields('AFERIÇÃO DE MEDIDOR');
-        const fields2 = getRetornoFields('AFERIÇÃO MEDIDOR CLIENTE LIVRE');
-        expect(fields1).toBe(fields2);
-      });
-
-      it('should have descricao field', () => {
-        const fields = getRetornoFields('AFERIÇÃO MEDIDOR CLIENTE LIVRE');
-        const descricao = fields.find(f => f.nome === 'descricao');
-        expect(descricao).toBeDefined();
-        expect(descricao.tipo).toBe('textarea');
+    it('should have descricao with label and textarea type for both AFERIÇÃO tipos', () => {
+      afericaoTipos.forEach(tipo => {
+        const fields = getRetornoFields(tipo);
+        const field = fields[0];
+        expect(field.nome).toBe('descricao');
+        expect(field.label).toBe('Descrição do Serviço');
+        expect(field.tipo).toBe('textarea');
       });
     });
   });
