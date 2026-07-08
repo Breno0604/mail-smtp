@@ -221,8 +221,11 @@ describe('email', () => {
         retorno: { retorno_ligacao: 'VISTORIA' },
       };
       const body = composeEmail(data);
-      expect(body).toContain('EXECUTADO:');
-      expect(body).toContain('VISTORIA');
+      // Template overrides field-by-field rendering for LIGACAO NOVA MEDIA TENSAO
+      // VISTORIA variant selected, but no conditional blocks match (no obra, etc.)
+      // Only unconditional blocks render: empty + {descricao}
+      expect(body).toContain('{descricao}');
+      expect(body).not.toContain('EXECUTADO:');
       expect(body).not.toContain('OBRA:');
       expect(body).not.toContain('LIGACAO:');
       expect(body).not.toContain('TOMBAMENTO:');
