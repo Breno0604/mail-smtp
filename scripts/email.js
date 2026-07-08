@@ -26,6 +26,9 @@ EQUIPMENT_KEYS.forEach(e => {
 
 function matchCondition(condicao, data) {
   if (!condicao) return true;
+  if (Array.isArray(condicao)) {
+    return condicao.every(c => matchCondition(c, data));
+  }
   const valorCampo = data.retorno?.[condicao.campo];
   if (condicao.valor !== undefined) {
     const valores = Array.isArray(condicao.valor) ? condicao.valor : [condicao.valor];
