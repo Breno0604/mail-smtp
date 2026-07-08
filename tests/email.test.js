@@ -390,5 +390,158 @@ describe('email', () => {
         expect(resultI180).toContain('CLIENTE ENCONTRADO CORTADO');
       });
     });
+
+    describe('LIGACAO NOVA MT template', () => {
+      describe('compound (array) conditions', () => {
+        it('should match AND condition when both fields match (COM MEDICAO + ACOPLADA)', () => {
+          const data = {
+            retorno: {
+              retorno_ligacao: 'VISTORIA',
+              status_medicao: 'COM MEDICAO',
+              tipo_medicao: 'ACOPLADA',
+            },
+          };
+          const result = applyRetornoTemplate('LIGACAO NOVA MEDIA TENSAO', data);
+          expect(result).toContain('COM MEDICAO ACOPLADO NO LOCAL');
+        });
+
+        it('should not match AND condition when only one field matches (wrong tipo_medicao)', () => {
+          const data = {
+            retorno: {
+              retorno_ligacao: 'VISTORIA',
+              status_medicao: 'COM MEDICAO',
+              tipo_medicao: 'CUBICULO',
+            },
+          };
+          const result = applyRetornoTemplate('LIGACAO NOVA MEDIA TENSAO', data);
+          expect(result).toContain('COM MEDICAO CUBICULO NO LOCAL');
+          expect(result).not.toContain('COM MEDICAO ACOPLADO NO LOCAL');
+        });
+
+        it('should match the correct compound variant among many (DIRETA)', () => {
+          const data = {
+            retorno: {
+              retorno_ligacao: 'VISTORIA',
+              status_medicao: 'COM MEDICAO',
+              tipo_medicao: 'DIRETA',
+            },
+          };
+          const result = applyRetornoTemplate('LIGACAO NOVA MEDIA TENSAO', data);
+          expect(result).toContain('COM MEDICAO DIRETA NO LOCAL');
+          expect(result).not.toContain('ACOPLADO');
+          expect(result).not.toContain('CUBICULO');
+          expect(result).not.toContain('SEMI-DIRETA');
+        });
+      });
+
+      describe('VISTORIA variant', () => {
+        it('should render full VISTORIA template with all fields filled', () => {
+          const vistoriaData = {
+            retorno: {
+              retorno_ligacao: 'VISTORIA',
+              obra: 'CONCLUIDA',
+              status_medicao: 'COM MEDICAO',
+              tipo_medicao: 'ACOPLADA',
+              ponto_de_entrega: 'DE ACORDO',
+              medidor_bt: 'COM MEDIDOR BT',
+              qtd_medidor_bt: '1',
+              acesso_medicao: 'REGULAR',
+              descricao: 'Vistoria finalizada sem pendências',
+            },
+          };
+          const result = applyRetornoTemplate('LIGACAO NOVA MEDIA TENSAO', vistoriaData);
+          expect(result).toContain('OBRA CONCLUIDA');
+          expect(result).toContain('COM MEDICAO ACOPLADO NO LOCAL');
+          expect(result).toContain('PONTO DE ENTREGA DE ACORDO COM PROJETO');
+          expect(result).toContain('COM 1 MEDIDOR DE BT');
+          expect(result).toContain('ACESSO A MEDICAO REGULAR');
+          expect(result).toContain('Vistoria finalizada sem pendências');
+        });
+      });
+
+      describe('LIGAÇÃO variant', () => {
+        it('should render LIGAÇÃO template with tombamento', () => {
+          const ligacaoData = {
+            retorno: {
+              retorno_ligacao: 'LIGAÇÃO',
+              ligacao: 'CONCLUIDA',
+              tombamento: 'ABC-1234',
+              descricao: 'Ligação concluída com sucesso',
+            },
+          };
+          const result = applyRetornoTemplate('LIGACAO NOVA MEDIA TENSAO', ligacaoData);
+          expect(result).toContain('LIGAÇÃO CONCLUIDA');
+          expect(result).toContain('TOMBAMENTO: ABC-1234');
+          expect(result).toContain('Ligação concluída com sucesso');
+        });
+
+        it('should omit TOMBAMENTO line when tombamento is empty', () => {
+          const ligacaoData = {
+            retorno: {
+              retorno_ligacao: 'LIGAÇÃO',
+              ligacao: 'CONCLUIDA',
+              tombamento: '',
+              descricao: 'Ligação concluída',
+            },
+          };
+          const result = applyRetornoTemplate('LIGACAO NOVA MEDIA TENSAO', ligacaoData);
+          expect(result).toContain('LIGAÇÃO CONCLUIDA');
+          expect(result).not.toContain('TOMBAMENTO:');
+          expect(result).toContain('Ligação concluída');
+        });
+      });
+
+      describe('VISTORIA + LIGAÇÃO variant', () => {
+        it('should render combined template correctly', () => {
+          const combinedData = {
+            retorno: {
+              retorno_ligacao: 'VISTORIA + LIGAÇÃO',
+              ligacao: 'CONCLUIDA',
+              tombamento: 'DEF-5678',
+              obra: 'NAO CONCLUIDA',
+              status_medicao: 'COM MEDICAO',
+              tipo_medicao: 'CUBICULO',
+              ponto_de_entrega: 'EM DESACORDO',
+              medidor_bt: 'SEM MEDIDOR BT',
+              acesso_medicao: 'IRREGULAR',
+              acesso_ponto_de_entrega: 'MURO ALTO',
+              descricao: 'Retorno completo',
+            },
+          };
+          const result = applyRetornoTemplate('LIGACAO NOVA MEDIA TENSAO', combinedData);
+          expect(result).toContain('LIGAÇÃO CONCLUIDA');
+          expect(result).toContain('TOMBAMENTO: DEF-5678');
+          expect(result).toContain('OBRA NAO CONCLUIDA');
+          expect(result).toContain('COM MEDICAO CUBICULO NO LOCAL');
+          expect(result).toContain('PONTO DE ENTREGA EM DESACORDO COM O PROJETO');
+          expect(result).toContain('SEM MEDIDOR DE BT');
+          expect(result).toContain('ACESSO A MEDICAO IRREGULAR DEVIDO MURO ALTO');
+          expect(result).toContain('Retorno completo');
+          expect(result).not.toContain('OBRA CONCLUIDA');
+          expect(result).not.toContain('COM MEDICAO ACOPLADO NO LOCAL');
+        });
+      });
+
+      describe('shared template reference', () => {
+        it('should return the same string for both tipo variants', () => {
+          const vistoriaData = {
+            retorno: {
+              retorno_ligacao: 'VISTORIA',
+              obra: 'CONCLUIDA',
+              status_medicao: 'COM MEDICAO',
+              tipo_medicao: 'ACOPLADA',
+              ponto_de_entrega: 'DE ACORDO',
+              medidor_bt: 'COM MEDIDOR BT',
+              qtd_medidor_bt: '1',
+              acesso_medicao: 'REGULAR',
+              descricao: 'Vistoria finalizada sem pendências',
+            },
+          };
+          const result1 = applyRetornoTemplate('LIGACAO NOVA MEDIA TENSAO', vistoriaData);
+          const result2 = applyRetornoTemplate('LIGACAO NOVA MT - CLIENTE LIVRE', vistoriaData);
+          expect(result1).toBe(result2);
+        });
+      });
+    });
   });
 });
