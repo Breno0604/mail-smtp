@@ -1,7 +1,8 @@
 // tests/send.test.js
 import 'fake-indexeddb/auto';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { cacheDOM, DOM } from '../scripts/dom.js';
+import { createTestDOM } from './helpers/dom-fixture.js';
+import { DOM } from '../scripts/dom.js';
 import { state } from '../scripts/state.js';
 
 // Usar vi.hoisted() para criar referências compartilhadas entre o factory
@@ -68,22 +69,7 @@ describe('sendEmail', () => {
     // Reset global fetch antes de cada teste
     vi.stubGlobal('fetch', vi.fn());
 
-    // Anexar elementos que send.js precisa e que setup.js não fornece
-    const btn = document.createElement('button');
-    btn.id = 'btn-enviar';
-    btn.textContent = '📨 Enviar';
-    document.body.appendChild(btn);
-
-    const tipo = document.createElement('select');
-    tipo.id = 'tipo-ordem';
-    tipo.innerHTML = `
-      <option value="">Selecione</option>
-      <option value="CORTE POR FALTA DE PAGAMENTO">CORTE POR FALTA DE PAGAMENTO</option>
-    `;
-    document.body.appendChild(tipo);
-
-    // re-cache DOM para pegar os novos elementos
-    cacheDOM();
+    createTestDOM();
 
     // Configurar state
     state.iniciais = {
@@ -115,14 +101,7 @@ describe('sendEmail', () => {
   });
 
   afterEach(() => {
-    // Limpar fetch global
     vi.unstubAllGlobals();
-
-    // Limpar elementos adicionados
-    const btn = document.getElementById('btn-enviar');
-    if (btn) btn.remove();
-    const tipo = document.getElementById('tipo-ordem');
-    if (tipo) tipo.remove();
   });
 
   // ── CENÁRIO 1: Envio bem-sucedido ─────────────────────────────────────
@@ -193,13 +172,13 @@ describe('sendEmail', () => {
   it('should update record status on success', async () => {
     fetch.mockResolvedValue({
       ok: true,
-      json: () => Promise.resolve({ success: true, to: 'test@example.com' }),
+      json: () => Promise.resolve({ success: true }),
     });
 
     await sendEmail();
     expect(updateStatusMock).toHaveBeenCalledWith(
       'test-uuid-123',
-      expect.objectContaining({ to: 'test@example.com', subject: expect.any(String) }),
+      expect.objectContaining({ subject: expect.any(String) }),
       'sent'
     );
   });

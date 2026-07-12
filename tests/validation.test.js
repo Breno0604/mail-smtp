@@ -1,67 +1,14 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { validateSection, validateAll, addBlurValidation } from '../scripts/validation.js';
-import { cacheDOM, DOM } from '../scripts/dom.js';
+import { DOM } from '../scripts/dom.js';
+import { createTestDOM } from './helpers/dom-fixture.js';
 import { state, createDefaultEquipamentos } from '../scripts/state.js';
 import { renderIniciais } from '../scripts/iniciais.js';
 import { renderRetorno } from '../scripts/retornos.js';
 
 describe('validation', () => {
   function setupDOM() {
-    document.body.innerHTML = `
-      <div id="error-msg" style="display:none"></div>
-      <div id="iniciais-campos"></div>
-      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
-      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
-      <div id="sec-equip-instalados" class="hidden"></div>
-      <div id="sec-equip-retirados" class="hidden"></div>
-      <div id="checkboxes-instalados"></div>
-      <div id="checkboxes-retirados"></div>
-      <div id="campos-instalados"></div>
-      <div id="campos-retirados"></div>
-      <div id="retorno-campos"></div>
-      <div id="retorno-placeholder"></div>
-      <div id="retorno-desc"></div>
-      <div id="preview-grid"></div>
-      <div id="file-count">0 / 12</div>
-      <div id="complemento-corpo"></div>
-      <div id="file-upload-area"></div>
-      <input type="file" id="file-input">
-      <div class="toast" id="toast"></div>
-      <div class="modal-overlay hidden" id="modal-tipo">
-        <div class="modal">
-          <p id="modal-tipo-text"></p>
-          <button id="modal-cancel">Cancelar</button>
-          <button id="modal-confirm">Alterar mesmo assim</button>
-        </div>
-      </div>
-      <div class="lightbox-overlay hidden" id="lightbox">
-        <button id="lightbox-close">✕</button>
-        <img id="lightbox-img" src="" alt="Preview ampliado">
-      </div>
-      <div class="modal-overlay hidden" id="dup-modal">
-        <div class="modal">
-          <p id="dup-modal-title"></p>
-          <p id="dup-modal-body"></p>
-          <button id="dup-modal-cancel">Cancelar</button>
-          <button id="dup-modal-confirm">Reenviar</button>
-        </div>
-      </div>
-      <div class="modal-overlay hidden" id="confirm-modal">
-        <div class="modal">
-          <p id="confirm-modal-text"></p>
-          <button id="confirm-modal-cancel">Cancelar</button>
-          <button id="confirm-modal-ok">Confirmar</button>
-        </div>
-      </div>
-      <div class="modal-overlay hidden" id="update-modal">
-        <div class="modal">
-          <p id="update-modal-text"></p>
-          <button id="update-modal-cancel">Cancelar</button>
-          <button id="update-modal-ok">Atualizar</button>
-        </div>
-      </div>
-    `;
-    cacheDOM();
+    createTestDOM();
   }
 
   function setupEquipmentDOM(instaladoValue, retiradoValue, instaladosData, retiradosData) {
@@ -680,12 +627,8 @@ describe('validation', () => {
 
   describe('validateSection(3) - Retorno', () => {
     beforeEach(() => {
-      const select = document.createElement('select');
-      select.id = 'tipo-ordem';
-      select.innerHTML =
-        '<option value="">Selecione</option><option value="ADEQUACAO SMF">ADEQUACAO SMF</option>';
-      document.body.appendChild(select);
-      select.value = 'ADEQUACAO SMF';
+      // tipo-ordem already exists from createTestDOM()
+      DOM.tipoOrdem.value = 'ADEQUACAO SMF';
     });
 
     it('should return false when textarea with data-required is empty', () => {
@@ -853,25 +796,11 @@ describe('validation', () => {
     });
 
     function setupAllSections() {
-      // Setup section elements that validateAll queries for errors
-      const secInicio = document.createElement('div');
-      secInicio.id = 'sec-inicio';
-      const secRetorno = document.createElement('div');
-      secRetorno.id = 'sec-retorno';
-      const secEquipamentos = document.createElement('div');
-      secEquipamentos.id = 'sec-equipamentos';
-      const secAnexos = document.createElement('div');
-      secAnexos.id = 'sec-anexos';
-      document.body.append(secInicio, secRetorno, secEquipamentos, secAnexos);
-
+      // Sections already exist from createTestDOM()
       renderIniciais();
 
-      // Need a tipo-ordem select for section 3 validation
-      const select = document.createElement('select');
-      select.id = 'tipo-ordem';
-      select.innerHTML =
-        '<option value="">Selecione</option><option value="ADEQUACAO SMF">ADEQUACAO SMF</option>';
-      document.body.appendChild(select);
+      // tipo-ordem already exists from createTestDOM()
+      DOM.tipoOrdem.value = 'ADEQUACAO SMF';
     }
 
     it('should return false when section 1 has empty required fields', () => {
@@ -1047,12 +976,8 @@ describe('validation', () => {
     });
 
     it('should populate state.retorno after valid section 3', () => {
-      const select = document.createElement('select');
-      select.id = 'tipo-ordem';
-      select.innerHTML =
-        '<option value="">Selecione</option><option value="ADEQUACAO SMF">ADEQUACAO SMF</option>';
-      document.body.appendChild(select);
-      select.value = 'ADEQUACAO SMF';
+      // tipo-ordem already exists from createTestDOM()
+      DOM.tipoOrdem.value = 'ADEQUACAO SMF';
       renderRetorno();
       const textarea = document.getElementById('descricao');
       textarea.value = 'descricao valida';
@@ -1061,12 +986,8 @@ describe('validation', () => {
     });
 
     it('should not populate state.retorno when section 3 validation fails', () => {
-      const select = document.createElement('select');
-      select.id = 'tipo-ordem';
-      select.innerHTML =
-        '<option value="">Selecione</option><option value="ADEQUACAO SMF">ADEQUACAO SMF</option>';
-      document.body.appendChild(select);
-      select.value = 'ADEQUACAO SMF';
+      // tipo-ordem already exists from createTestDOM()
+      DOM.tipoOrdem.value = 'ADEQUACAO SMF';
       renderRetorno();
       validateSection(3);
       expect(state.retorno.descricao).toBeUndefined();

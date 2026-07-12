@@ -5,59 +5,12 @@ import {
   toggleFieldVisibility,
   updateFieldValue,
 } from '../scripts/equipment.js';
-import { cacheDOM } from '../scripts/dom.js';
+import { createTestDOM } from './helpers/dom-fixture.js';
 import { state } from '../scripts/state.js';
 
 describe('equipment', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
-      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
-      <div id="sec-equip-instalados" class="hidden"></div>
-      <div id="sec-equip-retirados" class="hidden"></div>
-      <div id="checkboxes-instalados"></div>
-      <div id="checkboxes-retirados"></div>
-      <div id="campos-instalados"></div>
-      <div id="campos-retirados"></div>
-      <div id="error-msg" style="display:none"></div>
-      <div id="iniciais-campos"></div>
-      <div id="retorno-campos"></div>
-      <div id="retorno-desc"></div>
-      <select id="tipo-ordem"><option value="">Selecione</option></select>
-      <div id="preview-grid"></div>
-      <div id="file-count">0 / 12</div>
-      <div id="complemento-corpo"></div>
-      <div id="file-upload-area"></div>
-      <input type="file" id="file-input">
-      <div class="toast" id="toast"></div>
-      <div class="modal-overlay hidden" id="modal-tipo">
-        <div class="modal">
-          <p id="modal-tipo-text"></p>
-          <button id="modal-cancel">Cancelar</button>
-          <button id="modal-confirm">Alterar mesmo assim</button>
-        </div>
-      </div>
-      <div class="lightbox-overlay hidden" id="lightbox">
-        <button id="lightbox-close">✕</button>
-        <img id="lightbox-img" src="" alt="Preview ampliado">
-      </div>
-      <div class="modal-overlay hidden" id="dup-modal">
-        <div class="modal">
-          <p id="dup-modal-title"></p>
-          <p id="dup-modal-body"></p>
-          <button id="dup-modal-cancel">Cancelar</button>
-          <button id="dup-modal-confirm">Reenviar</button>
-        </div>
-      </div>
-      <div class="modal-overlay hidden" id="confirm-modal">
-        <div class="modal">
-          <p id="confirm-modal-text"></p>
-          <button id="confirm-modal-cancel">Cancelar</button>
-          <button id="confirm-modal-ok">Confirmar</button>
-        </div>
-      </div>
-    `;
-    cacheDOM();
+    createTestDOM();
     state.equipamentos = {
       instaladoEquip: 'NAO',
       retiradoEquip: 'NAO',

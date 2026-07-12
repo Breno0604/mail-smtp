@@ -12,7 +12,8 @@ import 'fake-indexeddb/auto';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { state, clearCurrentUUID, setCurrentUUID } from '../scripts/state.js';
 import { saveState, debouncedSave, markAttachmentsDirty } from '../scripts/persistence.js';
-import { cacheDOM, DOM } from '../scripts/dom.js';
+import { DOM } from '../scripts/dom.js';
+import { createTestDOM } from './helpers/dom-fixture.js';
 import { getAllRecords, deleteRecord, saveDraft, getRecord } from '../scripts/db.js';
 
 describe('persistence — API contract', () => {
@@ -25,17 +26,9 @@ describe('persistence — API contract', () => {
 
 describe('persistence — early return guards', () => {
   beforeEach(() => {
-    // Minimal DOM setup required by collectors (collectIniciais reads by id)
-    document.body.innerHTML = `
-      <div id="iniciais-campos"></div>
-      <div id="equipamentos-list"></div>
-      <div id="retorno-campos"></div>
-      <select id="tipo-ordem">
-        <option value="">Selecione</option>
-        <option value="ADEQUACAO SMF">ADEQUACAO SMF</option>
-      </select>
-      <textarea id="complemento-corpo"></textarea>
-      <!-- collectIniciais iterates iniciaisFields looking for these IDs -->
+    createTestDOM();
+    // collectIniciais iterates iniciaisFields looking for these IDs
+    const extraFields = `
       <input id="coordenadas">
       <select id="lider"></select>
       <select id="parceiro"></select>
@@ -48,7 +41,7 @@ describe('persistence — early return guards', () => {
       <input id="hora_inicio" type="time">
       <input id="hora_fim" type="time">
     `;
-    cacheDOM();
+    document.body.insertAdjacentHTML('beforeend', extraFields);
 
     state.iniciais = {};
     state.equipamentos = [];
@@ -151,14 +144,8 @@ describe('persistence — early return guards', () => {
 
 describe('persistence — debouncedSave', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <div id="iniciais-campos"></div>
-      <div id="equipamentos-list"></div>
-      <div id="retorno-campos"></div>
-      <select id="tipo-ordem">
-        <option value="">Selecione</option>
-      </select>
-      <textarea id="complemento-corpo"></textarea>
+    createTestDOM();
+    const extraFields = `
       <input id="coordenadas">
       <select id="lider"></select>
       <select id="parceiro"></select>
@@ -171,7 +158,7 @@ describe('persistence — debouncedSave', () => {
       <input id="hora_inicio" type="time">
       <input id="hora_fim" type="time">
     `;
-    cacheDOM();
+    document.body.insertAdjacentHTML('beforeend', extraFields);
     state.iniciais = {};
     state.equipamentos = [];
     state.attachments = [];
@@ -216,12 +203,8 @@ describe('persistence — markAttachmentsDirty', () => {
 
 describe('persistence — status transitions', () => {
   beforeEach(async () => {
-    document.body.innerHTML = `
-      <div id="iniciais-campos"></div>
-      <div id="equipamentos-list"></div>
-      <div id="retorno-campos"></div>
-      <select id="tipo-ordem"><option value="">Selecione</option><option value="ADEQUACAO SMF">ADEQUACAO SMF</option></select>
-      <textarea id="complemento-corpo"></textarea>
+    createTestDOM();
+    const extraFields = `
       <input id="coordenadas">
       <select id="lider"></select>
       <select id="parceiro"></select>
@@ -234,7 +217,7 @@ describe('persistence — status transitions', () => {
       <input id="hora_inicio" type="time">
       <input id="hora_fim" type="time">
     `;
-    cacheDOM();
+    document.body.insertAdjacentHTML('beforeend', extraFields);
     state.iniciais = {};
     state.equipamentos = [];
     state.attachments = [];

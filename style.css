@@ -555,7 +555,12 @@ input,
 select,
 textarea,
 button,
-h1, h2, h3, h4, h5, h6,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
 .sec-head,
 .sidebar-title,
 .sidebar-item-title,
@@ -589,55 +594,60 @@ textarea {
 }
 
 /* Headings com contraste máximo */
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   color: #000000;
 }
 
-/* Outdoor / High Contrast (sol intenso) — ajustes de contraste */
-body {
-  color: #0f172a;
-}
+/* Outdoor / High Contrast (sol intenso) — ativado apenas quando
+   o usuário tem preferência de alto contraste no sistema operacional */
+@media (prefers-contrast: high) {
+  body {
+    color: #0f172a;
+  }
 
-.container {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
-}
+  .container {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+  }
 
-.btn-primary {
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4) !important;
-}
-.btn-success {
-  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4) !important;
-}
+  .btn-primary {
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4) !important;
+  }
+  .btn-success {
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4) !important;
+  }
 
-.sidebar-item {
-  border-width: 2px !important;
-  border-color: #cbd5e1 !important;
-}
+  .sidebar-item {
+    border-width: 2px !important;
+    border-color: #cbd5e1 !important;
+  }
 
-.toast {
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
-}
+  .toast {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+  }
 
-.preview-item {
-  border-width: 2px !important;
-  border-color: #94a3b8 !important;
-}
+  .preview-item {
+    border-width: 2px !important;
+    border-color: #94a3b8 !important;
+  }
 
-.file-upload-area {
-  border-width: 3px !important;
-  border-color: #64748b !important;
-  background: #f8fafc !important;
-}
+  .file-upload-area {
+    border-width: 3px !important;
+    border-color: #64748b !important;
+    background: #f8fafc !important;
+  }
 
-.equip-row {
-  border-width: 2px !important;
-  border-color: #94a3b8 !important;
-}
+  .equip-row {
+    border-width: 2px !important;
+    border-color: #94a3b8 !important;
+  }
 
-.email-preview {
-  border-width: 2px !important;
-  border-color: #94a3b8 !important;
-  background: #f8fafc !important;
+  .email-preview {
+    border-width: 2px !important;
+    border-color: #94a3b8 !important;
+    background: #f8fafc !important;
+  }
 }
 
 /* === Equipment section animation ───────────────────────────────────────── */

@@ -5,81 +5,11 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { cacheDOM, DOM } from '../scripts/dom.js';
+import { createTestDOM } from './helpers/dom-fixture.js';
 
 describe('dom — element caching', () => {
   beforeEach(() => {
-    // Setup full DOM structure matching cacheDOM expectations
-    document.body.innerHTML = `
-      <!-- Header -->
-      <button id="hamburger"></button>
-      <button id="btn-novo-form"></button>
-
-      <!-- Sections -->
-      <section id="sec-inicio"></section>
-      <section id="sec-retorno"></section>
-      <section id="sec-equipamentos"></section>
-      <section id="sec-anexos"></section>
-      <section id="sec-revisao"></section>
-
-      <!-- Error & Toast -->
-      <div id="error-msg"></div>
-      <div id="toast"></div>
-
-      <!-- Início -->
-      <div id="iniciais-campos"></div>
-      <select id="tipo-ordem"></select>
-
-      <!-- Retorno -->
-      <p id="retorno-desc"></p>
-      <div id="retorno-placeholder"></div>
-      <div id="retorno-campos"></div>
-
-      <!-- Equipamentos -->
-      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
-      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
-      <div id="sec-equip-instalados" class="hidden"></div>
-      <div id="sec-equip-retirados" class="hidden"></div>
-      <div id="checkboxes-instalados"></div>
-      <div id="checkboxes-retirados"></div>
-      <div id="campos-instalados"></div>
-      <div id="campos-retirados"></div>
-
-      <!-- Anexos -->
-      <input type="file" id="file-input">
-      <span id="file-count"></span>
-      <div id="preview-grid"></div>
-      <div id="file-upload-area"></div>
-
-      <!-- Revisão -->
-      <div id="preview-corpo"></div>
-      <textarea id="complemento-corpo"></textarea>
-
-      <!-- Send -->
-      <button id="btn-enviar"></button>
-
-      <!-- Sidebar -->
-      <div id="sidebar"></div>
-      <div id="sidebar-overlay"></div>
-      <button id="sidebar-close"></button>
-      <div id="sidebar-list"></div>
-      <input id="sidebar-filter">
-
-      <!-- Modals -->
-      <div id="dup-modal"></div>
-      <div id="dup-modal-title"></div>
-      <div id="dup-modal-body"></div>
-      <button id="dup-modal-cancel"></button>
-      <button id="dup-modal-confirm"></button>
-      <div id="lightbox"></div>
-      <img id="lightbox-img">
-      <button id="lightbox-close"></button>
-      <div id="confirm-modal"></div>
-      <div id="confirm-modal-text"></div>
-      <button id="confirm-modal-ok"></button>
-      <button id="confirm-modal-cancel"></button>
-      <div id="update-modal"></div>
-      <button id="update-modal-ok"></button>
-    `;
+    createTestDOM();
   });
 
   it('should populate DOM with expected element references', () => {

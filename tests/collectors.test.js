@@ -6,29 +6,12 @@ import {
   collectRetorno,
   collectEquipamentos,
 } from '../scripts/collectors.js';
-import { cacheDOM } from '../scripts/dom.js';
+import { createTestDOM } from './helpers/dom-fixture.js';
 import { state, createDefaultEquipamentos } from '../scripts/state.js';
 
 describe('collectors', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <div id="iniciais-campos"></div>
-      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
-      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
-      <div id="campos-instalados"></div>
-      <div id="campos-retirados"></div>
-      <div id="checkboxes-instalados"></div>
-      <div id="checkboxes-retirados"></div>
-      <div id="sec-equip-instalados" class="hidden"></div>
-      <div id="sec-equip-retirados" class="hidden"></div>
-      <div id="retorno-campos"></div>
-      <select id="tipo-ordem">
-        <option value="">Selecione</option>
-        <option value="CORTE POR FALTA DE PAGAMENTO">CORTE POR FALTA DE PAGAMENTO</option>
-      </select>
-      <textarea id="complemento-corpo"></textarea>
-    `;
-    cacheDOM();
+    createTestDOM();
 
     // Reset state
     state.iniciais = {};

@@ -1,6 +1,7 @@
 import 'fake-indexeddb/auto';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { cacheDOM, DOM } from '../scripts/dom.js';
+import { DOM } from '../scripts/dom.js';
+import { createTestDOM } from './helpers/dom-fixture.js';
 import { state, createDefaultEquipamentos } from '../scripts/state.js';
 import { saveDraft, getRecord, getAllRecords, deleteRecord } from '../scripts/db.js';
 import { applyRecord } from '../scripts/restore.js';
@@ -18,63 +19,7 @@ import { collectIniciais, collectRetorno } from '../scripts/collectors.js';
  */
 describe('integration: full record lifecycle', () => {
   beforeEach(() => {
-    // Setup DOM completo
-    document.body.innerHTML = `
-      <div id="iniciais-campos"></div>
-      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
-      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
-      <div id="sec-equip-instalados" class="hidden"></div>
-      <div id="sec-equip-retirados" class="hidden"></div>
-      <div id="checkboxes-instalados"></div>
-      <div id="checkboxes-retirados"></div>
-      <div id="campos-instalados"></div>
-      <div id="campos-retirados"></div>
-      <div id="retorno-campos"></div>
-      <div id="retorno-placeholder"></div>
-      <div id="retorno-desc"></div>
-      <select id="tipo-ordem">
-        <option value="">Selecione</option>
-        <option value="ADEQUACAO SMF">ADEQUACAO SMF</option>
-        <option value="CORTE POR FALTA DE PAGAMENTO">CORTE POR FALTA DE PAGAMENTO</option>
-        <option value="VISTORIA DA UC">VISTORIA DA UC</option>
-        <option value="LIGACAO NOVA MEDIA TENSAO">LIGACAO NOVA MEDIA TENSAO</option>
-      </select>
-      <div id="preview-grid"></div>
-      <div id="preview-corpo">—</div>
-      <div id="file-count">0 / 12</div>
-      <textarea id="complemento-corpo"></textarea>
-      <div id="file-upload-area"></div>
-      <input type="file" id="file-input">
-      <div id="error-msg" style="display:none"></div>
-      <div class="toast" id="toast"></div>
-      <div class="modal-overlay hidden" id="modal-tipo">
-        <div class="modal">
-          <p id="modal-tipo-text"></p>
-          <button id="modal-cancel">Cancelar</button>
-          <button id="modal-confirm">Alterar mesmo assim</button>
-        </div>
-      </div>
-      <div class="lightbox-overlay hidden" id="lightbox">
-        <button id="lightbox-close">✕</button>
-        <img id="lightbox-img" src="" alt="Preview ampliado">
-      </div>
-      <div class="modal-overlay hidden" id="dup-modal">
-        <div class="modal">
-          <p id="dup-modal-title"></p>
-          <p id="dup-modal-body"></p>
-          <button id="dup-modal-cancel">Cancelar</button>
-          <button id="dup-modal-confirm">Reenviar</button>
-        </div>
-      </div>
-      <div class="modal-overlay hidden" id="confirm-modal">
-        <div class="modal">
-          <p id="confirm-modal-text"></p>
-          <button id="confirm-modal-cancel">Cancelar</button>
-          <button id="confirm-modal-ok">Confirmar</button>
-        </div>
-      </div>
-    `;
-    cacheDOM();
+    createTestDOM();
 
     // Reset state
     state.iniciais = {};
