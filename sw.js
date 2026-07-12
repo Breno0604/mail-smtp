@@ -1,18 +1,21 @@
-const CACHE_NAME = 'retorno-v147';
+const CACHE_NAME = 'retorno-v148';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/style.css',
+  '/tailwind.css',
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
   '/scripts/app.js',
   '/scripts/attachments.js',
+  '/scripts/collectors.js',
   '/scripts/compress.js',
   '/scripts/db.js',
   '/scripts/dom.js',
   '/scripts/duplicate.js',
   '/scripts/email.js',
+  '/scripts/equipment-keys.js',
   '/scripts/equipment.js',
   '/scripts/fields.js',
   '/scripts/data/fields-data.js',
@@ -20,6 +23,7 @@ const STATIC_ASSETS = [
   '/scripts/persistence.js',
   '/scripts/reset.js',
   '/scripts/restore.js',
+  '/scripts/data/retorno-templates.js',
   '/scripts/retornos.js',
   '/scripts/send.js',
   '/scripts/sidebar.js',
@@ -27,6 +31,7 @@ const STATIC_ASSETS = [
   '/scripts/styles.js',
   '/scripts/sw-update.js',
   '/scripts/ui.js',
+  '/scripts/uuid.js',
   '/scripts/utils.js',
   '/scripts/validation.js',
 ];
@@ -36,7 +41,9 @@ self.addEventListener('install', event => {
     caches
       .open(CACHE_NAME)
       .then(cache => {
-        return cache.addAll(STATIC_ASSETS);
+        return cache.addAll(STATIC_ASSETS).catch(err => {
+          console.error('[SW] Falha ao cachear assets:', err.message);
+        });
       })
       .then(() => self.skipWaiting())
   );

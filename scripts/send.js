@@ -50,7 +50,6 @@ export async function sendEmail() {
         await updateRecordStatus(
           state.currentUUID,
           {
-            to: responseData.to,
             subject,
             sentAt: new Date().toISOString(),
           },

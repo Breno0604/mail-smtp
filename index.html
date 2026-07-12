@@ -22,14 +22,30 @@
       class="container bg-white rounded-[20px] shadow-sm border border-slate-200/50 w-full max-w-[640px] relative"
     >
       <div class="flex justify-between items-center px-5 pt-3.5 pb-2.5">
-        <button class="hamburger" id="hamburger">&#9776;</button>
+        <button
+          class="hamburger"
+          id="hamburger"
+          aria-label="Abrir menu de registros"
+          aria-expanded="false"
+        >
+          &#9776;
+        </button>
         <h1 class="text-xl text-slate-900 font-bold m-0 tracking-tight">Retorno de Ordens</h1>
-        <button class="btn-new-form" id="btn-novo-form" title="Novo formulário">+</button>
+        <button
+          class="btn-new-form"
+          id="btn-novo-form"
+          title="Novo formulário"
+          aria-label="Criar novo formulário"
+        >
+          +
+        </button>
       </div>
 
       <div
         class="bg-red-50 text-red-600 px-4 py-3 rounded-[10px] text-xs font-semibold border border-red-200 mx-2.5 mt-3"
         id="error-msg"
+        role="alert"
+        aria-live="assertive"
         style="display: none"
       ></div>
 
@@ -118,6 +134,8 @@
           <div
             class="file-upload-area border-2 border-dashed border-slate-200 rounded-[12px] py-8 px-5 text-center cursor-pointer transition-all duration-200 hover:border-blue-500 hover:bg-blue-50/30 bg-slate-50/50"
             id="file-upload-area"
+            role="button"
+            tabindex="0"
           >
             <span class="text-3xl block mb-2">📎</span>
             <span class="text-sm text-slate-600 font-semibold">Clique para selecionar imagens</span>
@@ -154,12 +172,15 @@
       </div>
     </div>
 
-    <div class="sidebar" id="sidebar">
+    <div class="sidebar" id="sidebar" role="complementary" aria-label="Registros salvos">
       <div class="sidebar-inner">
         <div class="sidebar-head">
           <h2 class="sidebar-title">Registros</h2>
-          <button class="sidebar-close" id="sidebar-close">&times;</button>
+          <button class="sidebar-close" id="sidebar-close" aria-label="Fechar menu de registros">
+            &times;
+          </button>
         </div>
+        <label for="sidebar-filter" class="sr-only">Buscar registros por UC, OS ou tipo</label>
         <input
           type="search"
           id="sidebar-filter"
@@ -172,11 +193,14 @@
     </div>
     <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
-    <div class="toast" id="toast"></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
     <div
       class="modal-overlay fixed inset-0 bg-black/40 z-50 flex items-center justify-center hidden"
       id="dup-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="dup-modal-title"
     >
       <div class="modal bg-white rounded-[12px] p-7 max-w-[420px] w-[90%] shadow-xl text-center">
         <p class="text-base font-bold text-slate-900 mb-3" id="dup-modal-title"></p>
@@ -195,6 +219,7 @@
       <button
         class="lightbox-close absolute top-5 right-7 bg-none border-none text-white text-3xl cursor-pointer"
         id="lightbox-close"
+        aria-label="Fechar visualização ampliada"
       >
         ✕
       </button>
@@ -217,6 +242,9 @@
     <div
       class="modal-overlay fixed inset-0 bg-black/40 z-50 flex items-center justify-center hidden"
       id="confirm-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="confirm-modal-text"
     >
       <div class="modal bg-white rounded-[12px] p-7 max-w-[420px] w-[90%] shadow-xl text-center">
         <p class="text-sm text-slate-600 mb-6 leading-relaxed" id="confirm-modal-text"></p>

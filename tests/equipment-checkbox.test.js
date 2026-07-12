@@ -6,25 +6,11 @@ import {
   updateFieldValue,
 } from '../scripts/equipment.js';
 import { state, createDefaultEquipamentos } from '../scripts/state.js';
+import { createTestDOM } from './helpers/dom-fixture.js';
 
 describe('Equipment checkbox logic', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <select id="instalado-equip">
-        <option value="NAO">NAO</option>
-        <option value="SIM">SIM</option>
-      </select>
-      <select id="retirado-equip">
-        <option value="NAO">NAO</option>
-        <option value="SIM">SIM</option>
-      </select>
-      <div id="sec-equip-instalados" class="hidden"></div>
-      <div id="sec-equip-retirados" class="hidden"></div>
-      <div id="checkboxes-instalados"></div>
-      <div id="checkboxes-retirados"></div>
-      <div id="campos-instalados"></div>
-      <div id="campos-retirados"></div>
-    `;
+    createTestDOM();
 
     // Reset state
     state.equipamentos = createDefaultEquipamentos();

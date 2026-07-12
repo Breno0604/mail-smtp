@@ -49,9 +49,10 @@ exports.handler = async event => {
 
     const invalid = toList.filter(e => !emailRegex.test(e));
     if (invalid.length > 0) {
+      console.error('[send] Emails inválidos em SMTP_TO:', invalid);
       return {
         statusCode: 500,
-        body: JSON.stringify({ error: `Emails inválidos em SMTP_TO: ${invalid.join(', ')}` }),
+        body: JSON.stringify({ error: 'Configuração do servidor de email inválida.' }),
       };
     }
 
@@ -110,12 +111,19 @@ exports.handler = async event => {
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ success: true, to: toList }),
+      body: JSON.stringify({ success: true }),
     };
   } catch (error) {
+    console.error('[send] SMTP error:', {
+      message: error.message,
+      code: error.code,
+      command: error.command,
+      stack: error.stack,
+      timestamp: new Date().toISOString(),
+    });
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error.message }),
+      body: JSON.stringify({ error: 'Erro interno ao enviar o email. Tente novamente.' }),
     };
   }
 };

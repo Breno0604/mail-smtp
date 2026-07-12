@@ -1,3 +1,4 @@
+/* global Element */
 // Test setup - mocks browser APIs and sets up DOM structure
 
 // Mock crypto.randomUUID
@@ -20,6 +21,11 @@ HTMLCanvasElement.prototype.getContext = function () {
     toBlob: cb => cb(new Blob(['test'], { type: 'image/jpeg' })),
   };
 };
+
+// Mock scrollIntoView (not implemented in jsdom)
+if (!Element.prototype.scrollIntoView) {
+  Element.prototype.scrollIntoView = () => {};
+}
 
 // Mock Image
 class MockImage {

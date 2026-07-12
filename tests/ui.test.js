@@ -1,50 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { showError, hideError, showToast, showConfirm } from '../scripts/ui.js';
-import { cacheDOM, DOM } from '../scripts/dom.js';
+import { createTestDOM } from './helpers/dom-fixture.js';
+import { DOM } from '../scripts/dom.js';
 
 describe('ui', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <div id="error-msg" style="display:none"></div>
-      <div class="toast" id="toast"></div>
-      <div class="modal-overlay hidden" id="confirm-modal">
-        <div class="modal">
-          <p id="confirm-modal-text"></p>
-          <button id="confirm-modal-cancel">Cancelar</button>
-          <button id="confirm-modal-ok">Confirmar</button>
-        </div>
-      </div>
-      <div id="iniciais-campos"></div>
-      <div id="equipamentos-list"></div>
-      <div id="retorno-campos"></div>
-      <div id="retorno-desc"></div>
-      <select id="tipo-ordem"><option value="">Selecione</option></select>
-      <div id="preview-grid"></div>
-      <div id="file-count">0 / 12</div>
-      <div id="complemento-corpo"></div>
-      <div id="file-upload-area"></div>
-      <input type="file" id="file-input">
-      <div class="modal-overlay hidden" id="modal-tipo">
-        <div class="modal">
-          <p id="modal-tipo-text"></p>
-          <button id="modal-cancel">Cancelar</button>
-          <button id="modal-confirm">Alterar mesmo assim</button>
-        </div>
-      </div>
-      <div class="lightbox-overlay hidden" id="lightbox">
-        <button id="lightbox-close">✕</button>
-        <img id="lightbox-img" src="" alt="Preview ampliado">
-      </div>
-      <div class="modal-overlay hidden" id="dup-modal">
-        <div class="modal">
-          <p id="dup-modal-title"></p>
-          <p id="dup-modal-body"></p>
-          <button id="dup-modal-cancel">Cancelar</button>
-          <button id="dup-modal-confirm">Reenviar</button>
-        </div>
-      </div>
-    `;
-    cacheDOM();
+    createTestDOM();
   });
 
   describe('showError', () => {

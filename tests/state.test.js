@@ -9,64 +9,11 @@ import {
 import { getCurrentUUID } from '../scripts/uuid.js';
 import { debouncedSave, saveState } from '../scripts/persistence.js';
 import { getRecord } from '../scripts/db.js';
-import { cacheDOM, DOM } from '../scripts/dom.js';
+import { createTestDOM } from './helpers/dom-fixture.js';
 
 describe('state', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <div id="iniciais-campos"></div>
-      <div id="equipamentos-list"></div>
-      <div id="retorno-campos"></div>
-      <div id="retorno-desc"></div>
-      <select id="tipo-ordem"><option value="">Selecione</option></select>
-      <div id="preview-grid"></div>
-      <div id="file-count">0 / 12</div>
-      <textarea id="complemento-corpo"></textarea>
-      <div id="file-upload-area"></div>
-      <input type="file" id="file-input">
-      <div id="error-msg" style="display:none"></div>
-      <div id="section-wrapper">
-        <div class="section" id="section-1"></div>
-      </div>
-      <div class="progress" id="progress">
-        <div class="step" data-step="1">Iniciais</div>
-        <div class="step" data-step="2">Equip.</div>
-        <div class="step" data-step="3">Retorno</div>
-        <div class="step" data-step="4">Anexos</div>
-        <div class="step" data-step="5">Revisão</div>
-      </div>
-      <button id="btn-anterior" disabled>← Anterior</button>
-      <button id="btn-proximo">Avançar →</button>
-      <div id="preview-corpo">—</div>
-      <div class="toast" id="toast"></div>
-      <div class="modal-overlay hidden" id="modal-tipo">
-        <div class="modal">
-          <p id="modal-tipo-text"></p>
-          <button id="modal-cancel">Cancelar</button>
-          <button id="modal-confirm">Alterar mesmo assim</button>
-        </div>
-      </div>
-      <div class="lightbox-overlay hidden" id="lightbox">
-        <button id="lightbox-close">✕</button>
-        <img id="lightbox-img" src="" alt="Preview ampliado">
-      </div>
-      <div class="modal-overlay hidden" id="dup-modal">
-        <div class="modal">
-          <p id="dup-modal-title"></p>
-          <p id="dup-modal-body"></p>
-          <button id="dup-modal-cancel">Cancelar</button>
-          <button id="dup-modal-confirm">Reenviar</button>
-        </div>
-      </div>
-      <div class="modal-overlay hidden" id="confirm-modal">
-        <div class="modal">
-          <p id="confirm-modal-text"></p>
-          <button id="confirm-modal-cancel">Cancelar</button>
-          <button id="confirm-modal-ok">Confirmar</button>
-        </div>
-      </div>
-    `;
-    cacheDOM();
+    createTestDOM({ extraTipoOptions: [] });
     // Reset state
     state.currentSection = 1;
     state.iniciais = {};

@@ -5,6 +5,7 @@
 import 'fake-indexeddb/auto';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { cacheDOM, DOM } from '../scripts/dom.js';
+import { createTestDOM } from './helpers/dom-fixture.js';
 import { state, setCurrentUUID, clearCurrentUUID } from '../scripts/state.js';
 import { saveState, debouncedSave, markAttachmentsDirty } from '../scripts/persistence.js';
 import { getRecord, deleteRecord, saveAttachments } from '../scripts/db.js';
@@ -27,55 +28,7 @@ import { createDefaultEquipamentos } from '../scripts/state.js';
 
 describe('G2: saveState QuotaExceededError', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <div id="iniciais-campos"></div>
-      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
-      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
-      <div id="sec-equip-instalados" class="hidden"></div>
-      <div id="sec-equip-retirados" class="hidden"></div>
-      <div id="checkboxes-instalados"></div>
-      <div id="checkboxes-retirados"></div>
-      <div id="campos-instalados"></div>
-      <div id="campos-retirados"></div>
-      <div id="retorno-campos"></div>
-      <div id="retorno-desc"></div>
-      <select id="tipo-ordem"><option value="">Selecione</option></select>
-      <div id="preview-grid"></div>
-      <div id="file-count">0 / 12</div>
-      <textarea id="complemento-corpo"></textarea>
-      <div id="file-upload-area"></div>
-      <input type="file" id="file-input">
-      <div id="error-msg" style="display:none"></div>
-      <div class="toast" id="toast"></div>
-      <div class="modal-overlay hidden" id="modal-tipo">
-        <div class="modal">
-          <p id="modal-tipo-text"></p>
-          <button id="modal-cancel">Cancelar</button>
-          <button id="modal-confirm">Alterar mesmo assim</button>
-        </div>
-      </div>
-      <div class="lightbox-overlay hidden" id="lightbox">
-        <button id="lightbox-close">✕</button>
-        <img id="lightbox-img" src="" alt="Preview ampliado">
-      </div>
-      <div class="modal-overlay hidden" id="dup-modal">
-        <div class="modal">
-          <p id="dup-modal-title"></p>
-          <p id="dup-modal-body"></p>
-          <button id="dup-modal-cancel">Cancelar</button>
-          <button id="dup-modal-confirm">Reenviar</button>
-        </div>
-      </div>
-      <div class="modal-overlay hidden" id="confirm-modal">
-        <div class="modal">
-          <p id="confirm-modal-text"></p>
-          <button id="confirm-modal-cancel">Cancelar</button>
-          <button id="confirm-modal-ok">Confirmar</button>
-        </div>
-      </div>
-      <div id="retorno-placeholder"></div>
-    `;
-    cacheDOM();
+    createTestDOM();
 
     state.iniciais = {};
     state.equipamentos = createDefaultEquipamentos();
@@ -122,60 +75,7 @@ describe('G2: saveState QuotaExceededError', () => {
 
 describe('G3: handleTipoChange guard clause', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <div id="iniciais-campos"></div>
-      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
-      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
-      <div id="sec-equip-instalados" class="hidden"></div>
-      <div id="sec-equip-retirados" class="hidden"></div>
-      <div id="checkboxes-instalados"></div>
-      <div id="checkboxes-retirados"></div>
-      <div id="campos-instalados"></div>
-      <div id="campos-retirados"></div>
-      <div id="retorno-campos"></div>
-      <div id="retorno-desc"></div>
-      <div id="retorno-placeholder"></div>
-      <select id="tipo-ordem">
-        <option value="">Selecione</option>
-        <option value="ADEQUACAO SMF">ADEQUACAO SMF</option>
-        <option value="CORTE POR FALTA DE PAGAMENTO">CORTE POR FALTA DE PAGAMENTO</option>
-      </select>
-      <div id="preview-grid"></div>
-      <div id="preview-corpo">—</div>
-      <div id="file-count">0 / 12</div>
-      <textarea id="complemento-corpo"></textarea>
-      <div id="file-upload-area"></div>
-      <input type="file" id="file-input">
-      <div id="error-msg" style="display:none"></div>
-      <div class="toast" id="toast"></div>
-      <div class="modal-overlay hidden" id="modal-tipo">
-        <div class="modal">
-          <p id="modal-tipo-text"></p>
-          <button id="modal-cancel">Cancelar</button>
-          <button id="modal-confirm">Alterar mesmo assim</button>
-        </div>
-      </div>
-      <div class="lightbox-overlay hidden" id="lightbox">
-        <button id="lightbox-close">✕</button>
-        <img id="lightbox-img" src="" alt="Preview ampliado">
-      </div>
-      <div class="modal-overlay hidden" id="dup-modal">
-        <div class="modal">
-          <p id="dup-modal-title"></p>
-          <p id="dup-modal-body"></p>
-          <button id="dup-modal-cancel">Cancelar</button>
-          <button id="dup-modal-confirm">Reenviar</button>
-        </div>
-      </div>
-      <div class="modal-overlay hidden" id="confirm-modal">
-        <div class="modal">
-          <p id="confirm-modal-text"></p>
-          <button id="confirm-modal-cancel">Cancelar</button>
-          <button id="confirm-modal-ok">Confirmar</button>
-        </div>
-      </div>
-    `;
-    cacheDOM();
+    createTestDOM();
     state.iniciais = {};
     state.retorno = {};
     state.lastTipoOrdem = '';
@@ -205,59 +105,7 @@ describe('G3: handleTipoChange guard clause', () => {
 
 describe('G4: applyRecord attachment migration fallback', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <div id="iniciais-campos"></div>
-      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
-      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
-      <div id="sec-equip-instalados" class="hidden"></div>
-      <div id="sec-equip-retirados" class="hidden"></div>
-      <div id="checkboxes-instalados"></div>
-      <div id="checkboxes-retirados"></div>
-      <div id="campos-instalados"></div>
-      <div id="campos-retirados"></div>
-      <div id="retorno-campos"></div>
-      <div id="retorno-desc"></div>
-      <div id="retorno-placeholder"></div>
-      <select id="tipo-ordem">
-        <option value="">Selecione</option>
-        <option value="CORTE POR FALTA DE PAGAMENTO">CORTE POR FALTA DE PAGAMENTO</option>
-      </select>
-      <div id="preview-grid"></div>
-      <div id="preview-corpo">—</div>
-      <div id="file-count">0 / 12</div>
-      <textarea id="complemento-corpo"></textarea>
-      <div id="file-upload-area"></div>
-      <input type="file" id="file-input">
-      <div id="error-msg" style="display:none"></div>
-      <div class="toast" id="toast"></div>
-      <div class="modal-overlay hidden" id="modal-tipo">
-        <div class="modal">
-          <p id="modal-tipo-text"></p>
-          <button id="modal-cancel">Cancelar</button>
-          <button id="modal-confirm">Alterar mesmo assim</button>
-        </div>
-      </div>
-      <div class="lightbox-overlay hidden" id="lightbox">
-        <button id="lightbox-close">✕</button>
-        <img id="lightbox-img" src="" alt="Preview ampliado">
-      </div>
-      <div class="modal-overlay hidden" id="dup-modal">
-        <div class="modal">
-          <p id="dup-modal-title"></p>
-          <p id="dup-modal-body"></p>
-          <button id="dup-modal-cancel">Cancelar</button>
-          <button id="dup-modal-confirm">Reenviar</button>
-        </div>
-      </div>
-      <div class="modal-overlay hidden" id="confirm-modal">
-        <div class="modal">
-          <p id="confirm-modal-text"></p>
-          <button id="confirm-modal-cancel">Cancelar</button>
-          <button id="confirm-modal-ok">Confirmar</button>
-        </div>
-      </div>
-    `;
-    cacheDOM();
+    createTestDOM();
     localStorage.clear();
     state.iniciais = {};
     state.equipamentos = createDefaultEquipamentos();
@@ -317,55 +165,7 @@ describe('G5: generateUUID fallback path', () => {
 
 describe('G6: resolveCreatedAt failure fallback', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <div id="iniciais-campos"></div>
-      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
-      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
-      <div id="sec-equip-instalados" class="hidden"></div>
-      <div id="sec-equip-retirados" class="hidden"></div>
-      <div id="checkboxes-instalados"></div>
-      <div id="checkboxes-retirados"></div>
-      <div id="campos-instalados"></div>
-      <div id="campos-retirados"></div>
-      <div id="retorno-campos"></div>
-      <div id="retorno-desc"></div>
-      <select id="tipo-ordem"><option value="">Selecione</option></select>
-      <div id="preview-grid"></div>
-      <div id="file-count">0 / 12</div>
-      <textarea id="complemento-corpo"></textarea>
-      <div id="file-upload-area"></div>
-      <input type="file" id="file-input">
-      <div id="error-msg" style="display:none"></div>
-      <div class="toast" id="toast"></div>
-      <div class="modal-overlay hidden" id="modal-tipo">
-        <div class="modal">
-          <p id="modal-tipo-text"></p>
-          <button id="modal-cancel">Cancelar</button>
-          <button id="modal-confirm">Alterar mesmo assim</button>
-        </div>
-      </div>
-      <div class="lightbox-overlay hidden" id="lightbox">
-        <button id="lightbox-close">✕</button>
-        <img id="lightbox-img" src="" alt="Preview ampliado">
-      </div>
-      <div class="modal-overlay hidden" id="dup-modal">
-        <div class="modal">
-          <p id="dup-modal-title"></p>
-          <p id="dup-modal-body"></p>
-          <button id="dup-modal-cancel">Cancelar</button>
-          <button id="dup-modal-confirm">Reenviar</button>
-        </div>
-      </div>
-      <div class="modal-overlay hidden" id="confirm-modal">
-        <div class="modal">
-          <p id="confirm-modal-text"></p>
-          <button id="confirm-modal-cancel">Cancelar</button>
-          <button id="confirm-modal-ok">Confirmar</button>
-        </div>
-      </div>
-      <div id="retorno-placeholder"></div>
-    `;
-    cacheDOM();
+    createTestDOM();
     state.iniciais = {};
     state.equipamentos = createDefaultEquipamentos();
     state.attachments = [];
@@ -409,55 +209,7 @@ describe('G6: resolveCreatedAt failure fallback', () => {
 
 describe('G7+G8: markAttachmentsDirty and empty attachments save', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <div id="iniciais-campos"></div>
-      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
-      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
-      <div id="sec-equip-instalados" class="hidden"></div>
-      <div id="sec-equip-retirados" class="hidden"></div>
-      <div id="checkboxes-instalados"></div>
-      <div id="checkboxes-retirados"></div>
-      <div id="campos-instalados"></div>
-      <div id="campos-retirados"></div>
-      <div id="retorno-campos"></div>
-      <div id="retorno-desc"></div>
-      <select id="tipo-ordem"><option value="">Selecione</option></select>
-      <div id="preview-grid"></div>
-      <div id="file-count">0 / 12</div>
-      <textarea id="complemento-corpo"></textarea>
-      <div id="file-upload-area"></div>
-      <input type="file" id="file-input">
-      <div id="error-msg" style="display:none"></div>
-      <div class="toast" id="toast"></div>
-      <div class="modal-overlay hidden" id="modal-tipo">
-        <div class="modal">
-          <p id="modal-tipo-text"></p>
-          <button id="modal-cancel">Cancelar</button>
-          <button id="modal-confirm">Alterar mesmo assim</button>
-        </div>
-      </div>
-      <div class="lightbox-overlay hidden" id="lightbox">
-        <button id="lightbox-close">✕</button>
-        <img id="lightbox-img" src="" alt="Preview ampliado">
-      </div>
-      <div class="modal-overlay hidden" id="dup-modal">
-        <div class="modal">
-          <p id="dup-modal-title"></p>
-          <p id="dup-modal-body"></p>
-          <button id="dup-modal-cancel">Cancelar</button>
-          <button id="dup-modal-confirm">Reenviar</button>
-        </div>
-      </div>
-      <div class="modal-overlay hidden" id="confirm-modal">
-        <div class="modal">
-          <p id="confirm-modal-text"></p>
-          <button id="confirm-modal-cancel">Cancelar</button>
-          <button id="confirm-modal-ok">Confirmar</button>
-        </div>
-      </div>
-      <div id="retorno-placeholder"></div>
-    `;
-    cacheDOM();
+    createTestDOM();
     state.iniciais = {};
     state.equipamentos = createDefaultEquipamentos();
     state.attachments = [];
@@ -509,58 +261,7 @@ describe('G7+G8: markAttachmentsDirty and empty attachments save', () => {
 
 describe('G9: updateLivePreview DOM update', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <div id="iniciais-campos"></div>
-      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
-      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
-      <div id="sec-equip-instalados" class="hidden"></div>
-      <div id="sec-equip-retirados" class="hidden"></div>
-      <div id="checkboxes-instalados"></div>
-      <div id="checkboxes-retirados"></div>
-      <div id="campos-instalados"></div>
-      <div id="campos-retirados"></div>
-      <div id="retorno-campos"></div>
-      <div id="retorno-desc"></div>
-      <div id="retorno-placeholder"></div>
-      <select id="tipo-ordem">
-        <option value="">Selecione</option>
-        <option value="ADEQUACAO SMF">ADEQUACAO SMF</option>
-      </select>
-      <div id="preview-corpo">—</div>
-      <div id="file-count">0 / 12</div>
-      <textarea id="complemento-corpo"></textarea>
-      <div id="file-upload-area"></div>
-      <input type="file" id="file-input">
-      <div id="error-msg" style="display:none"></div>
-      <div class="toast" id="toast"></div>
-      <div class="modal-overlay hidden" id="modal-tipo">
-        <div class="modal">
-          <p id="modal-tipo-text"></p>
-          <button id="modal-cancel">Cancelar</button>
-          <button id="modal-confirm">Alterar mesmo assim</button>
-        </div>
-      </div>
-      <div class="lightbox-overlay hidden" id="lightbox">
-        <button id="lightbox-close">✕</button>
-        <img id="lightbox-img" src="" alt="Preview ampliado">
-      </div>
-      <div class="modal-overlay hidden" id="dup-modal">
-        <div class="modal">
-          <p id="dup-modal-title"></p>
-          <p id="dup-modal-body"></p>
-          <button id="dup-modal-cancel">Cancelar</button>
-          <button id="dup-modal-confirm">Reenviar</button>
-        </div>
-      </div>
-      <div class="modal-overlay hidden" id="confirm-modal">
-        <div class="modal">
-          <p id="confirm-modal-text"></p>
-          <button id="confirm-modal-cancel">Cancelar</button>
-          <button id="confirm-modal-ok">Confirmar</button>
-        </div>
-      </div>
-    `;
-    cacheDOM();
+    createTestDOM();
     state.iniciais = {};
     state.equipamentos = createDefaultEquipamentos();
     state.retorno = {};
@@ -619,60 +320,7 @@ describe('G10: styles.js constants', () => {
 
 describe('G11: resetForm preview state', () => {
   beforeEach(() => {
-    document.body.innerHTML = `
-      <div id="iniciais-campos"></div>
-      <select id="instalado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
-      <select id="retirado-equip"><option value="NAO">NAO</option><option value="SIM">SIM</option></select>
-      <div id="sec-equip-instalados" class="hidden"></div>
-      <div id="sec-equip-retirados" class="hidden"></div>
-      <div id="checkboxes-instalados"></div>
-      <div id="checkboxes-retirados"></div>
-      <div id="campos-instalados"></div>
-      <div id="campos-retirados"></div>
-      <div id="retorno-campos"></div>
-      <div id="retorno-desc"></div>
-      <div id="retorno-placeholder"></div>
-      <select id="tipo-ordem">
-        <option value="">Selecione</option>
-        <option value="ADEQUACAO SMF">ADEQUACAO SMF</option>
-      </select>
-      <div id="preview-corpo">—</div>
-      <div id="preview-grid"></div>
-      <div id="file-count">0 / 12</div>
-      <textarea id="complemento-corpo"></textarea>
-      <div id="file-upload-area"></div>
-      <input type="file" id="file-input">
-      <button id="btn-novo-form">Novo</button>
-      <div id="error-msg" style="display:none"></div>
-      <div class="toast" id="toast"></div>
-      <div class="modal-overlay hidden" id="modal-tipo">
-        <div class="modal">
-          <p id="modal-tipo-text"></p>
-          <button id="modal-cancel">Cancelar</button>
-          <button id="modal-confirm">Alterar mesmo assim</button>
-        </div>
-      </div>
-      <div class="lightbox-overlay hidden" id="lightbox">
-        <button id="lightbox-close">✕</button>
-        <img id="lightbox-img" src="" alt="Preview ampliado">
-      </div>
-      <div class="modal-overlay hidden" id="dup-modal">
-        <div class="modal">
-          <p id="dup-modal-title"></p>
-          <p id="dup-modal-body"></p>
-          <button id="dup-modal-cancel">Cancelar</button>
-          <button id="dup-modal-confirm">Reenviar</button>
-        </div>
-      </div>
-      <div class="modal-overlay hidden" id="confirm-modal">
-        <div class="modal">
-          <p id="confirm-modal-text"></p>
-          <button id="confirm-modal-cancel">Cancelar</button>
-          <button id="confirm-modal-ok">Confirmar</button>
-        </div>
-      </div>
-    `;
-    cacheDOM();
+    createTestDOM();
     state.iniciais = {};
     state.equipamentos = createDefaultEquipamentos();
     state.attachments = [];

@@ -1,7 +1,8 @@
 import 'fake-indexeddb/auto';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { checkDuplicate } from '../scripts/duplicate.js';
-import { cacheDOM, DOM } from '../scripts/dom.js';
+import { createTestDOM } from './helpers/dom-fixture.js';
+import { DOM } from '../scripts/dom.js';
 import { state } from '../scripts/state.js';
 import { saveDraft, getAllRecords, deleteRecord } from '../scripts/db.js';
 
@@ -14,18 +15,7 @@ describe('duplicate', () => {
   }
 
   beforeEach(async () => {
-    document.body.innerHTML = `
-      <div class="modal-overlay hidden" id="dup-modal">
-        <div class="modal">
-          <p id="dup-modal-title"></p>
-          <p id="dup-modal-body"></p>
-          <button id="dup-modal-cancel">Cancelar</button>
-          <button id="dup-modal-confirm">Reenviar</button>
-        </div>
-      </div>
-      <div id="error-msg" style="display:none"></div>
-    `;
-    cacheDOM();
+    createTestDOM();
     state.currentUUID = '';
     await clearDB();
   });

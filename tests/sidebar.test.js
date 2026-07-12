@@ -1,7 +1,8 @@
 import 'fake-indexeddb/auto';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { closeSidebar, renderSidebar, initSidebarFilter } from '../scripts/sidebar.js';
-import { cacheDOM, DOM } from '../scripts/dom.js';
+import { createTestDOM } from './helpers/dom-fixture.js';
+import { DOM } from '../scripts/dom.js';
 import { state } from '../scripts/state.js';
 import { saveDraft, getAllRecords, deleteRecord } from '../scripts/db.js';
 
@@ -28,26 +29,7 @@ describe('sidebar', () => {
   }
 
   beforeEach(async () => {
-    document.body.innerHTML = `
-      <div class="sidebar" id="sidebar">
-        <div class="sidebar-inner">
-          <h2 class="sidebar-title">Registros</h2>
-          <button class="sidebar-close" id="sidebar-close">&times;</button>
-        </div>
-        <input type="search" id="sidebar-filter" placeholder="Buscar por UC ou OS...">
-        <div class="sidebar-list" id="sidebar-list"></div>
-      </div>
-      <div class="sidebar-overlay" id="sidebar-overlay"></div>
-      <div id="error-msg" style="display:none"></div>
-      <div class="modal-overlay hidden" id="confirm-modal">
-        <div class="modal">
-          <p id="confirm-modal-text"></p>
-          <button id="confirm-modal-cancel">Cancelar</button>
-          <button id="confirm-modal-ok">Confirmar</button>
-        </div>
-      </div>
-    `;
-    cacheDOM();
+    createTestDOM();
     state.currentUUID = '';
     state.iniciaisValido = false;
     mockResetForm.mockClear();
