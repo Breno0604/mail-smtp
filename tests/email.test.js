@@ -195,6 +195,62 @@ describe('email', () => {
       expect(body).not.toContain('EQUIPAMENTOS INSTALADOS:');
     });
 
+    it('should normalize accented text in template output', () => {
+      const data = {
+        ...sampleData,
+        iniciais: { ...sampleData.iniciais, 'tipo-ordem': 'CORTE POR FALTA DE PAGAMENTO' },
+        equipamentos: {
+          instaladoEquip: 'NAO',
+          retiradoEquip: 'NAO',
+          instalados: {},
+          retirados: {},
+        },
+        retorno: {
+          situacao_corte: 'CLIENTE CORTADO',
+          descricao: 'João foi cortado por falta de pagamento',
+        },
+      };
+      const body = composeEmail(data);
+      expect(body).toContain('JOAO FOI CORTADO POR FALTA DE PAGAMENTO');
+      expect(body).not.toContain('João');
+      expect(body).not.toContain('Joao foi cortado por falta de pagamento');
+    });
+
+    it('should add empty line before and after equipamentos retirados', () => {
+      const data = {
+        ...sampleData,
+        equipamentos: {
+          instaladoEquip: 'SIM',
+          retiradoEquip: 'SIM',
+          instalados: {
+            medidor: 'ABC123',
+            conjunto: '',
+            display: '',
+            tc_fase_a: '',
+            tc_fase_b: '',
+            tc_fase_c: '',
+            tp_fase_a: '',
+            tp_fase_b: '',
+            tp_fase_c: '',
+          },
+          retirados: {
+            medidor: 'XYZ789',
+            conjunto: '',
+            display: '',
+            tc_fase_a: '',
+            tc_fase_b: '',
+            tc_fase_c: '',
+            tp_fase_a: '',
+            tp_fase_b: '',
+            tp_fase_c: '',
+          },
+        },
+      };
+      const body = composeEmail(data);
+      expect(body).toContain('\n\nEQUIPAMENTOS RETIRADOS:');
+      expect(body).toContain('MEDIDOR: XYZ789\n\n');
+    });
+
     it('should include retorno fields without header', () => {
       const data = { ...sampleData, retorno: { descricao: 'Retorno test description' } };
       const body = composeEmail(data);
@@ -224,7 +280,7 @@ describe('email', () => {
       // Template overrides field-by-field rendering for LIGACAO NOVA MEDIA TENSAO
       // VISTORIA variant selected, but no conditional blocks match (no obra, etc.)
       // Only unconditional blocks render: empty + {descricao}
-      expect(body).toContain('{descricao}');
+      expect(body).toContain('{DESCRICAO}');
       expect(body).not.toContain('EXECUTADO:');
       expect(body).not.toContain('OBRA:');
       expect(body).not.toContain('LIGACAO:');
@@ -255,7 +311,7 @@ describe('email', () => {
       };
       const body = composeEmail(data);
       expect(body).toContain('CLIENTE CORTADO.');
-      expect(body).toContain('Corte efetuado na UC');
+      expect(body).toContain('CORTE EFETUADO NA UC');
       expect(body).not.toContain('SITUACAO:');
     });
 
@@ -283,7 +339,7 @@ describe('email', () => {
       const body = composeEmail(data);
       expect(body).toContain('CLIENTE ENCONTRADO CORTADO');
       expect(body).toContain('TOI: 99999');
-      expect(body).toContain('Inspeção finalizada');
+      expect(body).toContain('INSPECAO FINALIZADA');
       expect(body).not.toContain('SITUACAO:');
     });
   });

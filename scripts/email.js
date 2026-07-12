@@ -94,8 +94,8 @@ export function composeEmail(data) {
       .map(key => `${EQUIP_LABELS[key]}: ${normalizeText(data.equipamentos.retirados[key])}`);
 
     if (removedItems.length > 0) {
-      body += '\nEQUIPAMENTOS RETIRADOS:';
-      body += '\n' + removedItems.join('\n');
+      body += '\n\nEQUIPAMENTOS RETIRADOS:';
+      body += '\n' + removedItems.join('\n') + '\n';
     }
   }
 
@@ -104,7 +104,7 @@ export function composeEmail(data) {
   const textoPersonalizado = applyRetornoTemplate(tipo, data);
 
   if (textoPersonalizado) {
-    body += '\n' + textoPersonalizado;
+    body += '\n' + normalizeText(textoPersonalizado);
   } else {
     const retornoFields = getRetornoFields(tipo);
     retornoFields.forEach(field => {
