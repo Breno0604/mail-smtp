@@ -239,6 +239,10 @@ function validateSection3() {
 }
 
 function validateSection4() {
+  if (state.attachments.length < 2) {
+    showError('Mínimo de 2 anexos obrigatório.');
+    return false;
+  }
   if (state.attachments.length > 12) {
     showError('Máximo de 12 anexos permitido.');
     return false;

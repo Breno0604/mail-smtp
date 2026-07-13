@@ -730,10 +730,10 @@ describe('validation', () => {
   });
 
   describe('validateSection(4) - Anexos', () => {
-    it('should return true when there are no attachments', () => {
+    it('should return false when there are fewer than 2 attachments', () => {
       state.attachments = [];
       const result = validateSection(4);
-      expect(result).toBe(true);
+      expect(result).toBe(false);
     });
 
     it('should return true when attachments are within limits', () => {
@@ -775,6 +775,7 @@ describe('validation', () => {
 
     it('should show error with oversized file name', () => {
       state.attachments = [
+        new File(['x'.repeat(100)], 'normal.jpg', { type: 'image/jpeg' }),
         new File(['x'.repeat(9 * 1024 * 1024)], 'huge-photo.jpg', { type: 'image/jpeg' }),
       ];
       validateSection(4);
@@ -829,6 +830,10 @@ describe('validation', () => {
       DOM.retiradoEquip.value = 'NAO';
       state.equipamentos.instaladoEquip = 'NAO';
       state.equipamentos.retiradoEquip = 'NAO';
+      state.attachments = [
+        new File(['a'], 'img1.jpg', { type: 'image/jpeg' }),
+        new File(['b'], 'img2.jpg', { type: 'image/jpeg' }),
+      ];
       const result = validateAll();
       expect(result).toBe(true);
     });
@@ -838,6 +843,10 @@ describe('validation', () => {
       DOM.errorMsg.textContent = 'Previous error';
       DOM.errorMsg.style.display = 'block';
       expect(DOM.errorMsg.style.display).toBe('block');
+      state.attachments = [
+        new File(['a'], 'img1.jpg', { type: 'image/jpeg' }),
+        new File(['b'], 'img2.jpg', { type: 'image/jpeg' }),
+      ];
       validateAll();
       expect(DOM.errorMsg.style.display).toBe('none');
     });

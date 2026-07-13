@@ -10,6 +10,7 @@ import { base64ToBlob } from './utils.js';
 import { getAttachmentsByUuid } from './db.js';
 import { updateLivePreview } from './email.js';
 import { collectIniciais } from './collectors.js';
+import { updateAllFilledClasses } from './app.js';
 
 /**
  * Aplica um registro ao formulário, restaurando todos os campos.
@@ -105,6 +106,8 @@ export async function applyRecord(record) {
     DOM.retiradoEquip.value = state.equipamentos.retiradoEquip || '';
     DOM.secEquipRetirados.classList.add('hidden');
   }
+
+  updateAllFilledClasses();
 
   // ── Render Anexos ───────────────────────────────────────────────────────
   renderPreviews();

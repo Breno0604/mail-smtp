@@ -140,8 +140,7 @@ describe('sendEmail', () => {
 
     await sendEmail();
     const callBody = JSON.parse(fetch.mock.calls[0][1].body);
-    expect(callBody.subject).toContain('OS #67890');
-    expect(callBody.subject).toContain('UC 12345');
+    expect(callBody.subject).toContain('RETORNO DE ORDEM UC 12345 OS 67890');
     expect(callBody.subject).toContain('CORTE POR FALTA DE PAGAMENTO');
   });
 

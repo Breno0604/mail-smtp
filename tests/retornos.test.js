@@ -144,6 +144,7 @@ describe('retornos', () => {
     });
 
     it('should clear retorno when tipo changes', () => {
+      state.iniciaisValido = true;
       state.retorno = { descricao: 'old' };
       DOM.tipoOrdem.value = 'ADEQUACAO SMF';
       handleTipoChange();

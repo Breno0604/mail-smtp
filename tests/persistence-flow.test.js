@@ -100,7 +100,7 @@ describe('persistence flow: real-world scenarios', () => {
       expect(record.retorno.situacao_corte).toBe('CLIENTE CORTADO');
     });
 
-    it('should create record if equipment data exists even when iniciaisValido is false', async () => {
+    it('should NOT save when iniciaisValido is false even if equipment data exists', async () => {
       renderIniciais();
       document.getElementById('lider').value = 'ANDRE DE SOUSA CARVALHO';
       // UC and OS are empty — iniciaisValido is false
@@ -125,11 +125,10 @@ describe('persistence flow: real-world scenarios', () => {
       state.iniciaisValido = false;
       await saveState();
 
-      // Record should be created because equipment data exists
-      expect(state.currentUUID).not.toBe('');
-      const record = await getRecord(state.currentUUID);
-      expect(record.equipamentos.instaladoEquip).toBe('SIM');
-      expect(record.equipamentos.instalados.medidor).toBe('12345');
+      // No record should be created — UC/OS not filled yet
+      expect(state.currentUUID).toBe('');
+      const records = await getAllRecords();
+      expect(records).toHaveLength(0);
     });
   });
 

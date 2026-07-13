@@ -29,7 +29,7 @@ export async function sendEmail() {
     const uc = state.iniciais?.uc || '—';
     const os = state.iniciais?.os || '—';
     const tipoLabel = DOM.tipoOrdem?.options[DOM.tipoOrdem.selectedIndex]?.text || '\u2014';
-    const subject = `OS #${os} - UC ${uc} - ${tipoLabel}`;
+    const subject = `RETORNO DE ORDEM UC ${uc} OS ${os} - ${tipoLabel}`;
 
     const collectedData = collectAllData();
     const text = composeEmail(collectedData);
