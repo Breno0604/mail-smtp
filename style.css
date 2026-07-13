@@ -538,6 +538,11 @@ textarea.is-filled:hover {
   }
 }
 
+/* === Lightbox overlay background (bg-black/95 não existe no tailwind.css estático) === */
+.lightbox-overlay {
+  background-color: rgba(0, 0, 0, 0.95);
+}
+
 /* === Mobile Adjustments === */
 @media (max-width: 640px) {
   .preview-grid {

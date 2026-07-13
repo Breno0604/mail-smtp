@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { validateSection, validateAll, addBlurValidation } from '../scripts/validation.js';
 import { DOM } from '../scripts/dom.js';
 import { createTestDOM } from './helpers/dom-fixture.js';
@@ -840,6 +840,130 @@ describe('validation', () => {
       expect(DOM.errorMsg.style.display).toBe('block');
       validateAll();
       expect(DOM.errorMsg.style.display).toBe('none');
+    });
+  });
+
+  describe('validateAll - first error only', () => {
+    beforeEach(() => {
+      state.attachments = [];
+    });
+
+    function setupAllSections() {
+      renderIniciais();
+      DOM.tipoOrdem.value = 'ADEQUACAO SMF';
+    }
+
+    it('should only mark the first empty required field with .error class', () => {
+      setupAllSections();
+      // Fill all fields except the first required (lider)
+      document.getElementById('parceiro').value = 'ANTONIO MAURIELLTON DE ARAUJO MARTINS';
+      document.getElementById('municipio').value = 'FORTALEZA';
+      document.getElementById('uc').value = '12345';
+      document.getElementById('os').value = '67890';
+      document.getElementById('notificado').value = 'SIM';
+      document.getElementById('placa').value = 'RIE0D84';
+      document.getElementById('data').value = '2024-03-15';
+      document.getElementById('hora_inicio').value = '08:00';
+      document.getElementById('hora_fim').value = '17:00';
+
+      validateAll();
+
+      const lider = document.getElementById('lider');
+      expect(lider.classList.contains('error')).toBe(true);
+
+      const otherRequired = [
+        'parceiro',
+        'municipio',
+        'uc',
+        'os',
+        'notificado',
+        'placa',
+        'data',
+        'hora_inicio',
+        'hora_fim',
+      ];
+      otherRequired.forEach(name => {
+        const el = document.getElementById(name);
+        if (el) {
+          expect(el.classList.contains('error')).toBe(false);
+        }
+      });
+    });
+
+    it('should not mark subsequent empty fields with .error', () => {
+      setupAllSections();
+      // Leave lider, parceiro, municipio empty — fill the rest
+      document.getElementById('uc').value = '12345';
+      document.getElementById('os').value = '67890';
+      document.getElementById('notificado').value = 'SIM';
+      document.getElementById('placa').value = 'RIE0D84';
+      document.getElementById('data').value = '2024-03-15';
+      document.getElementById('hora_inicio').value = '08:00';
+      document.getElementById('hora_fim').value = '17:00';
+
+      validateAll();
+
+      // First empty field should have error
+      const lider = document.getElementById('lider');
+      expect(lider.classList.contains('error')).toBe(true);
+
+      // Subsequent empty fields should NOT have error
+      const parceiro = document.getElementById('parceiro');
+      expect(parceiro.classList.contains('error')).toBe(false);
+
+      const municipio = document.getElementById('municipio');
+      expect(municipio.classList.contains('error')).toBe(false);
+    });
+
+    it('should focus on the first invalid field', () => {
+      setupAllSections();
+      validateAll();
+
+      const lider = document.getElementById('lider');
+      expect(document.activeElement).toBe(lider);
+    });
+
+    it('should show error span only on the first field', () => {
+      setupAllSections();
+      validateAll();
+
+      const visibleErrors = document.querySelectorAll('.field-error.show');
+      expect(visibleErrors.length).toBe(1);
+    });
+
+    it('should show the next error when the first is corrected and re-validated', () => {
+      setupAllSections();
+      // Both lider and parceiro empty
+      validateAll();
+
+      const lider = document.getElementById('lider');
+      expect(lider.classList.contains('error')).toBe(true);
+
+      // Fill lider and re-validate
+      lider.value = 'ANDRE DE SOUSA CARVALHO';
+      validateAll();
+
+      // lider should no longer have error
+      expect(lider.classList.contains('error')).toBe(false);
+
+      // parceiro should now be the first error
+      const parceiro = document.getElementById('parceiro');
+      expect(parceiro.classList.contains('error')).toBe(true);
+    });
+
+    it('should maintain scrollIntoView behavior on the first error', () => {
+      setupAllSections();
+
+      const scrollSpy = vi
+        .spyOn(HTMLElement.prototype, 'scrollIntoView')
+        .mockImplementation(() => {});
+
+      validateAll();
+
+      expect(scrollSpy).toHaveBeenCalledTimes(1);
+      expect(scrollSpy).toHaveBeenCalledWith({ behavior: 'smooth', block: 'center' });
+
+      scrollSpy.mockRestore();
     });
   });
 

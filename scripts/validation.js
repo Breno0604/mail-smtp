@@ -271,42 +271,35 @@ export function validateSection(n) {
 
 export function validateAll() {
   hideError();
-  let firstError = null;
+
+  // Run all section validators — they mark ALL empty fields with .error AND update state
   let valid = true;
 
   // Section 1: Iniciais
-  const s1Valid = validateSection1();
-  if (!s1Valid && !firstError) {
-    firstError = document.querySelector('#sec-inicio .error');
-  }
-  valid = valid && s1Valid;
+  valid = validateSection1() && valid;
 
   // Section 3: Retorno (only if tipo is selected)
   const tipo = DOM.tipoOrdem?.value || '';
   if (tipo) {
-    const s3Valid = validateSection3();
-    if (!s3Valid && !firstError) {
-      firstError = document.querySelector('#sec-retorno .error');
-    }
-    valid = valid && s3Valid;
+    valid = validateSection3() && valid;
   }
 
-  // Section 2: Equipamentos (validate if SIM selected)
-  const s2Valid = validateSection2();
-  if (!s2Valid && !firstError) {
-    firstError = document.querySelector('#sec-equipamentos .error');
-  }
-  valid = valid && s2Valid;
+  // Section 2: Equipamentos
+  valid = validateSection2() && valid;
 
   // Section 4: Anexos
-  const s4Valid = validateSection4();
-  if (!s4Valid && !firstError) {
-    firstError = document.querySelector('#sec-anexos .error');
-  }
-  valid = valid && s4Valid;
+  valid = validateSection4() && valid;
 
-  // Scroll to first error
-  if (firstError) {
+  // After all validators ran, keep only the first .error, clear the rest
+  const allErrors = document.querySelectorAll('.error');
+  if (allErrors.length > 0) {
+    const firstError = allErrors[0];
+    // Clear all but the first error (so only the first field shows red)
+    for (let i = 1; i < allErrors.length; i++) {
+      clearError(allErrors[i]);
+    }
+    // Focus and scroll to the first error
+    firstError.focus();
     firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
