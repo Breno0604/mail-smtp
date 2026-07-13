@@ -13,6 +13,11 @@ export function cacheDOM() {
   fresh.hamburger = document.getElementById('hamburger');
   fresh.btnNovoForm = document.getElementById('btn-novo-form');
 
+  // Status bar
+  fresh.connectionDot = document.getElementById('connection-dot');
+  fresh.connectionText = document.getElementById('connection-text');
+  fresh.saveStatusText = document.getElementById('save-status-text');
+
   // Sections
   fresh.secInicio = document.getElementById('sec-inicio');
   fresh.secRetorno = document.getElementById('sec-retorno');

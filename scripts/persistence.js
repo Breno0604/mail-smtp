@@ -4,6 +4,7 @@ import { saveDraft, getRecord, saveAttachments } from './db.js';
 import { toBase64 } from './utils.js';
 import { generateUUID } from './uuid.js';
 import { collectIniciais, collectRetorno, collectEquipamentos } from './collectors.js';
+import { notifySaveStart, notifySaveComplete } from './status.js';
 
 let saveTimer = null;
 let attachmentsDirty = true;
@@ -88,14 +89,19 @@ export async function saveState() {
   };
 
   // Save record
-  saveDraft(data).catch(err => {
+  notifySaveStart();
+  try {
+    await saveDraft(data);
+    notifySaveComplete();
+  } catch (err) {
     console.error('saveDraft error:', err);
+    notifySaveComplete(); // still notify so UI doesn't stay stuck on "Salvando..."
     if (err?.name === 'QuotaExceededError' || err?.message?.includes('quota')) {
       import('./ui.js').then(({ showToast }) => {
         showToast('Espaço insuficiente no navegador. Limpe dados antigos.', false);
       });
     }
-  });
+  }
 
   // Save attachments if dirty
   if (attachmentsDirty) {
