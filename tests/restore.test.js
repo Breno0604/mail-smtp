@@ -31,7 +31,7 @@ describe('restore', () => {
         os: '88888',
         lider: 'ANDRE DE SOUSA CARVALHO',
         municipio: 'FORTALEZA',
-        placa: 'RHS6G02',
+        placa: 'RIE0D84',
         notificado: 'SIM',
         tipo_ordem: 'ADEQUACAO SMF',
         data: '2024-03-15',

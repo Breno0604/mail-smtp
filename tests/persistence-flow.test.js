@@ -747,7 +747,7 @@ describe('persistence flow: real-world scenarios', () => {
       document.getElementById('parceiro').value = 'JOSE DOGIVAN DA SILVA';
       document.getElementById('municipio').value = 'FORTALEZA';
       document.getElementById('notificado').value = 'SIM';
-      document.getElementById('placa').value = 'RHS6G02';
+      document.getElementById('placa').value = 'RIE0D84';
       document.getElementById('data').value = '2024-03-15';
       document.getElementById('hora_inicio').value = '08:00';
       document.getElementById('hora_fim').value = '17:00';
@@ -821,7 +821,7 @@ describe('persistence flow: real-world scenarios', () => {
       expect(document.getElementById('parceiro').value).toBe('JOSE DOGIVAN DA SILVA');
       expect(document.getElementById('municipio').value).toBe('FORTALEZA');
       expect(document.getElementById('notificado').value).toBe('SIM');
-      expect(document.getElementById('placa').value).toBe('RHS6G02');
+      expect(document.getElementById('placa').value).toBe('RIE0D84');
       expect(document.getElementById('data').value).toBe('2024-03-15');
       expect(document.getElementById('hora_inicio').value).toBe('08:00');
       expect(document.getElementById('hora_fim').value).toBe('17:00');

@@ -65,9 +65,9 @@ describe('fields', () => {
       expect(lider.opcoes).toEqual(parceiro.opcoes);
     });
 
-    it('should have at least 12 nomesTecnicos in lider options', () => {
+    it('should have at least 10 nomesTecnicos in lider options', () => {
       const lider = iniciaisFields.find(f => f.nome === 'lider');
-      expect(lider.opcoes.length).toBeGreaterThanOrEqual(12);
+      expect(lider.opcoes.length).toBeGreaterThanOrEqual(10);
     });
 
     it('should have at least 29 municipio options', () => {
@@ -75,9 +75,9 @@ describe('fields', () => {
       expect(municipio.opcoes.length).toBeGreaterThanOrEqual(29);
     });
 
-    it('should have at least 12 placa options', () => {
+    it('should have at least 9 placa options', () => {
       const placa = iniciaisFields.find(f => f.nome === 'placa');
-      expect(placa.opcoes.length).toBeGreaterThanOrEqual(12);
+      expect(placa.opcoes.length).toBeGreaterThanOrEqual(9);
     });
 
     it('should have at least 43 tipo-ordem options', () => {

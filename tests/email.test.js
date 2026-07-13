@@ -19,7 +19,7 @@ describe('email', () => {
         uc: '12345',
         os: '67890',
         notificado: 'SIM',
-        placa: 'RHS6G02',
+        placa: 'RIE0D84',
         data: '2024-03-15',
         hora_inicio: '08:00',
         hora_fim: '17:00',

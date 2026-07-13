@@ -55,7 +55,7 @@ describe('complete fill persistence', () => {
       document.getElementById('parceiro').value = 'JOSE DOGIVAN DA SILVA';
       document.getElementById('municipio').value = 'FORTALEZA';
       document.getElementById('notificado').value = 'SIM';
-      document.getElementById('placa').value = 'RHS6G02';
+      document.getElementById('placa').value = 'RIE0D84';
       document.getElementById('data').value = '2024-03-15';
       document.getElementById('hora_inicio').value = '08:00';
       document.getElementById('hora_fim').value = '17:00';
@@ -270,7 +270,7 @@ describe('advanced persistence scenarios', () => {
     document.getElementById('parceiro').value = 'JOSE DOGIVAN DA SILVA';
     document.getElementById('municipio').value = 'FORTALEZA';
     document.getElementById('notificado').value = 'SIM';
-    document.getElementById('placa').value = 'RHS6G02';
+    document.getElementById('placa').value = 'RIE0D84';
     document.getElementById('data').value = '2024-03-15';
     document.getElementById('hora_inicio').value = '08:00';
     document.getElementById('hora_fim').value = '17:00';
@@ -287,7 +287,7 @@ describe('advanced persistence scenarios', () => {
     expect(state.iniciais.parceiro).toBe('JOSE DOGIVAN DA SILVA');
     expect(state.iniciais.municipio).toBe('FORTALEZA');
     expect(state.iniciais.notificado).toBe('SIM');
-    expect(state.iniciais.placa).toBe('RHS6G02');
+    expect(state.iniciais.placa).toBe('RIE0D84');
     expect(state.iniciais.data).toBe('2024-03-15');
     expect(state.iniciais.hora_inicio).toBe('08:00');
     expect(state.iniciais.hora_fim).toBe('17:00');

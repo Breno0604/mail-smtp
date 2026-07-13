@@ -146,7 +146,7 @@ export async function fillCompleteForm(page, suffix = '') {
   await page.selectOption('#parceiro', { label: 'JOSE DOGIVAN DA SILVA' });
   await page.selectOption('#municipio', { label: 'FORTALEZA' });
   await page.selectOption('#notificado', { label: 'SIM' });
-  await page.selectOption('#placa', { label: 'RHS6G02' });
+  await page.selectOption('#placa', { label: 'RIE0D84' });
   await page.fill('#data', '2026-06-13');
   await page.fill('#hora_inicio', '08:00');
   await page.fill('#hora_fim', '17:00');

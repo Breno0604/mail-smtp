@@ -15,7 +15,7 @@ test.describe('Form Fill and Preview E2E', () => {
     await page.selectOption('#parceiro', { label: 'JOSE DOGIVAN DA SILVA' });
     await page.selectOption('#municipio', { label: 'FORTALEZA' });
     await page.selectOption('#notificado', { label: 'SIM' });
-    await page.selectOption('#placa', { label: 'RHS6G02' });
+    await page.selectOption('#placa', { label: 'RIE0D84' });
 
     // Fill Date/Time fields
     await page.fill('#data', '2026-06-13');
