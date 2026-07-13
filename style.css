@@ -538,11 +538,6 @@ textarea.is-filled:hover {
   }
 }
 
-/* === Status bar === */
-#status-bar {
-  border-bottom: 1px solid #f1f5f9;
-}
-
 /* === Lightbox overlay background (bg-black/95 não existe no tailwind.css estático) === */
 .lightbox-overlay {
   background-color: rgba(0, 0, 0, 0.95);

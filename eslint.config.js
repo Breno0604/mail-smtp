@@ -30,7 +30,6 @@ export default [
         console: 'readonly',
         URL: 'readonly',
         navigator: 'readonly',
-        EventTarget: 'readonly',
         indexedDB: 'readonly',
         IDBKeyRange: 'readonly',
         FileReader: 'readonly',

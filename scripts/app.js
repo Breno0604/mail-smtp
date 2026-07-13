@@ -22,7 +22,6 @@ import { renderSidebar, closeSidebar, initSidebarFilter } from './sidebar.js';
 import { captureCoordinates } from './utils.js';
 import { sendEmail } from './send.js';
 import { updateLivePreview } from './email.js';
-import { initStatus } from './status.js';
 
 function updateFilledClass(el) {
   if (el.value && el.value.trim() !== '') {
@@ -170,7 +169,6 @@ function initEvents() {
 
 document.addEventListener('DOMContentLoaded', async () => {
   cacheDOM();
-  initStatus();
   initSidebarFilter();
 
   // Solicita armazenamento persistente (protege contra limpeza automática do navegador)
