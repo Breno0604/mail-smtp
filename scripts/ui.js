@@ -94,3 +94,19 @@ export function showConfirm(message) {
     message
   );
 }
+
+export function showAnexosModal() {
+  DOM.anexosModalText.textContent = 'O formulário deve conter no mínimo 2 e no máximo 12 anexos.';
+  DOM.anexosModal.classList.remove('hidden');
+
+  DOM.anexosModalClose.onclick = () => {
+    DOM.anexosModal.classList.add('hidden');
+    DOM.anexosModalClose.onclick = null;
+    DOM.secAnexos.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // Pequeno delay para garantir que o scroll terminou antes de focar
+    setTimeout(() => {
+      DOM.secAnexos.setAttribute('tabindex', '-1');
+      DOM.secAnexos.focus();
+    }, 400);
+  };
+}

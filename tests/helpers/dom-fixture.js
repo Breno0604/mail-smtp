@@ -140,6 +140,13 @@ export function createTestDOM(opts = {}) {
     <div class="modal-overlay hidden" id="update-modal">
       <button id="update-modal-ok">OK</button>
     </div>
+
+    <div class="modal-overlay hidden" id="anexos-modal" role="dialog" aria-modal="true" aria-labelledby="anexos-modal-text">
+      <div class="modal">
+        <p id="anexos-modal-text"></p>
+        <button class="btn btn-primary" id="anexos-modal-close">Fechar</button>
+      </div>
+    </div>
   `;
 
   // Compatibilidade: alguns testes referenciam #modal-tipo (modal antigo que não existe mais no HTML real).

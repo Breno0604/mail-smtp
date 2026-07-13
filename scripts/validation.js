@@ -1,6 +1,6 @@
 import { DOM } from './dom.js';
 import { state } from './state.js';
-import { showError, hideError, setFieldError, clearFieldError } from './ui.js';
+import { showError, hideError, setFieldError, clearFieldError, showAnexosModal } from './ui.js';
 import { collectRetorno } from './collectors.js';
 import { iniciaisFields as fieldsIniciais } from './fields.js';
 
@@ -239,12 +239,8 @@ function validateSection3() {
 }
 
 function validateSection4() {
-  if (state.attachments.length < 2) {
-    showError('Mínimo de 2 anexos obrigatório.');
-    return false;
-  }
-  if (state.attachments.length > 12) {
-    showError('Máximo de 12 anexos permitido.');
+  if (state.attachments.length < 2 || state.attachments.length > 12) {
+    showAnexosModal();
     return false;
   }
   const oversized = state.attachments.filter(f => f.size > 8 * 1024 * 1024);

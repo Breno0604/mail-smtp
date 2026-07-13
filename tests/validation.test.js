@@ -754,15 +754,17 @@ describe('validation', () => {
       expect(result).toBe(false);
     });
 
-    it('should show error message when more than 12 attachments', () => {
+    it('should show modal when more than 12 attachments', () => {
       state.attachments = [];
       for (let i = 0; i < 13; i++) {
         state.attachments.push(new File(['x'], `f-${i}.jpg`, { type: 'image/jpeg' }));
       }
       validateSection(4);
-      const errorMsg = document.getElementById('error-msg');
-      expect(errorMsg.style.display).not.toBe('none');
-      expect(errorMsg.textContent).toContain('12');
+      const modal = document.getElementById('anexos-modal');
+      expect(modal.classList.contains('hidden')).toBe(false);
+      const modalText = document.getElementById('anexos-modal-text');
+      expect(modalText.textContent).toContain('mínimo 2');
+      expect(modalText.textContent).toContain('máximo 12');
     });
 
     it('should return false when an attachment exceeds 8 MB', () => {
