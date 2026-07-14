@@ -5,6 +5,15 @@ exports.handler = async event => {
     return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
   }
 
+  // ── Segurança: verificar origem da requisição ──────────────
+  const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN;
+  if (ALLOWED_ORIGIN) {
+    const origin = event.headers.origin || event.headers.referer || '';
+    if (!origin.startsWith(ALLOWED_ORIGIN)) {
+      return { statusCode: 403, body: JSON.stringify({ error: 'Origem não autorizada.' }) };
+    }
+  }
+
   try {
     // ── Segurança: limite de payload ────────────────────────────
     const rawBody = event.body || '';
