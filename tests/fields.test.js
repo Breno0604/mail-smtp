@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { iniciaisFields, getRetornoFields, retornoFieldsByTipo } from '../scripts/fields.js';
+import { tipoOrdemOptions } from '../scripts/data/fields-data.js';
+import { retornoTemplates } from '../scripts/data/retorno-templates.js';
 
 describe('fields', () => {
   describe('iniciaisFields', () => {
@@ -488,6 +490,26 @@ describe('fields', () => {
       expect(lastField.nome).toBe('descricao');
       expect(lastField.label).toBe('Descrição do Serviço');
       expect(lastField.tipo).toBe('textarea');
+    });
+  });
+
+  describe('Integridade cruzada entre fontes de dados', () => {
+    it('todo tipoOrdemOptions deve ter entrada correspondente em retornoFieldsByTipo', () => {
+      tipoOrdemOptions.forEach(tipo => {
+        expect(
+          retornoFieldsByTipo[tipo],
+          `Tipo de Ordem "${tipo}" sem entrada em retornoFieldsByTipo`
+        ).toBeDefined();
+      });
+    });
+
+    it('todo tipoOrdemOptions deve ter entrada correspondente em retornoTemplates', () => {
+      tipoOrdemOptions.forEach(tipo => {
+        expect(
+          retornoTemplates[tipo],
+          `Tipo de Ordem "${tipo}" sem entrada em retornoTemplates`
+        ).toBeDefined();
+      });
     });
   });
 });

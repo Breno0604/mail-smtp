@@ -10,7 +10,7 @@ import { base64ToBlob } from './utils.js';
 import { getAttachmentsByUuid } from './db.js';
 import { updateLivePreview } from './email.js';
 import { collectIniciais } from './collectors.js';
-import { updateAllFilledClasses } from './app.js';
+import { updateAllFilledClasses } from './filled-state.js';
 
 /**
  * Aplica um registro ao formulário, restaurando todos os campos.

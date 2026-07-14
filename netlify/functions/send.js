@@ -22,10 +22,24 @@ exports.handler = async event => {
       return { statusCode: 400, body: JSON.stringify({ error: "Campo 'assunto' é obrigatório." }) };
     }
 
+    if (subject.length > 200) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "Campo 'assunto' excede o limite de 200 caracteres." }),
+      };
+    }
+
     if (!text || typeof text !== 'string') {
       return {
         statusCode: 400,
         body: JSON.stringify({ error: "Campo 'text' é obrigatório." }),
+      };
+    }
+
+    if (text.length > 50000) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "Campo 'text' excede o limite de 50.000 caracteres." }),
       };
     }
 
@@ -62,6 +76,14 @@ exports.handler = async event => {
 
     if (attachments) {
       for (const att of attachments) {
+        // ── Valida: filename obrigatório ─────────────────────────
+        if (!att.filename || typeof att.filename !== 'string') {
+          return {
+            statusCode: 400,
+            body: JSON.stringify({ error: 'Anexo sem nome de arquivo válido.' }),
+          };
+        }
+
         // ── Segurança: sanitiza nome do arquivo ─────────────────
         att.filename = att.filename.replace(/[^a-zA-Z0-9._-]/g, '_');
 

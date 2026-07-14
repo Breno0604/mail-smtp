@@ -1,12 +1,15 @@
 # Mail MVP — AGENTS.md
 
 ## Always-on skills
+
 - **clean-code-principles** (`.opencode/skills/clean-code-principles/`): planning, modularity, dependencies and clean code — load **always** before any code change
 
 ## Conditional skills
+
 - **retorno-fields-guide** (`.opencode/skills/retorno-fields-guide/`): load **before** any task involving adding, modifying, or creating retorno fields for Tipos de Ordem. Triggered by mentions of "campos de retorno", "novos campos", "Tipo de Ordem", or references to `dados_projeto/tipos_ordem_template.xlsx`. Full spec: `docs/superpowers/specs/2026-06-11-retorno-fields-guide-design.md`.
 
 ## Stack
+
 - Frontend: vanilla HTML/CSS/JS (ES6 modules), Tailwind CSS (static), no bundler
 - Backend: single Netlify Function at `netlify/functions/send.js` (Node.js + nodemailer)
 - Persistence: IndexedDB (`mail-mvp` DB, `records` store) + localStorage backup (`mail_form_estado`)
@@ -14,6 +17,7 @@
 - Deploy: `git push` → Netlify auto-deploys (`npm install` runs on build)
 
 ## Dev workflow
+
 - **Local server required**: ES6 modules fail on `file://`. Run `npx netlify dev` (starts dev server + function emulator at localhost)
 - **No bundler, no hot reload** — edit files then refresh browser
 - **Test commands**: `npm test` (all), `npx vitest run tests/FILE.test.js` (single)
@@ -23,24 +27,26 @@
 - **Husky pre-commit**: Auto-bumps `CACHE_NAME` in `sw.js` when static assets (JS/CSS/HTML) change. Runs on `git commit`.
 
 ## PowerShell Rules (Windows 5.1)
+
 **Este projeto roda em PowerShell 5.1 — não bash/zsh.**
 
-| ❌ Proibido | ✅ Correto |
-|-------------|-----------|
-| `cmd1 && cmd2` | `cmd1; if ($?) { cmd2 }` |
-| `cmd1 \|\| cmd2` | `cmd1; if (-not $?) { cmd2 }` |
-| `head -n N` | `Select-Object -First N` |
-| `grep "pat"` | `Select-String "pat"` ou `findstr "pat"` |
-| `chmod +x` | `git update-index --chmod=+x` |
-| `timeout N cmd` | Evite / use `Start-Job` |
-| `\` escape | `` ` `` (acento grave) |
+| ❌ Proibido      | ✅ Correto                               |
+| ---------------- | ---------------------------------------- |
+| `cmd1 && cmd2`   | `cmd1; if ($?) { cmd2 }`                 |
+| `cmd1 \|\| cmd2` | `cmd1; if (-not $?) { cmd2 }`            |
+| `head -n N`      | `Select-Object -First N`                 |
+| `grep "pat"`     | `Select-String "pat"` ou `findstr "pat"` |
+| `chmod +x`       | `git update-index --chmod=+x`            |
+| `timeout N cmd`  | Evite / use `Start-Job`                  |
+| `\` escape       | `` ` `` (acento grave)                   |
 
 - Separador: `;` (sequencial), `; if ($?)` (condicional sucesso), `; if (-not $?)` (condicional falha)
 - Strings: `"interpola $var"`, `'literal'`
 - Caminhos com espaço: `"C:\pasta\arquivo"`
 
 ## Key conventions an agent might miss
-- **DOM cache** (`scripts/dom.js`): All DOM lookups happen once in `cacheDOM()`. Import `DOM` from `dom.js`; never call `getElementById` elsewhere.
+
+- **DOM cache** (`scripts/dom.js`): All DOM lookups happen once in `cacheDOM()`. Import `DOM` from `dom.js`; never call `getElementById` elsewhere (exceto em `validation.js` e `collectors.js` para campos dinâmicos criados após `cacheDOM()`).
 - **DOM.tipoOrdem is an exception**: It's created dynamically by `renderIniciais()`, so `iniciais.js` line 172 manually assigns `DOM.tipoOrdem = input` after `cacheDOM()` runs. Always re-attach event listeners after renderIniciais().
 - **CACHE_NAME** in `sw.js`: Bump this number every time static assets (HTML, CSS, JS) change. Backend-only changes skip this. **Auto-bumped by Husky pre-commit hook**.
 - **Tipo de Ordem names** in `scripts/fields.js` must match **exactly** between `iniciaisFields` dropdown options and `retornoFieldsByTipo` keys.
@@ -49,8 +55,10 @@
 - **Backend env vars (6 required)**: `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`, `SMTP_TO`. Recipients come from `SMTP_TO` only — not from form.
 - **SMTP TLS**: `rejectUnauthorized: false` is intentional (self-signed certs in production).
 - **Conditional fields with empty control value**: `updateConditionalFields()` in `retornos.js` hides conditional fields when the control field has no value (placeholder "Selecione"). This prevents `negado: true` fields from showing prematurely (e.g., `acesso_desligamento` for `DESLIG.PROG.MANUTENCAO`).
+- **Idioma (PT/EN)**: Nomes de domínio/negócio (campos de formulário, labels, conceitos do negócio) em **português**; nomes de infraestrutura/utilitários (funções JS, variáveis de sistema, módulos técnicos) em **inglês**. Ex.: `"nome do campo retorno"` (PT, domínio) vs `collectRetorno()` (EN, infraestrutura).
 
 ## Non-obvious architecture facts
+
 - **No JS navigation between sections**: All 5 sections are flat in HTML (sec-inicio, sec-retorno, sec-equipamentos, sec-anexos, sec-revisao). No prev/next buttons. Old docs listing `animator.js` and `sectionManager.js` are stale — those files don't exist.
 - **IndexedDB schema** (`scripts/db.js`): DB `mail-mvp` v3, two stores — `records` (keyPath: uuid) and `attachments` (keyPath: id, index on uuid). Attachments stored separately since v3. Migration from v2 is transparent in `restore.js`.
 - **Attachments have dirty tracking** (`persistence.js`): Call `markAttachmentsDirty()` when changing attachments. Without this, new attachments won't persist.
@@ -65,26 +73,29 @@
 This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
 
 ### Installation
+
 - Installed via `uv tool install "graphifyy[gemini]" --force` — CLI at `%USERPROFILE%\.local\bin\graphify.exe`
 - `%USERPROFILE%\.local\bin` must be in `$env:PATH` for the `graphify` command to be found
 - `GEMINI_API_KEY` is required for semantic extraction (set as Machine-scoped env var for Windows)
 
 ### Graph state
+
 - Current graph: **754 nodes, 1,299 edges, 51 communities** (as of Jun 2026)
 - Graph is AST-only on `graphify update .` (no API cost). Full pipeline (`graphify .`) uses Gemini for semantic labels (~$0.04/run).
 
 ### Commands
 
-| Command | Purpose |
-|---------|---------|
-| `graphify query "<question>"` | Answer codebase questions (BFS traversal) |
-| `graphify query "<question>" --dfs` | Trace a specific path |
-| `graphify path "<conceptA>" "<conceptB>"` | Shortest path between two concepts |
-| `graphify explain "<concept>"` | Explain a node in natural language |
-| `graphify update .` | Incremental re-extraction (AST-only, free) |
-| `graphify .` | Full pipeline (AST + Gemini semantic, costs tokens) |
+| Command                                   | Purpose                                             |
+| ----------------------------------------- | --------------------------------------------------- |
+| `graphify query "<question>"`             | Answer codebase questions (BFS traversal)           |
+| `graphify query "<question>" --dfs`       | Trace a specific path                               |
+| `graphify path "<conceptA>" "<conceptB>"` | Shortest path between two concepts                  |
+| `graphify explain "<concept>"`            | Explain a node in natural language                  |
+| `graphify update .`                       | Incremental re-extraction (AST-only, free)          |
+| `graphify .`                              | Full pipeline (AST + Gemini semantic, costs tokens) |
 
 ### Rules
+
 - For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path` and `graphify explain` for focused exploration. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
 - Prefix graphify commands with `$env:PATH = "$env:USERPROFILE\.local\bin;$env:PATH";` in PowerShell sessions where graphify is not found.
 - Dirty graphify-out/ files are expected after hooks or incremental updates; dirty graph files are not a reason to skip graphify. Only skip graphify if the task is about stale or incorrect graph output, or the user explicitly says not to use it.

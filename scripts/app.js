@@ -22,14 +22,7 @@ import { renderSidebar, closeSidebar, initSidebarFilter } from './sidebar.js';
 import { captureCoordinates } from './utils.js';
 import { sendEmail } from './send.js';
 import { updateLivePreview } from './email.js';
-
-function updateFilledClass(el) {
-  if (el.value && el.value.trim() !== '') {
-    el.classList.add('is-filled');
-  } else {
-    el.classList.remove('is-filled');
-  }
-}
+import { updateFilledClass, updateAllFilledClasses } from './filled-state.js';
 
 /**
  * Verifica se UC e OS estão preenchidos e habilita o auto-save inicial.
@@ -43,12 +36,6 @@ export async function checkInitialPersistence() {
     state.iniciaisValido = true;
     await saveState();
   }
-}
-
-export function updateAllFilledClasses() {
-  document.querySelectorAll('input, select, textarea').forEach(el => {
-    updateFilledClass(el);
-  });
 }
 
 function initEvents() {

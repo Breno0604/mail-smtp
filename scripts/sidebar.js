@@ -4,7 +4,7 @@ import { getAllRecords, deleteRecord, getRecord } from './db.js';
 import { formatDate } from './utils.js';
 import { applyRecord } from './restore.js';
 import { resetForm } from './reset.js';
-import { showConfirm } from './ui.js';
+import { showConfirm, showToast } from './ui.js';
 
 export function closeSidebar() {
   document.body.classList.remove('sidebar-open');
@@ -95,8 +95,9 @@ export async function renderSidebar(filterTerm = '') {
         const full = await getRecord(record.uuid);
         if (!full) return;
         loadRecord(full);
-      } catch (_err) {
-        /* ignore */
+      } catch (err) {
+        console.error('Erro ao carregar registro para edição:', err);
+        showToast('Não foi possível carregar o registro. Tente novamente.', false);
       }
     });
 
@@ -114,8 +115,9 @@ export async function renderSidebar(filterTerm = '') {
           resetForm();
         }
         renderSidebar(DOM.sidebarFilter.value);
-      } catch (_err) {
-        /* ignore */
+      } catch (err) {
+        console.error('Erro ao excluir registro:', err);
+        showToast('Não foi possível excluir o registro. Tente novamente.', false);
       }
     });
 

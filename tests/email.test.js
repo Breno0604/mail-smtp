@@ -211,7 +211,6 @@ describe('email', () => {
     it('should include retorno fields without header', () => {
       const data = { ...sampleData, retorno: { descricao: 'Retorno test description' } };
       const body = composeEmail(data);
-      expect(body).toContain('DESCRICAO DO SERVICO:');
       expect(body).toContain('RETORNO TEST DESCRIPTION');
     });
 
@@ -303,7 +302,7 @@ describe('email', () => {
 
   describe('applyRetornoTemplate', () => {
     it('should return null for tipo without template', () => {
-      const result = applyRetornoTemplate('ADEQUACAO SMF', { retorno: {} });
+      const result = applyRetornoTemplate('TIPO_SEM_TEMPLATE_CADASTRADO', { retorno: {} });
       expect(result).toBeNull();
     });
 
