@@ -106,6 +106,17 @@ exports.handler = async event => {
       }
     }
 
+    // ── Validação: credenciais SMTP ──────────────────────────────
+    if (!process.env.SMTP_HOST) {
+      return { statusCode: 500, body: JSON.stringify({ error: 'SMTP_HOST não configurado.' }) };
+    }
+    if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: 'Credenciais SMTP não configuradas.' }),
+      };
+    }
+
     const transportConfig = {
       host: process.env.SMTP_HOST,
       port: parseInt(process.env.SMTP_PORT || '465', 10),
@@ -115,6 +126,8 @@ exports.handler = async event => {
         pass: process.env.SMTP_PASS,
       },
       tls: { rejectUnauthorized: false },
+      connectionTimeout: 8000, // 8 segundos
+      socketTimeout: 8000, // 8 segundos
     };
 
     const transporter = nodemailer.createTransport(transportConfig);
