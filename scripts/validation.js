@@ -239,7 +239,7 @@ function validateSection3() {
 }
 
 function validateSection4() {
-  if (state.attachments.length < 2 || state.attachments.length > 12) {
+  if (state.attachments.length < 0 || state.attachments.length > 12) {
     showAnexosModal();
     return false;
   }
