@@ -40,7 +40,7 @@ function renderCheckboxes(tipo) {
       'equip-checkbox w-4 h-4 flex-shrink-0 border-slate-300 rounded cursor-pointer accent-blue-600';
 
     const label = document.createElement('span');
-    label.className = 'font-semibold text-[13px] text-slate-600 select-none';
+    label.className = 'font-semibold text-[13px] text-slate-600 select-none'; // inline label (ao lado do checkbox)
     label.textContent = equip.label;
 
     wrapper.appendChild(checkbox);
@@ -155,7 +155,7 @@ function showField(tipo, equipKey) {
   wrapper.setAttribute('data-equip', equipKey);
 
   const label = document.createElement('label');
-  label.className = 'block font-semibold text-[13px] text-slate-600 mb-1';
+  label.className = 'block font-semibold text-[13px] text-slate-600 mb-1'; // block label (acima do campo)
   label.textContent = equip.label;
 
   const input = document.createElement('input');

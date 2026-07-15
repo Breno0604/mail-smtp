@@ -40,11 +40,38 @@ body {
   scrollbar-width: none;
 }
 
+:root {
+  /* ── Shadow tokens ──────────────────────────────────────────────────────── */
+  --shadow-btn: 0 3px 8px;
+  --shadow-btn-hover: 0 6px 16px;
+  --shadow-btn-active: 0 2px 6px;
+
+  /* ── Transition duration tokens ─────────────────────────────────────────── */
+  --transition-fast: 0.15s;
+  --transition-normal: 0.2s;
+  --transition-slow: 0.3s;
+}
+
+/* ── Escala tipográfica (base 16px) ────────────────────────────────────────
+   0.6875rem (11px) — badges (.sidebar-status)
+   0.7rem    (11px) — números de seção (.sec-num)
+   0.75rem   (12px) — meta, erros (.sidebar-item-meta, .field-error)
+   0.8125rem (13px) — botões pequenos (.sidebar-btn)
+   0.875rem  (14px) — botões padrão, títulos de item (.btn, .sidebar-item-title)
+   0.9rem    (14px) — cabeçalhos de seção (.sec-head)
+   0.9375rem (15px) — toast, sidebar empty
+   1rem      (16px) — botão enviar, base
+   1.125rem  (18px) — títulos sidebar (.sidebar-title)
+   1.25rem   (20px) — headings, hamburger
+   1.5rem    (24px) — ícones (.ret-icon, .sidebar-close)
+   3rem      (48px) — ícone orientação (.orientation-icon)
+   ────────────────────────────────────────────────────────────────────────── */
+
 /* === Section cards ──────────────────────────────────────────────────────── */
 .sec-card {
   background: #ffffff;
   border: 2px solid #cbd5e1;
-  border-radius: 14px;
+  border-radius: 10px;
   overflow: hidden;
   box-shadow:
     0 2px 8px rgba(0, 0, 0, 0.08),
@@ -67,7 +94,7 @@ body {
   justify-content: center;
   width: 24px;
   height: 24px;
-  border-radius: 6px;
+  border-radius: 8px;
   background: #2563eb;
   color: #fff;
   font-size: 0.7rem;
@@ -87,16 +114,16 @@ body {
 }
 
 #sec-retorno {
-  border-color: #10b981;
+  border-color: #16a34a;
   border-width: 3px;
 }
 #sec-retorno .sec-num {
-  background: #10b981;
+  background: #16a34a;
 }
 
 #sec-equipamentos {
   border-color: #f59e0b;
-  border-width: 4px;
+  border-width: 3px;
 }
 #sec-equipamentos .sec-num {
   background: #f59e0b;
@@ -112,7 +139,7 @@ body {
 
 #sec-revisao {
   border-color: #64748b;
-  border-width: 2px;
+  border-width: 2px; /* read-only section, intentionally lighter border */
 }
 #sec-revisao .sec-num {
   background: #64748b;
@@ -134,30 +161,25 @@ body {
 /* ── Conditional fields transition ──────────────────────────────────────── */
 .sec-body [data-condicional-ref] {
   transition:
-    opacity 0.25s ease,
-    transform 0.25s ease;
+    opacity var(--transition-normal) ease,
+    transform var(--transition-normal) ease;
 }
 .sec-body [data-condicional-ref][style*='display: none'] {
   opacity: 0;
   transform: translateY(-8px);
 }
 
-/* ── Send button ────────────────────────────────────────────────────────── */
+/* ── Send button (herda .btn, sobrescreve apenas o que difere) ───────────── */
 #btn-enviar {
-  background: linear-gradient(135deg, #059669, #047857);
-  color: #fff;
-  border: none;
+  background: linear-gradient(135deg, #16a34a, #15803d);
   padding: 0.85rem 3rem;
   border-radius: 30px;
   font-weight: 700;
   font-size: 1rem;
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3);
-  transition: all 0.2s;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.3);
 }
 #btn-enviar:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4);
+  box-shadow: 0 6px 20px rgba(22, 163, 74, 0.4);
 }
 
 /* === Container === */
@@ -172,13 +194,13 @@ body {
 
 /* === Buttons === */
 .btn {
-  padding: 10px 20px;
+  padding: 0.625rem 1.25rem;
   border: none;
   border-radius: 10px;
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition-normal) ease;
   font-family: inherit;
   text-align: center;
   min-width: 120px;
@@ -198,16 +220,16 @@ body {
 .btn-primary {
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: #fff;
-  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.2);
+  box-shadow: var(--shadow-btn) rgba(37, 99, 235, 0.2);
 }
 .btn-primary:hover:not(:disabled) {
   background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+  box-shadow: var(--shadow-btn-hover) rgba(37, 99, 235, 0.25);
   transform: translateY(-1px);
 }
 .btn-primary:active:not(:disabled) {
   transform: translateY(1px);
-  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.15);
+  box-shadow: var(--shadow-btn-active) rgba(37, 99, 235, 0.15);
 }
 .btn-secondary {
   background: #f1f5f9;
@@ -224,18 +246,18 @@ body {
   transform: translateY(1px);
 }
 .btn-success {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
   color: #fff;
-  box-shadow: 0 3px 8px rgba(5, 150, 105, 0.2);
+  box-shadow: var(--shadow-btn) rgba(22, 163, 74, 0.2);
 }
 .btn-success:hover:not(:disabled) {
-  background: linear-gradient(135deg, #059669 0%, #047857 100%);
-  box-shadow: 0 6px 16px rgba(5, 150, 105, 0.25);
+  background: linear-gradient(135deg, #15803d 0%, #166534 100%);
+  box-shadow: var(--shadow-btn-hover) rgba(22, 163, 74, 0.25);
   transform: translateY(-1px);
 }
 .btn-success:active:not(:disabled) {
   transform: translateY(1px);
-  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.15);
+  box-shadow: var(--shadow-btn-active) rgba(22, 163, 74, 0.15);
 }
 
 /* === Field States === */
@@ -305,8 +327,8 @@ textarea.is-filled:hover {
   position: fixed;
   bottom: 30px;
   left: 50%;
-  padding: 14px 28px;
-  background: #1f2937;
+  padding: 0.875rem 1.75rem;
+  background: #1e293b;
   color: #fff;
   border-radius: 10px;
   font-size: 0.9375rem;
@@ -315,7 +337,7 @@ textarea.is-filled:hover {
   pointer-events: none;
   z-index: 999;
   opacity: 0;
-  transition: all 0.4s ease;
+  transition: all var(--transition-slow) ease;
   transform: translateX(-50%) translateY(80px);
 }
 .toast.show {
@@ -352,7 +374,7 @@ textarea.is-filled:hover {
   font-weight: 700;
   box-shadow: 0 3px 10px rgba(37, 99, 235, 0.25);
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all var(--transition-fast);
 }
 .btn-new-form:hover {
   transform: scale(1.08);
@@ -372,7 +394,7 @@ textarea.is-filled:hover {
   font-size: 1.25rem;
   cursor: pointer;
   color: #475569;
-  transition: all 0.2s;
+  transition: all var(--transition-normal);
 }
 .hamburger:hover {
   color: #2563eb;
@@ -391,7 +413,7 @@ textarea.is-filled:hover {
   background: #fff;
   box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
   z-index: 200;
-  transition: left 0.3s ease;
+  transition: left var(--transition-slow) ease;
   display: flex;
   flex-direction: column;
 }
@@ -418,7 +440,7 @@ textarea.is-filled:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px;
+  padding: 1rem 1.25rem;
   border-bottom: 1px solid #e2e8f0;
   flex-shrink: 0;
 }
@@ -435,9 +457,9 @@ textarea.is-filled:hover {
   font-weight: 700;
   cursor: pointer;
   color: #dc2626;
-  padding: 4px;
+  padding: 0.25rem;
   line-height: 1;
-  transition: color 0.2s;
+  transition: color var(--transition-normal);
 }
 .sidebar-close:hover {
   color: #b91c1c;
@@ -445,21 +467,21 @@ textarea.is-filled:hover {
 .sidebar-list {
   flex: 1;
   overflow-y: auto;
-  padding: 12px 8px;
+  padding: 0.75rem 0.5rem;
 }
 .sidebar-empty {
   text-align: center;
   color: #94a3b8;
-  padding: 40px 16px;
+  padding: 2.5rem 1rem;
   font-size: 0.9375rem;
 }
 .sidebar-item {
-  padding: 10px 12px;
+  padding: 0.625rem 0.75rem;
   border: 1px solid #e2e8f0;
   border-radius: 10px;
   margin-bottom: 8px;
   background: #f8fafc;
-  transition: border-color 0.15s;
+  transition: border-color var(--transition-fast);
 }
 .sidebar-item:hover {
   border-color: #cbd5e1;
@@ -483,7 +505,7 @@ textarea.is-filled:hover {
 .sidebar-status {
   font-size: 0.6875rem;
   font-weight: 700;
-  padding: 2px 8px;
+  padding: 0.125rem 0.5rem;
   border-radius: 999px;
   flex-shrink: 0;
 }
@@ -492,8 +514,8 @@ textarea.is-filled:hover {
   color: #64748b;
 }
 .status-sent {
-  background: #d1fae5;
-  color: #065f46;
+  background: #dcfce7;
+  color: #166534;
 }
 .status-changed {
   background: #fef3c7;
@@ -510,13 +532,13 @@ textarea.is-filled:hover {
 }
 .sidebar-btn {
   flex: 1;
-  padding: 6px 12px;
+  padding: 0.375rem 0.75rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background var(--transition-normal);
 }
 .sidebar-btn-edit {
   background: #eff6ff;
@@ -551,7 +573,7 @@ textarea.is-filled:hover {
 }
 .orientation-overlay-content {
   text-align: center;
-  padding: 24px;
+  padding: 1.5rem;
 }
 .orientation-icon {
   font-size: 3rem;
@@ -661,7 +683,7 @@ h3 {
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4) !important;
   }
   .btn-success {
-    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4) !important;
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.4) !important;
   }
 
   .sidebar-item {
@@ -698,7 +720,7 @@ h3 {
 
 /* === Equipment section animation ───────────────────────────────────────── */
 .equip-section {
-  transition: opacity 0.2s ease;
+  transition: opacity var(--transition-normal) ease;
   opacity: 1;
 }
 
@@ -738,12 +760,12 @@ h3 {
   align-items: center;
   justify-content: center;
   border: 1px solid #d1d5db;
-  border-radius: 8px;
+  border-radius: 10px;
   background: #f9fafb;
   color: #2563eb;
   font-size: 20px;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all var(--transition-fast);
   z-index: 10;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }

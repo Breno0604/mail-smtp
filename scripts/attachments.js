@@ -68,7 +68,7 @@ export function renderPreviews() {
     img.className = 'w-full aspect-square object-cover block';
 
     const name = document.createElement('div');
-    name.className = 'preview-name text-[11px] text-gray-500 px-1.5 py-1 truncate';
+    name.className = 'preview-name text-[11px] text-slate-500 px-1.5 py-1 truncate';
     name.textContent = file.name;
 
     const removeBtn = document.createElement('button');

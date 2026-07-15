@@ -77,7 +77,7 @@ function createCoordinatesGroup(field, label) {
   input.id = field.nome;
   input.type = 'text';
   input.readOnly = true;
-  input.className = INPUT_CLASS + ' bg-gray-100 cursor-not-allowed coord-input';
+  input.className = INPUT_CLASS + ' bg-slate-100 cursor-not-allowed coord-input';
   input.placeholder = 'Coletando coordenadas...';
 
   const refreshBtn = document.createElement('button');
