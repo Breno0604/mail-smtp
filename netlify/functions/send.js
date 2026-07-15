@@ -1,22 +1,11 @@
+const nodemailer = require('nodemailer');
+
 exports.handler = async event => {
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
+  }
+
   try {
-    // ── Verificação de método ──────────────────────────────
-    if (event.httpMethod !== 'POST') {
-      return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
-    }
-
-    // ── Segurança: verificar origem ────────────────────────
-    const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN;
-    if (ALLOWED_ORIGIN) {
-      const origin = event.headers.origin || event.headers.referer || '';
-      if (!origin.startsWith(ALLOWED_ORIGIN)) {
-        return { statusCode: 403, body: JSON.stringify({ error: 'Origem não autorizada.' }) };
-      }
-    }
-
-    // ── Carregar dependência (dentro do try!) ──────────────
-    const nodemailer = require('nodemailer');
-
     // ── Segurança: limite de payload ────────────────────────────
     const rawBody = event.body || '';
     if (Buffer.byteLength(rawBody, 'utf-8') > 10 * 1024 * 1024) {
@@ -33,24 +22,10 @@ exports.handler = async event => {
       return { statusCode: 400, body: JSON.stringify({ error: "Campo 'assunto' é obrigatório." }) };
     }
 
-    if (subject.length > 200) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: "Campo 'assunto' excede o limite de 200 caracteres." }),
-      };
-    }
-
     if (!text || typeof text !== 'string') {
       return {
         statusCode: 400,
         body: JSON.stringify({ error: "Campo 'text' é obrigatório." }),
-      };
-    }
-
-    if (text.length > 50000) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: "Campo 'text' excede o limite de 50.000 caracteres." }),
       };
     }
 
@@ -87,14 +62,6 @@ exports.handler = async event => {
 
     if (attachments) {
       for (const att of attachments) {
-        // ── Valida: filename obrigatório ─────────────────────────
-        if (!att.filename || typeof att.filename !== 'string') {
-          return {
-            statusCode: 400,
-            body: JSON.stringify({ error: 'Anexo sem nome de arquivo válido.' }),
-          };
-        }
-
         // ── Segurança: sanitiza nome do arquivo ─────────────────
         att.filename = att.filename.replace(/[^a-zA-Z0-9._-]/g, '_');
 
@@ -108,17 +75,6 @@ exports.handler = async event => {
       }
     }
 
-    // ── Validação: credenciais SMTP ──────────────────────────────
-    if (!process.env.SMTP_HOST) {
-      return { statusCode: 500, body: JSON.stringify({ error: 'SMTP_HOST não configurado.' }) };
-    }
-    if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ error: 'Credenciais SMTP não configuradas.' }),
-      };
-    }
-
     const transportConfig = {
       host: process.env.SMTP_HOST,
       port: parseInt(process.env.SMTP_PORT || '465', 10),
@@ -128,8 +84,6 @@ exports.handler = async event => {
         pass: process.env.SMTP_PASS,
       },
       tls: { rejectUnauthorized: false },
-      connectionTimeout: 8000, // 8 segundos
-      socketTimeout: 8000, // 8 segundos
     };
 
     const transporter = nodemailer.createTransport(transportConfig);
@@ -160,9 +114,10 @@ exports.handler = async event => {
       body: JSON.stringify({ success: true }),
     };
   } catch (error) {
-    console.error('[send] Erro não capturado:', {
+    console.error('[send] SMTP error:', {
       message: error.message,
       code: error.code,
+      command: error.command,
       stack: error.stack,
       timestamp: new Date().toISOString(),
     });
