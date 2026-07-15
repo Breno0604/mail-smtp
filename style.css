@@ -440,7 +440,7 @@ textarea.is-filled:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 1.25rem;
+  padding: 0.625rem 1.25rem;
   border-bottom: 1px solid #e2e8f0;
   flex-shrink: 0;
 }
