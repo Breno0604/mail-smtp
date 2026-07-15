@@ -288,31 +288,29 @@ function showFirstErrorOnly() {
 export function validateAll() {
   hideError();
 
-  // Phase 1: Validate all form fields (sections 1, 3, 2)
-  let valid = true;
+  // Phase 1: Validate fields sequentially — abort on first failure
+  const tipo = DOM.tipoOrdem?.value || '';
 
   // Section 1: Iniciais
-  valid = validateSection1() && valid;
+  if (!validateSection1()) {
+    showFirstErrorOnly();
+    return false;
+  }
 
   // Section 3: Retorno (only if tipo is selected)
-  const tipo = DOM.tipoOrdem?.value || '';
-  if (tipo) {
-    valid = validateSection3() && valid;
+  if (tipo && !validateSection3()) {
+    showFirstErrorOnly();
+    return false;
   }
 
   // Section 2: Equipamentos
-  valid = validateSection2() && valid;
+  if (!validateSection2()) {
+    showFirstErrorOnly();
+    return false;
+  }
 
-  // After field validation, keep only the first .error
-  showFirstErrorOnly();
-
-  // If any field is invalid, stop — don't validate attachments
-  if (!valid) return false;
-
-  // Phase 2: All fields valid — validate attachments
-  valid = validateSection4() && valid;
-
-  // Keep only the first .error (from attachments if any)
+  // Phase 2: All fields valid — now validate attachments
+  const valid = validateSection4();
   showFirstErrorOnly();
 
   return valid;
