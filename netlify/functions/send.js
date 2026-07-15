@@ -1,20 +1,22 @@
-const nodemailer = require('nodemailer');
-
 exports.handler = async event => {
-  if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
-  }
-
-  // ── Segurança: verificar origem da requisição ──────────────
-  const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN;
-  if (ALLOWED_ORIGIN) {
-    const origin = event.headers.origin || event.headers.referer || '';
-    if (!origin.startsWith(ALLOWED_ORIGIN)) {
-      return { statusCode: 403, body: JSON.stringify({ error: 'Origem não autorizada.' }) };
-    }
-  }
-
   try {
+    // ── Verificação de método ──────────────────────────────
+    if (event.httpMethod !== 'POST') {
+      return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
+    }
+
+    // ── Segurança: verificar origem ────────────────────────
+    const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN;
+    if (ALLOWED_ORIGIN) {
+      const origin = event.headers.origin || event.headers.referer || '';
+      if (!origin.startsWith(ALLOWED_ORIGIN)) {
+        return { statusCode: 403, body: JSON.stringify({ error: 'Origem não autorizada.' }) };
+      }
+    }
+
+    // ── Carregar dependência (dentro do try!) ──────────────
+    const nodemailer = require('nodemailer');
+
     // ── Segurança: limite de payload ────────────────────────────
     const rawBody = event.body || '';
     if (Buffer.byteLength(rawBody, 'utf-8') > 10 * 1024 * 1024) {
@@ -158,10 +160,9 @@ exports.handler = async event => {
       body: JSON.stringify({ success: true }),
     };
   } catch (error) {
-    console.error('[send] SMTP error:', {
+    console.error('[send] Erro não capturado:', {
       message: error.message,
       code: error.code,
-      command: error.command,
       stack: error.stack,
       timestamp: new Date().toISOString(),
     });
