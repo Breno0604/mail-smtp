@@ -1,6 +1,21 @@
 const nodemailer = require('nodemailer');
 
 exports.handler = async event => {
+  console.log('[send] Function invoked', {
+    method: event.httpMethod,
+    timestamp: new Date().toISOString(),
+  });
+
+  if (event.httpMethod === 'GET') {
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+      }),
+    };
+  }
+
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
   }
