@@ -269,10 +269,26 @@ export function validateSection(n) {
   return validator();
 }
 
+/**
+ * Keep only the first .error element, clear the rest, focus and scroll to it.
+ */
+function showFirstErrorOnly() {
+  const allErrors = document.querySelectorAll('.error');
+  if (allErrors.length === 0) return;
+  const firstError = allErrors[0];
+  // Clear all but the first error (so only the first field shows red)
+  for (let i = 1; i < allErrors.length; i++) {
+    clearError(allErrors[i]);
+  }
+  // Focus and scroll to the first error
+  firstError.focus();
+  firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
 export function validateAll() {
   hideError();
 
-  // Run all section validators — they mark ALL empty fields with .error AND update state
+  // Phase 1: Validate all form fields (sections 1, 3, 2)
   let valid = true;
 
   // Section 1: Iniciais
@@ -287,21 +303,17 @@ export function validateAll() {
   // Section 2: Equipamentos
   valid = validateSection2() && valid;
 
-  // Section 4: Anexos
+  // After field validation, keep only the first .error
+  showFirstErrorOnly();
+
+  // If any field is invalid, stop — don't validate attachments
+  if (!valid) return false;
+
+  // Phase 2: All fields valid — validate attachments
   valid = validateSection4() && valid;
 
-  // After all validators ran, keep only the first .error, clear the rest
-  const allErrors = document.querySelectorAll('.error');
-  if (allErrors.length > 0) {
-    const firstError = allErrors[0];
-    // Clear all but the first error (so only the first field shows red)
-    for (let i = 1; i < allErrors.length; i++) {
-      clearError(allErrors[i]);
-    }
-    // Focus and scroll to the first error
-    firstError.focus();
-    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
+  // Keep only the first .error (from attachments if any)
+  showFirstErrorOnly();
 
   return valid;
 }
