@@ -23,6 +23,7 @@ body {
 
 html {
   scroll-behavior: smooth;
+  overscroll-behavior-y: contain;
 }
 body {
   touch-action: manipulation;
@@ -68,7 +69,7 @@ body {
 /* === Section cards ──────────────────────────────────────────────────────── */
 .sec-card {
   background: #ffffff;
-  border: 2px solid #cbd5e1;
+  border: 3px solid #3b82f6;
   border-radius: 10px;
   overflow: hidden;
   box-shadow:
@@ -103,42 +104,22 @@ body {
 }
 
 /* ── Per-section card borders ──────────────────────────────────────────── */
-#sec-inicio {
-  border-color: #3b82f6;
-  border-width: 3px;
-}
 #sec-inicio .sec-num {
   background: #3b82f6;
 }
 
-#sec-retorno {
-  border-color: #16a34a;
-  border-width: 3px;
-}
 #sec-retorno .sec-num {
   background: #16a34a;
 }
 
-#sec-equipamentos {
-  border-color: #f59e0b;
-  border-width: 3px;
-}
 #sec-equipamentos .sec-num {
   background: #f59e0b;
 }
 
-#sec-anexos {
-  border-color: #8b5cf6;
-  border-width: 3px;
-}
 #sec-anexos .sec-num {
   background: #8b5cf6;
 }
 
-#sec-revisao {
-  border-color: #64748b;
-  border-width: 2px; /* read-only section, intentionally lighter border */
-}
 #sec-revisao .sec-num {
   background: #64748b;
 }
@@ -475,14 +456,15 @@ textarea.is-filled:hover {
 }
 .sidebar-item {
   padding: 0.625rem 0.75rem;
-  border: 1px solid #e2e8f0;
+  border: 2px solid #94a3b8;
   border-radius: 10px;
   margin-bottom: 8px;
   background: #f8fafc;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   transition: border-color var(--transition-fast);
 }
 .sidebar-item:hover {
-  border-color: #cbd5e1;
+  border-color: #64748b;
 }
 .sidebar-item-header {
   display: flex;
