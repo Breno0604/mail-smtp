@@ -42,34 +42,35 @@ export async function saveState() {
     setCurrentUUID(uuid);
   }
 
-  // Resolve createdAt
-  const createdAt = await resolveCreatedAt(state.currentUUID);
-
-  // Determine record status based on existing record and sentData
-  let recordStatus = 'draft';
+  // 1. Fetch existing record ONCE
   let existing = null;
   try {
     existing = await getRecord(state.currentUUID);
-    if (existing) {
-      if (existing.sentData) {
-        // Already sent — check if current data differs from what was sent
-        const prev = JSON.stringify({
-          iniciais: existing.iniciais,
-          retorno: existing.retorno,
-          equipamentos: existing.equipamentos,
-        });
-        const curr = JSON.stringify({
-          iniciais: state.iniciais,
-          retorno: state.retorno,
-          equipamentos: state.equipamentos,
-        });
-        recordStatus = prev !== curr ? 'changed' : 'sent';
-      } else {
-        recordStatus = existing.status || 'draft';
-      }
-    }
   } catch (err) {
     console.error('getRecord in saveState:', err);
+  }
+
+  // 2. Resolve createdAt (reuses existing)
+  const createdAt = await resolveCreatedAt(state.currentUUID, existing);
+
+  // 3. Determine status (reuses existing — no more getRecord call)
+  let recordStatus = 'draft';
+  if (existing) {
+    if (existing.sentData) {
+      const prev = JSON.stringify({
+        iniciais: existing.iniciais,
+        retorno: existing.retorno,
+        equipamentos: existing.equipamentos,
+      });
+      const curr = JSON.stringify({
+        iniciais: state.iniciais,
+        retorno: state.retorno,
+        equipamentos: state.equipamentos,
+      });
+      recordStatus = prev !== curr ? 'changed' : 'sent';
+    } else {
+      recordStatus = existing.status || 'draft';
+    }
   }
 
   // Keep in-memory state.status in sync with what we're saving
@@ -123,11 +124,10 @@ export function cancelDebouncedSave() {
  * @param {string} uuid - Record UUID
  * @returns {Promise<string>} ISO timestamp
  */
-async function resolveCreatedAt(uuid) {
+async function resolveCreatedAt(uuid, existing) {
   if (state._createdAt) return state._createdAt;
 
   try {
-    const existing = await getRecord(uuid);
     if (existing?.createdAt) {
       state._createdAt = existing.createdAt;
       return state._createdAt;

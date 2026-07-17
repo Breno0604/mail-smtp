@@ -1,7 +1,7 @@
-const DB_NAME = 'mail-mvp';
-const DB_VERSION = 3;
-const STORE_RECORDS = 'records';
-const STORE_ATTACHMENTS = 'attachments';
+export const DB_NAME = 'mail-mvp';
+export const DB_VERSION = 3;
+export const STORE_RECORDS = 'records';
+export const STORE_ATTACHMENTS = 'attachments';
 
 let _db = null;
 
@@ -210,17 +210,14 @@ export function saveRecordAtomic(uuid, record, serializedAttachments) {
  * @returns {Promise<Array<{name: string, type: string, data: string}>>}
  */
 export function getAttachmentsByUuid(uuid) {
-  return openDB().then(db => {
-    const tx = db.transaction(STORE_ATTACHMENTS, 'readonly');
+  return withTransaction(STORE_ATTACHMENTS, 'readonly', tx => {
     const store = tx.objectStore(STORE_ATTACHMENTS);
     const index = store.index('uuid');
-    return new Promise((resolve, reject) => {
-      const req = index.getAll(IDBKeyRange.only(uuid));
-      req.onsuccess = () => {
-        const results = (req.result || []).sort((a, b) => a.index - b.index);
-        resolve(results.map(({ name, type, data }) => ({ name, type, data })));
-      };
-      req.onerror = () => reject(req.error);
-    });
+    return index.getAll(IDBKeyRange.only(uuid));
+  }).then(results => {
+    if (!results) return [];
+    return results
+      .sort((a, b) => a.index - b.index)
+      .map(({ name, type, data }) => ({ name, type, data }));
   });
 }

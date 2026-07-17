@@ -3,10 +3,7 @@
 
 // ── IndexedDB Schema Constants ───────────────────────────────────────────────
 
-const DB_NAME = 'mail-mvp';
-const DB_VERSION = 3;
-const STORE_RECORDS = 'records';
-const STORE_ATTACHMENTS = 'attachments';
+import { DB_NAME, DB_VERSION, STORE_RECORDS, STORE_ATTACHMENTS } from '../../scripts/db.js';
 const INDEX_UUID = 'uuid';
 
 // ── IndexedDB Helpers ────────────────────────────────────────────────────────
