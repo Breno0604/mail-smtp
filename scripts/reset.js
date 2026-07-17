@@ -1,6 +1,6 @@
 import { DOM } from './dom.js';
 import { state, clearCurrentUUID, createDefaultEquipamentos } from './state.js';
-import { markAttachmentsDirty } from './persistence.js';
+import { markAttachmentsDirty, cancelDebouncedSave } from './persistence.js';
 import { renderIniciais } from './iniciais.js';
 import { handleTipoChange } from './retornos.js';
 import { renderEquipamentos } from './equipment.js';
@@ -11,6 +11,9 @@ import { updateLivePreview } from './email.js';
 import { collectIniciais } from './collectors.js';
 
 export function resetForm() {
+  // Cancel any pending debounced save before resetting
+  cancelDebouncedSave();
+
   // Reset state
   state.equipamentos = createDefaultEquipamentos();
   state.attachments = [];

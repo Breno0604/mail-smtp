@@ -47,8 +47,11 @@ async function withTransaction(stores, mode, fn) {
   const db = await openDB();
   return new Promise((resolve, reject) => {
     const tx = db.transaction(stores, mode);
-    const result = fn(tx);
-    tx.oncomplete = () => resolve(result);
+    const req = fn(tx);
+    tx.oncomplete = () => {
+      // Se fn retornou um IDBRequest, retornar .result; senão retornar o valor direto
+      resolve(req instanceof IDBRequest ? req.result : req);
+    };
     tx.onerror = () => reject(tx.error);
   });
 }
@@ -69,7 +72,7 @@ export function saveDraft(record) {
  * O IDBRequest retornado por store.get() tem seu .result populado quando a transação completa.
  */
 export function getRecord(uuid) {
-  return withStore('readonly', store => store.get(uuid)).then(req => req?.result || null);
+  return withStore('readonly', store => store.get(uuid)).then(result => result || null);
 }
 
 /**
@@ -77,7 +80,7 @@ export function getRecord(uuid) {
  * O IDBRequest retornado por store.getAll() tem seu .result populado quando a transação completa.
  */
 export function getAllRecords() {
-  return withStore('readonly', store => store.getAll()).then(req => req?.result || []);
+  return withStore('readonly', store => store.getAll()).then(result => result || []);
 }
 
 /**
@@ -139,6 +142,7 @@ export function saveAttachments(uuid, attachments) {
     const _pendingPuts = [];
 
     const cursorReq = index.openCursor(IDBKeyRange.only(uuid));
+    cursorReq.onerror = () => {}; // erro já propagado por tx.onerror, mas evita "Unhandled error" no console
     cursorReq.onsuccess = () => {
       const cursor = cursorReq.result;
       if (cursor) {
@@ -209,16 +213,17 @@ export function saveRecordAtomic(uuid, record, serializedAttachments) {
  * @returns {Promise<Array<{name: string, type: string, data: string}>>}
  */
 export function getAttachmentsByUuid(uuid) {
-  return new Promise(async (resolve, reject) => {
-    const db = await openDB();
+  return openDB().then(db => {
     const tx = db.transaction(STORE_ATTACHMENTS, 'readonly');
     const store = tx.objectStore(STORE_ATTACHMENTS);
     const index = store.index('uuid');
-    const req = index.getAll(IDBKeyRange.only(uuid));
-    req.onsuccess = () => {
-      const results = (req.result || []).sort((a, b) => a.index - b.index);
-      resolve(results.map(({ name, type, data }) => ({ name, type, data })));
-    };
-    req.onerror = () => reject(req.error);
+    return new Promise((resolve, reject) => {
+      const req = index.getAll(IDBKeyRange.only(uuid));
+      req.onsuccess = () => {
+        const results = (req.result || []).sort((a, b) => a.index - b.index);
+        resolve(results.map(({ name, type, data }) => ({ name, type, data })));
+      };
+      req.onerror = () => reject(req.error);
+    });
   });
 }

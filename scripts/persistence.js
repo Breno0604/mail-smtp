@@ -112,6 +112,13 @@ export function debouncedSave() {
 }
 
 /**
+ * Cancel any pending debounced save
+ */
+export function cancelDebouncedSave() {
+  clearTimeout(saveTimer);
+}
+
+/**
  * Resolve createdAt timestamp
  * @param {string} uuid - Record UUID
  * @returns {Promise<string>} ISO timestamp

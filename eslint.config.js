@@ -32,6 +32,7 @@ export default [
         navigator: 'readonly',
         indexedDB: 'readonly',
         IDBKeyRange: 'readonly',
+        IDBRequest: 'readonly',
         FileReader: 'readonly',
         Image: 'readonly',
         location: 'readonly',
