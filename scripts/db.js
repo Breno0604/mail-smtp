@@ -31,6 +31,9 @@ function openDB() {
     };
     req.onsuccess = () => {
       _db = req.result;
+      _db.onclose = () => {
+        _db = null;
+      };
       resolve(_db);
     };
     req.onerror = () => reject(req.error);
@@ -136,11 +139,6 @@ export function saveAttachments(uuid, attachments) {
     const store = tx.objectStore(STORE_ATTACHMENTS);
     const index = store.index('uuid');
 
-    // Deletar anexos antigos e depois inserir novos na mesma transação.
-    // Usamos uma flag para garantir que os puts só acontecem após o cursor terminar.
-    let _deletesDone = false;
-    const _pendingPuts = [];
-
     const cursorReq = index.openCursor(IDBKeyRange.only(uuid));
     cursorReq.onerror = () => {}; // erro já propagado por tx.onerror, mas evita "Unhandled error" no console
     cursorReq.onsuccess = () => {
@@ -150,7 +148,6 @@ export function saveAttachments(uuid, attachments) {
         cursor.continue();
       } else {
         // Cursor terminou — agora inserir novos anexos
-        _deletesDone = true;
         attachments.forEach((att, i) => {
           store.put({
             id: `${uuid}_${i}`,
