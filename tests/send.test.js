@@ -284,7 +284,7 @@ describe('sendEmail', () => {
 
     const result = await sendEmail();
     expect(result).toBe(false);
-    expect(showToastMock).toHaveBeenCalledWith('Erro de conexão. Tente novamente.', false);
+    expect(showToastMock).toHaveBeenCalledWith('Erro no servidor. Tente novamente.', false);
   });
 
   // ── CENÁRIO 6: Body without complemento ───────────────────────────────────

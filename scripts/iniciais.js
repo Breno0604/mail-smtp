@@ -1,6 +1,7 @@
 import { DOM } from './dom.js';
 import { debouncedSave } from './persistence.js';
 import { addBlurValidation } from './validation.js';
+import { showConfirm } from './ui.js';
 import { iniciaisFields } from './fields.js';
 import { captureCoordinates } from './utils.js';
 import { INPUT_CLASS, SELECT_CLASS } from './styles.js';
@@ -85,9 +86,12 @@ function createCoordinatesGroup(field, label) {
   refreshBtn.className = 'coord-refresh';
   refreshBtn.innerHTML = '&#x21BB;';
   refreshBtn.title = 'Atualizar coordenadas';
-  refreshBtn.addEventListener('click', e => {
+  refreshBtn.addEventListener('click', async e => {
     e.preventDefault();
-    captureCoordinates();
+    const confirmed = await showConfirm(
+      'Deseja atualizar as coordenadas GPS? A localização atual será substituída.'
+    );
+    if (confirmed) captureCoordinates();
   });
 
   const coordError = document.createElement('span');

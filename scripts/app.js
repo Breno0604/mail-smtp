@@ -171,6 +171,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   captureCoordinates();
   updateLivePreview();
   updateAllFilledClasses();
+
+  // Keep focused input visible when Android virtual keyboard opens
+  window.visualViewport?.addEventListener('resize', () => {
+    const focused = document.activeElement;
+    if (focused && focused !== document.body) {
+      setTimeout(() => {
+        focused.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+    }
+  });
+
   // Limpar UUID ao iniciar (sempre começa limpo)
   clearCurrentUUID();
 });

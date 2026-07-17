@@ -62,7 +62,11 @@ export async function sendEmail() {
       return false;
     }
   } catch (_err) {
-    showToast('Erro de conex\u00E3o. Tente novamente.', false);
+    if (!navigator.onLine) {
+      showToast('Sem internet — dados salvos. Conecte-se e clique Enviar novamente.', false);
+    } else {
+      showToast('Erro no servidor. Tente novamente.', false);
+    }
     return false;
   } finally {
     btn.disabled = false;
