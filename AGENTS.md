@@ -12,7 +12,7 @@
 
 - Frontend: vanilla HTML/CSS/JS (ES6 modules), Tailwind CSS (static), no bundler
 - Backend: single Netlify Function at `netlify/functions/send.js` (Node.js + nodemailer)
-- Persistence: IndexedDB (`mail-mvp` DB, `records` store) + localStorage backup (`mail_form_estado`)
+- Persistence: IndexedDB (`mail-mvp` DB, `records` store) + localStorage (UUID only)
 - Tests: Vitest + jsdom, tests
 - Deploy: `git push` → Netlify auto-deploys (`npm install` runs on build)
 
@@ -47,7 +47,7 @@
 ## Key conventions an agent might miss
 
 - **DOM cache** (`scripts/dom.js`): All DOM lookups happen once in `cacheDOM()`. Import `DOM` from `dom.js`; never call `getElementById` elsewhere (exceto em `validation.js` e `collectors.js` para campos dinâmicos criados após `cacheDOM()`).
-- **DOM.tipoOrdem is an exception**: It's created dynamically by `renderIniciais()`, so `iniciais.js` line 172 manually assigns `DOM.tipoOrdem = input` after `cacheDOM()` runs. Always re-attach event listeners after renderIniciais().
+- **DOM.tipoOrdem uses a getter** (`dom.js` line 31): `Object.defineProperty` getter always queries DOM live via `document.getElementById('tipo-ordem')`. This avoids stale references when `renderIniciais()` recreates the element. No manual assignment needed.
 - **CACHE_NAME** in `sw.js`: Bump this number every time static assets (HTML, CSS, JS) change. Backend-only changes skip this. **Auto-bumped by Husky pre-commit hook**.
 - **Tipo de Ordem names** in `scripts/fields.js` must match **exactly** between `iniciaisFields` dropdown options and `retornoFieldsByTipo` keys.
 - **Hidden fields excluded from email**: `collectRetorno()` and `collectAllData()` filter `display: none` fields. `composeEmail()` double-checks field exists in data. Both layers protect against sending hidden field values.
@@ -56,6 +56,11 @@
 - **SMTP TLS**: `rejectUnauthorized: false` is intentional (self-signed certs in production).
 - **Conditional fields with empty control value**: `updateConditionalFields()` in `retornos.js` hides conditional fields when the control field has no value (placeholder "Selecione"). This prevents `negado: true` fields from showing prematurely (e.g., `acesso_desligamento` for `DESLIG.PROG.MANUTENCAO`).
 - **Idioma (PT/EN)**: Nomes de domínio/negócio (campos de formulário, labels, conceitos do negócio) em **português**; nomes de infraestrutura/utilitários (funções JS, variáveis de sistema, módulos técnicos) em **inglês**. Ex.: `"nome do campo retorno"` (PT, domínio) vs `collectRetorno()` (EN, infraestrutura).
+- **showConfirm pattern** (`ui.js`): `showConfirm(message)` returns `Promise<boolean>`. Used for destructive actions (delete record, re-send, coordinates refresh). Always await it before proceeding.
+- **Auto-cleanup** (`db.js`): `cleanupOldSentRecords()` removes sent records older than 90 days (including attachments). Called fire-and-forget on startup in `app.js` — no await needed.
+- **Status dot indicator** (`app.js`): Green/red pulsing dot after `<h1>` title shows online/offline status. Uses `online`/`offline` events. CSS is in `style.css` (`.status-dot`).
+- **Keyboard scroll fix** (`app.js`): `visualViewport` resize listener scrolls focused inputs into view on Android keyboards. Uses optional chaining for graceful degradation.
+- **Offline error messaging** (`send.js`): On fetch failure, `navigator.onLine` differentiates "Sem internet" vs "Erro no servidor" in the catch block.
 
 ## Non-obvious architecture facts
 
@@ -67,6 +72,7 @@
 - **Conditional field system** (`retornos.js`): Fields can depend on other fields. Supports string values, arrays, and negation. Parent fields must appear before children in the array (cascading order).
 - **Select inputs** get a "Selecione" placeholder `<option>` as first child (in `iniciais.js`).
 - **Date in email**: Dates are reversed from YYYY-MM-DD to DD-MM-YYYY in `composeEmail()` (line 27).
+- **Coordinates are static per record**: GPS is captured once at form open (or new form creation) via `captureCoordinates()`. The value stays fixed even if the user moves. Refresh requires manual confirmation via `showConfirm()`.
 
 ## graphify
 
