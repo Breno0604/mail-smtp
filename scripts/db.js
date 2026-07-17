@@ -163,6 +163,47 @@ export function saveAttachments(uuid, attachments) {
 }
 
 /**
+ * Salva registro e anexos em uma única transação atômica.
+ * Se qualquer operação falhar, tudo é revertido (rollback implícito do IndexedDB).
+ *
+ * @param {string} uuid - UUID do registro
+ * @param {object} record - Dados do registro (colocados no store 'records')
+ * @param {Array<{name: string, type: string, data: string}>} serializedAttachments - Anexos já serializados em base64
+ */
+export function saveRecordAtomic(uuid, record, serializedAttachments) {
+  return withTransaction([STORE_RECORDS, STORE_ATTACHMENTS], 'readwrite', tx => {
+    const recordStore = tx.objectStore(STORE_RECORDS);
+    const attStore = tx.objectStore(STORE_ATTACHMENTS);
+
+    // 1. Gravar registro principal
+    recordStore.put(record);
+
+    // 2. Deletar anexos antigos do uuid via cursor e depois inserir os novos
+    const index = attStore.index('uuid');
+    const cursorReq = index.openCursor(IDBKeyRange.only(uuid));
+    cursorReq.onsuccess = () => {
+      const cursor = cursorReq.result;
+      if (cursor) {
+        cursor.delete();
+        cursor.continue();
+      } else {
+        // Cursor terminou — inserir novos anexos
+        serializedAttachments.forEach((att, i) => {
+          attStore.put({
+            id: `${uuid}_${i}`,
+            uuid: uuid,
+            index: i,
+            name: att.name,
+            type: att.type,
+            data: att.data,
+          });
+        });
+      }
+    };
+  });
+}
+
+/**
  * Busca todos os anexos de um registro pelo UUID.
  * @param {string} uuid
  * @returns {Promise<Array<{name: string, type: string, data: string}>>}

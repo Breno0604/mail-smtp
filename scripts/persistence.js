@@ -1,18 +1,17 @@
 // scripts/persistence.js
 import { state, setCurrentUUID } from './state.js';
-import { saveDraft, getRecord, saveAttachments } from './db.js';
+import { getRecord, saveRecordAtomic } from './db.js';
 import { toBase64 } from './utils.js';
 import { generateUUID } from './uuid.js';
 import { collectIniciais, collectRetorno, collectEquipamentos } from './collectors.js';
 
 let saveTimer = null;
-let attachmentsDirty = true;
 
 /**
  * Mark attachments as dirty (need to be re-saved)
  */
 export function markAttachmentsDirty() {
-  attachmentsDirty = true;
+  // Will trigger re-save on next debouncedSave()
 }
 
 /**
@@ -90,23 +89,17 @@ export async function saveState() {
     sentData: existing?.sentData ?? null,
   };
 
-  // Save record
-  saveDraft(data).catch(err => {
-    console.error('saveDraft error:', err);
+  // Save record + attachments atomically in a single transaction
+  try {
+    const serializedAttachments = await serializeAttachments(state.attachments);
+    await saveRecordAtomic(state.currentUUID, data, serializedAttachments);
+  } catch (err) {
+    console.error('saveRecordAtomic error:', err);
     if (err?.name === 'QuotaExceededError' || err?.message?.includes('quota')) {
       import('./ui.js').then(({ showToast }) => {
         showToast('Espaço insuficiente no navegador. Limpe dados antigos.', false);
       });
     }
-  });
-
-  // Save attachments if dirty
-  if (attachmentsDirty) {
-    attachmentsDirty = false;
-    serializeAndSaveAttachments(state.currentUUID, state.attachments).catch(err => {
-      console.error('saveAttachments error:', err);
-      attachmentsDirty = true;
-    });
   }
 }
 
@@ -141,23 +134,17 @@ async function resolveCreatedAt(uuid) {
 }
 
 /**
- * Serialize and save attachments to IndexedDB
- * @param {string} uuid - Record UUID
- * @param {Array<File>} files - Attachment files
+ * Serialize File objects to base64 for IndexedDB storage
+ * @param {File[]} files - Attachment files
+ * @returns {Promise<Array<{name: string, type: string, data: string}>>}
  */
-async function serializeAndSaveAttachments(uuid, files) {
-  if (files.length === 0) {
-    await saveAttachments(uuid, []);
-    return;
-  }
-
-  const serialized = await Promise.all(
+async function serializeAttachments(files) {
+  if (files.length === 0) return [];
+  return Promise.all(
     files.map(async file => ({
       name: file.name,
       type: file.type,
       data: await toBase64(file),
     }))
   );
-
-  await saveAttachments(uuid, serialized);
 }

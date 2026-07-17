@@ -1,4 +1,4 @@
-// tests/gaps-edge-cases.test.js
+﻿// tests/gaps-edge-cases.test.js
 // Testes para lacunas identificadas no relatório de cobertura
 // G2 a G12 — sem correções, apenas reportar falhas
 
@@ -243,13 +243,13 @@ describe('G7+G8: markAttachmentsDirty and empty attachments save', () => {
       if (el && !el.value) el.value = 'teste';
     });
 
-    const saveAttSpy = vi.spyOn(dbModule, 'saveAttachments');
+    const saveAttSpy = vi.spyOn(dbModule, 'saveRecordAtomic');
 
     await saveState();
 
-    // saveAttachments deve ser chamado com array vazio
+    // saveRecordAtomic deve ser chamado com array vazio de anexos
     expect(saveAttSpy).toHaveBeenCalled();
-    expect(saveAttSpy.mock.calls[0][1]).toEqual([]);
+    expect(saveAttSpy.mock.calls[0][2]).toEqual([]);
 
     saveAttSpy.mockRestore();
   });
