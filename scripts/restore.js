@@ -13,12 +13,24 @@ import { collectIniciais } from './collectors.js';
 import { updateAllFilledClasses } from './filled-state.js';
 
 /**
+ * Convert serialized attachments (base64) to File objects.
+ * Used during record restore for both v2 (inline) and v3 (store) formats.
+ */
+function filesFromAttachments(list) {
+  return list.map(att => {
+    const blob = base64ToBlob(att.data, att.type);
+    return new File([blob], att.name, { type: att.type });
+  });
+}
+
+/**
  * Aplica um registro ao formulário, restaurando todos os campos.
  * Suporta migração transparente:
  * - Formato antigo (v2): anexos inline em record.attachments[]
  * - Formato novo (v3): anexos em store separado, buscados por UUID
  */
 export async function applyRecord(record) {
+  if (!record?.uuid) return;
   setCurrentUUID(record.uuid);
   state.iniciaisValido = true;
 
@@ -29,26 +41,20 @@ export async function applyRecord(record) {
     state.equipamentos = record.equipamentos || createDefaultEquipamentos();
   }
   state.lastTipoOrdem = record.tipoOrdem || '';
-  state.iniciais = record.iniciais || {};
-  state.retorno = record.retorno || {};
+  state.iniciais = structuredClone(record.iniciais || {});
+  state.retorno = structuredClone(record.retorno || {});
   state._createdAt = record.createdAt;
   state.status = record.status || 'draft';
 
   // ── Restaurar anexos com migração transparente ──────────────────────────
   if (record.attachments && Array.isArray(record.attachments) && record.attachments.length > 0) {
     // Formato antigo (v2): anexos inline no record
-    state.attachments = record.attachments.map(att => {
-      const blob = base64ToBlob(att.data, att.type);
-      return new File([blob], att.name, { type: att.type });
-    });
+    state.attachments = filesFromAttachments(record.attachments);
   } else if (record.attachmentCount > 0 || record.attachments === undefined) {
     // Formato novo (v3): buscar do store separado
     try {
       const storedAttachments = await getAttachmentsByUuid(record.uuid);
-      state.attachments = storedAttachments.map(att => {
-        const blob = base64ToBlob(att.data, att.type);
-        return new File([blob], att.name, { type: att.type });
-      });
+      state.attachments = filesFromAttachments(storedAttachments);
     } catch (err) {
       console.error('Erro ao buscar anexos do store:', err);
       state.attachments = [];

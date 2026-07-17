@@ -48,6 +48,7 @@ export default [
         require: 'readonly',
         process: 'readonly',
         Buffer: 'readonly',
+        structuredClone: 'readonly',
         vi: 'readonly',
         beforeEach: 'readonly',
         afterEach: 'readonly',
