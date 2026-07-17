@@ -519,10 +519,15 @@ textarea.is-filled:hover {
   background: #fef3c7;
   color: #92400e;
 }
+.sidebar-item-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
 .sidebar-item-meta {
   font-size: 0.75rem;
   color: #94a3b8;
-  margin-bottom: 8px;
 }
 .sidebar-item-actions {
   display: flex;

@@ -77,11 +77,16 @@ export async function renderSidebar(filterTerm = '') {
     status.textContent = cfg.text;
 
     header.appendChild(title);
-    header.appendChild(status);
 
-    const meta = document.createElement('div');
+    const metaRow = document.createElement('div');
+    metaRow.className = 'sidebar-item-meta-row';
+
+    const meta = document.createElement('span');
     meta.className = 'sidebar-item-meta';
     meta.textContent = formatDate(record.updatedAt);
+
+    metaRow.appendChild(meta);
+    metaRow.appendChild(status);
 
     const actions = document.createElement('div');
     actions.className = 'sidebar-item-actions';
@@ -125,7 +130,7 @@ export async function renderSidebar(filterTerm = '') {
     actions.appendChild(deleteBtn);
 
     item.appendChild(header);
-    item.appendChild(meta);
+    item.appendChild(metaRow);
     item.appendChild(actions);
     list.appendChild(item);
   });
