@@ -221,3 +221,26 @@ export function getAttachmentsByUuid(uuid) {
       .map(({ name, type, data }) => ({ name, type, data }));
   });
 }
+
+// ── Cleanup ─────────────────────────────────────────────────────────────────
+
+const RETENTION_DAYS = 90;
+
+/**
+ * Remove registros enviados (status 'sent') com mais de RETENTION_DAYS dias.
+ * Fire-and-forget, chamada na inicialização do app.
+ */
+export async function cleanupOldSentRecords() {
+  const records = await getAllRecords();
+  const now = Date.now();
+  const cutoff = now - RETENTION_DAYS * 24 * 60 * 60 * 1000;
+
+  for (const record of records) {
+    if (record.status !== 'sent') continue;
+    const sentAt = record.sentData?.sentAt;
+    if (!sentAt) continue;
+    if (new Date(sentAt).getTime() < cutoff) {
+      await deleteRecord(record.uuid);
+    }
+  }
+}

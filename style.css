@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
 /* === Reset === */
 *,
 *::before,
@@ -609,7 +607,7 @@ textarea.is-filled:hover {
 /* === Mobile Adjustments === */
 @media (max-width: 640px) {
   .preview-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-columns: repeat(3, 1fr) !important;
   }
 }
 
@@ -774,4 +772,21 @@ h3 {
   background: #eff6ff;
   border-color: #3b82f6;
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+}
+
+/* === Status dot (online/offline indicator) === */
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 6px;
+  vertical-align: middle;
+  transition: background-color 0.3s ease;
+}
+.status-dot.online {
+  background-color: #16a34a;
+}
+.status-dot.offline {
+  background-color: #dc2626;
 }

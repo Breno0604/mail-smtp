@@ -10,6 +10,15 @@
     <meta name="apple-mobile-web-app-title" content="Retorno" />
     <link rel="manifest" href="manifest.json" />
     <link rel="apple-touch-icon" href="icons/icon-192.png" />
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      as="style"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    />
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="tailwind.css" />
     <script type="module" src="scripts/app.js"></script>
@@ -21,7 +30,9 @@
     <div
       class="container bg-white rounded-[20px] shadow-sm border border-slate-200/50 w-full max-w-[640px] relative"
     >
-      <div class="flex justify-between items-center px-3 pt-3.5 pb-2.5 sticky top-0 z-10 bg-white border-b border-slate-200/50">
+      <div
+        class="flex justify-between items-center px-3 pt-3.5 pb-2.5 sticky top-0 z-10 bg-white border-b border-slate-200/50"
+      >
         <button
           class="hamburger"
           id="hamburger"
@@ -30,7 +41,13 @@
         >
           &#9776;
         </button>
-        <h1 class="text-xl text-slate-900 font-bold m-0 tracking-tight">Retorno de Ordens</h1>
+        <h1 class="text-lg text-slate-900 font-bold m-0 tracking-tight">
+          Retorno de Ordens<span
+            class="status-dot"
+            id="status-dot"
+            aria-label="Status de conexão"
+          ></span>
+        </h1>
         <button
           class="btn-new-form"
           id="btn-novo-form"
@@ -180,7 +197,9 @@
             &times;
           </button>
         </div>
-        <label for="sidebar-filter" class="block text-sm font-bold text-slate-700 mb-1.5 mt-5">BUSCAR UC, OS OU TIPO</label>
+        <label for="sidebar-filter" class="block text-sm font-bold text-slate-700 mb-1.5 mt-5"
+          >BUSCAR UC, OS OU TIPO</label
+        >
         <input
           type="search"
           id="sidebar-filter"
