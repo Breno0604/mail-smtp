@@ -780,7 +780,7 @@ h3 {
   height: 10px;
   border-radius: 50%;
   display: inline-block;
-  margin-left: 14px;
+  margin-left: 18px;
   vertical-align: middle;
   transition: background-color 0.3s ease;
   animation: pulse-dot 5s ease-in-out infinite;
