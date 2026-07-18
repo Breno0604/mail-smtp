@@ -8,7 +8,7 @@ import { state } from '../scripts/state.js';
 // Usar vi.hoisted() para criar referências compartilhadas entre o factory
 // do vi.mock e o escopo do teste, garantindo isolation de mocks.
 const {
-  showToastMock,
+  showSendModalMock,
   showConfirmMock,
   validateAllMock,
   checkDuplicateMock,
@@ -17,7 +17,7 @@ const {
   collectAllDataMock,
   composeEmailMock,
 } = vi.hoisted(() => ({
-  showToastMock: vi.fn(),
+  showSendModalMock: vi.fn(),
   showConfirmMock: vi.fn(() => Promise.resolve(true)),
   validateAllMock: vi.fn(() => true),
   checkDuplicateMock: vi.fn(() => Promise.resolve(true)),
@@ -46,7 +46,7 @@ vi.mock('../scripts/compress.js', () => ({
 }));
 
 vi.mock('../scripts/ui.js', () => ({
-  showToast: showToastMock,
+  showSendModal: showSendModalMock,
   showConfirm: showConfirmMock,
 }));
 
@@ -274,7 +274,7 @@ describe('sendEmail', () => {
 
     const result = await sendEmail();
     expect(result).toBe(false);
-    expect(showToastMock).toHaveBeenCalledWith('SMTP error', false);
+    expect(showSendModalMock).toHaveBeenCalledWith('SMTP error', false);
   });
 
   // ── CENÁRIO 5: Erro de rede ───────────────────────────────────────────
@@ -284,7 +284,7 @@ describe('sendEmail', () => {
 
     const result = await sendEmail();
     expect(result).toBe(false);
-    expect(showToastMock).toHaveBeenCalledWith('Erro no servidor. Tente novamente.', false);
+    expect(showSendModalMock).toHaveBeenCalledWith('Erro no servidor. Tente novamente.', false);
   });
 
   // ── CENÁRIO 6: Body without complemento ───────────────────────────────────
