@@ -110,3 +110,20 @@ export function showAnexosModal() {
     }, 400);
   };
 }
+
+export function showSendModal(msg, success) {
+  DOM.sendModalIcon.textContent = success ? '\u2705' : '\u274C';
+  DOM.sendModalText.textContent = msg;
+  DOM.sendModal.classList.remove('hidden');
+
+  const close = () => {
+    DOM.sendModal.classList.add('hidden');
+    DOM.sendModalClose.onclick = null;
+    DOM.sendModal.onclick = null;
+  };
+
+  DOM.sendModalClose.onclick = close;
+  DOM.sendModal.onclick = e => {
+    if (e.target === DOM.sendModal) close();
+  };
+}
