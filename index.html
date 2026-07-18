@@ -304,5 +304,19 @@
         </div>
       </div>
     </div>
+
+    <div
+      class="modal-overlay fixed inset-0 bg-black/40 z-50 flex items-center justify-center hidden"
+      id="send-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="send-modal-text"
+    >
+      <div class="modal bg-white rounded-[10px] p-7 max-w-[420px] w-[90%] shadow-xl text-center">
+        <p class="text-3xl mb-3" id="send-modal-icon"></p>
+        <p class="text-sm text-slate-600 mb-6 leading-relaxed" id="send-modal-text"></p>
+        <button class="btn btn-primary" id="send-modal-close">Fechar</button>
+      </div>
+    </div>
   </body>
 </html>
