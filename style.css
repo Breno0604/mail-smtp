@@ -524,7 +524,7 @@ textarea.is-filled:hover {
 .sidebar-btn {
   flex: 1;
   padding: 0.375rem 0.75rem;
-  border: none;
+  border: 2px solid transparent;
   border-radius: 10px;
   font-size: 0.8125rem;
   font-weight: 600;
@@ -534,6 +534,7 @@ textarea.is-filled:hover {
 .sidebar-btn-edit {
   background: #eff6ff;
   color: #2563eb;
+  border-color: #93c5fd;
 }
 .sidebar-btn-edit:hover {
   background: #dbeafe;
@@ -541,6 +542,7 @@ textarea.is-filled:hover {
 .sidebar-btn-delete {
   background: #fef2f2;
   color: #dc2626;
+  border-color: #fca5a5;
 }
 .sidebar-btn-delete:hover {
   background: #fee2e2;
