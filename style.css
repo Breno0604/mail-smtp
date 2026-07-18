@@ -413,12 +413,7 @@ textarea.is-filled:hover {
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 1rem 0;
-}
-.sidebar label[for='sidebar-filter'],
-.sidebar #sidebar-filter {
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
+  padding: 1rem 0.5rem;
 }
 .sidebar-head {
   display: flex;
