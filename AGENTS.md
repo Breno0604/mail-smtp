@@ -86,7 +86,7 @@ This project has a knowledge graph at graphify-out/ with god nodes, community st
 
 ### Graph state
 
-- Current graph: **754 nodes, 1,299 edges, 51 communities** (as of Jun 2026)
+- Current graph: **1,948 nodes, 4,594 edges, 151 communities** (as of Jul 2026)
 - Graph is AST-only on `graphify update .` (no API cost). Full pipeline (`graphify .`) uses Gemini for semantic labels (~$0.04/run).
 
 ### Commands
@@ -100,6 +100,13 @@ This project has a knowledge graph at graphify-out/ with god nodes, community st
 | `graphify update .`                       | Incremental re-extraction (AST-only, free)          |
 | `graphify .`                              | Full pipeline (AST + Gemini semantic, costs tokens) |
 
+### Updating the graph
+
+- **Always use the CLI** (`graphify update .`) to update the graph — never run Python scripts directly via `graphify.extract` or similar modules.
+- Running graphify Python modules directly fails on Windows because `multiprocessing` requires `freeze_support()` in the main module. The CLI handles this correctly.
+- `graphify update .` does AST-only extraction (no API cost), backs up previous semantic results, and merges automatically.
+- For full semantic update (docs/papers/images), use `/graphify --update` inside the AI assistant — the skill handles subagent dispatch for LLM extraction.
+
 ### Rules
 
 - For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path` and `graphify explain` for focused exploration. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
@@ -108,3 +115,4 @@ This project has a knowledge graph at graphify-out/ with god nodes, community st
 - If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
 - Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
 - After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
+- **Never run graphify Python modules directly** (e.g. `from graphify.extract import extract`). Always use the CLI (`graphify update .`, `graphify query "..."`, etc.). Direct Python invocation breaks on Windows due to multiprocessing spawn issues.
