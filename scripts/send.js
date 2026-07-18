@@ -1,7 +1,7 @@
 import { DOM } from './dom.js';
 import { state } from './state.js';
 import { updateRecordStatus } from './db.js';
-import { showToast, showConfirm } from './ui.js';
+import { showSendModal, showConfirm } from './ui.js';
 import { checkDuplicate } from './duplicate.js';
 import { compressAttachments } from './compress.js';
 import { validateAll } from './validation.js';
@@ -45,7 +45,7 @@ export async function sendEmail() {
     const responseData = await res.json();
 
     if (res.ok && responseData.success) {
-      showToast('Email enviado com sucesso!', true);
+      showSendModal('Email enviado com sucesso!', true);
       if (state.currentUUID) {
         await updateRecordStatus(
           state.currentUUID,
@@ -58,14 +58,14 @@ export async function sendEmail() {
       }
       return true;
     } else {
-      showToast(responseData.error || 'Erro ao enviar email.', false);
+      showSendModal(responseData.error || 'Erro ao enviar email.', false);
       return false;
     }
   } catch (_err) {
     if (!navigator.onLine) {
-      showToast('Sem internet — dados salvos. Conecte-se e clique Enviar novamente.', false);
+      showSendModal('Sem internet — dados salvos. Conecte-se e clique Enviar novamente.', false);
     } else {
-      showToast('Erro no servidor. Tente novamente.', false);
+      showSendModal('Erro no servidor. Tente novamente.', false);
     }
     return false;
   } finally {
