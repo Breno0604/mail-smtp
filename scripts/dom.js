@@ -89,7 +89,6 @@ export function cacheDOM() {
   fresh.anexosModalText = document.getElementById('anexos-modal-text');
   fresh.anexosModalClose = document.getElementById('anexos-modal-close');
   fresh.sendModal = document.getElementById('send-modal');
-  fresh.sendModalIcon = document.getElementById('send-modal-icon');
   fresh.sendModalText = document.getElementById('send-modal-text');
   fresh.sendModalClose = document.getElementById('send-modal-close');
 

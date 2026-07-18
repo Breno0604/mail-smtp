@@ -111,8 +111,7 @@ export function showAnexosModal() {
   };
 }
 
-export function showSendModal(msg, success) {
-  DOM.sendModalIcon.textContent = success ? '\u2705' : '\u274C';
+export function showSendModal(msg, _success) {
   DOM.sendModalText.textContent = msg;
   DOM.sendModal.classList.remove('hidden');
 
