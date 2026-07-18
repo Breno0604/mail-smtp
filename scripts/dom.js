@@ -88,6 +88,10 @@ export function cacheDOM() {
   fresh.anexosModal = document.getElementById('anexos-modal');
   fresh.anexosModalText = document.getElementById('anexos-modal-text');
   fresh.anexosModalClose = document.getElementById('anexos-modal-close');
+  fresh.sendModal = document.getElementById('send-modal');
+  fresh.sendModalIcon = document.getElementById('send-modal-icon');
+  fresh.sendModalText = document.getElementById('send-modal-text');
+  fresh.sendModalClose = document.getElementById('send-modal-close');
 
   // Congela o cache para prevenir mutações acidentais nas chaves do objeto.
   // Propriedades de elementos DOM individuais (textContent, className, value) ainda podem ser alteradas.
