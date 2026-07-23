@@ -14,7 +14,10 @@ const UC_CORTADA_TEMPLATE = [
   {
     blocos: [
       { texto: 'CLIENTE ENCONTRADO {situacao-cliente}, {ramal}, {medicao}, {jump}, {chaves}' },
-      { texto: 'VIAVEL RETIRAR {viavel-retirar}' },
+      {
+        texto: 'VIAVEL RETIRAR {viavel-retirar}',
+        condicao: { campo: 'viavel-retirar', diferenteDe: 'N/A' },
+      },
       { texto: 'TOI: {toi}', condicao: { campo: 'aplicado-toi', valor: 'SIM' } },
       { texto: '' },
       { texto: '{descricao}' },
