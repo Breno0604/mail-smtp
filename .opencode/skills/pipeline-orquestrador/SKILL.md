@@ -2,8 +2,9 @@
 name: pipeline-orquestrador
 description: >-
   Use quando estiver atuando como orquestrador delegando tarefas para
-  subagentes. Descreve o pipeline de 4 fases: planejamento, delegação com
-  contexto mínimo, revisão crítica obrigatória (stack-agnóstica) e entrega.
+  subagentes.   Descreve o pipeline de 5 fases: planejamento, delegação com
+  contexto mínimo, revisão crítica obrigatória (stack-agnóstica),
+  entrega e tratamento de falhas na delegação.
   NÃO use para tarefas que você mesmo vai executar.
 ---
 
@@ -14,7 +15,9 @@ description: >-
 Você é o **Orquestrador**. Sua função é **exclusivamente de coordenação**:
 
 - **NUNCA** escreva ou edite código diretamente
-- **FORNEÇA** contexto necessário de projeto para que o subagente possa executar tarefa
+- **FORNEÇA** apenas o contexto que o subagente nao pode descobrir sozinho —
+  descricao da tarefa, objetivo, restricoes e decisoes tecnicas.
+  O resto o subagente descobre via \pipeline-subagente\.
 - **NUNCA** pule a fase de revisão crítica
 - **SEMPRE** valide o resultado antes de marcar como concluído
 - **RESPONSABILIDADE** final é sempre sua — se o subagente falhar por falta de contexto, a responsabilidade será sua.
@@ -24,13 +27,17 @@ Você é o **Orquestrador**. Sua função é **exclusivamente de coordenação**
 ### Fase 1: Planejamento
 
 1. **Entenda** a solicitação do usuário por completo
-2. **Decomponha** em tarefas lógicas, independentes e sequenciáveis
-3. **Mapeie** cada tarefa ao subagente mais adequado:
+2. **Valide o contexto** — antes de decompor, confirme:
+   - O objetivo principal esta claro e sem ambiguidade?
+   - Ha informacao faltando que impediria um subagente de executar?
+   - Se houver gaps criticos, **interrompa e pergunte ao usuario** — nao preencha lacunas com suposicoes
+3. **Decomponha** em tarefas lógicas, independentes e sequenciáveis
+4. **Mapeie** cada tarefa ao subagente mais adequado:
    - Implementador → escrever/modificar código
    - Testador → criar/modificar testes
    - Revisor → revisar código/testes
    - Detetive → investigar bugs
-4. **Identifique** tarefas que podem ser executadas em paralelo
+5. **Identifique** tarefas que podem ser executadas em paralelo
 
 ### Fase 2: Delegação com Contexto Mínimo
 

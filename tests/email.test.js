@@ -555,5 +555,228 @@ describe('email', () => {
         });
       });
     });
+
+    describe('TELEMEDICAO template', () => {
+      it('should include atentende_com and realizado_telemedicao when executado is SIM', () => {
+        const data = {
+          retorno: {
+            executado_telemedicao: 'SIM',
+            atentende_com: 'CARLOS CRISTIANO',
+            realizado_telemedicao: 'Manutencao realizada no medidor',
+            descricao: 'Servico concluido',
+          },
+        };
+        const result = applyRetornoTemplate('TELEMEDIÇÃO MANUTENÇÃO', data);
+        expect(result).toContain('EXECUTADO: SIM');
+        expect(result).toContain('ATENDENTE: CARLOS CRISTIANO');
+        expect(result).toContain('REALIZADO: Manutencao realizada no medidor');
+        expect(result).toContain('Servico concluido');
+      });
+
+      it('should include motivo and problem when executado is NAO', () => {
+        const data = {
+          retorno: {
+            executado_telemedicao: 'NAO',
+            motivo_cancelamento_telemedicao: 'SEM ACESSO',
+            descreva_problema_telemedicao: 'Portao fechado',
+            descricao: 'Nao foi possivel executar',
+          },
+        };
+        const result = applyRetornoTemplate('TELEMEDIÇÃO MANUTENÇÃO', data);
+        expect(result).toContain('EXECUTADO: NAO');
+        expect(result).toContain('MOTIVO: SEM ACESSO');
+        expect(result).toContain('PROBLEMA: Portao fechado');
+        expect(result).toContain('Nao foi possivel executar');
+      });
+
+      it('should omit problem line when motivo is not SEM ACESSO or OUTRO MOTIVO', () => {
+        const data = {
+          retorno: {
+            executado_telemedicao: 'NAO',
+            motivo_cancelamento_telemedicao: 'MEDICAO COM BY-PASS',
+            descreva_problema_telemedicao: 'N/A',
+            descricao: 'By-pass detectado',
+          },
+        };
+        const result = applyRetornoTemplate('TELEMEDIÇÃO MANUTENÇÃO', data);
+        expect(result).not.toContain('PROBLEMA:');
+        expect(result).toContain('MOTIVO: MEDICAO COM BY-PASS');
+      });
+
+      it('should work for all TELEMEDICAO variants', () => {
+        const data = {
+          retorno: {
+            executado_telemedicao: 'SIM',
+            atentende_com: 'TECNICO',
+            realizado_telemedicao: 'OK',
+            descricao: 'Teste',
+          },
+        };
+        const r1 = applyRetornoTemplate('TELEMEDIÇÃO MANUTENÇÃO', data);
+        const r2 = applyRetornoTemplate('TELEMEDIÇÃO MANUTENÇÃO CLIENTE LIVRE', data);
+        const r3 = applyRetornoTemplate('TELEMEDIÇÃO MANUTENÇÃO LOTE', data);
+        expect(r1).toBe(r2);
+        expect(r2).toBe(r3);
+      });
+    });
+
+    describe('GRANDES CLIENTES SELO ROMPIDO template', () => {
+      it('should include medidor info when selo-rompido is SIM and medidor substituido', () => {
+        const data = {
+          retorno: {
+            'selo-rompido': 'SIM',
+            'medidor-substituido': 'SIM',
+            'num-novo-medidor': 'ABC-999',
+            descricao: 'Selo rompido, medidor trocado',
+          },
+        };
+        const result = applyRetornoTemplate('GRANDES CLIENTES SELO ROMPIDO', data);
+        expect(result).toContain('SELO ROMPIDO: SIM');
+        expect(result).toContain('MEDIDOR SUBSTITUIDO: SIM');
+        expect(result).toContain('NOVO MEDIDOR: ABC-999');
+        expect(result).toContain('Selo rompido, medidor trocado');
+      });
+
+      it('should omit num-novo-medidor when medidor not substituted', () => {
+        const data = {
+          retorno: {
+            'selo-rompido': 'SIM',
+            'medidor-substituido': 'NÃO',
+            'num-novo-medidor': '',
+            descricao: 'Selo rompido apenas',
+          },
+        };
+        const result = applyRetornoTemplate('GRANDES CLIENTES SELO ROMPIDO', data);
+        expect(result).not.toContain('NOVO MEDIDOR:');
+        expect(result).toContain('MEDIDOR SUBSTITUIDO: NÃO');
+      });
+
+      it('should show NAO variant when selo not broken', () => {
+        const data = {
+          retorno: {
+            'selo-rompido': 'NÃO',
+            descricao: 'Selo intacto',
+          },
+        };
+        const result = applyRetornoTemplate('GRANDES CLIENTES SELO ROMPIDO', data);
+        expect(result).toContain('SELO ROMPIDO: NAO');
+        expect(result).not.toContain('MEDIDOR SUBSTITUIDO:');
+      });
+    });
+
+    describe('INSTALACAO DO DISPLAY template', () => {
+      it('should show SIM variant without motivo', () => {
+        const data = {
+          retorno: {
+            'display-instalado': 'SIM',
+            descricao: 'Display instalado',
+          },
+        };
+        const result = applyRetornoTemplate('INSTALACAO DO DISPLAY', data);
+        expect(result).toContain('DISPLAY INSTALADO: SIM');
+        expect(result).not.toContain('MOTIVO:');
+      });
+
+      it('should show NAO variant with motivo', () => {
+        const data = {
+          retorno: {
+            'display-instalado': 'NÃO',
+            'motivo-nao-instalar': 'Falta de material',
+            descricao: 'Sem instalacao',
+          },
+        };
+        const result = applyRetornoTemplate('INSTALACAO DO DISPLAY', data);
+        expect(result).toContain('DISPLAY INSTALADO: NAO');
+        expect(result).toContain('MOTIVO: Falta de material');
+      });
+    });
+
+    describe('SUBSTITUICAO DE DISPLAY template', () => {
+      it('should include motivo and funcionando fields', () => {
+        const data = {
+          retorno: {
+            'motivo-subst': 'Display Quebrado',
+            'display-funcionando': 'SIM',
+            descricao: 'Substituicao concluida',
+          },
+        };
+        const result = applyRetornoTemplate('SUBSTITUIÇÃO DE DISPLAY', data);
+        expect(result).toContain('MOTIVO SUBSTITUICAO: Display Quebrado');
+        expect(result).toContain('DISPLAY FUNCIONANDO: SIM');
+        expect(result).toContain('Substituicao concluida');
+      });
+    });
+
+    describe('CORTE DE UC POR DEF TECNICO template', () => {
+      it('should show SIM variant', () => {
+        const data = {
+          retorno: {
+            corte_por_defeito_tecnico: 'SIM',
+            descricao: 'Corte executado',
+          },
+        };
+        const result = applyRetornoTemplate('CORTE DE UC POR DEF TECNICO', data);
+        expect(result).toContain('EXECUTADO: SIM');
+        expect(result).toContain('Corte executado');
+      });
+
+      it('should show NAO variant with motivo and problem', () => {
+        const data = {
+          retorno: {
+            corte_por_defeito_tecnico: 'NAO',
+            motivo_cancelamento_corte_por_defeito_tecnico: 'SEM ACESSO',
+            descreva_problema_corte_por_defeito_tecnico: 'Portao trancado',
+            descricao: 'Nao executado',
+          },
+        };
+        const result = applyRetornoTemplate('CORTE DE UC POR DEF TECNICO', data);
+        expect(result).toContain('EXECUTADO: NAO');
+        expect(result).toContain('MOTIVO: SEM ACESSO');
+        expect(result).toContain('PROBLEMA: Portao trancado');
+      });
+
+      it('should omit problem for motivo without description', () => {
+        const data = {
+          retorno: {
+            corte_por_defeito_tecnico: 'NAO',
+            motivo_cancelamento_corte_por_defeito_tecnico: 'CLIENTE NAO PERMITIU',
+            descreva_problema_corte_por_defeito_tecnico: '',
+            descricao: 'Cliente nao permitiu',
+          },
+        };
+        const result = applyRetornoTemplate('CORTE DE UC POR DEF TECNICO', data);
+        expect(result).not.toContain('PROBLEMA:');
+        expect(result).toContain('MOTIVO: CLIENTE NAO PERMITIU');
+      });
+    });
+
+    describe('DESLIG.PROG.MANUTENCAO template', () => {
+      it('should show EXECUTADO variant', () => {
+        const data = {
+          retorno: {
+            desligamento: 'DESLIGAMENTO EXECUTADO',
+            descricao: 'Desligamento realizado',
+          },
+        };
+        const result = applyRetornoTemplate('DESLIG.PROG.MANUTENÇÃO', data);
+        expect(result).toContain('DESLIGAMENTO EXECUTADO');
+        expect(result).not.toContain('STATUS:');
+        expect(result).not.toContain('PROBLEMA:');
+      });
+
+      it('should show status and problem for non-EXECUTADO variants', () => {
+        const data = {
+          retorno: {
+            desligamento: 'SEM ACESSO',
+            acesso_desligamento: 'Cliente nao encontrado',
+            descricao: 'Desligamento nao realizado',
+          },
+        };
+        const result = applyRetornoTemplate('DESLIG.PROG.MANUTENÇÃO', data);
+        expect(result).toContain('STATUS: SEM ACESSO');
+        expect(result).toContain('PROBLEMA: Cliente nao encontrado');
+        expect(result).toContain('Desligamento nao realizado');
+      });
+    });
   });
 });

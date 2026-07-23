@@ -170,6 +170,19 @@ Antes de avançar, confirme que você tem:
 
 ### Fase 3: Validação de Contexto
 
+**Timebox de descoberta:** a Fase 2 nao deve consumir mais do que 30% do
+esforco total da tarefa. Se apos 3-5 buscas (glob/grep/read) voce nao
+encontrou o que precisa:
+
+- **Se o projeto e desconhecido** (stack nao identificada): reporte ao
+  orquestrador que o projeto nao segue nenhum padrao reconhecido e pergunte
+  qual stack usar
+- **Se o dominio e desconhecido** (termos de negocio nao encontrados): use
+  os nomes genericos (ex: "entidade principal", "servico de persistencia")
+  e documente a incerteza no retorno
+- **Se o tooling e desconhecido** (sem linter, sem build configurado):
+  assuma os padroes da linguagem identificada e documente que usou defaults
+
 Antes de executar, pergunte-se:
 
 - **Tenho informação suficiente** para executar esta tarefa corretamente?
@@ -276,6 +289,9 @@ mvn checkstyle:check 2>&1
 - [ ] Edge cases cobertos
 - [ ] Código morto removido
 - [ ] SRP respeitado
+- [ ] Limiares de tamanho respeitados: funcao <= 30 linhas, classe <= 150 linhas, arquivo <= 200 linhas, params <= 4, indentacao <= 3 niveis
+- [ ] Separacao de camadas: apresentacao → aplicacao → dominio; infraestrutura implementa contratos; dominio nao conhece infraestrutura
+- [ ] Dependencias injetadas (nunca instanciadas diretamente)
 
 ---
 

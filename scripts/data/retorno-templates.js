@@ -31,6 +31,120 @@ const DESCRICAO_TEMPLATE = [
   },
 ];
 
+const TELEMEDICAO_TEMPLATE = [
+  {
+    condicao: { campo: 'executado_telemedicao', valor: 'SIM' },
+    blocos: [
+      { texto: 'EXECUTADO: SIM' },
+      { texto: 'ATENDENTE: {atentende_com}' },
+      { texto: 'REALIZADO: {realizado_telemedicao}' },
+      { texto: '' },
+      { texto: '{descricao}' },
+    ],
+  },
+  {
+    condicao: { campo: 'executado_telemedicao', valor: 'NAO' },
+    blocos: [
+      { texto: 'EXECUTADO: NAO' },
+      { texto: 'MOTIVO: {motivo_cancelamento_telemedicao}' },
+      {
+        texto: 'PROBLEMA: {descreva_problema_telemedicao}',
+        condicao: {
+          campo: 'motivo_cancelamento_telemedicao',
+          valor: ['SEM ACESSO', 'OUTRO MOTIVO'],
+        },
+      },
+      { texto: '' },
+      { texto: '{descricao}' },
+    ],
+  },
+];
+
+const GRANDES_CLIENTES_SELO_ROMPIDO_TEMPLATE = [
+  {
+    condicao: { campo: 'selo-rompido', valor: 'SIM' },
+    blocos: [
+      { texto: 'SELO ROMPIDO: SIM' },
+      { texto: 'MEDIDOR SUBSTITUIDO: {medidor-substituido}' },
+      {
+        texto: 'NOVO MEDIDOR: {num-novo-medidor}',
+        condicao: { campo: 'medidor-substituido', valor: 'SIM' },
+      },
+      { texto: '' },
+      { texto: '{descricao}' },
+    ],
+  },
+  {
+    condicao: { campo: 'selo-rompido', valor: 'NÃO' },
+    blocos: [{ texto: 'SELO ROMPIDO: NAO' }, { texto: '' }, { texto: '{descricao}' }],
+  },
+];
+
+const INSTALACAO_DISPLAY_TEMPLATE = [
+  {
+    condicao: { campo: 'display-instalado', valor: 'SIM' },
+    blocos: [{ texto: 'DISPLAY INSTALADO: SIM' }, { texto: '' }, { texto: '{descricao}' }],
+  },
+  {
+    condicao: { campo: 'display-instalado', valor: 'NÃO' },
+    blocos: [
+      { texto: 'DISPLAY INSTALADO: NAO' },
+      { texto: 'MOTIVO: {motivo-nao-instalar}' },
+      { texto: '' },
+      { texto: '{descricao}' },
+    ],
+  },
+];
+
+const SUBST_DISPLAY_TEMPLATE = [
+  {
+    blocos: [
+      { texto: 'MOTIVO SUBSTITUICAO: {motivo-subst}' },
+      { texto: 'DISPLAY FUNCIONANDO: {display-funcionando}' },
+      { texto: '' },
+      { texto: '{descricao}' },
+    ],
+  },
+];
+
+const CORTE_DEF_TECNICO_TEMPLATE = [
+  {
+    condicao: { campo: 'corte_por_defeito_tecnico', valor: 'SIM' },
+    blocos: [{ texto: 'EXECUTADO: SIM' }, { texto: '' }, { texto: '{descricao}' }],
+  },
+  {
+    condicao: { campo: 'corte_por_defeito_tecnico', valor: 'NAO' },
+    blocos: [
+      { texto: 'EXECUTADO: NAO' },
+      { texto: 'MOTIVO: {motivo_cancelamento_corte_por_defeito_tecnico}' },
+      {
+        texto: 'PROBLEMA: {descreva_problema_corte_por_defeito_tecnico}',
+        condicao: {
+          campo: 'motivo_cancelamento_corte_por_defeito_tecnico',
+          valor: ['SEM ACESSO', 'OUTRO PROBLEMA'],
+        },
+      },
+      { texto: '' },
+      { texto: '{descricao}' },
+    ],
+  },
+];
+
+const DESLIG_PROG_MANUTENCAO_TEMPLATE = [
+  {
+    condicao: { campo: 'desligamento', valor: 'DESLIGAMENTO EXECUTADO' },
+    blocos: [{ texto: 'DESLIGAMENTO EXECUTADO' }, { texto: '' }, { texto: '{descricao}' }],
+  },
+  {
+    blocos: [
+      { texto: 'STATUS: {desligamento}' },
+      { texto: 'PROBLEMA: {acesso_desligamento}' },
+      { texto: '' },
+      { texto: '{descricao}' },
+    ],
+  },
+];
+
 const LIGACAO_NOVA_MT_TEMPLATE = [
   // Variant 1: VISTORIA only
   {
@@ -255,16 +369,16 @@ export const retornoTemplates = {
   'AFERIÇÃO MEDIDOR CLIENTE LIVRE': DESCRICAO_TEMPLATE,
   'COLHER LEITURA': DESCRICAO_TEMPLATE,
   'CORTE DEFINITIVO A PEDIDO': DESCRICAO_TEMPLATE,
-  'CORTE DE UC POR DEF TECNICO': DESCRICAO_TEMPLATE,
-  'DESLIG.PROG.MANUTENÇÃO': DESCRICAO_TEMPLATE,
+  'CORTE DE UC POR DEF TECNICO': CORTE_DEF_TECNICO_TEMPLATE,
+  'DESLIG.PROG.MANUTENÇÃO': DESLIG_PROG_MANUTENCAO_TEMPLATE,
   'DESLOCAMENTO DE SUBESTAÇÃO': DESCRICAO_TEMPLATE,
   'DISPON. SAIDA SERIAL MEDIDOR': DESCRICAO_TEMPLATE,
   'EXECUÇÃO DE MUDANÇA DE TARIFA': DESCRICAO_TEMPLATE,
   'EXECUCAO DO ACRESCIMO DE POTENCIA': DESCRICAO_TEMPLATE,
   'EXECUCAO DO DECRESCIMO DE POTENCIA': DESCRICAO_TEMPLATE,
-  'GRANDES CLIENTES SELO ROMPIDO': DESCRICAO_TEMPLATE,
+  'GRANDES CLIENTES SELO ROMPIDO': GRANDES_CLIENTES_SELO_ROMPIDO_TEMPLATE,
   'GRANDES CLIENTES SEM MEDIÇÃO': DESCRICAO_TEMPLATE,
-  'INSTALACAO DO DISPLAY': DESCRICAO_TEMPLATE,
+  'INSTALACAO DO DISPLAY': INSTALACAO_DISPLAY_TEMPLATE,
   'LIBERAÇÃO DE PULSO': DESCRICAO_TEMPLATE,
   'LIGAÇÃO NOVA ISOLADA': DESCRICAO_TEMPLATE,
   'LIGAÇÃO NOVA SIMULTÂNEA': DESCRICAO_TEMPLATE,
@@ -279,10 +393,10 @@ export const retornoTemplates = {
   'SUBST. MEDIDOR A PEDIDO': DESCRICAO_TEMPLATE,
   'SUBST. MEDIDOR INICIATIVA COELCE': DESCRICAO_TEMPLATE,
   'SUBSTITUIÇÃO DA BATERIA DO MEDIDOR': DESCRICAO_TEMPLATE,
-  'SUBSTITUIÇÃO DE DISPLAY': DESCRICAO_TEMPLATE,
-  'TELEMEDIÇÃO MANUTENÇÃO': DESCRICAO_TEMPLATE,
-  'TELEMEDIÇÃO MANUTENÇÃO CLIENTE LIVRE': DESCRICAO_TEMPLATE,
-  'TELEMEDIÇÃO MANUTENÇÃO LOTE': DESCRICAO_TEMPLATE,
+  'SUBSTITUIÇÃO DE DISPLAY': SUBST_DISPLAY_TEMPLATE,
+  'TELEMEDIÇÃO MANUTENÇÃO': TELEMEDICAO_TEMPLATE,
+  'TELEMEDIÇÃO MANUTENÇÃO CLIENTE LIVRE': TELEMEDICAO_TEMPLATE,
+  'TELEMEDIÇÃO MANUTENÇÃO LOTE': TELEMEDICAO_TEMPLATE,
   'VISITA TECNICA GRUPO A': DESCRICAO_TEMPLATE,
   'VISTORIA DA UC': DESCRICAO_TEMPLATE,
   'VISTORIA GERAÇÃO DISTRIBUIDA': DESCRICAO_TEMPLATE,
