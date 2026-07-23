@@ -60,53 +60,6 @@ const TELEMEDICAO_TEMPLATE = [
   },
 ];
 
-const GRANDES_CLIENTES_SELO_ROMPIDO_TEMPLATE = [
-  {
-    condicao: { campo: 'selo-rompido', valor: 'SIM' },
-    blocos: [
-      { texto: 'SELO ROMPIDO: SIM' },
-      { texto: 'MEDIDOR SUBSTITUIDO: {medidor-substituido}' },
-      {
-        texto: 'NOVO MEDIDOR: {num-novo-medidor}',
-        condicao: { campo: 'medidor-substituido', valor: 'SIM' },
-      },
-      { texto: '' },
-      { texto: '{descricao}' },
-    ],
-  },
-  {
-    condicao: { campo: 'selo-rompido', valor: 'NÃO' },
-    blocos: [{ texto: 'SELO ROMPIDO: NAO' }, { texto: '' }, { texto: '{descricao}' }],
-  },
-];
-
-const INSTALACAO_DISPLAY_TEMPLATE = [
-  {
-    condicao: { campo: 'display-instalado', valor: 'SIM' },
-    blocos: [{ texto: 'DISPLAY INSTALADO: SIM' }, { texto: '' }, { texto: '{descricao}' }],
-  },
-  {
-    condicao: { campo: 'display-instalado', valor: 'NÃO' },
-    blocos: [
-      { texto: 'DISPLAY INSTALADO: NAO' },
-      { texto: 'MOTIVO: {motivo-nao-instalar}' },
-      { texto: '' },
-      { texto: '{descricao}' },
-    ],
-  },
-];
-
-const SUBST_DISPLAY_TEMPLATE = [
-  {
-    blocos: [
-      { texto: 'MOTIVO SUBSTITUICAO: {motivo-subst}' },
-      { texto: 'DISPLAY FUNCIONANDO: {display-funcionando}' },
-      { texto: '' },
-      { texto: '{descricao}' },
-    ],
-  },
-];
-
 const CORTE_DEF_TECNICO_TEMPLATE = [
   {
     condicao: { campo: 'corte_por_defeito_tecnico', valor: 'SIM' },
@@ -376,9 +329,9 @@ export const retornoTemplates = {
   'EXECUÇÃO DE MUDANÇA DE TARIFA': DESCRICAO_TEMPLATE,
   'EXECUCAO DO ACRESCIMO DE POTENCIA': DESCRICAO_TEMPLATE,
   'EXECUCAO DO DECRESCIMO DE POTENCIA': DESCRICAO_TEMPLATE,
-  'GRANDES CLIENTES SELO ROMPIDO': GRANDES_CLIENTES_SELO_ROMPIDO_TEMPLATE,
+  'GRANDES CLIENTES SELO ROMPIDO': DESCRICAO_TEMPLATE,
   'GRANDES CLIENTES SEM MEDIÇÃO': DESCRICAO_TEMPLATE,
-  'INSTALACAO DO DISPLAY': INSTALACAO_DISPLAY_TEMPLATE,
+  'INSTALACAO DO DISPLAY': DESCRICAO_TEMPLATE,
   'LIBERAÇÃO DE PULSO': DESCRICAO_TEMPLATE,
   'LIGAÇÃO NOVA ISOLADA': DESCRICAO_TEMPLATE,
   'LIGAÇÃO NOVA SIMULTÂNEA': DESCRICAO_TEMPLATE,
@@ -393,7 +346,7 @@ export const retornoTemplates = {
   'SUBST. MEDIDOR A PEDIDO': DESCRICAO_TEMPLATE,
   'SUBST. MEDIDOR INICIATIVA COELCE': DESCRICAO_TEMPLATE,
   'SUBSTITUIÇÃO DA BATERIA DO MEDIDOR': DESCRICAO_TEMPLATE,
-  'SUBSTITUIÇÃO DE DISPLAY': SUBST_DISPLAY_TEMPLATE,
+  'SUBSTITUIÇÃO DE DISPLAY': DESCRICAO_TEMPLATE,
   'TELEMEDIÇÃO MANUTENÇÃO': TELEMEDICAO_TEMPLATE,
   'TELEMEDIÇÃO MANUTENÇÃO CLIENTE LIVRE': TELEMEDICAO_TEMPLATE,
   'TELEMEDIÇÃO MANUTENÇÃO LOTE': TELEMEDICAO_TEMPLATE,

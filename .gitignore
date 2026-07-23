@@ -8,3 +8,11 @@ dist/
 
 # graphify generated artifacts
 graphify-out/
+
+# Temporary planning artifacts
+temp/
+.mimocode/
+
+# E2E tests (Playwright not installed)
+tests-e2e/
+playwright.config.js

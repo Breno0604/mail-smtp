@@ -298,55 +298,11 @@ export const retornoFieldsByTipo = {
 
   'VISTORIA DA UC': [FIELD_DESCRICAO],
 
-  'GRANDES CLIENTES SELO ROMPIDO': [
-    FIELD_DESCRICAO,
-    { nome: 'selo-rompido', label: 'Selo Rompido?', tipo: 'select', opcoes: ['SIM', 'NÃO'] },
-    {
-      nome: 'medidor-substituido',
-      label: 'Medidor Substituído?',
-      tipo: 'select',
-      opcoes: ['SIM', 'NÃO'],
-      condicional: { campoRef: 'selo-rompido', valor: 'SIM' },
-    },
-    {
-      nome: 'num-novo-medidor',
-      label: 'Nº do Novo Medidor',
-      tipo: 'text',
-      condicional: { campoRef: 'medidor-substituido', valor: 'SIM' },
-    },
-  ],
+  'GRANDES CLIENTES SELO ROMPIDO': [FIELD_DESCRICAO],
 
-  'INSTALACAO DO DISPLAY': [
-    FIELD_DESCRICAO,
-    {
-      nome: 'display-instalado',
-      label: 'Display Instalado?',
-      tipo: 'select',
-      opcoes: ['SIM', 'NÃO'],
-    },
-    {
-      nome: 'motivo-nao-instalar',
-      label: 'Motivo de não Instalar',
-      tipo: 'text',
-      condicional: { campoRef: 'display-instalado', valor: 'NÃO' },
-    },
-  ],
+  'INSTALACAO DO DISPLAY': [FIELD_DESCRICAO],
 
-  'SUBSTITUIÇÃO DE DISPLAY': [
-    FIELD_DESCRICAO,
-    {
-      nome: 'motivo-subst',
-      label: 'Motivo da Substituição',
-      tipo: 'select',
-      opcoes: ['Display Quebrado', 'Display Sem Leitura', 'Display Danificado', 'Outro'],
-    },
-    {
-      nome: 'display-funcionando',
-      label: 'Display Novo Funcionando?',
-      tipo: 'select',
-      opcoes: ['SIM', 'NÃO'],
-    },
-  ],
+  'SUBSTITUIÇÃO DE DISPLAY': [FIELD_DESCRICAO],
 
   'AFERIÇÃO DE MEDIDOR': [FIELD_DESCRICAO],
   'AFERIÇÃO MEDIDOR CLIENTE LIVRE': [FIELD_DESCRICAO],
