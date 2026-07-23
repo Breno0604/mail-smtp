@@ -64,15 +64,19 @@ export async function sendEmail() {
 
         if (res.ok && responseData.success) {
           showSendModal('Email enviado com sucesso!', true);
-          if (state.currentUUID) {
-            await updateRecordStatus(
-              state.currentUUID,
-              {
-                subject,
-                sentAt: new Date().toISOString(),
-              },
-              'sent'
-            );
+          try {
+            if (state.currentUUID) {
+              await updateRecordStatus(
+                state.currentUUID,
+                {
+                  subject,
+                  sentAt: new Date().toISOString(),
+                },
+                'sent'
+              );
+            }
+          } catch (_statusErr) {
+            console.error('Falha ao atualizar status do registro:', _statusErr);
           }
           return true;
         } else {
