@@ -109,6 +109,7 @@ describe('sendEmail', () => {
   it('should return true on successful send', async () => {
     fetch.mockResolvedValue({
       ok: true,
+      headers: { get: () => 'application/json' },
       json: () => Promise.resolve({ success: true, to: 'test@example.com' }),
     });
 
@@ -119,6 +120,7 @@ describe('sendEmail', () => {
   it('should call fetch with correct URL and method', async () => {
     fetch.mockResolvedValue({
       ok: true,
+      headers: { get: () => 'application/json' },
       json: () => Promise.resolve({ success: true, to: 'test@example.com' }),
     });
 
@@ -135,6 +137,7 @@ describe('sendEmail', () => {
   it('should build correct subject from state', async () => {
     fetch.mockResolvedValue({
       ok: true,
+      headers: { get: () => 'application/json' },
       json: () => Promise.resolve({ success: true, to: 'test@example.com' }),
     });
 
@@ -147,6 +150,7 @@ describe('sendEmail', () => {
   it('should build body from composeEmail', async () => {
     fetch.mockResolvedValue({
       ok: true,
+      headers: { get: () => 'application/json' },
       json: () => Promise.resolve({ success: true, to: 'test@example.com' }),
     });
 
@@ -161,6 +165,7 @@ describe('sendEmail', () => {
     state.attachments = [new File(['a'], 'a.jpg', { type: 'image/jpeg' })];
     fetch.mockResolvedValue({
       ok: true,
+      headers: { get: () => 'application/json' },
       json: () => Promise.resolve({ success: true, to: 'test@example.com' }),
     });
 
@@ -171,6 +176,7 @@ describe('sendEmail', () => {
   it('should update record status on success', async () => {
     fetch.mockResolvedValue({
       ok: true,
+      headers: { get: () => 'application/json' },
       json: () => Promise.resolve({ success: true }),
     });
 
@@ -185,6 +191,7 @@ describe('sendEmail', () => {
   it('should disable button while sending and re-enable after', async () => {
     fetch.mockResolvedValue({
       ok: true,
+      headers: { get: () => 'application/json' },
       json: () => Promise.resolve({ success: true, to: 'test@example.com' }),
     });
 
@@ -214,6 +221,7 @@ describe('sendEmail', () => {
     showConfirmMock.mockResolvedValue(true);
     fetch.mockResolvedValue({
       ok: true,
+      headers: { get: () => 'application/json' },
       json: () => Promise.resolve({ success: true, to: 'test@example.com' }),
     });
 
@@ -237,6 +245,7 @@ describe('sendEmail', () => {
     state.status = 'draft';
     fetch.mockResolvedValue({
       ok: true,
+      headers: { get: () => 'application/json' },
       json: () => Promise.resolve({ success: true, to: 'test@example.com' }),
     });
 
@@ -248,6 +257,7 @@ describe('sendEmail', () => {
     state.status = 'sent';
     fetch.mockResolvedValue({
       ok: true,
+      headers: { get: () => 'application/json' },
       json: () => Promise.resolve({ success: true, to: 'test@example.com' }),
     });
 
@@ -269,6 +279,7 @@ describe('sendEmail', () => {
   it('should return false when server returns error', async () => {
     fetch.mockResolvedValue({
       ok: false,
+      headers: { get: () => 'application/json' },
       json: () => Promise.resolve({ success: false, error: 'SMTP error' }),
     });
 
@@ -284,7 +295,10 @@ describe('sendEmail', () => {
 
     const result = await sendEmail();
     expect(result).toBe(false);
-    expect(showSendModalMock).toHaveBeenCalledWith('Erro no servidor. Tente novamente.', false);
+    expect(showSendModalMock).toHaveBeenCalledWith(
+      'Erro de conexão com o servidor. Tente novamente.',
+      false
+    );
   });
 
   // ── CENÁRIO 6: Body without complemento ───────────────────────────────────
@@ -292,6 +306,7 @@ describe('sendEmail', () => {
   it('should send body from composeEmail', async () => {
     fetch.mockResolvedValue({
       ok: true,
+      headers: { get: () => 'application/json' },
       json: () => Promise.resolve({ success: true, to: 'test@example.com' }),
     });
 

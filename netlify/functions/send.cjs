@@ -113,20 +113,22 @@ exports.handler = async event => {
 
     await transporter.sendMail(mailOptions);
 
-    // ── Segurança: log de auditoria ─────────────────────────────
-    console.log(
-      JSON.stringify({
-        audit: true,
-        to: toList,
-        subject,
-        anexos: (attachments || []).length,
-        timestamp: new Date().toISOString(),
-      })
-    );
+    // ── Seguran\u00e7a: log de auditoria ─────────────────────────────
+    const auditLog = {
+      audit: true,
+      to: toList,
+      subject,
+      anexos: (attachments || []).length,
+      timestamp: new Date().toISOString(),
+    };
+    console.log(JSON.stringify(auditLog));
 
+    const responseBody = JSON.stringify({ success: true });
+    console.log('[send] Returning 200 with body:', responseBody);
     return {
       statusCode: 200,
-      body: JSON.stringify({ success: true }),
+      headers: { 'Content-Type': 'application/json' },
+      body: responseBody,
     };
   } catch (error) {
     console.error('[send] SMTP error:', {
@@ -136,9 +138,12 @@ exports.handler = async event => {
       stack: error.stack,
       timestamp: new Date().toISOString(),
     });
+    const errorBody = JSON.stringify({ error: 'Erro interno ao enviar o email. Tente novamente.' });
+    console.log('[send] Returning 500 with body:', errorBody);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Erro interno ao enviar o email. Tente novamente.' }),
+      headers: { 'Content-Type': 'application/json' },
+      body: errorBody,
     };
   }
 };
