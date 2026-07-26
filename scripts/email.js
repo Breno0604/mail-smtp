@@ -1,5 +1,5 @@
 import { DOM } from './dom.js';
-import { iniciaisFields, getRetornoFields } from './fields.js';
+import { getRetornoFields } from './fields.js';
 import { collectAllData } from './collectors.js';
 import { EQUIPMENT_KEYS } from './equipment-keys.js';
 import { formatDate } from './utils.js';
@@ -66,12 +66,34 @@ export function applyRetornoTemplate(tipo, data) {
 export function composeEmail(data) {
   let body = '';
 
-  iniciaisFields.forEach(field => {
+  const headerFields = [
+    { nome: 'tipo-ordem', label: 'TIPO' },
+    { nome: 'os', label: 'OS' },
+    { nome: 'uc', label: 'UC' },
+    { nome: 'municipio', label: 'MUNICIPIO' },
+    { nome: 'notificado', label: 'NOTIFICADO' },
+    { nome: 'placa', label: 'PLACA' },
+    { nome: 'coordenadas', label: 'COORDENADAS' },
+  ];
+
+  headerFields.forEach(field => {
     const raw = data.iniciais?.[field.nome] || '';
-    const val =
-      raw && field.tipo === 'date' ? formatDate(raw, { dateOnly: true }) : raw || '\u2014';
-    body += `${normalizeText(field.label)}: ${normalizeText(val)}\n`;
+    body += `${field.label}: ${normalizeText(raw || '\u2014')}\n`;
   });
+
+  body += '\n';
+
+  const lider = data.iniciais?.lider || '';
+  const parceiro = data.iniciais?.parceiro || '';
+  const tecnicos = [lider, parceiro].filter(Boolean).join(' E ');
+  body += `TECNICOS: ${normalizeText(tecnicos || '\u2014')}\n`;
+
+  const dataRaw = data.iniciais?.data || '';
+  const horaInicio = data.iniciais?.hora_inicio || '';
+  const horaFim = data.iniciais?.hora_fim || '';
+  const dataFormatada = dataRaw ? formatDate(dataRaw, { dateOnly: true }) : '';
+  const dataParts = [dataFormatada, horaInicio, horaFim ? `AS ${horaFim}` : ''].filter(Boolean);
+  body += `DATA: ${normalizeText(dataParts.join(' ') || '\u2014')}\n`;
 
   if (data.equipamentos.instaladoEquip === 'SIM') {
     const installedItems = Object.keys(data.equipamentos.instalados)

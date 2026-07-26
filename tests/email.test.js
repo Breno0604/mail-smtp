@@ -56,7 +56,9 @@ describe('email', () => {
 
     it('should generate email body with iniciais fields', () => {
       const body = composeEmail(sampleData);
-      expect(body).toContain('LIDER:');
+      expect(body).toContain('TIPO:');
+      expect(body).toContain('ADEQUACAO SMF');
+      expect(body).toContain('TECNICOS:');
       expect(body).toContain('ANDRE DE SOUSA CARVALHO');
       expect(body).toContain('UC:');
       expect(body).toContain('12345');
@@ -297,6 +299,98 @@ describe('email', () => {
       expect(body).toContain('TOI: 99999');
       expect(body).toContain('INSPECAO FINALIZADA');
       expect(body).not.toContain('SITUACAO:');
+    });
+
+    it('should output iniciais in fixed order: TIPO, OS, UC, MUNICIPIO, NOTIFICADO, PLACA, COORDENADAS', () => {
+      const body = composeEmail(sampleData);
+      const posTipo = body.indexOf('TIPO:');
+      const posOS = body.indexOf('OS:');
+      const posUC = body.indexOf('UC:');
+      const posMunicipio = body.indexOf('MUNICIPIO:');
+      const posNotificado = body.indexOf('NOTIFICADO:');
+      const posPlaca = body.indexOf('PLACA:');
+      const posCoordenadas = body.indexOf('COORDENADAS:');
+      expect(posTipo).toBe(0);
+      expect(posOS).toBeGreaterThan(posTipo);
+      expect(posUC).toBeGreaterThan(posOS);
+      expect(posMunicipio).toBeGreaterThan(posUC);
+      expect(posNotificado).toBeGreaterThan(posMunicipio);
+      expect(posPlaca).toBeGreaterThan(posNotificado);
+      expect(posCoordenadas).toBeGreaterThan(posPlaca);
+    });
+
+    it('should combine lider and parceiro into TECNICOS line', () => {
+      const body = composeEmail(sampleData);
+      expect(body).toContain('TECNICOS: ANDRE DE SOUSA CARVALHO');
+      expect(body).not.toContain('LIDER:');
+      expect(body).not.toContain('PARCEIRO:');
+    });
+
+    it('should show only lider in TECNICOS when parceiro is empty', () => {
+      const data = {
+        ...sampleData,
+        iniciais: { ...sampleData.iniciais, parceiro: '' },
+      };
+      const body = composeEmail(data);
+      expect(body).toContain('TECNICOS: ANDRE DE SOUSA CARVALHO');
+    });
+
+    it('should show both names joined by E in TECNICOS', () => {
+      const data = {
+        ...sampleData,
+        iniciais: { ...sampleData.iniciais, parceiro: 'DIEGO DA SILVA DE LIMA' },
+      };
+      const body = composeEmail(data);
+      expect(body).toContain('TECNICOS: ANDRE DE SOUSA CARVALHO E DIEGO DA SILVA DE LIMA');
+    });
+
+    it('should combine data, hora_inicio, and hora_fim into single DATA line', () => {
+      const data = {
+        ...sampleData,
+        iniciais: {
+          ...sampleData.iniciais,
+          data: '2026-07-23',
+          hora_inicio: '16:38',
+          hora_fim: '16:50',
+        },
+      };
+      const body = composeEmail(data);
+      expect(body).toContain('DATA: 23/07/2026 16:38 AS 16:50');
+      expect(body).not.toContain('INICIO:');
+      expect(body).not.toContain('FIM:');
+    });
+
+    it('should omit AS part in DATA when hora_fim is empty', () => {
+      const data = {
+        ...sampleData,
+        iniciais: {
+          ...sampleData.iniciais,
+          data: '2026-07-23',
+          hora_inicio: '16:38',
+          hora_fim: '',
+        },
+      };
+      const body = composeEmail(data);
+      expect(body).toContain('DATA: 23/07/2026 16:38');
+      expect(body).not.toMatch(/\d{2}:\d{2} AS/);
+    });
+
+    it('should include blank line separator between header block and TECNICOS/DATA', () => {
+      const body = composeEmail(sampleData);
+      const coordenadasLine = 'COORDENADAS: -3.123, -38.456';
+      const tecnicosLine = 'TECNICOS: ANDRE DE SOUSA CARVALHO';
+      const posCoordenadas = body.indexOf(coordenadasLine);
+      const posTecnicos = body.indexOf(tecnicosLine);
+      expect(body.substring(posCoordenadas + coordenadasLine.length + 1, posTecnicos)).toBe('\n');
+    });
+
+    it('should not contain old LIDER, PARCEIRO, INICIO, FIM, TIPO DE ORDEM labels', () => {
+      const body = composeEmail(sampleData);
+      expect(body).not.toContain('LIDER:');
+      expect(body).not.toContain('PARCEIRO:');
+      expect(body).not.toContain('INICIO:');
+      expect(body).not.toContain('FIM:');
+      expect(body).not.toContain('TIPO DE ORDEM:');
     });
   });
 

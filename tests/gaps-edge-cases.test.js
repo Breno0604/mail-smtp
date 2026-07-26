@@ -347,8 +347,7 @@ describe('G11: resetForm preview state', () => {
     // O preview NUNCA é literalmente "—" — mostra o corpo formatado.
     expect(DOM.previewCorpo.textContent).not.toBe('—');
     expect(DOM.previewCorpo.textContent).toContain('COORDENADAS:');
-    expect(DOM.previewCorpo.textContent).toContain('LIDER:');
-    expect(DOM.previewCorpo.textContent).toContain('PARCEIRO:');
+    expect(DOM.previewCorpo.textContent).toContain('TECNICOS:');
   });
 });
 
