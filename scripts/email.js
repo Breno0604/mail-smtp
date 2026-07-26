@@ -126,14 +126,19 @@ export function composeEmail(data) {
   const textoPersonalizado = applyRetornoTemplate(tipo, data);
 
   if (textoPersonalizado) {
-    body += '\n' + normalizeText(textoPersonalizado);
+    body += '\n\n' + normalizeText(textoPersonalizado) + '\n';
   } else {
     const retornoFields = getRetornoFields(tipo);
-    retornoFields.forEach(field => {
-      if (!data.retorno || !(field.nome in data.retorno)) return;
-      const val = data.retorno[field.nome];
-      body += `\n${normalizeText(field.label)}: ${normalizeText(val || '(nao preenchido)')}`;
-    });
+    const hasRetorno = retornoFields.some(field => data.retorno && field.nome in data.retorno);
+    if (hasRetorno) {
+      body += '\n\n';
+      retornoFields.forEach(field => {
+        if (!data.retorno || !(field.nome in data.retorno)) return;
+        const val = data.retorno[field.nome];
+        body += `${normalizeText(field.label)}: ${normalizeText(val || '(nao preenchido)')}\n`;
+      });
+      body += '\n';
+    }
   }
 
   return body;
