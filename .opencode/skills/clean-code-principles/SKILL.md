@@ -1,10 +1,6 @@
 ---
 name: clean-code-principles
-description: >
-  Always-on rules for modularity, dependency management, clean code, and planning.
-  Covers single responsibility, high cohesion, low coupling, dependency injection,
-  acyclic import graphs, DRY, small functions, no hidden side effects, intention-revealing
-  names, testability, and fail-fast. Must be loaded before any code change.
+description: 'Always-on: load before any code change so modularity, clean code, and planning rules apply to every edit.'
 ---
 
 ## Planning
@@ -34,6 +30,6 @@ description: >
 14. **No hidden side effects** — mutating external state must be explicit
 15. **Don't repeat yourself (DRY)** — if you copied it, extract it
 16. **Testability** — if it's hard to test, the design is wrong
-17. **Comment the *why***, not the *what*
+17. **Comment the _why_**, not the _what_
 18. **Fail fast** — validate early, don't silently swallow errors
 19. **Principle of least surprise** — code does what it looks like it does

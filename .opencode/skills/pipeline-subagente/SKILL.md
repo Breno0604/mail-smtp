@@ -1,9 +1,6 @@
 ---
 name: pipeline-subagente
-description: >-
-  Use quando receber uma task delegada pelo orquestrador. Descreve as 7 fases
-  que cada subagente deve seguir ao executar sua tarefa, incluindo a fase
-  obrigatória de autodescoberta de contexto antes da execução.
+description: 'Use quando receber uma task delegada pelo orquestrador para executar como subagente. Exige autodescoberta de contexto do projeto antes da execução.'
 ---
 
 # Pipeline do Subagente

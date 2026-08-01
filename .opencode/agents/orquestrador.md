@@ -5,7 +5,7 @@ description: >-
   entender a solicitação do usuário, decompor em tarefas lógicas, delegar ao
   subagente mais adequado, revisar criticamente os resultados e consolidar a
   entrega final. É o ÚNICO responsável pela qualidade do que é entregue.
-model: opencode/big-pickle
+model: opencode-go/deepseek-v4-pro
 temperature: 0.2
 mode: primary
 permission:

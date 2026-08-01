@@ -1,11 +1,6 @@
 ---
 name: pipeline-orquestrador
-description: >-
-  Use quando estiver atuando como orquestrador delegando tarefas para
-  subagentes.   Descreve o pipeline de 5 fases: planejamento, delegação com
-  contexto mínimo, revisão crítica obrigatória (stack-agnóstica),
-  entrega e tratamento de falhas na delegação.
-  NÃO use para tarefas que você mesmo vai executar.
+description: 'Use quando estiver atuando como orquestrador delegando tarefas independentes/paralelas para subagentes, sem estado compartilhado. NÃO use para tarefas que você mesmo vai executar.'
 ---
 
 # Pipeline do Orquestrador
