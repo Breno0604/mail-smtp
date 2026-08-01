@@ -768,34 +768,3 @@ h3 {
   border-color: #3b82f6;
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
 }
-
-/* === Status dot (online/offline indicator) === */
-.status-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  display: inline-block;
-  margin-left: 18px;
-  vertical-align: middle;
-  transition: background-color 0.3s ease;
-  animation: pulse-dot 5s ease-in-out infinite;
-}
-.status-dot.online {
-  background-color: #16a34a;
-}
-.status-dot.offline {
-  background-color: #dc2626;
-}
-@keyframes pulse-dot {
-  0%,
-  35%,
-  65%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.5;
-    transform: scale(0.9);
-  }
-}

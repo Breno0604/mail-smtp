@@ -58,7 +58,6 @@
 - **Idioma (PT/EN)**: Nomes de domínio/negócio (campos de formulário, labels, conceitos do negócio) em **português**; nomes de infraestrutura/utilitários (funções JS, variáveis de sistema, módulos técnicos) em **inglês**. Ex.: `"nome do campo retorno"` (PT, domínio) vs `collectRetorno()` (EN, infraestrutura).
 - **showConfirm pattern** (`ui.js`): `showConfirm(message)` returns `Promise<boolean>`. Used for destructive actions (delete record, re-send, coordinates refresh). Always await it before proceeding.
 - **Auto-cleanup** (`db.js`): `cleanupOldSentRecords()` removes sent records older than 90 days (including attachments). Called fire-and-forget on startup in `app.js` — no await needed.
-- **Status dot indicator** (`app.js`): Green/red pulsing dot after `<h1>` title shows online/offline status. Uses `online`/`offline` events. CSS is in `style.css` (`.status-dot`).
 - **Keyboard scroll fix** (`app.js`): `visualViewport` resize listener scrolls focused inputs into view on Android keyboards. Uses optional chaining for graceful degradation.
 - **Offline error messaging** (`send.js`): On fetch failure, `navigator.onLine` differentiates "Sem internet" vs "Erro no servidor" in the catch block.
 

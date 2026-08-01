@@ -173,17 +173,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   updateLivePreview();
   updateAllFilledClasses();
 
-  // Online/offline indicator
-  const statusDot = document.getElementById('status-dot');
-  function updateStatusDot() {
-    if (!statusDot) return;
-    statusDot.classList.toggle('online', navigator.onLine);
-    statusDot.classList.toggle('offline', !navigator.onLine);
-  }
-  updateStatusDot();
-  window.addEventListener('online', updateStatusDot);
-  window.addEventListener('offline', updateStatusDot);
-
   cleanupOldSentRecords(); // fire-and-forget, no await needed
 
   // Keep focused input visible when Android virtual keyboard opens
