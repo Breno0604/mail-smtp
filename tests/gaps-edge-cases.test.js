@@ -7,7 +7,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { cacheDOM, DOM } from '../scripts/dom.js';
 import { createTestDOM } from './helpers/dom-fixture.js';
 import { state, setCurrentUUID, clearCurrentUUID } from '../scripts/state.js';
-import { saveState, debouncedSave, markAttachmentsDirty } from '../scripts/persistence.js';
+import { saveState, debouncedSave } from '../scripts/persistence.js';
 import { getRecord, deleteRecord, saveAttachments } from '../scripts/db.js';
 import { applyRecord } from '../scripts/restore.js';
 import { resetForm } from '../scripts/reset.js';
@@ -204,10 +204,9 @@ describe('G6: resolveCreatedAt failure fallback', () => {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // G7: serializeAndSaveAttachments with empty files
-// G8: markAttachmentsDirty flow
 // ─────────────────────────────────────────────────────────────────────────────
 
-describe('G7+G8: markAttachmentsDirty and empty attachments save', () => {
+describe('G7: empty attachments save', () => {
   beforeEach(() => {
     createTestDOM();
     state.iniciais = {};
@@ -219,15 +218,6 @@ describe('G7+G8: markAttachmentsDirty and empty attachments save', () => {
     state.retorno = {};
     state._createdAt = null;
     localStorage.clear();
-  });
-
-  it('should handle dirty flag: markAttachmentsDirty toggles correctly', () => {
-    state.attachments = [new File(['test'], 'test.jpg', { type: 'image/jpeg' })];
-    // Após marcar dirty, saveState deve tentar salvar attachments
-    markAttachmentsDirty();
-    // Não podemos testar o save real aqui, mas podemos verificar que a flag foi setada
-    // (a flag é interna do módulo, mas o comportamento é: markAttachmentsDirty → saveState → saveAttachments)
-    expect(true).toBe(true); // placeholder — dirty flag é privada
   });
 
   it('should save empty attachments list correctly', async () => {

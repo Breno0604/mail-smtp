@@ -103,6 +103,7 @@ export default [
     files: [
       'tools/**/*.mjs',
       'netlify/functions/**/*.js',
+      'netlify/functions/**/*.cjs',
       'playwright.config.js',
       'postcss.config.js',
       'tailwind.config.js',

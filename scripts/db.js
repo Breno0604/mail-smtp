@@ -66,6 +66,11 @@ async function withStore(mode, fn) {
 
 // ── Records CRUD ─────────────────────────────────────────────────────────────
 
+/**
+ * Grava/atualiza um registro diretamente no store 'records' (sem tocar anexos).
+ * Não é usado pelo fluxo principal (que usa `saveRecordAtomic`); é o helper de
+ * seed usado pelos testes para inserir registros pré-prontos.
+ */
 export function saveDraft(record) {
   return withStore('readwrite', store => store.put(record));
 }

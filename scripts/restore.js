@@ -1,6 +1,5 @@
 import { DOM } from './dom.js';
 import { state, setCurrentUUID, createDefaultEquipamentos } from './state.js';
-import { markAttachmentsDirty } from './persistence.js';
 import { renderIniciais } from './iniciais.js';
 import { iniciaisFields } from './fields.js';
 import { renderRetorno, setRetornoData, handleTipoChange } from './retornos.js';
@@ -62,9 +61,6 @@ export async function applyRecord(record) {
   } else {
     state.attachments = [];
   }
-
-  // Marcar dirty para que próximos saves persistam corretamente
-  markAttachmentsDirty();
 
   // ── Render Início ───────────────────────────────────────────────────────
   renderIniciais();

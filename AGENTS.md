@@ -65,7 +65,7 @@
 
 - **No JS navigation between sections**: All 5 sections are flat in HTML (sec-inicio, sec-retorno, sec-equipamentos, sec-anexos, sec-revisao). No prev/next buttons. Old docs listing `animator.js` and `sectionManager.js` are stale — those files don't exist.
 - **IndexedDB schema** (`scripts/db.js`): DB `mail-mvp` v3, two stores — `records` (keyPath: uuid) and `attachments` (keyPath: id, index on uuid). Attachments stored separately since v3. Migration from v2 is transparent in `restore.js`.
-- **Attachments have dirty tracking** (`persistence.js`): Call `markAttachmentsDirty()` when changing attachments. Without this, new attachments won't persist.
+- **Attachments persist on every `saveState()`**: `saveState()` always serializes `state.attachments` and saves them atomically via `saveRecordAtomic()` (`persistence.js`). There is no dirty-tracking flag — changing `state.attachments` followed by `saveState()` (or `debouncedSave()`) is sufficient for persistence. No `markAttachmentsDirty()` call needed.
 - **saveState guards**: Won't save until UC+OS fields filled (`state.iniciaisValido` flag). Won't save with no data at all.
 - **Collectors pattern** (`scripts/collectors.js`): Always use collectors.js to read form data into state (`collectIniciais()`, `collectRetorno()`, `collectEquipamentos()`). Never read DOM directly for data extraction. These are called automatically by `saveState()` and `updateLivePreview()`.
 - **Conditional field system** (`retornos.js`): Fields can depend on other fields. Supports string values, arrays, and negation. Parent fields must appear before children in the array (cascading order).

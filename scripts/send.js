@@ -93,7 +93,9 @@ export async function sendEmail() {
             state.currentUUID,
             { subject, sentAt: new Date().toISOString() },
             'sent'
-          ).catch(() => {});
+          ).catch(err => {
+            console.warn('[send] Falha ao persistir status sent:', err);
+          });
         }
         return true;
       }

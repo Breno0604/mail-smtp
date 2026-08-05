@@ -1,6 +1,6 @@
 import { DOM } from './dom.js';
 import { state } from './state.js';
-import { saveState, markAttachmentsDirty } from './persistence.js';
+import { saveState } from './persistence.js';
 import { showError } from './ui.js';
 
 // Array para rastrear Object URLs criadas para previews
@@ -35,7 +35,6 @@ export function handleFileChange(e) {
     showError(`M\u00E1ximo de 12 anexos. ${imageFiles.length - remaining} ignorado(s).`);
   }
 
-  markAttachmentsDirty();
   renderPreviews();
   updateFileCount();
   DOM.fileInput.value = '';
@@ -44,7 +43,6 @@ export function handleFileChange(e) {
 
 export function removeFile(index) {
   state.attachments.splice(index, 1);
-  markAttachmentsDirty();
   renderPreviews();
   updateFileCount();
   saveState();

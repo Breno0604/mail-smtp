@@ -1,6 +1,6 @@
 import { DOM } from './dom.js';
 import { state, clearCurrentUUID, createDefaultEquipamentos } from './state.js';
-import { markAttachmentsDirty, cancelDebouncedSave } from './persistence.js';
+import { cancelDebouncedSave } from './persistence.js';
 import { renderIniciais } from './iniciais.js';
 import { handleTipoChange } from './retornos.js';
 import { renderEquipamentos } from './equipment.js';
@@ -23,9 +23,6 @@ export function resetForm() {
   state.currentUUID = '';
   state._createdAt = null;
   state.iniciaisValido = false;
-
-  // Marcar anexos como dirty (força re-save vazio no próximo saveState)
-  markAttachmentsDirty();
 
   // Clear all sections
   renderIniciais();

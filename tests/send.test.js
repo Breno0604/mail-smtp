@@ -102,6 +102,7 @@ describe('sendEmail', () => {
 
   afterEach(() => {
     vi.unstubAllGlobals();
+    vi.restoreAllMocks();
   });
 
   // ── CENÁRIO 1: Envio bem-sucedido ─────────────────────────────────────
@@ -186,6 +187,22 @@ describe('sendEmail', () => {
       expect.objectContaining({ subject: expect.any(String) }),
       'sent'
     );
+  });
+
+  it('should still return true and log warning when persisting sent status fails', async () => {
+    fetch.mockResolvedValue({
+      ok: true,
+      headers: { get: () => 'application/json' },
+      json: () => Promise.resolve({ success: true }),
+    });
+    updateStatusMock.mockRejectedValue(new Error('IDB quota'));
+
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const result = await sendEmail();
+    expect(result).toBe(true);
+    expect(console.warn).toHaveBeenCalled();
+    expect(console.warn.mock.calls[0][0]).toContain('Falha ao persistir status sent');
   });
 
   it('should disable button while sending and re-enable after', async () => {

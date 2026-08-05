@@ -11,7 +11,7 @@
 import 'fake-indexeddb/auto';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { state, clearCurrentUUID, setCurrentUUID } from '../scripts/state.js';
-import { saveState, debouncedSave, markAttachmentsDirty } from '../scripts/persistence.js';
+import { saveState, debouncedSave } from '../scripts/persistence.js';
 import { DOM } from '../scripts/dom.js';
 import { createTestDOM } from './helpers/dom-fixture.js';
 import { getAllRecords, deleteRecord, saveDraft, getRecord } from '../scripts/db.js';
@@ -20,7 +20,6 @@ describe('persistence — API contract', () => {
   it('should export expected functions', () => {
     expect(saveState).toBeInstanceOf(Function);
     expect(debouncedSave).toBeInstanceOf(Function);
-    expect(markAttachmentsDirty).toBeInstanceOf(Function);
   });
 });
 
@@ -191,13 +190,6 @@ describe('persistence — debouncedSave', () => {
     expect(state.currentUUID).toBeTruthy();
     records = await getAllRecords();
     expect(records).toHaveLength(1);
-  });
-});
-
-describe('persistence — markAttachmentsDirty', () => {
-  it('should be callable without errors', () => {
-    expect(() => markAttachmentsDirty()).not.toThrow();
-    expect(() => markAttachmentsDirty()).not.toThrow(); // idempotent
   });
 });
 

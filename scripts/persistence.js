@@ -8,13 +8,6 @@ import { collectIniciais, collectRetorno, collectEquipamentos } from './collecto
 let saveTimer = null;
 
 /**
- * Mark attachments as dirty (need to be re-saved)
- */
-export function markAttachmentsDirty() {
-  // Will trigger re-save on next debouncedSave()
-}
-
-/**
  * Save current state to IndexedDB
  */
 export async function saveState() {

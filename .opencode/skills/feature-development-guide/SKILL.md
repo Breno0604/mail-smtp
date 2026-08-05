@@ -76,15 +76,15 @@ Não há dependências circulares (a única que existia foi quebrada extraindo `
 
 ### Convenções para novos módulos
 
-| Regra                                | Detalhe                                                                               |
-| ------------------------------------ | ------------------------------------------------------------------------------------- |
-| **ES6 modules**                      | `export function` / `export const` — sem bundler                                      |
-| **DOM via proxy**                    | Importar `DOM` de `dom.js`; nunca `getElementById` fora de `cacheDOM()`               |
-| **State mutável**                    | Importar `state` de `state.js`; mutar diretamente                                     |
-| **Persistência**                     | Chamar `debouncedSave()` após mudanças de state; `markAttachmentsDirty()` para anexos |
-| **CSS via constantes**               | `INPUT_CLASS`, `SELECT_CLASS` de `styles.js`                                          |
-| **Nomes PT/EN**                      | Domínio/negócio em português; infraestrutura/utilitários em inglês                    |
-| **Um módulo = uma responsabilidade** | Não criar arquivos monolíticos                                                        |
+| Regra                                | Detalhe                                                                                                          |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| **ES6 modules**                      | `export function` / `export const` — sem bundler                                                                 |
+| **DOM via proxy**                    | Importar `DOM` de `dom.js`; nunca `getElementById` fora de `cacheDOM()`                                          |
+| **State mutável**                    | Importar `state` de `state.js`; mutar diretamente                                                                |
+| **Persistência**                     | Chamar `debouncedSave()` após mudanças de state; anexos são persistidos automaticamente no próximo `saveState()` |
+| **CSS via constantes**               | `INPUT_CLASS`, `SELECT_CLASS` de `styles.js`                                                                     |
+| **Nomes PT/EN**                      | Domínio/negócio em português; infraestrutura/utilitários em inglês                                               |
+| **Um módulo = uma responsabilidade** | Não criar arquivos monolíticos                                                                                   |
 
 ---
 

@@ -1,0 +1,23 @@
+# Normalização de line-endings: forçar LF em todos os arquivos de texto.
+# O prettier exige endOfLine: lf. Sem estas regras, core.autocrlf=true
+# converte para CRLF no checkout (Windows) e o `npm run lint` falha com
+# erros "Delete ␍".
+* text=auto
+* eol=lf
+
+# Binários não podem ser normalizados.
+# Atenção: todo novo arquivo binário precisa de uma entrada `binary` aqui —
+# o `* eol=lf` acima pode corromper binários sem NULs nos primeiros 8KB.
+*.png binary
+*.xlsx binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.mp4 binary
+*.zip binary
