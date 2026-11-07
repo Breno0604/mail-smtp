@@ -1,10 +1,12 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { renderIniciais } from '../scripts/iniciais.js';
 import { iniciaisFields } from '../scripts/fields.js';
 import { createTestDOM } from './helpers/dom-fixture.js';
 import { DOM } from '../scripts/dom.js';
 import { state } from '../scripts/state.js';
 import { collectIniciais } from '../scripts/collectors.js';
+
+const flushPromises = () => new Promise(r => setTimeout(r, 0));
 
 describe('iniciais', () => {
   beforeEach(() => {
@@ -59,12 +61,12 @@ describe('iniciais', () => {
       expect(horaFim.step).toBe('300');
     });
 
-    it('should create a readonly input for coordenadas', () => {
+    it('should create an editable input for coordenadas', () => {
       renderIniciais();
       const coordenadas = document.getElementById('coordenadas');
       expect(coordenadas).toBeTruthy();
-      expect(coordenadas.readOnly).toBe(true);
-      expect(coordenadas.className).toContain('cursor-not-allowed');
+      expect(coordenadas.readOnly).toBe(false);
+      expect(coordenadas.className).not.toContain('cursor-not-allowed');
     });
 
     it('should add data-required attribute to required fields', () => {
@@ -153,6 +155,85 @@ describe('iniciais', () => {
           expect(errorSpan.classList.contains('field-error')).toBe(true);
         }
       });
+    });
+  });
+
+  describe('coordenadas — preenchimento manual', () => {
+    it('deve permitir digitar e apagar o valor, que vai para o estado', () => {
+      renderIniciais();
+      const input = document.getElementById('coordenadas');
+
+      input.value = '-3.1000, -38.4000';
+      expect(collectIniciais().coordenadas).toBe('-3.1000, -38.4000');
+
+      input.value = '';
+      expect(collectIniciais().coordenadas).toBe('');
+    });
+  });
+
+  describe('coordenadas — botão de localização', () => {
+    function mockGeolocation(impl) {
+      const getCurrentPosition = vi.fn(impl);
+      Object.defineProperty(navigator, 'geolocation', {
+        configurable: true,
+        value: { getCurrentPosition },
+      });
+      return getCurrentPosition;
+    }
+
+    afterEach(() => {
+      delete navigator.geolocation;
+    });
+
+    it('preenche direto quando o campo está vazio, sem pedir confirmação', async () => {
+      renderIniciais();
+      const input = document.getElementById('coordenadas');
+      const btn = document.querySelector('.coord-refresh');
+      const getCurrentPosition = mockGeolocation(success =>
+        success({ coords: { latitude: -3.1, longitude: -38.4 } })
+      );
+
+      btn.click();
+      await vi.waitFor(() => expect(input.value).toBe('-3.1000, -38.4000'));
+
+      expect(getCurrentPosition).toHaveBeenCalledOnce();
+      expect(DOM.confirmModal.classList.contains('hidden')).toBe(true);
+    });
+
+    it('pede confirmação antes de substituir coordenadas preenchidas', async () => {
+      renderIniciais();
+      const input = document.getElementById('coordenadas');
+      input.value = '-1.0000, -2.0000';
+      const btn = document.querySelector('.coord-refresh');
+      const getCurrentPosition = mockGeolocation(success =>
+        success({ coords: { latitude: -3.1, longitude: -38.4 } })
+      );
+
+      btn.click();
+      await flushPromises();
+
+      expect(getCurrentPosition).not.toHaveBeenCalled();
+      expect(DOM.confirmModal.classList.contains('hidden')).toBe(false);
+
+      DOM.confirmModalOk.click();
+      await vi.waitFor(() => expect(input.value).toBe('-3.1000, -38.4000'));
+      expect(getCurrentPosition).toHaveBeenCalledOnce();
+    });
+
+    it('mantém o valor existente e avisa quando a localização falha', async () => {
+      renderIniciais();
+      const input = document.getElementById('coordenadas');
+      input.value = '-1.0000, -2.0000';
+      mockGeolocation((_success, error) => error(new Error('permission denied')));
+
+      document.querySelector('.coord-refresh').click();
+      await flushPromises();
+      DOM.confirmModalOk.click();
+
+      await vi.waitFor(() =>
+        expect(DOM.toast.textContent).toContain('Não foi possível obter a localização')
+      );
+      expect(input.value).toBe('-1.0000, -2.0000');
     });
   });
 

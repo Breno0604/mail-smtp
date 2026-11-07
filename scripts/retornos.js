@@ -4,6 +4,7 @@ import { saveState, debouncedSave } from './persistence.js';
 import { addBlurValidation } from './validation.js';
 import { getRetornoFields } from './fields.js';
 import { INPUT_CREATORS } from './iniciais.js';
+import { ensureSelectOption } from './utils.js';
 
 export function renderRetorno() {
   const tipo = DOM.tipoOrdem?.value || '';
@@ -140,7 +141,10 @@ export function setRetornoData(data) {
 
   Object.entries(data).forEach(([nome, value]) => {
     const el = document.getElementById(nome);
-    if (el) el.value = value;
+    if (el) {
+      ensureSelectOption(el, value);
+      el.value = value;
+    }
   });
 
   const tipo = DOM.tipoOrdem?.value || '';

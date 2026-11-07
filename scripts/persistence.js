@@ -4,20 +4,39 @@ import { getRecord, saveRecordAtomic } from './db.js';
 import { toBase64 } from './utils.js';
 import { generateUUID } from './uuid.js';
 import { collectIniciais, collectRetorno, collectEquipamentos } from './collectors.js';
+import { iniciaisFields, getAllRetornoFieldNames } from './fields.js';
+import { showToast } from './ui.js';
+import { compressImageFile } from './compress.js';
+
+export const RECORD_SCHEMA_VERSION = 1;
 
 let saveTimer = null;
+// Fila de saves: evita que dois saveState concorrentes se sobrescrevam fora de ordem.
+let saveChain = Promise.resolve();
+// Evita recomprimir o mesmo anexo a cada autosave.
+const compressedFileCache = new WeakMap();
 
 /**
- * Save current state to IndexedDB
+ * Persiste o estado atual no IndexedDB.
+ * Saves são serializados: o próximo só começa quando o anterior termina,
+ * garantindo que o snapshot mais recente seja o último a ser gravado.
  */
-export async function saveState() {
+export function saveState() {
+  // Sync state from DOM as safety net (event listeners normally keep state in sync).
+  // Feito de forma síncrona para que o estado reflita o DOM imediatamente.
+  if (state.iniciaisValido) {
+    collectIniciais();
+    collectRetorno();
+    collectEquipamentos();
+  }
+
+  saveChain = saveChain.then(saveStateNow, saveStateNow);
+  return saveChain;
+}
+
+async function saveStateNow() {
   // Do not save until UC and OS fields are filled
   if (!state.iniciaisValido) return;
-
-  // Sync state from DOM as safety net (event listeners normally keep state in sync)
-  collectIniciais();
-  collectRetorno();
-  collectEquipamentos();
 
   // Check if there's any data to save
   const hasData =
@@ -46,7 +65,14 @@ export async function saveState() {
   // 2. Resolve createdAt (reuses existing)
   const createdAt = await resolveCreatedAt(state.currentUUID, existing);
 
-  // 3. Determine status (reuses existing — no more getRecord call)
+  // 3. Síntese de outra aba: o registro mudou desde o último save desta aba?
+  const changedElsewhere = Boolean(
+    existing?.updatedAt &&
+    state._lastSeenUpdatedAt &&
+    existing.updatedAt !== state._lastSeenUpdatedAt
+  );
+
+  // 4. Determine status (reuses existing — no more getRecord call)
   let recordStatus = 'draft';
   if (existing) {
     if (existing.sentData) {
@@ -72,29 +98,85 @@ export async function saveState() {
   // Build record from state (single source of truth)
   const data = {
     uuid: state.currentUUID,
+    schemaVersion: RECORD_SCHEMA_VERSION,
     status: recordStatus,
     createdAt,
     updatedAt: new Date().toISOString(),
-    iniciais: state.iniciais,
-    retorno: state.retorno,
+    iniciais: keepLegacyKeys(
+      state.iniciais,
+      existing?.iniciais,
+      iniciaisFields.map(f => f.nome)
+    ),
+    retorno: keepLegacyKeys(state.retorno, existing?.retorno, getAllRetornoFieldNames()),
     tipoOrdem: state.iniciais['tipo-ordem'] || '',
     equipamentos: state.equipamentos,
     attachmentCount: state.attachments.length,
     sentData: existing?.sentData ?? null,
   };
 
-  // Save record + attachments atomically in a single transaction
+  let serializedAttachments;
   try {
-    const serializedAttachments = await serializeAttachments(state.attachments);
+    serializedAttachments = await serializeAttachments(state.attachments);
+    // Count reflects what is actually being written (attachments may change during serialization)
+    data.attachmentCount = serializedAttachments.length;
+  } catch (err) {
+    console.error('serializeAttachments error:', err);
+    serializedAttachments = [];
+    data.attachmentCount = 0;
+  }
+
+  try {
     await saveRecordAtomic(state.currentUUID, data, serializedAttachments);
   } catch (err) {
     console.error('saveRecordAtomic error:', err);
-    if (err?.name === 'QuotaExceededError' || err?.message?.includes('quota')) {
-      import('./ui.js').then(({ showToast }) => {
-        showToast('Espaço insuficiente no navegador. Limpe dados antigos.', false);
-      });
+    if (isQuotaError(err)) {
+      await saveWithoutAttachments(data, err);
+    } else {
+      showToast('Não foi possível salvar. Verifique o espaço livre do navegador.', false);
     }
+    return;
   }
+
+  state._lastSeenUpdatedAt = data.updatedAt;
+
+  if (changedElsewhere) {
+    showToast('Este registro foi alterado em outra aba. Suas alterações prevaleceram.', false);
+  }
+}
+
+/**
+ * A quota pode estourar por causa dos anexos. Nesse caso, preserva os dados
+ * do formulário gravando o registro sem anexos em vez de perder tudo.
+ */
+async function saveWithoutAttachments(data, originalError) {
+  try {
+    await saveRecordAtomic(data.uuid, { ...data, attachmentCount: 0 }, []);
+    showToast(
+      'Espaço insuficiente: os anexos não foram salvos, mas os dados do formulário foram preservados.',
+      false
+    );
+  } catch (err) {
+    console.error('saveRecordAtomic error (retry sem anexos):', err, originalError);
+    showToast('Não foi possível salvar. Verifique o espaço livre do navegador.', false);
+  }
+}
+
+function isQuotaError(err) {
+  return err?.name === 'QuotaExceededError' || err?.message?.includes('quota');
+}
+
+/**
+ * Preserva chaves que existiam no registro salvo e não fazem parte do schema
+ * atual (campos/opções removidos em versões novas). Campos conhecidos seguem o
+ * valor atual do formulário — inclusive vazio, para permitir limpar um campo.
+ */
+function keepLegacyKeys(current, previous, knownNames) {
+  const known = new Set(knownNames);
+  const legacy = {};
+  for (const [key, value] of Object.entries(previous || {})) {
+    if (!known.has(key)) legacy[key] = value;
+  }
+  return { ...legacy, ...current };
 }
 
 /**
@@ -102,7 +184,21 @@ export async function saveState() {
  */
 export function debouncedSave() {
   clearTimeout(saveTimer);
-  saveTimer = setTimeout(saveState, 1000);
+  saveTimer = setTimeout(() => {
+    saveTimer = null;
+    saveState();
+  }, 1000);
+}
+
+/**
+ * Cancela o debounce e grava imediatamente o que estiver pendente.
+ * Usado em pagehide/visibilitychange para não perder a última edição.
+ */
+export function flushPendingSave() {
+  if (!saveTimer) return saveChain;
+  clearTimeout(saveTimer);
+  saveTimer = null;
+  return saveState();
 }
 
 /**
@@ -110,6 +206,7 @@ export function debouncedSave() {
  */
 export function cancelDebouncedSave() {
   clearTimeout(saveTimer);
+  saveTimer = null;
 }
 
 /**
@@ -141,10 +238,31 @@ async function resolveCreatedAt(uuid, existing) {
 async function serializeAttachments(files) {
   if (files.length === 0) return [];
   return Promise.all(
-    files.map(async file => ({
-      name: file.name,
-      type: file.type,
-      data: await toBase64(file),
-    }))
+    files.map(async file => {
+      const storedFile = await getStoredFile(file);
+      return {
+        name: storedFile.name,
+        type: storedFile.type,
+        data: await toBase64(storedFile),
+      };
+    })
   );
+}
+
+/**
+ * Anexos são gravados comprimidos (mesma regra do envio) para reduzir a quota
+ * consumida. O cache evita recompressão a cada autosave.
+ */
+async function getStoredFile(file) {
+  if (compressedFileCache.has(file)) return compressedFileCache.get(file);
+
+  let storedFile = file;
+  try {
+    storedFile = await compressImageFile(file);
+  } catch (err) {
+    console.error('compressImageFile error:', err);
+  }
+
+  compressedFileCache.set(file, storedFile);
+  return storedFile;
 }

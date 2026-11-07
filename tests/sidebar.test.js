@@ -5,6 +5,7 @@ import { createTestDOM } from './helpers/dom-fixture.js';
 import { DOM } from '../scripts/dom.js';
 import { state } from '../scripts/state.js';
 import { saveDraft, getAllRecords, deleteRecord } from '../scripts/db.js';
+import { applyRecord } from '../scripts/restore.js';
 
 // Mock restore to prevent heavy side effects
 vi.mock('../scripts/restore.js', () => ({
@@ -303,6 +304,28 @@ describe('sidebar', () => {
 
       // Current record should still be active
       expect(state.currentUUID).toBe('keep-me');
+    });
+  });
+
+  describe('P9 — abrir registro com falha de restauração', () => {
+    it('mostra toast em vez de rejeição não tratada', async () => {
+      await saveDraft({
+        uuid: 'falha-ao-abrir',
+        status: 'draft',
+        iniciais: { uc: '777', os: '888' },
+        updatedAt: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+        equipamentos: [],
+        attachments: [],
+      });
+      applyRecord.mockRejectedValueOnce(new Error('boom'));
+
+      await renderSidebar();
+      DOM.sidebarList.querySelector('.sidebar-btn-edit').click();
+
+      await vi.waitFor(() => {
+        expect(DOM.toast.textContent).toContain('Não foi possível carregar o registro');
+      });
     });
   });
 });

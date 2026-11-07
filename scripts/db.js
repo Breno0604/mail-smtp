@@ -34,9 +34,16 @@ function openDB() {
       _db.onclose = () => {
         _db = null;
       };
+      // Outra aba pediu upgrade: fecha esta conexão para não travar a migração.
+      _db.onversionchange = () => {
+        _db.close();
+        _db = null;
+      };
       resolve(_db);
     };
     req.onerror = () => reject(req.error);
+    req.onblocked = () =>
+      reject(new Error('IndexedDB bloqueado por outra aba. Feche as outras abas e recarregue.'));
   });
 }
 
@@ -232,20 +239,50 @@ export function getAttachmentsByUuid(uuid) {
 const RETENTION_DAYS = 90;
 
 /**
- * Remove registros enviados (status 'sent') com mais de RETENTION_DAYS dias.
- * Fire-and-forget, chamada na inicialização do app.
+ * Registros enviados que já passaram do prazo de retenção.
+ * Usa sentData.sentAt; registros enviados no formato antigo (sem sentData)
+ * usam updatedAt como referência.
  */
-export async function cleanupOldSentRecords() {
+export async function getExpiredSentRecords() {
   const records = await getAllRecords();
-  const now = Date.now();
-  const cutoff = now - RETENTION_DAYS * 24 * 60 * 60 * 1000;
+  const cutoff = Date.now() - RETENTION_DAYS * 24 * 60 * 60 * 1000;
 
-  for (const record of records) {
-    if (record.status !== 'sent') continue;
-    const sentAt = record.sentData?.sentAt;
-    if (!sentAt) continue;
-    if (new Date(sentAt).getTime() < cutoff) {
-      await deleteRecord(record.uuid);
-    }
-  }
+  return records.filter(record => {
+    if (record.status !== 'sent') return false;
+    const reference = record.sentData?.sentAt || record.updatedAt;
+    if (!reference) return false;
+    return new Date(reference).getTime() < cutoff;
+  });
+}
+
+/**
+ * Remove anexos cujo registro pai não existe mais (ex.: falha no meio de um
+ * delete ou registros apagados por versões antigas). Devolve quantos removeu.
+ */
+export async function cleanupOrphanedAttachments() {
+  const db = await openDB();
+
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction([STORE_RECORDS, STORE_ATTACHMENTS], 'readwrite');
+    const recordKeysReq = tx.objectStore(STORE_RECORDS).getAllKeys();
+    const attStore = tx.objectStore(STORE_ATTACHMENTS);
+    let removed = 0;
+
+    tx.oncomplete = () => resolve(removed);
+    tx.onerror = () => reject(tx.error);
+
+    recordKeysReq.onsuccess = () => {
+      const known = new Set(recordKeysReq.result.map(String));
+      const cursorReq = attStore.openCursor();
+      cursorReq.onsuccess = () => {
+        const cursor = cursorReq.result;
+        if (!cursor) return;
+        if (!known.has(String(cursor.value.uuid))) {
+          cursor.delete();
+          removed++;
+        }
+        cursor.continue();
+      };
+    };
+  });
 }

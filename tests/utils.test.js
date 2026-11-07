@@ -1,5 +1,11 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { formatDate, base64ToBlob, MAX_SIZE, SKIP_SIZE } from '../scripts/utils.js';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import {
+  formatDate,
+  base64ToBlob,
+  captureCoordinates,
+  MAX_SIZE,
+  SKIP_SIZE,
+} from '../scripts/utils.js';
 
 describe('utils', () => {
   describe('constants', () => {
@@ -92,6 +98,67 @@ describe('utils', () => {
       const base64 = btoa(binary);
       const blob = base64ToBlob(base64, 'application/octet-stream');
       expect(blob.size).toBe(5);
+    });
+  });
+
+  describe('captureCoordinates', () => {
+    function mockGeolocation(impl) {
+      const getCurrentPosition = vi.fn(impl);
+      Object.defineProperty(navigator, 'geolocation', {
+        configurable: true,
+        value: { getCurrentPosition },
+      });
+      return getCurrentPosition;
+    }
+
+    beforeEach(() => {
+      document.body.innerHTML = '<input id="coordenadas">';
+    });
+
+    afterEach(() => {
+      delete navigator.geolocation;
+    });
+
+    it('preenche o campo e avisa a alteração quando obtém a localização', async () => {
+      mockGeolocation(success => success({ coords: { latitude: -3.1, longitude: -38.4 } }));
+      const input = document.getElementById('coordenadas');
+      const onInput = vi.fn();
+      input.addEventListener('input', onInput);
+
+      const ok = await captureCoordinates();
+
+      expect(ok).toBe(true);
+      expect(input.value).toBe('-3.1000, -38.4000');
+      expect(onInput).toHaveBeenCalledOnce();
+    });
+
+    it('mantém o valor existente quando a localização falha', async () => {
+      mockGeolocation((_success, error) => error(new Error('permission denied')));
+      const input = document.getElementById('coordenadas');
+      input.value = '-1.0000, -2.0000';
+
+      const ok = await captureCoordinates();
+
+      expect(ok).toBe(false);
+      expect(input.value).toBe('-1.0000, -2.0000');
+    });
+
+    it('retorna falso quando o navegador não oferece localização', async () => {
+      const input = document.getElementById('coordenadas');
+      input.value = '-1.0000, -2.0000';
+
+      const ok = await captureCoordinates();
+
+      expect(ok).toBe(false);
+      expect(input.value).toBe('-1.0000, -2.0000');
+    });
+
+    it('retorna falso quando o campo não existe', async () => {
+      document.body.innerHTML = '';
+
+      const ok = await captureCoordinates();
+
+      expect(ok).toBe(false);
     });
   });
 });

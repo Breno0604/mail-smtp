@@ -99,7 +99,7 @@ export async function renderSidebar(filterTerm = '') {
       try {
         const full = await getRecord(record.uuid);
         if (!full) return;
-        loadRecord(full);
+        await loadRecord(full);
       } catch (err) {
         console.error('Erro ao carregar registro para edição:', err);
         showToast('Não foi possível carregar o registro. Tente novamente.', false);
@@ -136,8 +136,8 @@ export async function renderSidebar(filterTerm = '') {
   });
 }
 
-function loadRecord(record) {
-  applyRecord(record);
+async function loadRecord(record) {
+  await applyRecord(record);
   closeSidebar();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }

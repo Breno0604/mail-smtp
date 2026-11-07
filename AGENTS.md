@@ -57,7 +57,7 @@
 - **Conditional fields with empty control value**: `updateConditionalFields()` in `retornos.js` hides conditional fields when the control field has no value (placeholder "Selecione"). This prevents `negado: true` fields from showing prematurely (e.g., `acesso_desligamento` for `DESLIG.PROG.MANUTENCAO`).
 - **Idioma (PT/EN)**: Nomes de domínio/negócio (campos de formulário, labels, conceitos do negócio) em **português**; nomes de infraestrutura/utilitários (funções JS, variáveis de sistema, módulos técnicos) em **inglês**. Ex.: `"nome do campo retorno"` (PT, domínio) vs `collectRetorno()` (EN, infraestrutura).
 - **showConfirm pattern** (`ui.js`): `showConfirm(message)` returns `Promise<boolean>`. Used for destructive actions (delete record, re-send, coordinates refresh). Always await it before proceeding.
-- **Auto-cleanup** (`db.js`): `cleanupOldSentRecords()` removes sent records older than 90 days (including attachments). Called fire-and-forget on startup in `app.js` — no await needed.
+- **Auto-cleanup** (`db.js`): `getExpiredSentRecords()` lists sent records older than 90 days (fallback to `updatedAt` for legacy records without `sentData`). `offerCleanupOldRecords()` in `app.js` asks for confirmation (`showConfirm`) before deleting them and never deletes the currently open record. `cleanupOrphanedAttachments()` deletes attachments whose parent record no longer exists. Both are fire-and-forget on startup.
 - **Keyboard scroll fix** (`app.js`): `visualViewport` resize listener scrolls focused inputs into view on Android keyboards. Uses optional chaining for graceful degradation.
 - **Offline error messaging** (`send.js`): On fetch failure, `navigator.onLine` differentiates "Sem internet" vs "Erro no servidor" in the catch block.
 
@@ -71,7 +71,7 @@
 - **Conditional field system** (`retornos.js`): Fields can depend on other fields. Supports string values, arrays, and negation. Parent fields must appear before children in the array (cascading order).
 - **Select inputs** get a "Selecione" placeholder `<option>` as first child (in `iniciais.js`).
 - **Date in email**: Dates are reversed from YYYY-MM-DD to DD-MM-YYYY in `composeEmail()` (line 27).
-- **Coordinates are static per record**: GPS is captured once at form open (or new form creation) via `captureCoordinates()`. The value stays fixed even if the user moves. Refresh requires manual confirmation via `showConfirm()`.
+- **Coordinates are manual by default**: the field is editable and starts empty on a new form; stored values are kept when opening a record. The ↻ button requests the current location, asks for confirmation only when replacing an existing value, and never overwrites the field on failure (a toast is shown).
 
 ## graphify
 

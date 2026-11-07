@@ -5,7 +5,7 @@ import { iniciaisFields } from './fields.js';
 import { renderRetorno, setRetornoData, handleTipoChange } from './retornos.js';
 import { renderEquipamentos } from './equipment.js';
 import { renderPreviews, updateFileCount } from './attachments.js';
-import { base64ToBlob } from './utils.js';
+import { base64ToBlob, ensureSelectOption } from './utils.js';
 import { getAttachmentsByUuid } from './db.js';
 import { updateLivePreview } from './email.js';
 import { collectIniciais } from './collectors.js';
@@ -44,6 +44,8 @@ export async function applyRecord(record) {
   state.retorno = structuredClone(record.retorno || {});
   state._createdAt = record.createdAt;
   state.status = record.status || 'draft';
+  // Baseline para detectar alterações feitas por outra aba (P7).
+  state._lastSeenUpdatedAt = record.updatedAt || null;
 
   // ── Restaurar anexos com migração transparente ──────────────────────────
   if (record.attachments && Array.isArray(record.attachments) && record.attachments.length > 0) {
@@ -71,6 +73,7 @@ export async function applyRecord(record) {
   }
 
   if (record.tipoOrdem && DOM.tipoOrdem) {
+    ensureSelectOption(DOM.tipoOrdem, record.tipoOrdem);
     DOM.tipoOrdem.value = record.tipoOrdem;
   }
 
@@ -78,7 +81,10 @@ export async function applyRecord(record) {
     iniciaisFields.forEach(field => {
       const el = document.getElementById(field.nome);
       const val = record.iniciais[field.nome];
-      if (el && val != null && val !== '') el.value = val;
+      if (el && val != null && val !== '') {
+        ensureSelectOption(el, val);
+        el.value = val;
+      }
     });
   }
 

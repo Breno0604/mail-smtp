@@ -1,9 +1,16 @@
 import { DOM, cacheDOM } from './dom.js';
 import { state, clearCurrentUUID } from './state.js';
-import { saveState, debouncedSave } from './persistence.js';
+import { saveState, debouncedSave, flushPendingSave } from './persistence.js';
 import { iniciaisFields } from './fields.js';
 import { renderIniciais } from './iniciais.js';
-import { cleanupOldSentRecords } from './db.js';
+import {
+  getRecord,
+  getExpiredSentRecords,
+  deleteRecord,
+  cleanupOrphanedAttachments,
+} from './db.js';
+import { applyRecord } from './restore.js';
+import { showConfirm, showToast } from './ui.js';
 import {
   renderEquipamentos,
   toggleSectionVisibility,
@@ -20,7 +27,6 @@ import {
 } from './attachments.js';
 import { resetForm } from './reset.js';
 import { renderSidebar, closeSidebar, initSidebarFilter } from './sidebar.js';
-import { captureCoordinates } from './utils.js';
 import { sendEmail } from './send.js';
 import { updateLivePreview } from './email.js';
 import { updateFilledClass, updateAllFilledClasses } from './filled-state.js';
@@ -39,13 +45,61 @@ export async function checkInitialPersistence() {
   }
 }
 
+/**
+ * Retoma o último registro aberto (UUID salvo no localStorage).
+ * Sem isso, recarregar a página perdia o vínculo com o rascunho e o autosave
+ * passava a criar registros duplicados.
+ */
+export async function restoreLastRecord() {
+  const uuid = state.currentUUID;
+  if (!uuid) return;
+
+  let record = null;
+  try {
+    record = await getRecord(uuid);
+  } catch (err) {
+    console.error('restoreLastRecord error:', err);
+  }
+
+  if (!record) {
+    clearCurrentUUID();
+    return;
+  }
+
+  try {
+    await applyRecord(record);
+  } catch (err) {
+    console.error('restoreLastRecord error:', err);
+    clearCurrentUUID();
+  }
+}
+
+/**
+ * Oferece remover envios com mais de 90 dias. A remoção é destrutiva, então
+ * depende de confirmação explícita; o registro aberto nunca é removido.
+ */
+export async function offerCleanupOldRecords() {
+  const expired = await getExpiredSentRecords();
+  const removable = expired.filter(record => record.uuid !== state.currentUUID);
+  if (removable.length === 0) return;
+
+  const confirmed = await showConfirm(
+    `Existem ${removable.length} envio(s) com mais de 90 dias. Remover para liberar espaço?`
+  );
+  if (!confirmed) return;
+
+  for (const record of removable) {
+    await deleteRecord(record.uuid);
+  }
+  showToast(`${removable.length} envio(s) removido(s).`, true);
+}
+
 function initEvents() {
   DOM.btnEnviar.addEventListener('click', sendEmail);
 
   DOM.btnNovoForm.addEventListener('click', async () => {
     await saveState();
     resetForm();
-    captureCoordinates();
     updateAllFilledClasses();
   });
 
@@ -169,11 +223,24 @@ document.addEventListener('DOMContentLoaded', async () => {
   initEvents();
   updateFileCount();
   renderPreviews();
-  captureCoordinates();
   updateLivePreview();
   updateAllFilledClasses();
 
-  cleanupOldSentRecords(); // fire-and-forget, no await needed
+  // Retoma o último registro aberto em vez de começar um formulário vazio.
+  await restoreLastRecord();
+
+  offerCleanupOldRecords().catch(err => console.error('offerCleanupOldRecords error:', err));
+  cleanupOrphanedAttachments().catch(err =>
+    console.error('cleanupOrphanedAttachments error:', err)
+  );
+
+  // Garante que a última edição pendente seja gravada ao sair/esconder a aba.
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') flushPendingSave();
+  });
+  window.addEventListener('pagehide', () => {
+    flushPendingSave();
+  });
 
   // Keep focused input visible when Android virtual keyboard opens
   window.visualViewport?.addEventListener('resize', () => {
@@ -184,7 +251,4 @@ document.addEventListener('DOMContentLoaded', async () => {
       }, 100);
     }
   });
-
-  // Limpar UUID ao iniciar (sempre começa limpo)
-  clearCurrentUUID();
 });

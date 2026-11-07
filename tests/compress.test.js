@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { compressAttachments } from '../scripts/compress.js';
+import { compressAttachments, compressImageFile } from '../scripts/compress.js';
 import { SKIP_SIZE } from '../scripts/utils.js';
 
 vi.mock('../scripts/utils.js', async () => {
@@ -11,6 +11,41 @@ vi.mock('../scripts/utils.js', async () => {
       Promise.reject(new Error('mock loadImage - should not be called for skipped files'))
     ),
   };
+});
+
+describe('compressImageFile', () => {
+  function createFile(name, size, type) {
+    const buf = new ArrayBuffer(size);
+    return new File([buf], name, { type: type || 'image/jpeg' });
+  }
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('should return the same file when image is small', async () => {
+    const file = createFile('small.jpg', 100 * 1024);
+    const result = await compressImageFile(file);
+    expect(result).toBe(file);
+  });
+
+  it('should return the same file for non-images', async () => {
+    const file = createFile('doc.pdf', 800 * 1024, 'application/pdf');
+    const result = await compressImageFile(file);
+    expect(result).toBe(file);
+  });
+
+  it('should return a compressed File for large images', async () => {
+    const { loadImage } = await import('../scripts/utils.js');
+    loadImage.mockResolvedValueOnce({ naturalWidth: 2000, naturalHeight: 1000 });
+
+    const file = createFile('photo.jpg', 800 * 1024);
+    const result = await compressImageFile(file);
+
+    expect(result).not.toBe(file);
+    expect(result.name).toBe('photo_red.jpg');
+    expect(result.type).toBe('image/jpeg');
+  });
 });
 
 describe('compressAttachments', () => {

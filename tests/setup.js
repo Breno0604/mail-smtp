@@ -22,6 +22,10 @@ HTMLCanvasElement.prototype.getContext = function () {
   };
 };
 
+HTMLCanvasElement.prototype.toBlob = function (cb) {
+  cb(new Blob(['test'], { type: 'image/jpeg' }));
+};
+
 // Mock scrollIntoView (not implemented in jsdom)
 if (!Element.prototype.scrollIntoView) {
   Element.prototype.scrollIntoView = () => {};

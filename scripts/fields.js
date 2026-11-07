@@ -11,7 +11,7 @@ import {
 } from './data/fields-data.js';
 
 export const iniciaisFields = [
-  { linha: 0, nome: 'coordenadas', label: 'Coordenadas', tipo: 'coordinates', readonly: true },
+  { linha: 0, nome: 'coordenadas', label: 'Coordenadas', tipo: 'coordinates' },
   {
     linha: 1,
     nome: 'lider',
@@ -71,4 +71,14 @@ export { retornoFieldsByTipo };
 
 export function getRetornoFields(tipo) {
   return retornoFieldsByTipo[tipo] || retornoFieldsByTipo['default'];
+}
+
+/**
+ * Todos os nomes de campos de retorno conhecidos pelo schema atual (qualquer tipo).
+ * Usado para distinguir campo removido (preservar) de campo oculto (descartar).
+ */
+export function getAllRetornoFieldNames() {
+  return Object.values(retornoFieldsByTipo)
+    .flat()
+    .map(field => field.nome);
 }

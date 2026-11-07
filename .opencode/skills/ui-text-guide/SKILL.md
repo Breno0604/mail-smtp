@@ -18,16 +18,16 @@ Use esta skill quando:
 
 O projeto **não tem i18n nem constantes de texto** — todo texto é hardcoded inline nos arquivos. Esta skill é um mapa de referência organizado por **tipo de texto**.
 
-| #   | Seção                         | Exemplos                                          |
-| --- | ----------------------------- | ------------------------------------------------- |
-| 1   | Labels de campo               | Líder, UC, OS, Descrição do Serviço, MEDIDOR      |
-| 2   | Opções de SELECT              | Técnicos, municípios, placas, SIM/NAO, situações  |
-| 3   | Títulos e seções              | Headings, sidebar, PWA name, subtítulos           |
-| 4   | Mensagens de erro/validação   | UC inválida, campo obrigatório, offline           |
-| 5   | Modais e confirmações         | Reenvio, exclusão, duplicate, GPS                 |
-| 6   | Botões e ações                | Enviar, Editar, Excluir, status (Rascunho)        |
-| 7   | Textos de email               | Subject, templates, headers                       |
-| 8   | Placeholders e estados vazios | Selecione, Nenhum registro, Coletando coordenadas |
+| #   | Seção                         | Exemplos                                           |
+| --- | ----------------------------- | -------------------------------------------------- |
+| 1   | Labels de campo               | Líder, UC, OS, Descrição do Serviço, MEDIDOR       |
+| 2   | Opções de SELECT              | Técnicos, municípios, placas, SIM/NAO, situações   |
+| 3   | Títulos e seções              | Headings, sidebar, PWA name, subtítulos            |
+| 4   | Mensagens de erro/validação   | UC inválida, campo obrigatório, offline            |
+| 5   | Modais e confirmações         | Reenvio, exclusão, duplicate, GPS                  |
+| 6   | Botões e ações                | Enviar, Editar, Excluir, status (Rascunho)         |
+| 7   | Textos de email               | Subject, templates, headers                        |
+| 8   | Placeholders e estados vazios | Selecione, Nenhum registro, exemplo de coordenadas |
 
 ## Checklist geral
 
@@ -493,7 +493,7 @@ export const TELEMEDICAO_TEMPLATE = [
 | Texto                            | Busca por                                                | Contexto                        |
 | -------------------------------- | -------------------------------------------------------- | ------------------------------- |
 | `Selecione`                      | `placeholder.textContent = 'Selecione'` em `iniciais.js` | Placeholder de todos os SELECTs |
-| `Coletando coordenadas...`       | `'Coletando coordenadas'` em `iniciais.js`               | Input de coordenadas            |
+| `-3.1234, -38.4567`              | `'-3.1234, -38.4567'` em `iniciais.js`                   | Exemplo no input de coordenadas |
 | `field.label` (auto)             | `input.placeholder = field.label` em `renderIniciais()`  | Placeholder = label do campo    |
 | `field.label` (auto)             | `input.placeholder = field.label` em `renderRetorno()`   | Placeholder = label do campo    |
 | `Buscar por UC, OS ou tipo...`   | `'Buscar por UC, OS ou tipo'`                            | Filtro do sidebar               |

@@ -49,7 +49,7 @@ describe('fields', () => {
 
       const coordenadas = iniciaisFields.find(f => f.nome === 'coordenadas');
       expect(coordenadas.tipo).toBe('coordinates');
-      expect(coordenadas.readonly).toBe(true);
+      expect(coordenadas.readonly).toBeUndefined();
     });
 
     it('should have select fields with options arrays', () => {

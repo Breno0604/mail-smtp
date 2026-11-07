@@ -1,7 +1,7 @@
 import { DOM } from './dom.js';
 import { debouncedSave } from './persistence.js';
 import { addBlurValidation } from './validation.js';
-import { showConfirm } from './ui.js';
+import { showConfirm, showToast } from './ui.js';
 import { iniciaisFields } from './fields.js';
 import { captureCoordinates } from './utils.js';
 import { INPUT_CLASS, SELECT_CLASS } from './styles.js';
@@ -68,8 +68,8 @@ function createTextareaInput() {
   return input;
 }
 
-// Criador especial: widget de coordenadas com botão de refresh.
-// Retorna o group diretamente (já inclui o wrapper interno) e atualiza DOM.tipoOrdem se aplicável.
+// Criador especial: widget de coordenadas com preenchimento manual e botão de localização.
+// Retorna o group diretamente (já inclui o wrapper interno).
 function createCoordinatesGroup(field, label) {
   const coordWrapper = document.createElement('div');
   coordWrapper.className = 'coord-wrapper';
@@ -77,9 +77,8 @@ function createCoordinatesGroup(field, label) {
   const input = document.createElement('input');
   input.id = field.nome;
   input.type = 'text';
-  input.readOnly = true;
-  input.className = INPUT_CLASS + ' bg-slate-100 cursor-not-allowed coord-input';
-  input.placeholder = 'Coletando coordenadas...';
+  input.className = INPUT_CLASS + ' coord-input';
+  input.placeholder = '-3.1234, -38.4567';
 
   const refreshBtn = document.createElement('button');
   refreshBtn.type = 'button';
@@ -88,10 +87,19 @@ function createCoordinatesGroup(field, label) {
   refreshBtn.title = 'Atualizar coordenadas';
   refreshBtn.addEventListener('click', async e => {
     e.preventDefault();
-    const confirmed = await showConfirm(
-      'Deseja atualizar as coordenadas GPS? A localização atual será substituída.'
-    );
-    if (confirmed) captureCoordinates();
+
+    // Confirma apenas quando há um valor que será substituído.
+    if (input.value.trim() !== '') {
+      const confirmed = await showConfirm(
+        'Deseja atualizar as coordenadas GPS? A localização atual será substituída.'
+      );
+      if (!confirmed) return;
+    }
+
+    const ok = await captureCoordinates();
+    if (!ok) {
+      showToast('Não foi possível obter a localização. Verifique a permissão do navegador.', false);
+    }
   });
 
   const coordError = document.createElement('span');

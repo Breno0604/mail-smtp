@@ -6,7 +6,6 @@ import { handleTipoChange } from './retornos.js';
 import { renderEquipamentos } from './equipment.js';
 import { updateFileCount } from './attachments.js';
 import { hideError } from './ui.js';
-import { captureCoordinates } from './utils.js';
 import { updateLivePreview } from './email.js';
 import { collectIniciais } from './collectors.js';
 
@@ -28,7 +27,6 @@ export function resetForm() {
   renderIniciais();
   // Sync state from DOM after render (populates state.iniciais with all field keys, empty values)
   collectIniciais();
-  captureCoordinates();
 
   // Re-attach tipo-ordem change listener (renderIniciais recreates the element)
   if (DOM.tipoOrdem) {

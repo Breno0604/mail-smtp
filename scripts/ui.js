@@ -13,6 +13,7 @@ export function hideError() {
 }
 
 export function showToast(msg, success) {
+  if (!DOM.toast) return;
   DOM.toast.textContent = msg;
   DOM.toast.classList.remove('success');
   if (success) DOM.toast.classList.add('success');

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { resetForm } from '../scripts/reset.js';
 import { createTestDOM } from './helpers/dom-fixture.js';
 import { DOM } from '../scripts/dom.js';
@@ -29,7 +29,23 @@ describe('reset', () => {
     localStorage.setItem('currentUUID', 'test-uuid-123');
   });
 
+  afterEach(() => {
+    delete navigator.geolocation;
+  });
+
   describe('resetForm', () => {
+    it('não solicita a localização ao iniciar um novo formulário', () => {
+      const getCurrentPosition = vi.fn();
+      Object.defineProperty(navigator, 'geolocation', {
+        configurable: true,
+        value: { getCurrentPosition },
+      });
+
+      resetForm();
+
+      expect(getCurrentPosition).not.toHaveBeenCalled();
+    });
+
     it('should populate state.iniciais with all field keys (empty values)', () => {
       resetForm();
       // updateLivePreview() now syncs state with DOM via collectAllData()

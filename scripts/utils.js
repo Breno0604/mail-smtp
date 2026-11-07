@@ -48,15 +48,30 @@ export function base64ToBlob(base64, type) {
   return new Blob([byteArray], { type });
 }
 
+/**
+ * Garante que um <select> aceite um valor que não existe mais nas opções atuais
+ * (ex.: nome/placa removidos do cadastro). Sem isso, atribuir o valor zera o campo
+ * e o dado antigo é perdido no próximo save.
+ */
+export function ensureSelectOption(el, value) {
+  if (!el || el.tagName !== 'SELECT' || !value) return;
+  const exists = Array.from(el.options).some(option => option.value === value);
+  if (!exists) {
+    const option = document.createElement('option');
+    option.value = value;
+    option.textContent = value;
+    el.add(option);
+  }
+}
+
+/**
+ * Solicita a localização atual ao navegador e, se conseguir, preenche o campo.
+ * Nunca sobrescreve o valor existente em caso de falha.
+ * @returns {Promise<boolean>} true quando o campo foi preenchido
+ */
 export async function captureCoordinates() {
   const coordEl = document.getElementById('coordenadas');
-  if (!coordEl) return;
-
-  if (!navigator.geolocation) {
-    coordEl.value = 'Não disponível';
-    coordEl.dispatchEvent(new Event('input'));
-    return;
-  }
+  if (!coordEl || !navigator.geolocation) return false;
 
   try {
     const position = await new Promise((resolve, reject) => {
@@ -70,8 +85,8 @@ export async function captureCoordinates() {
     const lon = position.coords.longitude.toFixed(4);
     coordEl.value = `${lat}, ${lon}`;
     coordEl.dispatchEvent(new Event('input'));
+    return true;
   } catch (_err) {
-    coordEl.value = 'Não disponível';
-    coordEl.dispatchEvent(new Event('input'));
+    return false;
   }
 }

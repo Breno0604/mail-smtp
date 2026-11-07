@@ -18,6 +18,7 @@ export const state = {
   currentUUID: getCurrentUUID(),
   iniciaisValido: false,
   _createdAt: null,
+  _lastSeenUpdatedAt: null,
   status: 'draft',
 };
 
