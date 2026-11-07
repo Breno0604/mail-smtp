@@ -1,9 +1,9 @@
 import { DOM } from './dom.js';
 import { debouncedSave } from './persistence.js';
 import { addBlurValidation } from './validation.js';
-import { showConfirm, showToast } from './ui.js';
+import { showConfirm, showToast, clearFieldError } from './ui.js';
 import { iniciaisFields } from './fields.js';
-import { captureCoordinates } from './utils.js';
+import { captureCoordinates, isValidCoordinates, normalizeCoordinateSigns } from './utils.js';
 import { INPUT_CLASS, SELECT_CLASS } from './styles.js';
 
 const linhaConfig = {
@@ -68,6 +68,24 @@ function createTextareaInput() {
   return input;
 }
 
+/**
+ * Insere os sinais negativos obrigatórios sem atrapalhar a digitação:
+ * repõe o cursor depois do caractere inserido antes dele.
+ */
+function applyCoordinateMask(input) {
+  const antes = input.value;
+  const depois = normalizeCoordinateSigns(antes);
+  if (depois === antes) return;
+
+  const caret = input.selectionStart ?? depois.length;
+  input.value = depois;
+
+  if (document.activeElement === input) {
+    const posicao = Math.min(depois.length, caret + (depois.length - antes.length));
+    input.setSelectionRange(posicao, posicao);
+  }
+}
+
 // Criador especial: widget de coordenadas com preenchimento manual e botão de localização.
 // Retorna o group diretamente (já inclui o wrapper interno).
 function createCoordinatesGroup(field, label) {
@@ -77,8 +95,12 @@ function createCoordinatesGroup(field, label) {
   const input = document.createElement('input');
   input.id = field.nome;
   input.type = 'text';
+  // Teclado numérico no celular; o sinal negativo obrigatório vem do mask.
+  input.inputMode = 'decimal';
+  input.autocomplete = 'off';
   input.className = INPUT_CLASS + ' coord-input';
-  input.placeholder = '-3.1234, -38.4567';
+  input.placeholder = '-3.1245,-38.4156';
+  if (field.obrigatorio) input.setAttribute('data-required', '');
 
   const refreshBtn = document.createElement('button');
   refreshBtn.type = 'button';
@@ -104,6 +126,15 @@ function createCoordinatesGroup(field, label) {
 
   const coordError = document.createElement('span');
   coordError.className = 'field-error';
+
+  input.addEventListener('input', () => {
+    applyCoordinateMask(input);
+    // Some com o destaque assim que o valor passa a ser válido.
+    if (isValidCoordinates(input.value)) {
+      input.classList.remove('error');
+      clearFieldError(input);
+    }
+  });
 
   coordWrapper.appendChild(input);
   coordWrapper.appendChild(refreshBtn);

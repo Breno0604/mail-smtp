@@ -3,11 +3,89 @@ import {
   formatDate,
   base64ToBlob,
   captureCoordinates,
+  isValidCoordinates,
+  normalizeCoordinateSigns,
   MAX_SIZE,
   SKIP_SIZE,
 } from '../scripts/utils.js';
 
 describe('utils', () => {
+  describe('isValidCoordinates', () => {
+    it('aceita o formato -3.1245,-38.4156', () => {
+      expect(isValidCoordinates('-3.1245,-38.4156')).toBe(true);
+    });
+
+    it('aceita até 8 casas decimais', () => {
+      expect(isValidCoordinates('-3.12345678,-38.12345678')).toBe(true);
+    });
+
+    it('aceita uma casa decimal', () => {
+      expect(isValidCoordinates('-3.1,-38.4')).toBe(true);
+    });
+
+    it('rejeita valor vazio', () => {
+      expect(isValidCoordinates('')).toBe(false);
+      expect(isValidCoordinates(null)).toBe(false);
+    });
+
+    it('rejeita espaço depois da vírgula', () => {
+      expect(isValidCoordinates('-3.1245, -38.4156')).toBe(false);
+    });
+
+    it('rejeita espaço no início ou no fim', () => {
+      expect(isValidCoordinates(' -3.1245,-38.4156')).toBe(false);
+      expect(isValidCoordinates('-3.1245,-38.4156 ')).toBe(false);
+    });
+
+    it('rejeita latitude ou longitude sem sinal negativo', () => {
+      expect(isValidCoordinates('3.1245,-38.4156')).toBe(false);
+      expect(isValidCoordinates('-3.1245,38.4156')).toBe(false);
+    });
+
+    it('rejeita latitude com dois algarismos ou longitude com um', () => {
+      expect(isValidCoordinates('-33.1245,-38.4156')).toBe(false);
+      expect(isValidCoordinates('-3.1245,-8.4156')).toBe(false);
+    });
+
+    it('rejeita ausência de ponto decimal', () => {
+      expect(isValidCoordinates('-3,-38.4156')).toBe(false);
+      expect(isValidCoordinates('-3.1245,-38')).toBe(false);
+    });
+
+    it('rejeita mais de 8 casas decimais', () => {
+      expect(isValidCoordinates('-3.123456789,-38.4156')).toBe(false);
+      expect(isValidCoordinates('-3.1245,-38.123456789')).toBe(false);
+    });
+
+    it('rejeita letras, sinais extras e separadores errados', () => {
+      expect(isValidCoordinates('-3.12a5,-38.4156')).toBe(false);
+      expect(isValidCoordinates('--3.1245,-38.4156')).toBe(false);
+      expect(isValidCoordinates('-3.1245;-38.4156')).toBe(false);
+      expect(isValidCoordinates('-3.1245,-38.4156,-1.0')).toBe(false);
+      expect(isValidCoordinates('3.1245,38.4156'.replace('3.1245', '+3.1245'))).toBe(false);
+    });
+  });
+
+  describe('normalizeCoordinateSigns', () => {
+    it('insere o sinal negativo na latitude e na longitude', () => {
+      expect(normalizeCoordinateSigns('3.1245,38.4156')).toBe('-3.1245,-38.4156');
+    });
+
+    it('insere apenas o sinal que falta', () => {
+      expect(normalizeCoordinateSigns('-3.1245,38.4156')).toBe('-3.1245,-38.4156');
+    });
+
+    it('conserva valores que já começam com sinal negativo', () => {
+      expect(normalizeCoordinateSigns('-3.1245,-38.4156')).toBe('-3.1245,-38.4156');
+    });
+
+    it('não mexe em valores vazios ou sem vírgula inválidos', () => {
+      expect(normalizeCoordinateSigns('')).toBe('');
+      expect(normalizeCoordinateSigns('-')).toBe('-');
+      expect(normalizeCoordinateSigns(',')).toBe(',');
+    });
+  });
+
   describe('constants', () => {
     it('MAX_SIZE should be 650 * 1024', () => {
       expect(MAX_SIZE).toBe(650 * 1024);
@@ -128,7 +206,7 @@ describe('utils', () => {
       const ok = await captureCoordinates();
 
       expect(ok).toBe(true);
-      expect(input.value).toBe('-3.1000, -38.4000');
+      expect(input.value).toBe('-3.1000,-38.4000');
       expect(onInput).toHaveBeenCalledOnce();
     });
 

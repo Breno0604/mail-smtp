@@ -99,6 +99,7 @@ describe('validation', () => {
     document.getElementById('data').value = '2024-03-15';
     document.getElementById('hora_inicio').value = '08:00';
     document.getElementById('hora_fim').value = '17:00';
+    document.getElementById('coordenadas').value = '-3.1245,-38.4156';
   }
 
   beforeEach(() => {
@@ -275,6 +276,7 @@ describe('validation', () => {
       document.getElementById('data').value = '2024-03-15';
       document.getElementById('hora_inicio').value = '08:00';
       document.getElementById('hora_fim').value = '17:00';
+      document.getElementById('coordenadas').value = '-3.1245,-38.4156';
       const result = validateSection(1);
       expect(result).toBe(false);
       const ucEl = document.getElementById('uc');
@@ -295,6 +297,7 @@ describe('validation', () => {
       document.getElementById('data').value = '2024-03-15';
       document.getElementById('hora_inicio').value = '08:00';
       document.getElementById('hora_fim').value = '17:00';
+      document.getElementById('coordenadas').value = '-3.1245,-38.4156';
       const result = validateSection(1);
       expect(result).toBe(false);
       const ucEl = document.getElementById('uc');
@@ -315,6 +318,7 @@ describe('validation', () => {
       document.getElementById('data').value = '2024-03-15';
       document.getElementById('hora_inicio').value = '08:00';
       document.getElementById('hora_fim').value = '17:00';
+      document.getElementById('coordenadas').value = '-3.1245,-38.4156';
       const result = validateSection(1);
       expect(result).toBe(false);
       const ucEl = document.getElementById('uc');
@@ -335,6 +339,7 @@ describe('validation', () => {
       document.getElementById('data').value = '2024-03-15';
       document.getElementById('hora_inicio').value = '08:00';
       document.getElementById('hora_fim').value = '17:00';
+      document.getElementById('coordenadas').value = '-3.1245,-38.4156';
       const result = validateSection(1);
       expect(result).toBe(true);
       expect(document.getElementById('uc').classList.contains('error')).toBe(false);
@@ -353,6 +358,7 @@ describe('validation', () => {
       document.getElementById('data').value = '2024-03-15';
       document.getElementById('hora_inicio').value = '08:00';
       document.getElementById('hora_fim').value = '17:00';
+      document.getElementById('coordenadas').value = '-3.1245,-38.4156';
       const result = validateSection(1);
       expect(result).toBe(true);
     });
@@ -372,6 +378,7 @@ describe('validation', () => {
       document.getElementById('data').value = '2024-03-15';
       document.getElementById('hora_inicio').value = '08:00';
       document.getElementById('hora_fim').value = '17:00';
+      document.getElementById('coordenadas').value = '-3.1245,-38.4156';
       const result = validateSection(1);
       expect(result).toBe(false);
       const osEl = document.getElementById('os');
@@ -392,6 +399,7 @@ describe('validation', () => {
       document.getElementById('data').value = '2024-03-15';
       document.getElementById('hora_inicio').value = '08:00';
       document.getElementById('hora_fim').value = '17:00';
+      document.getElementById('coordenadas').value = '-3.1245,-38.4156';
       const result = validateSection(1);
       expect(result).toBe(false);
       const osEl = document.getElementById('os');
@@ -412,6 +420,7 @@ describe('validation', () => {
       document.getElementById('data').value = '2024-03-15';
       document.getElementById('hora_inicio').value = '08:00';
       document.getElementById('hora_fim').value = '17:00';
+      document.getElementById('coordenadas').value = '-3.1245,-38.4156';
       const result = validateSection(1);
       expect(result).toBe(false);
       const osEl = document.getElementById('os');
@@ -432,6 +441,7 @@ describe('validation', () => {
       document.getElementById('data').value = '2024-03-15';
       document.getElementById('hora_inicio').value = '08:00';
       document.getElementById('hora_fim').value = '17:00';
+      document.getElementById('coordenadas').value = '-3.1245,-38.4156';
       const result = validateSection(1);
       expect(result).toBe(false);
       const osEl = document.getElementById('os');
@@ -452,6 +462,7 @@ describe('validation', () => {
       document.getElementById('data').value = '2024-03-15';
       document.getElementById('hora_inicio').value = '08:00';
       document.getElementById('hora_fim').value = '17:00';
+      document.getElementById('coordenadas').value = '-3.1245,-38.4156';
       const result = validateSection(1);
       expect(result).toBe(true);
     });
@@ -469,26 +480,59 @@ describe('validation', () => {
       document.getElementById('data').value = '2024-03-15';
       document.getElementById('hora_inicio').value = '08:00';
       document.getElementById('hora_fim').value = '17:00';
+      document.getElementById('coordenadas').value = '-3.1245,-38.4156';
       const result = validateSection(1);
       expect(result).toBe(true);
     });
 
-    it('should handle coordinates field (readonly, not required)', () => {
-      renderIniciais();
-      // Fill all required fields except coordinates (which is not required)
-      document.getElementById('lider').value = 'ANDRE DE SOUSA CARVALHO';
-      document.getElementById('parceiro').value = 'ANTONIO MAURIELLTON DE ARAUJO MARTINS';
-      document.getElementById('municipio').value = 'FORTALEZA';
-      document.getElementById('uc').value = '12345';
-      document.getElementById('os').value = '67890';
-      document.getElementById('notificado').value = 'SIM';
-      document.getElementById('placa').value = 'RIE0D84';
-      document.getElementById('tipo-ordem').value = 'ADEQUACAO SMF';
-      document.getElementById('data').value = '2024-03-15';
-      document.getElementById('hora_inicio').value = '08:00';
-      document.getElementById('hora_fim').value = '17:00';
+    it('should reject empty coordinates', () => {
+      fillAllRequiredFields();
+      document.getElementById('coordenadas').value = '';
       const result = validateSection(1);
-      expect(result).toBe(true);
+      expect(result).toBe(false);
+      expect(document.getElementById('coordenadas').classList.contains('error')).toBe(true);
+      expect(document.querySelector('.coord-wrapper .field-error').textContent).toBe(
+        'Campo obrigatório'
+      );
+    });
+
+    it('should reject coordinates without the mandatory negative signs', () => {
+      fillAllRequiredFields();
+      document.getElementById('coordenadas').value = '3.1245,-38.4156';
+      const result = validateSection(1);
+      expect(result).toBe(false);
+      expect(document.querySelector('.coord-wrapper .field-error').textContent).toContain(
+        'Formato inválido'
+      );
+    });
+
+    it('should reject coordinates with space after the comma', () => {
+      fillAllRequiredFields();
+      document.getElementById('coordenadas').value = '-3.1245, -38.4156';
+      expect(validateSection(1)).toBe(false);
+      expect(document.querySelector('.coord-wrapper .field-error').textContent).toContain(
+        'Formato inválido'
+      );
+    });
+
+    it('should reject coordinates with more than 8 decimal places', () => {
+      fillAllRequiredFields();
+      document.getElementById('coordenadas').value = '-3.123456789,-38.4156';
+      expect(validateSection(1)).toBe(false);
+    });
+
+    it('should reject coordinates without the decimal point', () => {
+      fillAllRequiredFields();
+      document.getElementById('coordenadas').value = '-3,-38.4156';
+      expect(validateSection(1)).toBe(false);
+    });
+
+    it('should accept coordinates in the required format', () => {
+      fillAllRequiredFields();
+      document.getElementById('coordenadas').value = '-3.1245,-38.4156';
+      expect(validateSection(1)).toBe(true);
+      expect(document.getElementById('coordenadas').classList.contains('error')).toBe(false);
+      expect(document.querySelector('.coord-wrapper .field-error').textContent).toBe('');
     });
   });
 
@@ -876,6 +920,7 @@ describe('validation', () => {
       document.getElementById('data').value = '2024-03-15';
       document.getElementById('hora_inicio').value = '08:00';
       document.getElementById('hora_fim').value = '17:00';
+      document.getElementById('coordenadas').value = '-3.1245,-38.4156';
 
       validateAll();
 
@@ -911,6 +956,7 @@ describe('validation', () => {
       document.getElementById('data').value = '2024-03-15';
       document.getElementById('hora_inicio').value = '08:00';
       document.getElementById('hora_fim').value = '17:00';
+      document.getElementById('coordenadas').value = '-3.1245,-38.4156';
 
       validateAll();
 
@@ -928,6 +974,8 @@ describe('validation', () => {
 
     it('should focus on the first invalid field', () => {
       setupAllSections();
+      fillAllRequiredFields();
+      document.getElementById('lider').value = '';
       validateAll();
 
       const lider = document.getElementById('lider');
@@ -945,6 +993,9 @@ describe('validation', () => {
     it('should show the next error when the first is corrected and re-validated', () => {
       setupAllSections();
       // Both lider and parceiro empty
+      fillAllRequiredFields();
+      document.getElementById('lider').value = '';
+      document.getElementById('parceiro').value = '';
       validateAll();
 
       const lider = document.getElementById('lider');

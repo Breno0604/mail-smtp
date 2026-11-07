@@ -22,17 +22,27 @@ export function showToast(msg, success) {
   toastTimer = setTimeout(() => DOM.toast.classList.remove('show'), 3500);
 }
 
+/**
+ * Localiza o span de erro do campo. O layout padrão coloca o span logo após o
+ * input; widgets (coordenadas) o mantêm dentro do wrapper do campo.
+ */
+function findFieldErrorSpan(el) {
+  const sibling = el.nextElementSibling;
+  if (sibling && sibling.classList.contains('field-error')) return sibling;
+  return el.parentElement?.querySelector('.field-error') || null;
+}
+
 export function setFieldError(el, message) {
-  const span = el.nextElementSibling;
-  if (span && span.classList.contains('field-error')) {
+  const span = findFieldErrorSpan(el);
+  if (span) {
     span.textContent = message;
     span.classList.add('show');
   }
 }
 
 export function clearFieldError(el) {
-  const span = el.nextElementSibling;
-  if (span && span.classList.contains('field-error')) {
+  const span = findFieldErrorSpan(el);
+  if (span) {
     span.textContent = '';
     span.classList.remove('show');
   }

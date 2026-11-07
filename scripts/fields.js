@@ -11,7 +11,13 @@ import {
 } from './data/fields-data.js';
 
 export const iniciaisFields = [
-  { linha: 0, nome: 'coordenadas', label: 'Coordenadas', tipo: 'coordinates' },
+  {
+    linha: 0,
+    nome: 'coordenadas',
+    label: 'Coordenadas',
+    tipo: 'coordinates',
+    obrigatorio: true,
+  },
   {
     linha: 1,
     nome: 'lider',

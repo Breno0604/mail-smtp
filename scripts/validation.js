@@ -3,6 +3,7 @@ import { state } from './state.js';
 import { showError, hideError, setFieldError, clearFieldError, showAnexosModal } from './ui.js';
 import { collectRetorno } from './collectors.js';
 import { iniciaisFields as fieldsIniciais } from './fields.js';
+import { isValidCoordinates } from './utils.js';
 
 // ── helpers locais ────────────────────────────────────────────────────────────
 
@@ -104,6 +105,18 @@ function validateSection1() {
     } else {
       clearError(horaFimEl);
     }
+  }
+
+  // Coordenadas: formato obrigatório -3.1245,-38.4156 (sem espaços)
+  const coordEl = document.getElementById('coordenadas');
+  if (coordEl && data.coordenadas && !isValidCoordinates(data.coordenadas)) {
+    markError(
+      coordEl,
+      'Formato inválido. Use -3.1245,-38.4156 (latitude e longitude negativas, vírgula sem espaços)'
+    );
+    hasSpecialError = true;
+  } else if (coordEl) {
+    clearError(coordEl);
   }
 
   if (hasSpecialError) {

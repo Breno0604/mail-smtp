@@ -69,6 +69,14 @@ describe('iniciais', () => {
       expect(coordenadas.className).not.toContain('cursor-not-allowed');
     });
 
+    it('should open the numeric keyboard on the coordenadas field', () => {
+      renderIniciais();
+      const coordenadas = document.getElementById('coordenadas');
+      expect(coordenadas.inputMode).toBe('decimal');
+      expect(coordenadas.placeholder).toBe('-3.1245,-38.4156');
+      expect(coordenadas.hasAttribute('data-required')).toBe(true);
+    });
+
     it('should add data-required attribute to required fields', () => {
       renderIniciais();
       const requiredFields = iniciaisFields.filter(f => f.obrigatorio);
@@ -163,11 +171,48 @@ describe('iniciais', () => {
       renderIniciais();
       const input = document.getElementById('coordenadas');
 
-      input.value = '-3.1000, -38.4000';
-      expect(collectIniciais().coordenadas).toBe('-3.1000, -38.4000');
+      input.value = '-3.1245,-38.4156';
+      expect(collectIniciais().coordenadas).toBe('-3.1245,-38.4156');
 
       input.value = '';
       expect(collectIniciais().coordenadas).toBe('');
+    });
+  });
+
+  describe('coordenadas — preenchimento automático do sinal', () => {
+    it('deve inserir os sinais negativos ao digitar sem eles', () => {
+      renderIniciais();
+      const input = document.getElementById('coordenadas');
+
+      input.value = '3.1245,38.4156';
+      input.dispatchEvent(new Event('input'));
+
+      expect(input.value).toBe('-3.1245,-38.4156');
+    });
+
+    it('não altera um valor já válido', () => {
+      renderIniciais();
+      const input = document.getElementById('coordenadas');
+      input.value = '-3.1245,-38.4156';
+
+      input.dispatchEvent(new Event('input'));
+
+      expect(input.value).toBe('-3.1245,-38.4156');
+    });
+
+    it('remove o destaque de erro assim que o valor fica válido', () => {
+      renderIniciais();
+      const input = document.getElementById('coordenadas');
+      const errorSpan = document.querySelector('.coord-wrapper .field-error');
+      input.classList.add('error');
+      errorSpan.textContent = 'Formato inválido';
+      errorSpan.classList.add('show');
+
+      input.value = '-3.1245,-38.4156';
+      input.dispatchEvent(new Event('input'));
+
+      expect(input.classList.contains('error')).toBe(false);
+      expect(errorSpan.classList.contains('show')).toBe(false);
     });
   });
 
@@ -194,7 +239,7 @@ describe('iniciais', () => {
       );
 
       btn.click();
-      await vi.waitFor(() => expect(input.value).toBe('-3.1000, -38.4000'));
+      await vi.waitFor(() => expect(input.value).toBe('-3.1000,-38.4000'));
 
       expect(getCurrentPosition).toHaveBeenCalledOnce();
       expect(DOM.confirmModal.classList.contains('hidden')).toBe(true);
@@ -214,9 +259,8 @@ describe('iniciais', () => {
 
       expect(getCurrentPosition).not.toHaveBeenCalled();
       expect(DOM.confirmModal.classList.contains('hidden')).toBe(false);
-
       DOM.confirmModalOk.click();
-      await vi.waitFor(() => expect(input.value).toBe('-3.1000, -38.4000'));
+      await vi.waitFor(() => expect(input.value).toBe('-3.1000,-38.4000'));
       expect(getCurrentPosition).toHaveBeenCalledOnce();
     });
 

@@ -1,6 +1,32 @@
 export const MAX_SIZE = 650 * 1024;
 export const SKIP_SIZE = 670 * 1024;
 
+// Formato obrigatório das coordenadas: -3.1245,-38.4156
+// latitude: sinal negativo, 1 algarismo, ponto e 1 a 8 casas decimais
+// vírgula única sem espaços
+// longitude: sinal negativo, 2 algarismos, ponto e 1 a 8 casas decimais
+export const COORDINATES_PATTERN = /^-\d\.\d{1,8},-\d{2}\.\d{1,8}$/;
+
+export function isValidCoordinates(value) {
+  return typeof value === 'string' && COORDINATES_PATTERN.test(value);
+}
+
+/**
+ * Insere o sinal negativo obrigatório quando o valor começa com algarismo
+ * (o teclado numérico do celular não oferece a tecla "-").
+ * Não altera valores que já começam com "-" nem entradas inválidas.
+ */
+export function normalizeCoordinateSigns(value) {
+  if (!value) return value;
+
+  const commaIndex = value.indexOf(',');
+  const addSign = part => (/^\d/.test(part) ? `-${part}` : part);
+
+  if (commaIndex === -1) return addSign(value);
+
+  return `${addSign(value.slice(0, commaIndex))},${addSign(value.slice(commaIndex + 1))}`;
+}
+
 export function toBase64(blob) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -83,7 +109,7 @@ export async function captureCoordinates() {
 
     const lat = position.coords.latitude.toFixed(4);
     const lon = position.coords.longitude.toFixed(4);
-    coordEl.value = `${lat}, ${lon}`;
+    coordEl.value = `${lat},${lon}`;
     coordEl.dispatchEvent(new Event('input'));
     return true;
   } catch (_err) {
