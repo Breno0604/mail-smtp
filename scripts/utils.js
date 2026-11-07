@@ -1,14 +1,42 @@
 export const MAX_SIZE = 650 * 1024;
 export const SKIP_SIZE = 670 * 1024;
 
-// Formato obrigatório das coordenadas: -3.1245,-38.4156
+// Formato obrigatório das coordenadas: -3.12345678,-38.41567890
 // latitude: sinal negativo, 1 algarismo, ponto e 1 a 8 casas decimais
 // vírgula única sem espaços
 // longitude: sinal negativo, 2 algarismos, ponto e 1 a 8 casas decimais
 export const COORDINATES_PATTERN = /^-\d\.\d{1,8},-\d{2}\.\d{1,8}$/;
 
+// Limites geográficos. O formato exige valores negativos (sul/oeste),
+// portanto o limite superior é 0.
+export const LATITUDE_LIMITS = { min: -90, max: 0 };
+export const LONGITUDE_LIMITS = { min: -180, max: 0 };
+
+/**
+ * Converte o texto no par latitude/longitude.
+ * @returns {{latitude: number, longitude: number}|null} null quando o formato é inválido
+ */
+export function parseCoordinates(value) {
+  if (typeof value !== 'string' || !COORDINATES_PATTERN.test(value)) return null;
+  const [latitude, longitude] = value.split(',').map(Number);
+  return { latitude, longitude };
+}
+
+export function isCoordinatesInRange({ latitude, longitude }) {
+  return (
+    latitude >= LATITUDE_LIMITS.min &&
+    latitude <= LATITUDE_LIMITS.max &&
+    longitude >= LONGITUDE_LIMITS.min &&
+    longitude <= LONGITUDE_LIMITS.max
+  );
+}
+
+/**
+ * Formato válido E dentro dos limites geográficos permitidos.
+ */
 export function isValidCoordinates(value) {
-  return typeof value === 'string' && COORDINATES_PATTERN.test(value);
+  const coords = parseCoordinates(value);
+  return coords !== null && isCoordinatesInRange(coords);
 }
 
 /**
@@ -109,7 +137,13 @@ export async function captureCoordinates() {
 
     const lat = position.coords.latitude.toFixed(4);
     const lon = position.coords.longitude.toFixed(4);
-    coordEl.value = `${lat},${lon}`;
+    const value = `${lat},${lon}`;
+
+    // Só aceita a leitura se ela já estiver no formato e nos limites exigidos
+    // (coordenadas positivas, por exemplo, não são representáveis no formato).
+    if (!isValidCoordinates(value)) return false;
+
+    coordEl.value = value;
     coordEl.dispatchEvent(new Event('input'));
     return true;
   } catch (_err) {

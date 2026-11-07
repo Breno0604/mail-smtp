@@ -4,7 +4,9 @@ import {
   base64ToBlob,
   captureCoordinates,
   isValidCoordinates,
+  isCoordinatesInRange,
   normalizeCoordinateSigns,
+  parseCoordinates,
   MAX_SIZE,
   SKIP_SIZE,
 } from '../scripts/utils.js';
@@ -63,6 +65,58 @@ describe('utils', () => {
       expect(isValidCoordinates('-3.1245;-38.4156')).toBe(false);
       expect(isValidCoordinates('-3.1245,-38.4156,-1.0')).toBe(false);
       expect(isValidCoordinates('3.1245,38.4156'.replace('3.1245', '+3.1245'))).toBe(false);
+    });
+
+    it('rejeita campo incompleto', () => {
+      expect(isValidCoordinates('-3.1245,')).toBe(false);
+      expect(isValidCoordinates('-3.1245')).toBe(false);
+      expect(isValidCoordinates('-3.1245,-')).toBe(false);
+      expect(isValidCoordinates(',-38.4156')).toBe(false);
+    });
+
+    it('rejeita ausência da vírgula separadora', () => {
+      expect(isValidCoordinates('-3.1245-38.4156')).toBe(false);
+    });
+
+    it('aceita o exemplo da especificação com 8 casas decimais', () => {
+      expect(isValidCoordinates('-3.12345678,-38.41567890')).toBe(true);
+    });
+
+    it('rejeita valores fora dos limites geográficos', () => {
+      expect(isValidCoordinates('-91.12345678,-38.41567890')).toBe(false);
+      expect(isValidCoordinates('-190.12345678,-38.41567890')).toBe(false);
+      expect(isValidCoordinates('-3.12345678,-180.41567890')).toBe(false);
+      expect(isValidCoordinates('-3.12345678,-380.41567890')).toBe(false);
+    });
+  });
+
+  describe('parseCoordinates', () => {
+    it('converte o texto em latitude e longitude numéricas', () => {
+      expect(parseCoordinates('-3.12345678,-38.41567890')).toEqual({
+        latitude: -3.12345678,
+        longitude: -38.4156789,
+      });
+    });
+
+    it('retorna null para formato inválido', () => {
+      expect(parseCoordinates('')).toBeNull();
+      expect(parseCoordinates('-3.1245, -38.4156')).toBeNull();
+      expect(parseCoordinates('3.1245,-38.4156')).toBeNull();
+      expect(parseCoordinates(null)).toBeNull();
+    });
+  });
+
+  describe('isCoordinatesInRange', () => {
+    it('aceita valores dentro dos limites', () => {
+      expect(isCoordinatesInRange({ latitude: -3.1245, longitude: -38.4156 })).toBe(true);
+      expect(isCoordinatesInRange({ latitude: -90, longitude: -180 })).toBe(true);
+    });
+
+    it('rejeita valores fora dos limites ou positivos', () => {
+      expect(isCoordinatesInRange({ latitude: -90.5, longitude: -38.4156 })).toBe(false);
+      expect(isCoordinatesInRange({ latitude: -3.1245, longitude: -180.5 })).toBe(false);
+      expect(isCoordinatesInRange({ latitude: 3.1245, longitude: -38.4156 })).toBe(false);
+      expect(isCoordinatesInRange({ latitude: -3.1245, longitude: 38.4156 })).toBe(false);
     });
   });
 
@@ -208,6 +262,17 @@ describe('utils', () => {
       expect(ok).toBe(true);
       expect(input.value).toBe('-3.1000,-38.4000');
       expect(onInput).toHaveBeenCalledOnce();
+    });
+
+    it('recusa leitura fora do formato exigido e mantém o valor atual', async () => {
+      mockGeolocation(success => success({ coords: { latitude: 3.1, longitude: -38.4 } }));
+      const input = document.getElementById('coordenadas');
+      input.value = '-1.0000,-2.0000';
+
+      const ok = await captureCoordinates();
+
+      expect(ok).toBe(false);
+      expect(input.value).toBe('-1.0000,-2.0000');
     });
 
     it('mantém o valor existente quando a localização falha', async () => {

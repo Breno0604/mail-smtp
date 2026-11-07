@@ -120,7 +120,10 @@ function createCoordinatesGroup(field, label) {
 
     const ok = await captureCoordinates();
     if (!ok) {
-      showToast('Não foi possível obter a localização. Verifique a permissão do navegador.', false);
+      showToast(
+        'Não foi possível obter a localização. Verifique a permissão do navegador e o formato -3.12345678,-38.41567890.',
+        false
+      );
     }
   });
 

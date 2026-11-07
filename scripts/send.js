@@ -4,7 +4,7 @@ import { updateRecordStatus } from './db.js';
 import { showSendModal, showConfirm } from './ui.js';
 import { checkDuplicate } from './duplicate.js';
 import { compressAttachments } from './compress.js';
-import { validateAll } from './validation.js';
+import { validateAll, validateCoordinates } from './validation.js';
 import { collectAllData } from './collectors.js';
 import { composeEmail } from './email.js';
 import { saveState } from './persistence.js';
@@ -23,6 +23,11 @@ export async function sendEmail() {
   }
 
   await saveState();
+
+  // Última barreira: revalida as coordenadas imediatamente antes de enviar,
+  // para que nenhum evento ou caminho alternativo burle a regra depois do
+  // validateAll() (há passos assíncronos entre a validação e o envio).
+  if (!validateCoordinates()) return false;
 
   const btn = DOM.btnEnviar;
   btn.disabled = true;

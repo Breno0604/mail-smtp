@@ -11,6 +11,7 @@ const {
   showSendModalMock,
   showConfirmMock,
   validateAllMock,
+  validateCoordinatesMock,
   checkDuplicateMock,
   compressMock,
   updateStatusMock,
@@ -20,6 +21,7 @@ const {
   showSendModalMock: vi.fn(),
   showConfirmMock: vi.fn(() => Promise.resolve(true)),
   validateAllMock: vi.fn(() => true),
+  validateCoordinatesMock: vi.fn(() => true),
   checkDuplicateMock: vi.fn(() => Promise.resolve(true)),
   compressMock: vi.fn(() => Promise.resolve([])),
   updateStatusMock: vi.fn(() => Promise.resolve()),
@@ -35,6 +37,7 @@ const {
 
 vi.mock('../scripts/validation.js', () => ({
   validateAll: validateAllMock,
+  validateCoordinates: validateCoordinatesMock,
 }));
 
 vi.mock('../scripts/duplicate.js', () => ({
@@ -87,6 +90,7 @@ describe('sendEmail', () => {
     // Reaplicamos as implementações padrão após o clear.
     vi.clearAllMocks();
     validateAllMock.mockImplementation(() => true);
+    validateCoordinatesMock.mockImplementation(() => true);
     checkDuplicateMock.mockImplementation(() => Promise.resolve(true));
     compressMock.mockImplementation(() => Promise.resolve([]));
     updateStatusMock.mockImplementation(() => Promise.resolve());
@@ -116,6 +120,33 @@ describe('sendEmail', () => {
 
     const result = await sendEmail();
     expect(result).toBe(true);
+  });
+
+  it('should revalidate coordinates right before sending', async () => {
+    fetch.mockResolvedValue({
+      ok: true,
+      headers: { get: () => 'application/json' },
+      json: () => Promise.resolve({ success: true }),
+    });
+
+    await sendEmail();
+
+    expect(validateCoordinatesMock).toHaveBeenCalled();
+  });
+
+  it('should abort the send when coordinates are invalid, even if validateAll approves', async () => {
+    validateCoordinatesMock.mockImplementation(() => false);
+    fetch.mockResolvedValue({
+      ok: true,
+      headers: { get: () => 'application/json' },
+      json: () => Promise.resolve({ success: true }),
+    });
+
+    const result = await sendEmail();
+
+    expect(result).toBe(false);
+    expect(fetch).not.toHaveBeenCalled();
+    expect(showSendModalMock).not.toHaveBeenCalledWith('Email enviado com sucesso!', true);
   });
 
   it('should call fetch with correct URL and method', async () => {

@@ -3,7 +3,7 @@ import { state } from './state.js';
 import { showError, hideError, setFieldError, clearFieldError, showAnexosModal } from './ui.js';
 import { collectRetorno } from './collectors.js';
 import { iniciaisFields as fieldsIniciais } from './fields.js';
-import { isValidCoordinates } from './utils.js';
+import { parseCoordinates, isCoordinatesInRange } from './utils.js';
 
 // ── helpers locais ────────────────────────────────────────────────────────────
 
@@ -27,6 +27,44 @@ const FIELD_VALIDATIONS = {
     maxMessage: 'Descrição deve ter no máximo 2000 caracteres',
   },
 };
+
+export const COORDINATES_MESSAGE =
+  'Formato inválido. Use -3.12345678,-38.41567890: latitude negativa com 1 algarismo, vírgula sem espaços e longitude negativa com 2 algarismos, até 8 casas decimais.';
+
+export const COORDINATES_RANGE_MESSAGE =
+  'Coordenadas fora dos limites permitidos (latitude até -90 e longitude até -180, ambas negativas).';
+
+/**
+ * Valida o campo de coordenadas direto no DOM.
+ * Exportado para que o envio reaplique a regra como última barreira,
+ * independentemente do caminho que disparou o envio.
+ * @returns {boolean} se o valor está no formato e dentro dos limites
+ */
+export function validateCoordinates() {
+  const coordEl = document.getElementById('coordenadas');
+  if (!coordEl) return true;
+
+  const value = coordEl.value;
+
+  if (!value || value.trim() === '') {
+    markError(coordEl, 'Campo obrigatório');
+    return false;
+  }
+
+  const coords = parseCoordinates(value);
+  if (!coords) {
+    markError(coordEl, COORDINATES_MESSAGE);
+    return false;
+  }
+
+  if (!isCoordinatesInRange(coords)) {
+    markError(coordEl, COORDINATES_RANGE_MESSAGE);
+    return false;
+  }
+
+  clearError(coordEl);
+  return true;
+}
 
 // ── validadores por seção (Strategy pattern) ─────────────────────────────────
 
@@ -107,16 +145,9 @@ function validateSection1() {
     }
   }
 
-  // Coordenadas: formato obrigatório -3.1245,-38.4156 (sem espaços)
-  const coordEl = document.getElementById('coordenadas');
-  if (coordEl && data.coordenadas && !isValidCoordinates(data.coordenadas)) {
-    markError(
-      coordEl,
-      'Formato inválido. Use -3.1245,-38.4156 (latitude e longitude negativas, vírgula sem espaços)'
-    );
+  // Coordenadas: formato e limites geográficos obrigatórios
+  if (!validateCoordinates()) {
     hasSpecialError = true;
-  } else if (coordEl) {
-    clearError(coordEl);
   }
 
   if (hasSpecialError) {

@@ -1,5 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { validateSection, validateAll, addBlurValidation } from '../scripts/validation.js';
+import {
+  validateSection,
+  validateAll,
+  validateCoordinates,
+  addBlurValidation,
+  COORDINATES_MESSAGE,
+} from '../scripts/validation.js';
 import { DOM } from '../scripts/dom.js';
 import { createTestDOM } from './helpers/dom-fixture.js';
 import { state, createDefaultEquipamentos } from '../scripts/state.js';
@@ -533,6 +539,68 @@ describe('validation', () => {
       expect(validateSection(1)).toBe(true);
       expect(document.getElementById('coordenadas').classList.contains('error')).toBe(false);
       expect(document.querySelector('.coord-wrapper .field-error').textContent).toBe('');
+    });
+
+    it('should accept the eight-decimal format from the spec', () => {
+      fillAllRequiredFields();
+      document.getElementById('coordenadas').value = '-3.12345678,-38.41567890';
+      expect(validateSection(1)).toBe(true);
+    });
+
+    it('should reject incomplete coordinates', () => {
+      fillAllRequiredFields();
+      const el = document.getElementById('coordenadas');
+      ['-3.1245,', '-3.1245', '-3.1245,-', ',-38.4156'].forEach(value => {
+        el.value = value;
+        expect(validateSection(1)).toBe(false);
+      });
+    });
+
+    it('should reject coordinates without the comma separator', () => {
+      fillAllRequiredFields();
+      document.getElementById('coordenadas').value = '-3.1245-38.4156';
+      expect(validateSection(1)).toBe(false);
+    });
+
+    it('should reject coordinates with letters or extra signs', () => {
+      fillAllRequiredFields();
+      const el = document.getElementById('coordenadas');
+      ['-3.12a5,-38.4156', '--3.1245,-38.4156', '-3.1245,-+38.4156'].forEach(value => {
+        el.value = value;
+        expect(validateSection(1)).toBe(false);
+      });
+    });
+
+    it('should reject latitude or longitude outside the allowed limits', () => {
+      fillAllRequiredFields();
+      const el = document.getElementById('coordenadas');
+      [
+        '-91.12345678,-38.41567890',
+        '-190.12345678,-38.41567890',
+        '-3.12345678,-180.4156789',
+      ].forEach(value => {
+        el.value = value;
+        expect(validateSection(1)).toBe(false);
+      });
+    });
+
+    it('should explain the expected format in the inline error', () => {
+      fillAllRequiredFields();
+      document.getElementById('coordenadas').value = '3.1245,-38.4156';
+      validateSection(1);
+      expect(document.querySelector('.coord-wrapper .field-error').textContent).toBe(
+        COORDINATES_MESSAGE
+      );
+    });
+
+    it('should expose validateCoordinates for the send-time revalidation', () => {
+      fillAllRequiredFields();
+      const el = document.getElementById('coordenadas');
+      el.value = '-3.12345678,-38.41567890';
+      expect(validateCoordinates()).toBe(true);
+      el.value = '-3.1245, -38.4156';
+      expect(validateCoordinates()).toBe(false);
+      expect(el.classList.contains('error')).toBe(true);
     });
   });
 
