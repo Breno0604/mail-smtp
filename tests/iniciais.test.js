@@ -216,6 +216,80 @@ describe('iniciais', () => {
     });
   });
 
+  describe('coordenadas — aviso durante a digitação', () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+      renderIniciais();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    const coordInput = () => document.getElementById('coordenadas');
+    const coordError = () => document.querySelector('.coord-wrapper .field-error');
+
+    const digitar = valor => {
+      const input = coordInput();
+      input.value = valor;
+      input.dispatchEvent(new Event('input'));
+    };
+
+    it('acusa formato inválido sem precisar clicar em enviar', () => {
+      digitar('abc');
+      vi.advanceTimersByTime(500);
+
+      expect(coordInput().classList.contains('error')).toBe(true);
+      expect(coordError().textContent).toContain('Formato inválido');
+      expect(coordError().classList.contains('show')).toBe(true);
+    });
+
+    it('não acusa erro antes da pausa na digitação', () => {
+      digitar('-3.');
+      vi.advanceTimersByTime(300);
+
+      expect(coordInput().classList.contains('error')).toBe(false);
+      expect(coordError().textContent).toBe('');
+    });
+
+    it('some com o aviso assim que o valor fica válido', () => {
+      digitar('abc');
+      vi.advanceTimersByTime(500);
+      expect(coordInput().classList.contains('error')).toBe(true);
+
+      digitar('-3.1245,-38.4156');
+
+      expect(coordInput().classList.contains('error')).toBe(false);
+      expect(coordError().textContent).toBe('');
+    });
+
+    it('não acusa campo vazio enquanto o usuário digita', () => {
+      digitar('');
+      vi.advanceTimersByTime(1000);
+
+      expect(coordInput().classList.contains('error')).toBe(false);
+      expect(coordError().textContent).toBe('');
+    });
+
+    it('acusa campo obrigatório ao sair do campo vazio', () => {
+      const input = coordInput();
+      input.value = '';
+      input.dispatchEvent(new Event('blur'));
+
+      expect(input.classList.contains('error')).toBe(true);
+      expect(coordError().textContent).toBe('Campo obrigatório');
+    });
+
+    it('acusa formato inválido ao sair do campo preenchido', () => {
+      const input = coordInput();
+      input.value = '123';
+      input.dispatchEvent(new Event('blur'));
+
+      expect(input.classList.contains('error')).toBe(true);
+      expect(coordError().textContent).toContain('Formato inválido');
+    });
+  });
+
   describe('coordenadas — botão de localização', () => {
     function mockGeolocation(impl) {
       const getCurrentPosition = vi.fn(impl);

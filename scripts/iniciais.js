@@ -1,7 +1,7 @@
 import { DOM } from './dom.js';
 import { debouncedSave } from './persistence.js';
-import { addBlurValidation } from './validation.js';
-import { showConfirm, showToast, clearFieldError } from './ui.js';
+import { addBlurValidation, validateCoordinates } from './validation.js';
+import { showConfirm, showToast, clearFieldError, setFieldError } from './ui.js';
 import { iniciaisFields } from './fields.js';
 import { captureCoordinates, isValidCoordinates, normalizeCoordinateSigns } from './utils.js';
 import { INPUT_CLASS, SELECT_CLASS } from './styles.js';
@@ -88,6 +88,10 @@ function applyCoordinateMask(input) {
 
 // Criador especial: widget de coordenadas com preenchimento manual e botão de localização.
 // Retorna o group diretamente (já inclui o wrapper interno).
+// Pausa após a última tecla antes de acusar erro: evita destacar o campo
+// vermelho no meio de um valor que ainda está sendo digitado.
+const COORD_TYPING_CHECK_MS = 500;
+
 function createCoordinatesGroup(field, label) {
   const coordWrapper = document.createElement('div');
   coordWrapper.className = 'coord-wrapper';
@@ -130,13 +134,47 @@ function createCoordinatesGroup(field, label) {
   const coordError = document.createElement('span');
   coordError.className = 'field-error';
 
+  let typingTimer = null;
+
+  const limparErroCoordenadas = () => {
+    clearTimeout(typingTimer);
+    typingTimer = null;
+    input.classList.remove('error');
+    clearFieldError(input);
+  };
+
+  // Regra única (formato + limites), a mesma usada na seção 1 e no envio.
+  const acusarSeInvalido = () => {
+    if (input.value.trim() === '') return limparErroCoordenadas();
+    if (isValidCoordinates(input.value)) return limparErroCoordenadas();
+    validateCoordinates();
+  };
+
   input.addEventListener('input', () => {
     applyCoordinateMask(input);
-    // Some com o destaque assim que o valor passa a ser válido.
-    if (isValidCoordinates(input.value)) {
-      input.classList.remove('error');
-      clearFieldError(input);
+    clearTimeout(typingTimer);
+    typingTimer = null;
+
+    // Some com o destaque assim que o valor fica válido (ou fica vazio).
+    if (input.value.trim() === '' || isValidCoordinates(input.value)) {
+      return limparErroCoordenadas();
     }
+
+    // Valor aparentemente inválido: só acusa se o usuário parar de digitar.
+    typingTimer = setTimeout(acusarSeInvalido, COORD_TYPING_CHECK_MS);
+  });
+
+  input.addEventListener('blur', () => {
+    clearTimeout(typingTimer);
+    typingTimer = null;
+
+    if (input.value.trim() === '') {
+      input.classList.add('error');
+      setFieldError(input, 'Campo obrigatório');
+      return;
+    }
+
+    acusarSeInvalido();
   });
 
   coordWrapper.appendChild(input);
