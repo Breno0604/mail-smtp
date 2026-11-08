@@ -7,6 +7,13 @@ import {
 } from '../scripts/equipment.js';
 import { createTestDOM } from './helpers/dom-fixture.js';
 import { state } from '../scripts/state.js';
+import { EQUIPMENT_KEYS } from '../scripts/equipment-keys.js';
+
+function renderedKeys(tipo) {
+  return Array.from(document.querySelectorAll(`#campos-${tipo} > [data-equip]`)).map(
+    el => el.dataset.equip
+  );
+}
 
 describe('equipment', () => {
   beforeEach(() => {
@@ -152,6 +159,44 @@ describe('equipment', () => {
       toggleFieldVisibility('instalados', 'medidor', true);
       toggleFieldVisibility('instalados', 'medidor', false);
       expect(state.equipamentos.instalados.medidor).toBe('');
+    });
+  });
+
+  describe('ordem fixa dos campos exibidos', () => {
+    const fixedOrder = EQUIPMENT_KEYS.map(equip => equip.key);
+
+    it('should render instalados fields in fixed order regardless of checkbox order', () => {
+      renderEquipamentos();
+      [...fixedOrder].reverse().forEach(key => toggleFieldVisibility('instalados', key, true));
+      expect(renderedKeys('instalados')).toEqual(fixedOrder);
+    });
+
+    it('should render retirados fields in fixed order regardless of checkbox order', () => {
+      renderEquipamentos();
+      [...fixedOrder].reverse().forEach(key => toggleFieldVisibility('retirados', key, true));
+      expect(renderedKeys('retirados')).toEqual(fixedOrder);
+    });
+
+    it('should keep fixed position after unchecking and checking a field again', () => {
+      renderEquipamentos();
+      toggleFieldVisibility('instalados', 'medidor', true);
+      toggleFieldVisibility('instalados', 'conjunto', true);
+      toggleFieldVisibility('instalados', 'medidor', false);
+      toggleFieldVisibility('instalados', 'medidor', true);
+      expect(renderedKeys('instalados')).toEqual(['medidor', 'conjunto']);
+    });
+
+    it('should restore fixed order from saved state with unordered checkbox keys', () => {
+      state.equipamentos.instaladoEquip = 'SIM';
+      state.equipamentos.checkboxes.instalados = {
+        tp_fase_c: true,
+        medidor: true,
+        tc_fase_a: true,
+      };
+
+      renderEquipamentos();
+
+      expect(renderedKeys('instalados')).toEqual(['medidor', 'tc_fase_a', 'tp_fase_c']);
     });
   });
 

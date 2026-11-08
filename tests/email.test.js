@@ -715,19 +715,17 @@ describe('email', () => {
     });
 
     describe('CORTE DE UC POR DEF TECNICO template', () => {
-      it('should show SIM variant', () => {
+      it('should show only the descricao', () => {
         const data = {
           retorno: {
-            corte_por_defeito_tecnico: 'SIM',
             descricao: 'Corte executado',
           },
         };
         const result = applyRetornoTemplate('CORTE DE UC POR DEF TECNICO', data);
-        expect(result).toContain('EXECUTADO: SIM');
-        expect(result).toContain('Corte executado');
+        expect(result).toBe('Corte executado');
       });
 
-      it('should show NAO variant with motivo and problem', () => {
+      it('should ignore legacy executado/motivo/problem fields from old records', () => {
         const data = {
           retorno: {
             corte_por_defeito_tecnico: 'NAO',
@@ -737,23 +735,10 @@ describe('email', () => {
           },
         };
         const result = applyRetornoTemplate('CORTE DE UC POR DEF TECNICO', data);
-        expect(result).toContain('EXECUTADO: NAO');
-        expect(result).toContain('MOTIVO: SEM ACESSO');
-        expect(result).toContain('PROBLEMA: Portao trancado');
-      });
-
-      it('should omit problem for motivo without description', () => {
-        const data = {
-          retorno: {
-            corte_por_defeito_tecnico: 'NAO',
-            motivo_cancelamento_corte_por_defeito_tecnico: 'CLIENTE NAO PERMITIU',
-            descreva_problema_corte_por_defeito_tecnico: '',
-            descricao: 'Cliente nao permitiu',
-          },
-        };
-        const result = applyRetornoTemplate('CORTE DE UC POR DEF TECNICO', data);
-        expect(result).not.toContain('PROBLEMA:');
-        expect(result).toContain('MOTIVO: CLIENTE NAO PERMITIU');
+        expect(result).toBe('Nao executado');
+        expect(result).not.toContain('EXECUTADO');
+        expect(result).not.toContain('MOTIVO');
+        expect(result).not.toContain('PROBLEMA');
       });
     });
 
@@ -771,7 +756,20 @@ describe('email', () => {
         expect(result).not.toContain('PROBLEMA:');
       });
 
-      it('should show status and problem for non-EXECUTADO variants', () => {
+      it('should show status and descricao for non-EXECUTADO variants', () => {
+        const data = {
+          retorno: {
+            desligamento: 'SEM ACESSO',
+            descricao: 'Desligamento nao realizado',
+          },
+        };
+        const result = applyRetornoTemplate('DESLIG.PROG.MANUTENÇÃO', data);
+        expect(result).toContain('STATUS: SEM ACESSO');
+        expect(result).toContain('Desligamento nao realizado');
+        expect(result).not.toContain('PROBLEMA:');
+      });
+
+      it('should ignore legacy acesso_desligamento from old records', () => {
         const data = {
           retorno: {
             desligamento: 'SEM ACESSO',
@@ -780,9 +778,7 @@ describe('email', () => {
           },
         };
         const result = applyRetornoTemplate('DESLIG.PROG.MANUTENÇÃO', data);
-        expect(result).toContain('STATUS: SEM ACESSO');
-        expect(result).toContain('PROBLEMA: Cliente nao encontrado');
-        expect(result).toContain('Desligamento nao realizado');
+        expect(result).not.toContain('Cliente nao encontrado');
       });
     });
   });

@@ -310,32 +310,29 @@ describe('retornos', () => {
   });
 
   describe('Condicionais multi-valor e negado', () => {
-    describe('DESLIG.PROG.MANUTENÇÃO - campo negado', () => {
-      it('should hide acesso_desligamento when desligamento is DESLIGAMENTO EXECUTADO', () => {
+    describe('DESLIG.PROG.MANUTENÇÃO - campos', () => {
+      it('should render only desligamento and descricao', () => {
         DOM.tipoOrdem.value = 'DESLIG.PROG.MANUTENÇÃO';
         renderRetorno();
-        const deslig = document.getElementById('desligamento');
-        deslig.value = 'DESLIGAMENTO EXECUTADO';
-        deslig.dispatchEvent(new Event('change'));
-        const group = document.querySelector('[data-field-nome="acesso_desligamento"]');
-        expect(group.style.display).toBe('none');
+        const grupos = DOM.retornoCampos.querySelectorAll('[data-field-nome]');
+        expect(Array.from(grupos).map(group => group.dataset.fieldNome)).toEqual([
+          'desligamento',
+          'descricao',
+        ]);
+        expect(document.getElementById('acesso_desligamento')).toBeNull();
       });
 
-      it('should show acesso_desligamento when desligamento is SEM ACESSO', () => {
+      it('should collect desligamento and descricao', () => {
         DOM.tipoOrdem.value = 'DESLIG.PROG.MANUTENÇÃO';
         renderRetorno();
         const deslig = document.getElementById('desligamento');
         deslig.value = 'SEM ACESSO';
         deslig.dispatchEvent(new Event('change'));
-        const group = document.querySelector('[data-field-nome="acesso_desligamento"]');
-        expect(group.style.display).toBe('');
-      });
-
-      it('should initially hide acesso_desligamento when no value selected in control field', () => {
-        DOM.tipoOrdem.value = 'DESLIG.PROG.MANUTENÇÃO';
-        renderRetorno();
-        const group = document.querySelector('[data-field-nome="acesso_desligamento"]');
-        expect(group.style.display).toBe('none');
+        document.getElementById('descricao').value = 'Sem acesso ao medidor';
+        const data = collectRetorno();
+        expect(data.desligamento).toBe('SEM ACESSO');
+        expect(data.descricao).toBe('Sem acesso ao medidor');
+        expect(data.acesso_desligamento).toBeUndefined();
       });
     });
 
@@ -569,115 +566,22 @@ describe('retornos', () => {
   });
 
   describe('CORTE DE UC POR DEF TECNICO - renderização', () => {
-    it('should render corte_por_defeito_tecnico and descricao initially', () => {
+    it('should render only descricao', () => {
       DOM.tipoOrdem.value = 'CORTE DE UC POR DEF TECNICO';
       renderRetorno();
-      expect(document.getElementById('corte_por_defeito_tecnico')).toBeTruthy();
-      expect(document.getElementById('descricao')).toBeTruthy();
+      const grupos = DOM.retornoCampos.querySelectorAll('[data-field-nome]');
+      expect(Array.from(grupos).map(group => group.dataset.fieldNome)).toEqual(['descricao']);
+      expect(document.getElementById('corte_por_defeito_tecnico')).toBeNull();
+      expect(document.getElementById('motivo_cancelamento_corte_por_defeito_tecnico')).toBeNull();
+      expect(document.getElementById('descreva_problema_corte_por_defeito_tecnico')).toBeNull();
     });
 
-    it('should hide conditional fields initially', () => {
+    it('should collect only descricao', () => {
       DOM.tipoOrdem.value = 'CORTE DE UC POR DEF TECNICO';
       renderRetorno();
-      expect(
-        document.querySelector('[data-field-nome="motivo_cancelamento_corte_por_defeito_tecnico"]')
-          .style.display
-      ).toBe('none');
-      expect(
-        document.querySelector('[data-field-nome="descreva_problema_corte_por_defeito_tecnico"]')
-          .style.display
-      ).toBe('none');
-    });
-
-    it('should show motivo when corte_por_defeito_tecnico = NAO', () => {
-      DOM.tipoOrdem.value = 'CORTE DE UC POR DEF TECNICO';
-      renderRetorno();
-      const executado = document.getElementById('corte_por_defeito_tecnico');
-      executado.value = 'NAO';
-      executado.dispatchEvent(new Event('change'));
-      expect(
-        document.querySelector('[data-field-nome="motivo_cancelamento_corte_por_defeito_tecnico"]')
-          .style.display
-      ).toBe('');
-    });
-
-    it('should show descreva_problema when motivo = SEM ACESSO', () => {
-      DOM.tipoOrdem.value = 'CORTE DE UC POR DEF TECNICO';
-      renderRetorno();
-      const executado = document.getElementById('corte_por_defeito_tecnico');
-      executado.value = 'NAO';
-      executado.dispatchEvent(new Event('change'));
-      const motivo = document.getElementById('motivo_cancelamento_corte_por_defeito_tecnico');
-      motivo.value = 'SEM ACESSO';
-      motivo.dispatchEvent(new Event('change'));
-      expect(
-        document.querySelector('[data-field-nome="descreva_problema_corte_por_defeito_tecnico"]')
-          .style.display
-      ).toBe('');
-    });
-
-    it('should show descreva_problema when motivo = OUTRO PROBLEMA', () => {
-      DOM.tipoOrdem.value = 'CORTE DE UC POR DEF TECNICO';
-      renderRetorno();
-      const executado = document.getElementById('corte_por_defeito_tecnico');
-      executado.value = 'NAO';
-      executado.dispatchEvent(new Event('change'));
-      const motivo = document.getElementById('motivo_cancelamento_corte_por_defeito_tecnico');
-      motivo.value = 'OUTRO PROBLEMA';
-      motivo.dispatchEvent(new Event('change'));
-      expect(
-        document.querySelector('[data-field-nome="descreva_problema_corte_por_defeito_tecnico"]')
-          .style.display
-      ).toBe('');
-    });
-
-    it('should hide descreva_problema when motivo = SOLICITACAO ENEL', () => {
-      DOM.tipoOrdem.value = 'CORTE DE UC POR DEF TECNICO';
-      renderRetorno();
-      const executado = document.getElementById('corte_por_defeito_tecnico');
-      executado.value = 'NAO';
-      executado.dispatchEvent(new Event('change'));
-      const motivo = document.getElementById('motivo_cancelamento_corte_por_defeito_tecnico');
-      motivo.value = 'SOLICITACAO ENEL';
-      motivo.dispatchEvent(new Event('change'));
-      expect(
-        document.querySelector('[data-field-nome="descreva_problema_corte_por_defeito_tecnico"]')
-          .style.display
-      ).toBe('none');
-    });
-
-    it('should collect visible fields but skip hidden ones', () => {
-      DOM.tipoOrdem.value = 'CORTE DE UC POR DEF TECNICO';
-      renderRetorno();
-      const executado = document.getElementById('corte_por_defeito_tecnico');
-      executado.value = 'NAO';
-      executado.dispatchEvent(new Event('change'));
-      const motivo = document.getElementById('motivo_cancelamento_corte_por_defeito_tecnico');
-      motivo.value = 'SEM ACESSO';
-      motivo.dispatchEvent(new Event('change'));
-      document.getElementById('descreva_problema_corte_por_defeito_tecnico').value =
-        'Rua bloqueada';
+      document.getElementById('descricao').value = 'Corte executado pela equipe';
       const data = collectRetorno();
-      expect(data.corte_por_defeito_tecnico).toBe('NAO');
-      expect(data.motivo_cancelamento_corte_por_defeito_tecnico).toBe('SEM ACESSO');
-      expect(data.descreva_problema_corte_por_defeito_tecnico).toBe('Rua bloqueada');
-    });
-
-    it('should keep descricao on its own row when conditional fields become visible', () => {
-      DOM.tipoOrdem.value = 'CORTE DE UC POR DEF TECNICO';
-      renderRetorno();
-      const executado = document.getElementById('corte_por_defeito_tecnico');
-      executado.value = 'NAO';
-      executado.dispatchEvent(new Event('change'));
-      const motivo = document.getElementById('motivo_cancelamento_corte_por_defeito_tecnico');
-      motivo.value = 'SEM ACESSO';
-      motivo.dispatchEvent(new Event('change'));
-      const descricaoGroup = document.querySelector('[data-field-nome="descricao"]');
-      const problemaGroup = document.querySelector(
-        '[data-field-nome="descreva_problema_corte_por_defeito_tecnico"]'
-      );
-      expect(descricaoGroup.parentElement).not.toBe(problemaGroup.parentElement);
-      expect(descricaoGroup.parentElement.classList.contains('flex')).toBe(false);
+      expect(data).toEqual({ descricao: 'Corte executado pela equipe' });
     });
   });
 });

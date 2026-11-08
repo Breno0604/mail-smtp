@@ -167,11 +167,32 @@ function showField(tipo, equipKey) {
 
   wrapper.appendChild(label);
   wrapper.appendChild(input);
-  container.appendChild(wrapper);
+  insertFieldInFixedOrder(container, wrapper, equipKey);
 
   // Restore value if exists
   if (state.equipamentos[tipo][equipKey]) {
     input.value = state.equipamentos[tipo][equipKey];
+  }
+}
+
+/**
+ * Insere o campo na posição definida por EQUIPMENT_KEYS, independentemente
+ * da ordem em que os checkboxes foram marcados.
+ * @param {HTMLElement} container - Container dos campos (#campos-instalados ou #campos-retirados)
+ * @param {HTMLElement} wrapper - Wrapper do campo a inserir
+ * @param {string} equipKey - Equipment key do campo inserido
+ */
+function insertFieldInFixedOrder(container, wrapper, equipKey) {
+  const position = EQUIPMENT_KEYS.findIndex(equip => equip.key === equipKey);
+  const nextField = Array.from(container.children).find(child => {
+    const childPosition = EQUIPMENT_KEYS.findIndex(equip => equip.key === child.dataset.equip);
+    return childPosition > position;
+  });
+
+  if (nextField) {
+    container.insertBefore(wrapper, nextField);
+  } else {
+    container.appendChild(wrapper);
   }
 }
 

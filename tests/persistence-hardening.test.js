@@ -145,6 +145,20 @@ describe('P4 — compatibilidade de campos antigos', () => {
     expect(document.getElementById('lider').value).toBe('NOME ANTIGO REMOVIDO');
   });
 
+  it('restaura registro cujo Tipo de Ordem foi removido do dropdown', async () => {
+    await applyRecord({
+      uuid: 'legacy-3',
+      createdAt: new Date().toISOString(),
+      tipoOrdem: 'DESLOCAMENTO DE SUBESTAÇÃO',
+      iniciais: { uc: '11111', os: '22222', 'tipo-ordem': 'DESLOCAMENTO DE SUBESTAÇÃO' },
+      retorno: { descricao: 'Deslocamento realizado' },
+      equipamentos: createDefaultEquipamentos(),
+    });
+
+    expect(document.getElementById('tipo-ordem').value).toBe('DESLOCAMENTO DE SUBESTAÇÃO');
+    expect(document.getElementById('descricao').value).toBe('Deslocamento realizado');
+  });
+
   it('grava schemaVersion no registro', async () => {
     await saveState();
 

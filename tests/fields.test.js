@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { iniciaisFields, getRetornoFields, retornoFieldsByTipo } from '../scripts/fields.js';
+import {
+  iniciaisFields,
+  getRetornoFields,
+  getAllRetornoFieldNames,
+  retornoFieldsByTipo,
+} from '../scripts/fields.js';
 import { tipoOrdemOptions } from '../scripts/data/fields-data.js';
 import { retornoTemplates } from '../scripts/data/retorno-templates.js';
 
@@ -82,9 +87,16 @@ describe('fields', () => {
       expect(placa.opcoes.length).toBeGreaterThanOrEqual(9);
     });
 
-    it('should have at least 43 tipo-ordem options', () => {
+    it('should have at least 40 tipo-ordem options', () => {
       const tipoOrdem = iniciaisFields.find(f => f.nome === 'tipo-ordem');
-      expect(tipoOrdem.opcoes.length).toBeGreaterThanOrEqual(43);
+      expect(tipoOrdem.opcoes.length).toBeGreaterThanOrEqual(40);
+    });
+
+    it('should not offer the removed tipo-ordem options', () => {
+      const tipoOrdem = iniciaisFields.find(f => f.nome === 'tipo-ordem');
+      expect(tipoOrdem.opcoes).not.toContain('DESLOCAMENTO DE SUBESTAÇÃO');
+      expect(tipoOrdem.opcoes).not.toContain('LIGAÇÃO NOVA ISOLADA');
+      expect(tipoOrdem.opcoes).not.toContain('LIGAÇÃO NOVA SIMULTÂNEA');
     });
 
     it('should have notificado with options ["SIM", "NÃO"]', () => {
@@ -248,9 +260,9 @@ describe('fields', () => {
     });
 
     describe('DESLIG.PROG.MANUTENÇÃO', () => {
-      it('should have exactly 3 fields (desligamento, acesso_desligamento, descricao)', () => {
+      it('should have exactly 2 fields (desligamento, descricao)', () => {
         const fields = getRetornoFields('DESLIG.PROG.MANUTENÇÃO');
-        expect(fields.length).toBe(3);
+        expect(fields.length).toBe(2);
       });
 
       it('should have desligamento as first field with 5 options', () => {
@@ -267,16 +279,10 @@ describe('fields', () => {
         ]);
       });
 
-      it('should have acesso_desligamento with negated conditional', () => {
+      it('should not include the removed acesso_desligamento field', () => {
         const fields = getRetornoFields('DESLIG.PROG.MANUTENÇÃO');
-        const field = fields[1];
-        expect(field.nome).toBe('acesso_desligamento');
-        expect(field.tipo).toBe('text');
-        expect(field.condicional).toEqual({
-          campoRef: 'desligamento',
-          valor: 'DESLIGAMENTO EXECUTADO',
-          negado: true,
-        });
+        expect(fields.some(f => f.nome === 'acesso_desligamento')).toBe(false);
+        expect(fields.some(f => f.label === 'Descreva o Problema')).toBe(false);
       });
 
       it('should have descricao as last field', () => {
@@ -285,7 +291,6 @@ describe('fields', () => {
         expect(lastField.nome).toBe('descricao');
         expect(lastField.label).toBe('Descrição do Serviço');
         expect(lastField.tipo).toBe('textarea');
-        expect(lastField.linha).toBe(3);
       });
     });
 
@@ -446,50 +451,52 @@ describe('fields', () => {
   });
 
   describe('Campos da aba corte - CORTE DE UC POR DEF TECNICO', () => {
-    it('should have exactly 4 fields (3 + descricao)', () => {
+    it('should have exactly 1 field (descricao)', () => {
       const fields = getRetornoFields('CORTE DE UC POR DEF TECNICO');
-      expect(fields.length).toBe(4);
+      expect(fields.length).toBe(1);
     });
 
-    it('should have corte_por_defeito_tecnico as first field with 2 options', () => {
+    it('should not include the removed executado and motivo fields', () => {
+      const fields = getRetornoFields('CORTE DE UC POR DEF TECNICO');
+      expect(fields.some(f => f.nome === 'corte_por_defeito_tecnico')).toBe(false);
+      expect(fields.some(f => f.nome === 'motivo_cancelamento_corte_por_defeito_tecnico')).toBe(
+        false
+      );
+      expect(fields.some(f => f.nome === 'descreva_problema_corte_por_defeito_tecnico')).toBe(
+        false
+      );
+    });
+
+    it('should have descricao as the only field', () => {
       const fields = getRetornoFields('CORTE DE UC POR DEF TECNICO');
       const field = fields[0];
-      expect(field.nome).toBe('corte_por_defeito_tecnico');
-      expect(field.tipo).toBe('select');
-      expect(field.opcoes).toEqual(['SIM', 'NAO']);
-      expect(field.condicional).toBeUndefined();
-    });
-
-    it('should have motivo_cancelamento_corte_por_defeito_tecnico conditional on corte_por_defeito_tecnico = NAO', () => {
-      const fields = getRetornoFields('CORTE DE UC POR DEF TECNICO');
-      const field = fields.find(f => f.nome === 'motivo_cancelamento_corte_por_defeito_tecnico');
-      expect(field.tipo).toBe('select');
-      expect(field.opcoes).toEqual([
-        'SEM ACESSO',
-        'SOLICITACAO ENEL',
-        'CLIENTE NAO PERMITIU',
-        'CLIENTE CORRIGIU PROBLEMA',
-        'OUTRO PROBLEMA',
-      ]);
-      expect(field.condicional).toEqual({ campoRef: 'corte_por_defeito_tecnico', valor: 'NAO' });
-    });
-
-    it('should have descreva_problema_corte_por_defeito_tecnico with multi-value conditional', () => {
-      const fields = getRetornoFields('CORTE DE UC POR DEF TECNICO');
-      const field = fields.find(f => f.nome === 'descreva_problema_corte_por_defeito_tecnico');
+      expect(field.nome).toBe('descricao');
+      expect(field.label).toBe('Descrição do Serviço');
       expect(field.tipo).toBe('textarea');
-      expect(field.condicional).toEqual({
-        campoRef: 'motivo_cancelamento_corte_por_defeito_tecnico',
-        valor: ['SEM ACESSO', 'OUTRO PROBLEMA'],
+    });
+  });
+
+  describe('Compatibilidade com dados antigos', () => {
+    it('mantém os tipos removidos do dropdown resolvíveis para registros históricos', () => {
+      const removidos = [
+        'DESLOCAMENTO DE SUBESTAÇÃO',
+        'LIGAÇÃO NOVA ISOLADA',
+        'LIGAÇÃO NOVA SIMULTÂNEA',
+      ];
+
+      removidos.forEach(tipo => {
+        expect(tipoOrdemOptions).not.toContain(tipo);
+        expect(retornoFieldsByTipo[tipo]).toBeDefined();
+        expect(retornoTemplates[tipo]).toBeDefined();
       });
     });
 
-    it('should have descricao as last field', () => {
-      const fields = getRetornoFields('CORTE DE UC POR DEF TECNICO');
-      const lastField = fields[fields.length - 1];
-      expect(lastField.nome).toBe('descricao');
-      expect(lastField.label).toBe('Descrição do Serviço');
-      expect(lastField.tipo).toBe('textarea');
+    it('não lista campos removidos como conhecidos (para o save preservar o valor legado)', () => {
+      const names = getAllRetornoFieldNames();
+      expect(names).not.toContain('acesso_desligamento');
+      expect(names).not.toContain('corte_por_defeito_tecnico');
+      expect(names).not.toContain('motivo_cancelamento_corte_por_defeito_tecnico');
+      expect(names).not.toContain('descreva_problema_corte_por_defeito_tecnico');
     });
   });
 

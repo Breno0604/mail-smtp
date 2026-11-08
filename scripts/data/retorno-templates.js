@@ -60,41 +60,13 @@ const TELEMEDICAO_TEMPLATE = [
   },
 ];
 
-const CORTE_DEF_TECNICO_TEMPLATE = [
-  {
-    condicao: { campo: 'corte_por_defeito_tecnico', valor: 'SIM' },
-    blocos: [{ texto: 'EXECUTADO: SIM' }, { texto: '' }, { texto: '{descricao}' }],
-  },
-  {
-    condicao: { campo: 'corte_por_defeito_tecnico', valor: 'NAO' },
-    blocos: [
-      { texto: 'EXECUTADO: NAO' },
-      { texto: 'MOTIVO: {motivo_cancelamento_corte_por_defeito_tecnico}' },
-      {
-        texto: 'PROBLEMA: {descreva_problema_corte_por_defeito_tecnico}',
-        condicao: {
-          campo: 'motivo_cancelamento_corte_por_defeito_tecnico',
-          valor: ['SEM ACESSO', 'OUTRO PROBLEMA'],
-        },
-      },
-      { texto: '' },
-      { texto: '{descricao}' },
-    ],
-  },
-];
-
 const DESLIG_PROG_MANUTENCAO_TEMPLATE = [
   {
     condicao: { campo: 'desligamento', valor: 'DESLIGAMENTO EXECUTADO' },
     blocos: [{ texto: 'DESLIGAMENTO EXECUTADO' }, { texto: '' }, { texto: '{descricao}' }],
   },
   {
-    blocos: [
-      { texto: 'STATUS: {desligamento}' },
-      { texto: 'PROBLEMA: {acesso_desligamento}' },
-      { texto: '' },
-      { texto: '{descricao}' },
-    ],
+    blocos: [{ texto: 'STATUS: {desligamento}' }, { texto: '' }, { texto: '{descricao}' }],
   },
 ];
 
@@ -317,14 +289,18 @@ export const retornoTemplates = {
   'LIGACAO NOVA MEDIA TENSAO': LIGACAO_NOVA_MT_TEMPLATE,
   'LIGACAO NOVA MT - CLIENTE LIVRE': LIGACAO_NOVA_MT_TEMPLATE,
 
+  // Tipos removidos do dropdown — mantidos aqui para abrir registros históricos.
+  'DESLOCAMENTO DE SUBESTAÇÃO': DESCRICAO_TEMPLATE,
+  'LIGAÇÃO NOVA ISOLADA': DESCRICAO_TEMPLATE,
+  'LIGAÇÃO NOVA SIMULTÂNEA': DESCRICAO_TEMPLATE,
+
   'ADEQUACAO SMF': DESCRICAO_TEMPLATE,
   'AFERIÇÃO DE MEDIDOR': DESCRICAO_TEMPLATE,
   'AFERIÇÃO MEDIDOR CLIENTE LIVRE': DESCRICAO_TEMPLATE,
   'COLHER LEITURA': DESCRICAO_TEMPLATE,
   'CORTE DEFINITIVO A PEDIDO': DESCRICAO_TEMPLATE,
-  'CORTE DE UC POR DEF TECNICO': CORTE_DEF_TECNICO_TEMPLATE,
+  'CORTE DE UC POR DEF TECNICO': DESCRICAO_TEMPLATE,
   'DESLIG.PROG.MANUTENÇÃO': DESLIG_PROG_MANUTENCAO_TEMPLATE,
-  'DESLOCAMENTO DE SUBESTAÇÃO': DESCRICAO_TEMPLATE,
   'DISPON. SAIDA SERIAL MEDIDOR': DESCRICAO_TEMPLATE,
   'EXECUÇÃO DE MUDANÇA DE TARIFA': DESCRICAO_TEMPLATE,
   'EXECUCAO DO ACRESCIMO DE POTENCIA': DESCRICAO_TEMPLATE,
@@ -333,8 +309,6 @@ export const retornoTemplates = {
   'GRANDES CLIENTES SEM MEDIÇÃO': DESCRICAO_TEMPLATE,
   'INSTALACAO DO DISPLAY': DESCRICAO_TEMPLATE,
   'LIBERAÇÃO DE PULSO': DESCRICAO_TEMPLATE,
-  'LIGAÇÃO NOVA ISOLADA': DESCRICAO_TEMPLATE,
-  'LIGAÇÃO NOVA SIMULTÂNEA': DESCRICAO_TEMPLATE,
   'RELIGACAO NORMAL RURAL': DESCRICAO_TEMPLATE,
   'RELIGAÇÃO NORMAL URBANA': DESCRICAO_TEMPLATE,
   'RESELAR MEDICAO': DESCRICAO_TEMPLATE,
