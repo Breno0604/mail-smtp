@@ -1,7 +1,7 @@
 // tests/send-backend.test.js
-// Contract tests for the netlify/functions/send.cjs backend (nodemailer v9).
+// Contract tests for the netlify/functions/send.cjs backend.
 // Covers only the paths that do NOT reach real SMTP (GET, 4xx validations),
-// confirming the module loads with the v9 installed.
+// confirming the module loads with the installed nodemailer.
 import { describe, it, beforeAll, expect } from 'vitest';
 import { createRequire } from 'node:module';
 import { isValidCoordinates } from '../scripts/utils.js';
@@ -29,7 +29,7 @@ try {
 const invoke = body =>
   handler({ httpMethod: 'POST', body: typeof body === 'string' ? body : JSON.stringify(body) });
 
-describe('netlify/functions/send.cjs (nodemailer v9)', () => {
+describe('netlify/functions/send.cjs', () => {
   it.skipIf(!handler)('returns 200 with status ok on GET', async () => {
     const res = await handler({ httpMethod: 'GET' });
     expect(res.statusCode).toBe(200);

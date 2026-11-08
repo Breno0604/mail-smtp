@@ -2,6 +2,9 @@
   command = "npm install"
   functions = "netlify/functions"
   publish = "."
+  [build.environment]
+    # nodemailer 10 exige Node >= 20
+    NODE_VERSION = "22"
 
 [[headers]]
   for = "/sw.js"
