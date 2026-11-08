@@ -100,14 +100,7 @@ export default [
     },
   },
   {
-    files: [
-      'tools/**/*.mjs',
-      'netlify/functions/**/*.js',
-      'netlify/functions/**/*.cjs',
-      'playwright.config.js',
-      'postcss.config.js',
-      'tailwind.config.js',
-    ],
+    files: ['netlify/functions/**/*.cjs', 'postcss.config.js', 'tailwind.config.js'],
     languageOptions: {
       globals: {
         node: true,
@@ -127,7 +120,7 @@ export default [
     },
   },
   {
-    files: ['scripts/sw.js', 'scripts/sw-update.js'],
+    files: ['sw.js', 'scripts/sw-update.js'],
     languageOptions: {
       globals: {
         self: 'readonly',
