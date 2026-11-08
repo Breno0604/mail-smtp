@@ -57,6 +57,14 @@ describe('reset', () => {
       expect(state.iniciais['tipo-ordem']).toBe('');
     });
 
+    it('should reset status so a new form is not treated as an edited record', () => {
+      state.status = 'changed';
+
+      resetForm();
+
+      expect(state.status).toBe('draft');
+    });
+
     it('should clear state.equipamentos', () => {
       resetForm();
       expect(state.equipamentos.instaladoEquip).toBe('');

@@ -19,6 +19,7 @@ export function resetForm() {
   state.iniciais = {};
   state.retorno = {};
   state.lastTipoOrdem = '';
+  state.status = 'draft';
   state._createdAt = null;
   state.iniciaisValido = false;
 
