@@ -49,16 +49,16 @@ describe('iniciais', () => {
       expect(data.type).toBe('date');
     });
 
-    it('should create time inputs with step="300"', () => {
+    it('should create read-only time fields that never open the native picker', () => {
       renderIniciais();
       const horaInicio = document.getElementById('hora_inicio');
       const horaFim = document.getElementById('hora_fim');
       expect(horaInicio).toBeTruthy();
-      expect(horaInicio.type).toBe('time');
-      expect(horaInicio.step).toBe('300');
+      expect(horaInicio.type).toBe('text');
+      expect(horaInicio.readOnly).toBe(true);
       expect(horaFim).toBeTruthy();
-      expect(horaFim.type).toBe('time');
-      expect(horaFim.step).toBe('300');
+      expect(horaFim.type).toBe('text');
+      expect(horaFim.readOnly).toBe(true);
     });
 
     it('should create an editable input for coordenadas', () => {
@@ -389,6 +389,72 @@ describe('iniciais', () => {
         expect(DOM.toast.textContent).toContain('Não foi possível obter a localização')
       );
       expect(input.value).toBe('-1.0000, -2.0000');
+    });
+  });
+
+  describe('horário — seletor em modal', () => {
+    const picker = () => document.getElementById('time-picker');
+    const option = (unit, value) =>
+      picker().querySelector(`[data-unit="${unit}"] [data-value="${value}"]`);
+    const active = unit => picker().querySelector(`[data-unit="${unit}"] .active`);
+
+    it('abre o modal ao clicar no campo Início', () => {
+      renderIniciais();
+      document.getElementById('hora_inicio').click();
+
+      expect(picker().classList.contains('hidden')).toBe(false);
+      expect(document.getElementById('time-picker-title').textContent).toBe('Início');
+    });
+
+    it('abre no horário que já está no campo', () => {
+      renderIniciais();
+      document.getElementById('hora_inicio').value = '08:30';
+      document.getElementById('hora_inicio').click();
+
+      expect(active('hour').textContent).toBe('08');
+      expect(active('minute').textContent).toBe('30');
+    });
+
+    it('aplica o horário somente ao campo que abriu o modal', async () => {
+      renderIniciais();
+      const inicio = document.getElementById('hora_inicio');
+      const fim = document.getElementById('hora_fim');
+      fim.value = '18:00';
+
+      inicio.click();
+      option('hour', 9).click();
+      option('minute', 15).click();
+      picker().querySelector('[data-action="save"]').click();
+      await flushPromises();
+
+      expect(inicio.value).toBe('09:15');
+      expect(fim.value).toBe('18:00');
+    });
+
+    it('cancelar preserva o horário anterior do campo', async () => {
+      renderIniciais();
+      const inicio = document.getElementById('hora_inicio');
+      inicio.value = '08:00';
+
+      inicio.click();
+      option('hour', 17).click();
+      picker().querySelector('[data-action="cancel"]').click();
+      await flushPromises();
+
+      expect(inicio.value).toBe('08:00');
+    });
+
+    it('preenche o campo vazio com o horário atual e salva', async () => {
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date(2026, 0, 1, 14, 37));
+      renderIniciais();
+
+      document.getElementById('hora_fim').click();
+      picker().querySelector('[data-action="save"]').click();
+      vi.useRealTimers();
+      await flushPromises();
+
+      expect(document.getElementById('hora_fim').value).toBe('14:35');
     });
   });
 

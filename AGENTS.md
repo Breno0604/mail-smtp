@@ -73,6 +73,7 @@
 - **Date in email**: Dates are reversed from YYYY-MM-DD to DD-MM-YYYY in `composeEmail()` (line 27).
 - **Coordinates are manual by default**: the field is editable and starts empty on a new form; stored values are kept when opening a record. The ↻ button requests the current location, asks for confirmation only when replacing an existing value, and never overwrites the field on failure (a toast is shown).
 - **Coordinates format**: exactly `-3.12345678,-38.41567890` (negative latitude with 1 digit, negative longitude with 2, dot decimals up to 8, single comma, no spaces). Everything is typed by the user — there is no mask or auto-insertion of `-`/`.`; the format error appears only on blur or on send. Rule lives in `COORDINATES_PATTERN` (`scripts/utils.js`) + `validateCoordinates()` (`scripts/validation.js`) + the server mirror `netlify/functions/validate-coordinates.cjs`.
+- **Time fields use an in-app modal**: `hora_inicio`/`hora_fim` are read-only text inputs — clicking or pressing Enter on them opens `openTimePicker()` (`scripts/timepicker.js`), so the native time picker never appears. Empty fields start at the device's current time (rounded to 5 minutes); filled fields load their own value; the field is only updated on "Salvar" (Cancel/Esc/backdrop resolve `null` and keep the previous value).
 
 ## graphify
 

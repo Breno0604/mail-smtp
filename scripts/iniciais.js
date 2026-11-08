@@ -4,6 +4,7 @@ import { addBlurValidation, validateCoordinates } from './validation.js';
 import { showConfirm, showToast, clearFieldError, setFieldError } from './ui.js';
 import { iniciaisFields } from './fields.js';
 import { captureCoordinates } from './utils.js';
+import { openTimePicker } from './timepicker.js';
 import { INPUT_CLASS, SELECT_CLASS } from './styles.js';
 
 const linhaConfig = {
@@ -46,11 +47,32 @@ function createDateInput() {
   return input;
 }
 
-function createTimeInput() {
+// O seletor nativo nunca abre: o horário é escolhido no modal da aplicação.
+function createTimeInput(field) {
   const input = document.createElement('input');
-  input.type = 'time';
-  input.step = '300';
-  input.className = INPUT_CLASS;
+  input.type = 'text';
+  input.readOnly = true;
+  input.className = INPUT_CLASS + ' time-input';
+
+  const openPicker = () => {
+    openTimePicker({ title: field.label, value: input.value }).then(selected => {
+      if (selected === null) {
+        input.focus();
+        return;
+      }
+      input.value = selected;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+  };
+
+  input.addEventListener('click', openPicker);
+  input.addEventListener('keydown', event => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    openPicker();
+  });
+
   return input;
 }
 
