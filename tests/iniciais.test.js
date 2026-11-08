@@ -179,44 +179,7 @@ describe('iniciais', () => {
     });
   });
 
-  describe('coordenadas — preenchimento automático do sinal', () => {
-    it('deve inserir os sinais negativos ao digitar sem eles', () => {
-      renderIniciais();
-      const input = document.getElementById('coordenadas');
-
-      input.value = '3.1245,38.4156';
-      input.dispatchEvent(new Event('input'));
-
-      expect(input.value).toBe('-3.1245,-38.4156');
-    });
-
-    it('não altera um valor já válido', () => {
-      renderIniciais();
-      const input = document.getElementById('coordenadas');
-      input.value = '-3.1245,-38.4156';
-
-      input.dispatchEvent(new Event('input'));
-
-      expect(input.value).toBe('-3.1245,-38.4156');
-    });
-
-    it('remove o destaque de erro assim que o valor fica válido', () => {
-      renderIniciais();
-      const input = document.getElementById('coordenadas');
-      const errorSpan = document.querySelector('.coord-wrapper .field-error');
-      input.classList.add('error');
-      errorSpan.textContent = 'Formato inválido';
-      errorSpan.classList.add('show');
-
-      input.value = '-3.1245,-38.4156';
-      input.dispatchEvent(new Event('input'));
-
-      expect(input.classList.contains('error')).toBe(false);
-      expect(errorSpan.classList.contains('show')).toBe(false);
-    });
-  });
-
-  describe('coordenadas — ponto decimal automático', () => {
+  describe('coordenadas — sem preenchimento automático', () => {
     const coordInput = () => document.getElementById('coordenadas');
 
     const digitar = valor => {
@@ -225,74 +188,66 @@ describe('iniciais', () => {
       input.dispatchEvent(new Event('input'));
     };
 
-    it('insere o ponto da latitude logo após o primeiro algarismo', () => {
+    it('não insere o sinal negativo nem o ponto decimal ao digitar', () => {
       renderIniciais();
-      digitar('-3');
-      expect(coordInput().value).toBe('-3.');
-    });
 
-    it('insere o ponto da longitude logo após os dois algarismos', () => {
-      renderIniciais();
-      digitar('-3.1234,-38');
-      expect(coordInput().value).toBe('-3.1234,-38.');
-    });
-
-    it('insere o sinal e o ponto quando o teclado não tem a tecla "-"', () => {
-      renderIniciais();
       digitar('3');
+      expect(coordInput().value).toBe('3');
+
+      digitar('-3');
+      expect(coordInput().value).toBe('-3');
+
+      digitar('-3.');
       expect(coordInput().value).toBe('-3.');
+
+      digitar('3.1245,38.4156');
+      expect(coordInput().value).toBe('3.1245,38.4156');
     });
 
-    it('não duplica o ponto em valores já formatados', () => {
+    it('não completa a longitude ao digitar os algarismos', () => {
       renderIniciais();
-      digitar('-3.12345678,-38.41567890');
-      expect(coordInput().value).toBe('-3.12345678,-38.41567890');
+
+      digitar('-3.1245,-38');
+      expect(coordInput().value).toBe('-3.1245,-38');
     });
 
-    it('permite continuar digitando depois do ponto', () => {
-      renderIniciais();
-      digitar('-3.');
-      digitar('-3.1');
-      digitar('-3.12');
-      expect(coordInput().value).toBe('-3.12');
-    });
-
-    it('não atrapalha a exclusão: o ponto não volta ao apagar', () => {
-      renderIniciais();
-      digitar('-3.');
-      const input = coordInput();
-      input.value = '-3';
-      const ev = new Event('input');
-      Object.defineProperty(ev, 'inputType', { value: 'deleteContentBackward' });
-      input.dispatchEvent(ev);
-      expect(input.value).toBe('-3');
-    });
-
-    it('preserva a posição do cursor ao inserir o ponto', () => {
+    it('não reposiciona o cursor', () => {
       renderIniciais();
       const input = coordInput();
-      input.focus();
       input.value = '-3';
-      input.setSelectionRange(2, 2);
+      input.setSelectionRange(1, 1);
       input.dispatchEvent(new Event('input'));
-      expect(input.value).toBe('-3.');
-      expect(input.selectionStart).toBe(3);
+
+      expect(input.value).toBe('-3');
+      expect(input.selectionStart).toBe(1);
     });
 
-    it('não interfere no preenchimento pelo botão de localização', async () => {
+    it('preserva a edição e a exclusão exatamente como digitadas', () => {
+      renderIniciais();
+
+      digitar('-3.1245,-38.4156');
+      digitar('-3.1245,-38.41');
+      expect(coordInput().value).toBe('-3.1245,-38.41');
+
+      digitar('-3.1245,-38.');
+      expect(coordInput().value).toBe('-3.1245,-38.');
+
+      digitar('-3.1245,');
+      expect(coordInput().value).toBe('-3.1245,');
+    });
+
+    it('remove o destaque de erro assim que o usuário digita', () => {
       renderIniciais();
       const input = coordInput();
-      Object.defineProperty(navigator, 'geolocation', {
-        configurable: true,
-        value: {
-          getCurrentPosition: success => success({ coords: { latitude: -3.1, longitude: -38.4 } }),
-        },
-      });
+      const errorSpan = document.querySelector('.coord-wrapper .field-error');
+      input.classList.add('error');
+      errorSpan.textContent = 'Formato inválido';
+      errorSpan.classList.add('show');
 
-      document.querySelector('.coord-refresh').click();
-      await vi.waitFor(() => expect(input.value).toBe('-3.1000,-38.4000'));
+      digitar('-3.1245,-38.4156');
 
-      delete navigator.geolocation;
+      expect(input.classList.contains('error')).toBe(false);
+      expect(errorSpan.classList.contains('show')).toBe(false);
     });
   });
 

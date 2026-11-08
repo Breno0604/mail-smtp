@@ -39,51 +39,6 @@ export function isValidCoordinates(value) {
   return coords !== null && isCoordinatesInRange(coords);
 }
 
-/**
- * Insere o sinal negativo obrigatório quando o valor começa com algarismo
- * (o teclado numérico do celular não oferece a tecla "-").
- * Não altera valores que já começam com "-" nem entradas inválidas.
- */
-export function normalizeCoordinateSigns(value) {
-  if (!value) return value;
-
-  const commaIndex = value.indexOf(',');
-  const addSign = part => (/^\d/.test(part) ? `-${part}` : part);
-
-  if (commaIndex === -1) return addSign(value);
-
-  return `${addSign(value.slice(0, commaIndex))},${addSign(value.slice(commaIndex + 1))}`;
-}
-
-/**
- * Insere o ponto decimal do formato -3.12345678,-38.41567890 enquanto o usuário
- * digita: latitude depois do 1º algarismo e longitude depois do 2º.
- * Só age quando a seção tem exatamente esses algarismos e ainda não tem ponto,
- * então não repete a inserção nem mexe em valor já formatado.
- * @returns {{value: string, caret: number}} valor com o ponto e o cursor ajustado
- */
-export function insertDecimalPoint(value, caret = value.length) {
-  if (!value) return { value, caret };
-
-  const comma = value.indexOf(',');
-  const latitude = comma === -1 ? value : value.slice(0, comma);
-  const longitude = comma === -1 ? null : value.slice(comma + 1);
-
-  let index = -1;
-  if (/^-\d$/.test(latitude)) {
-    index = latitude.length;
-  } else if (longitude !== null && /^-\d{2}$/.test(longitude)) {
-    index = comma + 1 + longitude.length;
-  }
-
-  if (index === -1) return { value, caret };
-
-  return {
-    value: `${value.slice(0, index)}.${value.slice(index)}`,
-    caret: caret >= index ? caret + 1 : caret,
-  };
-}
-
 export function toBase64(blob) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
