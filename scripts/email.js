@@ -6,15 +6,14 @@ import { formatDate } from './utils.js';
 import { retornoTemplates } from './data/retorno-templates.js';
 
 /**
- * Normaliza texto: remove acentos, substitui ç→c, converte para MAIÚSCULAS
+ * Normaliza texto: remove acentos (inclui a cedilha, que o NFD separa em c + U+0327)
+ * e converte para MAIÚSCULAS.
  */
 function normalizeText(str) {
   if (typeof str !== 'string' || !str) return str;
   return str
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
-    .replace(/ç/g, 'c')
-    .replace(/Ç/g, 'C')
     .toUpperCase();
 }
 

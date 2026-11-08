@@ -63,7 +63,7 @@ async function saveStateNow() {
   }
 
   // 2. Resolve createdAt (reuses existing)
-  const createdAt = await resolveCreatedAt(state.currentUUID, existing);
+  const createdAt = resolveCreatedAt(existing);
 
   // 3. Síntese de outra aba: o registro mudou desde o último save desta aba?
   const changedElsewhere = Boolean(
@@ -210,20 +210,16 @@ export function cancelDebouncedSave() {
 }
 
 /**
- * Resolve createdAt timestamp
- * @param {string} uuid - Record UUID
- * @returns {Promise<string>} ISO timestamp
+ * Resolve createdAt timestamp, reutilizando o do registro existente.
+ * @param {object|null} existing - Registro já carregado do IndexedDB
+ * @returns {string} ISO timestamp
  */
-async function resolveCreatedAt(uuid, existing) {
+function resolveCreatedAt(existing) {
   if (state._createdAt) return state._createdAt;
 
-  try {
-    if (existing?.createdAt) {
-      state._createdAt = existing.createdAt;
-      return state._createdAt;
-    }
-  } catch (err) {
-    console.error('getRecord in saveState:', err);
+  if (existing?.createdAt) {
+    state._createdAt = existing.createdAt;
+    return state._createdAt;
   }
 
   state._createdAt = new Date().toISOString();

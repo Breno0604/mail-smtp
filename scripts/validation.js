@@ -4,6 +4,12 @@ import { showError, hideError, setFieldError, clearFieldError, showAnexosModal }
 import { collectRetorno } from './collectors.js';
 import { iniciaisFields as fieldsIniciais } from './fields.js';
 import { parseCoordinates, isCoordinatesInRange } from './utils.js';
+import {
+  ATTACHMENTS_MIN,
+  ATTACHMENTS_MAX,
+  MAX_FILE_SIZE_MB,
+  MAX_FILE_SIZE_BYTES,
+} from './limits.js';
 
 // ── helpers locais ────────────────────────────────────────────────────────────
 
@@ -279,13 +285,15 @@ function validateSection3() {
 }
 
 function validateSection4() {
-  if (state.attachments.length < 2 || state.attachments.length > 12) {
+  if (state.attachments.length < ATTACHMENTS_MIN || state.attachments.length > ATTACHMENTS_MAX) {
     showAnexosModal();
     return false;
   }
-  const oversized = state.attachments.filter(f => f.size > 8 * 1024 * 1024);
+  const oversized = state.attachments.filter(f => f.size > MAX_FILE_SIZE_BYTES);
   if (oversized.length > 0) {
-    showError('Anexo(s) excedem 8 MB: ' + oversized.map(f => f.name).join(', ') + '.');
+    showError(
+      `Anexo(s) excedem ${MAX_FILE_SIZE_MB} MB: ` + oversized.map(f => f.name).join(', ') + '.'
+    );
     return false;
   }
   return true;

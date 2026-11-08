@@ -2,6 +2,7 @@ import { DOM } from './dom.js';
 import { state } from './state.js';
 import { saveState } from './persistence.js';
 import { showError } from './ui.js';
+import { ATTACHMENTS_MAX } from './limits.js';
 
 // Array para rastrear Object URLs criadas para previews
 let previewObjectUrls = [];
@@ -26,13 +27,15 @@ export function handleFileChange(e) {
     showError(`${rejectedCount} arquivo(s) ignorado(s) — apenas imagens s\u00E3o permitidas.`);
   }
 
-  const remaining = 12 - state.attachments.length;
+  const remaining = ATTACHMENTS_MAX - state.attachments.length;
   const toAdd = imageFiles.slice(0, remaining);
 
   toAdd.forEach(file => state.attachments.push(file));
 
   if (imageFiles.length > remaining) {
-    showError(`M\u00E1ximo de 12 anexos. ${imageFiles.length - remaining} ignorado(s).`);
+    showError(
+      `M\u00E1ximo de ${ATTACHMENTS_MAX} anexos. ${imageFiles.length - remaining} ignorado(s).`
+    );
   }
 
   renderPreviews();
@@ -91,7 +94,7 @@ export function renderPreviews() {
 }
 
 export function updateFileCount() {
-  DOM.fileCount.textContent = `${state.attachments.length} / 12`;
+  DOM.fileCount.textContent = `${state.attachments.length} / ${ATTACHMENTS_MAX}`;
 }
 
 export function closeLightbox() {

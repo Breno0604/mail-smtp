@@ -19,7 +19,6 @@ export function resetForm() {
   state.iniciais = {};
   state.retorno = {};
   state.lastTipoOrdem = '';
-  state.currentUUID = '';
   state._createdAt = null;
   state.iniciaisValido = false;
 

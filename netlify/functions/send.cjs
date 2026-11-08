@@ -35,7 +35,7 @@ exports.handler = async event => {
     const { subject, text, attachments } = body;
 
     if (!subject) {
-      return { statusCode: 400, body: JSON.stringify({ error: "Campo 'assunto' é obrigatório." }) };
+      return { statusCode: 400, body: JSON.stringify({ error: "Campo 'subject' é obrigatório." }) };
     }
 
     if (!text || typeof text !== 'string') {
@@ -126,7 +126,7 @@ exports.handler = async event => {
 
     await transporter.sendMail(mailOptions);
 
-    // ── Seguran\u00e7a: log de auditoria ─────────────────────────────
+    // ── Segurança: log de auditoria ─────────────────────────────
     const auditLog = {
       audit: true,
       to: toList,

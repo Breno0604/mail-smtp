@@ -146,7 +146,7 @@ describe('sendEmail', () => {
 
     expect(result).toBe(false);
     expect(fetch).not.toHaveBeenCalled();
-    expect(showSendModalMock).not.toHaveBeenCalledWith('Email enviado com sucesso!', true);
+    expect(showSendModalMock).not.toHaveBeenCalledWith('Email enviado com sucesso!');
   });
 
   it('should call fetch with correct URL and method', async () => {
@@ -333,7 +333,7 @@ describe('sendEmail', () => {
 
     const result = await sendEmail();
     expect(result).toBe(false);
-    expect(showSendModalMock).toHaveBeenCalledWith('SMTP error', false);
+    expect(showSendModalMock).toHaveBeenCalledWith('SMTP error');
   });
 
   // ── CENÁRIO 5: Erro de rede ───────────────────────────────────────────
@@ -344,8 +344,7 @@ describe('sendEmail', () => {
     const result = await sendEmail();
     expect(result).toBe(false);
     expect(showSendModalMock).toHaveBeenCalledWith(
-      'Erro de conexão com o servidor. Tente novamente.',
-      false
+      'Erro de conexão com o servidor. Tente novamente.'
     );
   });
 

@@ -58,10 +58,7 @@ export async function sendEmail() {
         lastFetchError = fetchErr;
         console.error(`[send] Fetch error (attempt ${attempt}):`, fetchErr.message);
         if (!navigator.onLine) {
-          showSendModal(
-            'Sem internet \u2014 dados salvos. Conecte-se e clique Enviar novamente.',
-            false
-          );
+          showSendModal('Sem internet \u2014 dados salvos. Conecte-se e clique Enviar novamente.');
           return false;
         }
         if (attempt < 2) {
@@ -72,8 +69,6 @@ export async function sendEmail() {
       }
 
       const ct = res.headers?.get?.('content-type') || '';
-      console.log(`[send] attempt ${attempt}: status=${res.status} ct=${ct}`);
-
       if (!ct.includes('application/json')) {
         const snippet = (await res.text().catch(() => '')).slice(0, 200);
         console.error(`[send] Non-JSON response (attempt ${attempt}):`, snippet);
@@ -82,17 +77,15 @@ export async function sendEmail() {
           continue;
         }
         showSendModal(
-          'Erro de conex\u00e3o com o servidor. Verifique sua internet e tente novamente.',
-          false
+          'Erro de conex\u00e3o com o servidor. Verifique sua internet e tente novamente.'
         );
         return false;
       }
 
       const data = await res.json();
-      console.log(`[send] response:`, { ok: res.ok, success: data.success, error: data.error });
 
       if (res.ok && data.success) {
-        showSendModal('Email enviado com sucesso!', true);
+        showSendModal('Email enviado com sucesso!');
         if (state.currentUUID) {
           updateRecordStatus(
             state.currentUUID,
@@ -105,23 +98,20 @@ export async function sendEmail() {
         return true;
       }
 
-      showSendModal(data.error || 'Erro ao enviar email.', false);
+      showSendModal(data.error || 'Erro ao enviar email.');
       return false;
     }
 
     if (lastFetchError) {
       if (!navigator.onLine) {
-        showSendModal(
-          'Sem internet \u2014 dados salvos. Conecte-se e clique Enviar novamente.',
-          false
-        );
+        showSendModal('Sem internet \u2014 dados salvos. Conecte-se e clique Enviar novamente.');
       } else {
-        showSendModal('Erro de conex\u00e3o com o servidor. Tente novamente.', false);
+        showSendModal('Erro de conex\u00e3o com o servidor. Tente novamente.');
       }
       return false;
     }
 
-    showSendModal('Erro ao enviar. Tente novamente.', false);
+    showSendModal('Erro ao enviar. Tente novamente.');
     return false;
   } finally {
     btn.disabled = false;

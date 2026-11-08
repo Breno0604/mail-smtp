@@ -1,4 +1,5 @@
 import { DOM } from './dom.js';
+import { ATTACHMENTS_MIN, ATTACHMENTS_MAX } from './limits.js';
 
 let toastTimer = null;
 
@@ -107,7 +108,7 @@ export function showConfirm(message) {
 }
 
 export function showAnexosModal() {
-  DOM.anexosModalText.textContent = 'O formulário deve conter no mínimo 2 e no máximo 12 anexos.';
+  DOM.anexosModalText.textContent = `O formulário deve conter no mínimo ${ATTACHMENTS_MIN} e no máximo ${ATTACHMENTS_MAX} anexos.`;
   DOM.anexosModal.classList.remove('hidden');
 
   DOM.anexosModalClose.onclick = () => {
@@ -122,7 +123,7 @@ export function showAnexosModal() {
   };
 }
 
-export function showSendModal(msg, _success) {
+export function showSendModal(msg) {
   DOM.sendModalText.textContent = msg;
   DOM.sendModal.classList.remove('hidden');
 

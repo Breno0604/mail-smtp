@@ -250,10 +250,6 @@ body {
 .field-error.show {
   display: block;
 }
-.equip-row .field-error {
-  flex-basis: 100%;
-  order: 99;
-}
 
 /* Campos não preenchidos: azul claro + borda grossa azul (persiste em todos os estados) */
 input:not(.error):not(.is-filled),
@@ -611,7 +607,6 @@ textarea.is-filled:hover {
    botões, títulos e cabeçalhos). Textos longos como preview do email,
    placeholders e mensagens mantêm-se normais para preservar legibilidade. */
 label,
-.button-label,
 input,
 select,
 textarea,
@@ -697,11 +692,6 @@ h3 {
     border-width: 3px !important;
     border-color: #64748b !important;
     background: #f8fafc !important;
-  }
-
-  .equip-row {
-    border-width: 2px !important;
-    border-color: #94a3b8 !important;
   }
 
   .email-preview {

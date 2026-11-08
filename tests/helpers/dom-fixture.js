@@ -99,7 +99,6 @@ export function createTestDOM(opts = {}) {
         <div class="sec-head"><span class="sec-num">5</span> Revisão</div>
         <div class="sec-body">
           <div id="preview-corpo">—</div>
-          <textarea id="complemento-corpo"></textarea>
         </div>
       </section>
 
@@ -148,20 +147,6 @@ export function createTestDOM(opts = {}) {
       </div>
     </div>
   `;
-
-  // Compatibilidade: alguns testes referenciam #modal-tipo (modal antigo que não existe mais no HTML real).
-  // Criar aliases para elementos existentes.
-  if (!document.getElementById('modal-tipo')) {
-    const oldModal = document.createElement('div');
-    oldModal.className = 'modal-overlay hidden';
-    oldModal.id = 'modal-tipo';
-    oldModal.innerHTML = `
-      <p id="modal-tipo-text"></p>
-      <button id="modal-cancel">Cancelar</button>
-      <button id="modal-confirm">Alterar mesmo assim</button>
-    `;
-    document.body.appendChild(oldModal);
-  }
 
   // Re-executar cacheDOM para que o Proxy aponte para os novos elementos
   cacheDOM();

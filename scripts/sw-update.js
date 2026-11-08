@@ -1,6 +1,6 @@
-import { DOM } from '/scripts/dom.js';
+import { DOM } from './dom.js';
 
-export function initSW() {
+function initSW() {
   if (!('serviceWorker' in navigator)) return;
 
   const hadController = !!navigator.serviceWorker.controller;
