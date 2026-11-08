@@ -251,6 +251,19 @@ describe('iniciais', () => {
     });
   });
 
+  describe('coordenadas — layout do botão de captura', () => {
+    it('fica na linha do rótulo, à direita e acima do campo', () => {
+      renderIniciais();
+      const btn = document.querySelector('.coord-refresh');
+      const label = document.querySelector('label[for="coordenadas"]');
+      const input = document.getElementById('coordenadas');
+
+      expect(btn.parentElement).toBe(label.parentElement);
+      expect(btn.parentElement.nextElementSibling.contains(input)).toBe(true);
+      expect(btn.closest('.coord-wrapper')).toBeNull();
+    });
+  });
+
   describe('coordenadas — aviso ao sair do campo', () => {
     const coordInput = () => document.getElementById('coordenadas');
     const coordError = () => document.querySelector('.coord-wrapper .field-error');

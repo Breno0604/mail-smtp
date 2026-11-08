@@ -81,7 +81,7 @@ function createCoordinatesGroup(field, label) {
   // Teclado numérico no celular; '-' e '.' são digitados pelo usuário.
   input.inputMode = 'decimal';
   input.autocomplete = 'off';
-  input.className = INPUT_CLASS + ' coord-input';
+  input.className = INPUT_CLASS;
   input.placeholder = '-3.1245,-38.4156';
   if (field.obrigatorio) input.setAttribute('data-required', '');
 
@@ -140,12 +140,18 @@ function createCoordinatesGroup(field, label) {
     acusarSeInvalido();
   });
 
+  // Rótulo e botão dividem a mesma linha, acima do campo.
+  label.classList.remove('block', 'mb-1');
+  const header = document.createElement('div');
+  header.className = 'flex items-center justify-between gap-2 mb-1';
+  header.appendChild(label);
+  header.appendChild(refreshBtn);
+
   coordWrapper.appendChild(input);
-  coordWrapper.appendChild(refreshBtn);
   coordWrapper.appendChild(coordError);
 
   const group = document.createElement('div');
-  group.appendChild(label);
+  group.appendChild(header);
   group.appendChild(coordWrapper);
   return group;
 }
