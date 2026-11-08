@@ -10,13 +10,15 @@ description: Use quando o usuário solicitar adicionar, modificar, ou criar camp
 Use esta skill quando:
 
 - O usuário solicitar adição de novos campos de retorno a um Tipo de Ordem
-- O usuário mencionar a planilha `dados_projeto/tipos_ordem_template.xlsx` (aba `corte`)
+- O usuário mencionar a planilha `dados_projeto/tipos_ordem_template.xlsx` (aba `campos_retorno`)
 - A tarefa envolver modificar o arquivo `scripts/data/fields-data.js` para adicionar campos
 - O usuário falar sobre "campos de retorno", "novos campos", "Tipo de Ordem"
 
 ## Fonte de verdade
 
-A planilha `dados_projeto/tipos_ordem_template.xlsx`, aba `corte`, é a **única fonte de verdade** para definir campos de retorno.
+**O código é a fonte de verdade:** `scripts/data/fields-data.js` (`retornoFieldsByTipo`) e `scripts/data/retorno-templates.js` (`retornoTemplates`).
+
+A planilha `dados_projeto/tipos_ordem_template.xlsx` (aba `campos_retorno`) é um **recorte histórico e parcial**: tem apenas 8 linhas, cobre basicamente TELEMEDIÇÃO e CORTE DE UC POR DEF TECNICO e ainda lista campos que já foram removidos do código. Use-a como referência de negócio, mas **confira sempre o código**; se a planilha divergir, sinalize ao usuário antes de implementar.
 
 **Colunas da planilha**:
 
@@ -179,60 +181,68 @@ retornoFieldsByTipo (fields-data.js)  →  retornoTemplates (retorno-templates.j
 
 ## Panorama completo dos Tipos de Ordem
 
-Todos os 43 tipos de ordem definidos em `iniciaisFields` (dropdown `tipo-ordem`) e seu status de implementação em `retornoFieldsByTipo`:
+Estado atual (conferir com o código antes de usar):
 
-### Tipos com campos de retorno implementados (12)
+- **40 tipos** no dropdown `tipo-ordem` (`tipoOrdemOptions` em `fields-data.js`)
+- **43 chaves** em `retornoFieldsByTipo`: as 40 + 3 **históricas** (`DESLOCAMENTO DE SUBESTAÇÃO`, `LIGAÇÃO NOVA ISOLADA`, `LIGAÇÃO NOVA SIMULTÂNEA`), mantidas para abrir registros antigos
+- **11 tipos** com campos próprios; **32** usam apenas `FIELD_DESCRICAO`
+- **43 templates** em `retornoTemplates` (32 são o template mínimo de descrição)
+- **Nenhum** campo usa `condicional.negado` hoje
+
+### Tipos com campos de retorno próprios (11)
 
 | #   | Tipo de Ordem                        | Constante                | Campos | Condicionais |
 | --- | ------------------------------------ | ------------------------ | ------ | ------------ |
-| 1   | INSPECAO UC CORTADA I15              | `UC_CORTADA_FIELDS`      | 8      | sim          |
-| 2   | INSPECAO UC CORTADA I30              | `UC_CORTADA_FIELDS`      | 8      | sim          |
-| 3   | INSPECAO UC CORTADA I90              | `UC_CORTADA_FIELDS`      | 8      | sim          |
-| 4   | INSPECAO UC CORTADA I180             | `UC_CORTADA_FIELDS`      | 8      | sim          |
+| 1   | INSPECAO UC CORTADA I15              | `UC_CORTADA_FIELDS`      | 9      | sim          |
+| 2   | INSPECAO UC CORTADA I30              | `UC_CORTADA_FIELDS`      | 9      | sim          |
+| 3   | INSPECAO UC CORTADA I90              | `UC_CORTADA_FIELDS`      | 9      | sim          |
+| 4   | INSPECAO UC CORTADA I180             | `UC_CORTADA_FIELDS`      | 9      | sim          |
 | 5   | CORTE POR FALTA DE PAGAMENTO         | inline                   | 2      | não          |
-| 6   | DESLIG.PROG.MANUTENÇÃO               | inline                   | 3      | negado       |
-| 7   | LIGACAO NOVA MEDIA TENSAO            | `LIGACAO_NOVA_MT_FIELDS` | 11     | sim          |
-| 8   | LIGACAO NOVA MT - CLIENTE LIVRE      | `LIGACAO_NOVA_MT_FIELDS` | 11     | sim          |
+| 6   | DESLIG.PROG.MANUTENÇÃO               | inline                   | 2      | não          |
+| 7   | LIGACAO NOVA MEDIA TENSAO            | `LIGACAO_NOVA_MT_FIELDS` | 12     | sim          |
+| 8   | LIGACAO NOVA MT - CLIENTE LIVRE      | `LIGACAO_NOVA_MT_FIELDS` | 12     | sim          |
 | 9   | TELEMEDIÇÃO MANUTENÇÃO               | `TELEMEDICAO_FIELDS`     | 6      | sim          |
 | 10  | TELEMEDIÇÃO MANUTENÇÃO CLIENTE LIVRE | `TELEMEDICAO_FIELDS`     | 6      | sim          |
 | 11  | TELEMEDIÇÃO MANUTENÇÃO LOTE          | `TELEMEDICAO_FIELDS`     | 6      | sim          |
-| 12  | CORTE DE UC POR DEF TECNICO          | inline                   | 4      | sim          |
 
-### Tipos usando `FIELD_DESCRICAO` (31)
+### Tipos usando `FIELD_DESCRICAO` (32)
 
-| #   | Tipo de Ordem                      | Nota                               |
-| --- | ---------------------------------- | ---------------------------------- |
-| 1   | ADEQUACAO SMF                      |                                    |
-| 2   | AFERIÇÃO DE MEDIDOR                |                                    |
-| 3   | AFERIÇÃO MEDIDOR CLIENTE LIVRE     |                                    |
-| 4   | COLHER LEITURA                     |                                    |
-| 5   | CORTE DEFINITIVO A PEDIDO          |                                    |
-| 6   | DESLOCAMENTO DE SUBESTAÇÃO         |                                    |
-| 7   | DISPON. SAIDA SERIAL MEDIDOR       |                                    |
-| 8   | EXECUÇÃO DE MUDANÇA DE TARIFA      |                                    |
-| 9   | EXECUCAO DO ACRESCIMO DE POTENCIA  |                                    |
-| 10  | EXECUCAO DO DECRESCIMO DE POTENCIA |                                    |
-| 11  | GRANDES CLIENTES SEM MEDIÇÃO       |                                    |
-| 12  | GRANDES CLIENTES SELO ROMPIDO      | simplificado para descrição apenas |
-| 13  | INSTALACAO DO DISPLAY              | simplificado para descrição apenas |
-| 14  | LIBERAÇÃO DE PULSO                 |                                    |
-| 15  | LIGAÇÃO NOVA ISOLADA               |                                    |
-| 16  | LIGAÇÃO NOVA SIMULTÂNEA            |                                    |
-| 17  | RELIGACAO NORMAL RURAL             |                                    |
-| 18  | RELIGAÇÃO NORMAL URBANA            |                                    |
-| 19  | RESELAR MEDICAO                    |                                    |
-| 20  | RESSERVICO                         |                                    |
-| 21  | RETIRAR EQUIPAMENTOS               |                                    |
-| 22  | RETIRAR RAMAL                      |                                    |
-| 23  | SERVIÇO ESPECIAL OPERAÇÃO GRUPO A  |                                    |
-| 24  | SUBST. DE EQUIPAMENTO DE MEDICAO   |                                    |
-| 25  | SUBST. MEDIDOR A PEDIDO            |                                    |
-| 26  | SUBST. MEDIDOR INICIATIVA COELCE   |                                    |
-| 27  | SUBSTITUIÇÃO DA BATERIA DO MEDIDOR |                                    |
-| 28  | SUBSTITUIÇÃO DE DISPLAY            | simplificado para descrição apenas |
-| 29  | VISITA TECNICA GRUPO A             |                                    |
-| 30  | VISTORIA DA UC                     |                                    |
-| 31  | VISTORIA GERAÇÃO DISTRIBUIDA       |                                    |
+| #   | Tipo de Ordem                      |
+| --- | ---------------------------------- |
+| 1   | ADEQUACAO SMF                      |
+| 2   | AFERIÇÃO DE MEDIDOR                |
+| 3   | AFERIÇÃO MEDIDOR CLIENTE LIVRE     |
+| 4   | COLHER LEITURA                     |
+| 5   | CORTE DE UC POR DEF TECNICO        |
+| 6   | CORTE DEFINITIVO A PEDIDO          |
+| 7   | DISPON. SAIDA SERIAL MEDIDOR       |
+| 8   | EXECUÇÃO DE MUDANÇA DE TARIFA      |
+| 9   | EXECUCAO DO ACRESCIMO DE POTENCIA  |
+| 10  | EXECUCAO DO DECRESCIMO DE POTENCIA |
+| 11  | GRANDES CLIENTES SEM MEDIÇÃO       |
+| 12  | GRANDES CLIENTES SELO ROMPIDO      |
+| 13  | INSTALACAO DO DISPLAY              |
+| 14  | LIBERAÇÃO DE PULSO                 |
+| 15  | RELIGACAO NORMAL RURAL             |
+| 16  | RELIGAÇÃO NORMAL URBANA            |
+| 17  | RESELAR MEDICAO                    |
+| 18  | RESSERVICO                         |
+| 19  | RETIRAR EQUIPAMENTOS               |
+| 20  | RETIRAR RAMAL                      |
+| 21  | SERVIÇO ESPECIAL OPERAÇÃO GRUPO A  |
+| 22  | SUBST. DE EQUIPAMENTO DE MEDICAO   |
+| 23  | SUBST. MEDIDOR A PEDIDO            |
+| 24  | SUBST. MEDIDOR INICIATIVA COELCE   |
+| 25  | SUBSTITUIÇÃO DA BATERIA DO MEDIDOR |
+| 26  | SUBSTITUIÇÃO DE DISPLAY            |
+| 27  | VISITA TECNICA GRUPO A             |
+| 28  | VISTORIA DA UC                     |
+| 29  | VISTORIA GERAÇÃO DISTRIBUIDA       |
+| 30  | DESLOCAMENTO DE SUBESTAÇÃO         |
+| 31  | LIGAÇÃO NOVA ISOLADA               |
+| 32  | LIGAÇÃO NOVA SIMULTÂNEA            |
+
+Os itens 30–32 são **históricos** (fora do dropdown): existem para abrir registros antigos e não devem ser removidos.
 
 ## Pontos de Atenção
 
@@ -258,7 +268,7 @@ medidor_afericao → leitura_afericao → motivo_nao_colher
 
 - Use `negado: true` quando o campo deve aparecer para **todos exceto** um valor específico
 - Use `valor: ["VAL1", "VAL2"]` (array) para múltiplos valores que ativam o campo
-- Exemplo real: `DESLIG.PROG.MANUTENÇÃO` → campo `acesso_desligamento` aparece quando `desligamento` é qualquer valor exceto `"DESLIGAMENTO EXECUTADO"` — usa `negado: true` em vez de listar 4 valores
+- O suporte a `negado` continua em `retornos.js`, mas **nenhum campo atual usa**: o antigo exemplo (`acesso_desligamento` em `DESLIG.PROG.MANUTENÇÃO`) foi removido. Só introduza `negado` se a regra de negócio pedir.
 
 ### Atenção 4: Consistência de nomenclatura de field names
 

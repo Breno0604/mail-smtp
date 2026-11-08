@@ -223,9 +223,8 @@ A primeira variante que der match é usada. Variante sem `condicao` no final = "
 | Constante                         | Busca por                                   | Usada por                                   |
 | --------------------------------- | ------------------------------------------- | ------------------------------------------- |
 | `UC_CORTADA_TEMPLATE`             | `const UC_CORTADA_TEMPLATE = [`             | INSPECAO UC CORTADA I15, I30, I90, I180     |
-| `DESCRICAO_TEMPLATE`              | `const DESCRICAO_TEMPLATE = [`              | ~31 tipos (fallback padrão)                 |
+| `DESCRICAO_TEMPLATE`              | `const DESCRICAO_TEMPLATE = [`              | 32 tipos (fallback padrão)                  |
 | `TELEMEDICAO_TEMPLATE`            | `const TELEMEDICAO_TEMPLATE = [`            | TELEMEDIÇÃO MANUTENÇÃO, CLIENTE LIVRE, LOTE |
-| `CORTE_DEF_TECNICO_TEMPLATE`      | `const CORTE_DEF_TECNICO_TEMPLATE = [`      | CORTE DE UC POR DEF TECNICO                 |
 | `DESLIG_PROG_MANUTENCAO_TEMPLATE` | `const DESLIG_PROG_MANUTENCAO_TEMPLATE = [` | DESLIG.PROG.MANUTENÇÃO                      |
 | `LIGACAO_NOVA_MT_TEMPLATE`        | `const LIGACAO_NOVA_MT_TEMPLATE = [`        | LIGACAO NOVA MEDIA TENSAO, MT CLIENTE LIVRE |
 
@@ -237,7 +236,7 @@ Editar uma constante compartilhada afeta todos os tipos que a referenciam.
 - **Nenhuma variante bate**: `applyRetornoTemplate()` retorna `null` → fallback manual em `composeEmail()`
 - **Template substitui totalmente o fallback**: se existe e variante bate, `getRetornoFields()` NÃO é chamado
 - **Blocos condicionais**: mesma lógica de `matchCondition()` — omitidos se condição false
-- **`DESCRICAO_TEMPLATE`**: template mínimo com só `{descricao}` — referenciado por ~31 tipos
+- **`DESCRICAO_TEMPLATE`**: template mínimo com só `{descricao}` — referenciado por 32 tipos
 
 ---
 

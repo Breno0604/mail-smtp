@@ -75,7 +75,7 @@ Labels são os nomes visíveis dos campos do formulário. Dependendo da seção,
 **Arquivo:** `scripts/data/fields-data.js` — busca por `export const FIELD_DESCRICAO = {` e `export const retornoFieldsByTipo = {`
 
 ```js
-// FIELD_DESCRICAO (usado por ~31 tipos)
+// FIELD_DESCRICAO (usado por 32 tipos)
 export const FIELD_DESCRICAO = {
   nome: 'descricao',
   label: 'Descrição do Serviço',
@@ -237,7 +237,7 @@ opcoes: ['COM RAMAL', 'SEM RAMAL'];
 **Regras:**
 
 - Strings literais — mudar o texto não quebra lógica
-- Usadas apenas para exibição via `showFieldError()`
+- Usadas apenas para exibição via `setFieldError()`
 - "Campo obrigatório" aparece em múltiplos contextos — mudar afeta todos
 
 ### Envio de email
