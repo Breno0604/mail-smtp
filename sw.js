@@ -1,4 +1,4 @@
-const CACHE_NAME = 'retorno-v211';
+const CACHE_NAME = 'retorno-v212';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -87,6 +87,24 @@ self.addEventListener('fetch', event => {
           return response;
         })
         .catch(() => caches.match('/index.html'))
+    );
+    return;
+  }
+
+  // Scripts: rede primeiro, cache só como fallback offline. Com cache-first,
+  // uma versão antiga em cache continuava rodando a validação antiga mesmo
+  // com a correção publicada.
+  if (event.request.destination === 'script' || event.request.url.includes('/scripts/')) {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          if (response && response.status === 200 && response.type === 'basic') {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+          }
+          return response;
+        })
+        .catch(() => caches.match(event.request))
     );
     return;
   }

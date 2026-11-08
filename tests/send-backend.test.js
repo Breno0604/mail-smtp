@@ -3,6 +3,11 @@
 // Covers only the paths that do NOT reach real SMTP (GET, 4xx validations),
 // confirming the module loads with the v9 installed.
 import { describe, it, beforeAll, expect } from 'vitest';
+import { createRequire } from 'node:module';
+import { isValidCoordinates } from '../scripts/utils.js';
+
+const require = createRequire(import.meta.url);
+const { findCoordinatesError } = require('../netlify/functions/validate-coordinates.cjs');
 
 beforeAll(() => {
   process.env.SMTP_FROM = 'from@example.com';
@@ -59,5 +64,38 @@ describe('netlify/functions/send.cjs (nodemailer v9)', () => {
     }));
     const res = await invoke({ subject: 's', text: 't', attachments });
     expect(res.statusCode).toBe(400);
+  });
+
+  it.skipIf(!handler)('returns 400 for malformed coordinates in the email body', async () => {
+    const res = await invoke({ subject: 's', text: 'UC: 12345\nCOORDENADAS: -3.1245, -38.4156\n' });
+    expect(res.statusCode).toBe(400);
+    expect(JSON.parse(res.body).error).toMatch(/Formato de coordenadas inválido/);
+  });
+
+  it.skipIf(!handler)('returns 400 for coordinates beyond the geographic limits', async () => {
+    const res = await invoke({ subject: 's', text: 'COORDENADAS: -91.12345678,-38.4156789' });
+    expect(res.statusCode).toBe(400);
+    expect(JSON.parse(res.body).error).toMatch(/coordenadas/i);
+  });
+
+  it.skipIf(!handler)('keeps the server rule in sync with the client rule', () => {
+    const values = [
+      '-3.12345678,-38.41567890',
+      '-3.1,-38.4',
+      '-3.1245, -38.4156',
+      '3.1245,-38.4156',
+      '-3.1245-38.4156',
+      '-3.123456789,-38.4156',
+      '-91.12345678,-38.4156789',
+      '-3.1245,-180.4156789',
+      '-3.1245,-38.4156 ',
+      '-3.1245,-38.4156,',
+      'abc',
+    ];
+
+    values.forEach(value => {
+      const serverRejects = findCoordinatesError(`COORDENADAS: ${value}`) !== null;
+      expect(serverRejects).toBe(!isValidCoordinates(value));
+    });
   });
 });

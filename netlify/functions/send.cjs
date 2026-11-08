@@ -19,6 +19,7 @@ exports.handler = async event => {
   }
 
   const nodemailer = require('nodemailer');
+  const { findCoordinatesError } = require('./validate-coordinates.cjs');
 
   try {
     // ── Segurança: limite de payload ────────────────────────────
@@ -41,6 +42,18 @@ exports.handler = async event => {
       return {
         statusCode: 400,
         body: JSON.stringify({ error: "Campo 'text' é obrigatório." }),
+      };
+    }
+
+    // ── Segurança: coordenadas no formato exigido ──────────────
+    // Barreira independente do cliente: mesmo uma versão antiga em cache
+    // não consegue enviar coordenadas inválidas.
+    const coordinatesError = findCoordinatesError(text);
+    if (coordinatesError) {
+      return {
+        statusCode: 400,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ error: coordinatesError }),
       };
     }
 

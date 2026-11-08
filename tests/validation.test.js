@@ -602,6 +602,33 @@ describe('validation', () => {
       expect(validateCoordinates()).toBe(false);
       expect(el.classList.contains('error')).toBe(true);
     });
+
+    it('should fail closed when the coordinates widget is not in the DOM', () => {
+      fillAllRequiredFields();
+      document.getElementById('coordenadas').remove();
+
+      state.iniciais = { coordenadas: '3.1245,-38.4156' };
+      expect(validateCoordinates()).toBe(false);
+
+      state.iniciais = { coordenadas: '-3.12345678,-38.41567890' };
+      expect(validateCoordinates()).toBe(true);
+
+      state.iniciais = {};
+      expect(validateCoordinates()).toBe(false);
+    });
+
+    it('should keep the coordinates explanation visible next to the first error', () => {
+      fillAllRequiredFields();
+      document.getElementById('uc').value = 'abc';
+      document.getElementById('coordenadas').value = '3.1245,-38.4156';
+
+      expect(validateAll()).toBe(false);
+
+      expect(document.querySelector('.coord-wrapper .field-error').textContent).toBe(
+        COORDINATES_MESSAGE
+      );
+      expect(document.getElementById('coordenadas').classList.contains('error')).toBe(true);
+    });
   });
 
   describe('validateSection(2) - Equipamentos', () => {

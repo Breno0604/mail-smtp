@@ -42,27 +42,24 @@ export const COORDINATES_RANGE_MESSAGE =
  */
 export function validateCoordinates() {
   const coordEl = document.getElementById('coordenadas');
-  if (!coordEl) return true;
+  // Falha fechada: sem o widget, valida o valor que será enviado em vez de
+  // liberar o envio (antes, um campo ausente do DOM pulava a regra).
+  const stored = state.iniciais?.coordenadas;
+  const value = coordEl ? coordEl.value : typeof stored === 'string' ? stored : '';
 
-  const value = coordEl.value;
-
-  if (!value || value.trim() === '') {
-    markError(coordEl, 'Campo obrigatório');
+  const fail = message => {
+    if (coordEl) markError(coordEl, message);
     return false;
-  }
+  };
+
+  if (value.trim() === '') return fail('Campo obrigatório');
 
   const coords = parseCoordinates(value);
-  if (!coords) {
-    markError(coordEl, COORDINATES_MESSAGE);
-    return false;
-  }
+  if (!coords) return fail(COORDINATES_MESSAGE);
 
-  if (!isCoordinatesInRange(coords)) {
-    markError(coordEl, COORDINATES_RANGE_MESSAGE);
-    return false;
-  }
+  if (!isCoordinatesInRange(coords)) return fail(COORDINATES_RANGE_MESSAGE);
 
-  clearError(coordEl);
+  if (coordEl) clearError(coordEl);
   return true;
 }
 
@@ -322,6 +319,9 @@ function showFirstErrorOnly() {
   const firstError = allErrors[0];
   // Clear all but the first error (so only the first field shows red)
   for (let i = 1; i < allErrors.length; i++) {
+    // A explicação do formato das coordenadas continua visível mesmo quando
+    // outro campo é o primeiro erro: é a única mensagem que ensina o formato.
+    if (allErrors[i].closest('.coord-wrapper')) continue;
     clearError(allErrors[i]);
   }
   // Focus and scroll to the first error
