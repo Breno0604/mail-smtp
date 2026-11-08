@@ -593,6 +593,18 @@ describe('validation', () => {
       );
     });
 
+    it('should use the exact short message required by the spec', () => {
+      expect(COORDINATES_MESSAGE).toBe('Formato inválido. Use -3.12345678,-38.41567890');
+
+      fillAllRequiredFields();
+      document.getElementById('coordenadas').value = '3.1245,-38.4156';
+      validateSection(1);
+
+      expect(document.querySelector('.coord-wrapper .field-error').textContent).toBe(
+        'Formato inválido. Use -3.12345678,-38.41567890'
+      );
+    });
+
     it('should expose validateCoordinates for the send-time revalidation', () => {
       fillAllRequiredFields();
       const el = document.getElementById('coordenadas');

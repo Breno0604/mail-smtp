@@ -493,7 +493,7 @@ export const TELEMEDICAO_TEMPLATE = [
 | Texto                            | Busca por                                                | Contexto                        |
 | -------------------------------- | -------------------------------------------------------- | ------------------------------- |
 | `Selecione`                      | `placeholder.textContent = 'Selecione'` em `iniciais.js` | Placeholder de todos os SELECTs |
-| `-3.1234, -38.4567`              | `'-3.1234, -38.4567'` em `iniciais.js`                   | Exemplo no input de coordenadas |
+| `-3.1245,-38.4156`               | `'-3.1245,-38.4156'` em `iniciais.js`                    | Exemplo no input de coordenadas |
 | `field.label` (auto)             | `input.placeholder = field.label` em `renderIniciais()`  | Placeholder = label do campo    |
 | `field.label` (auto)             | `input.placeholder = field.label` em `renderRetorno()`   | Placeholder = label do campo    |
 | `Buscar por UC, OS ou tipo...`   | `'Buscar por UC, OS ou tipo'`                            | Filtro do sidebar               |

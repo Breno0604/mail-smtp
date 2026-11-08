@@ -3,6 +3,7 @@ import {
   formatDate,
   base64ToBlob,
   captureCoordinates,
+  insertDecimalPoint,
   isValidCoordinates,
   isCoordinatesInRange,
   normalizeCoordinateSigns,
@@ -137,6 +138,40 @@ describe('utils', () => {
       expect(normalizeCoordinateSigns('')).toBe('');
       expect(normalizeCoordinateSigns('-')).toBe('-');
       expect(normalizeCoordinateSigns(',')).toBe(',');
+    });
+  });
+
+  describe('insertDecimalPoint', () => {
+    it('insere o ponto da latitude após o primeiro algarismo', () => {
+      expect(insertDecimalPoint('-3')).toEqual({ value: '-3.', caret: 3 });
+    });
+
+    it('insere o ponto da longitude após os dois algarismos', () => {
+      expect(insertDecimalPoint('-3.1245,-38')).toEqual({
+        value: '-3.1245,-38.',
+        caret: 12,
+      });
+    });
+
+    it('não repete o ponto em um valor já formatado', () => {
+      const value = '-3.12345678,-38.41567890';
+      expect(insertDecimalPoint(value)).toEqual({ value, caret: value.length });
+    });
+
+    it('não insere o ponto quando a latitude já tem dois algarismos', () => {
+      expect(insertDecimalPoint('-38').value).toBe('-38');
+    });
+
+    it('não insere o ponto quando a longitude tem um algarismo só', () => {
+      expect(insertDecimalPoint('-3.1245,-3').value).toBe('-3.1245,-3');
+    });
+
+    it('mantém o cursor antes do ponto quando ele está à esquerda', () => {
+      expect(insertDecimalPoint('-3', 1)).toEqual({ value: '-3.', caret: 1 });
+    });
+
+    it('não mexe em valor vazio', () => {
+      expect(insertDecimalPoint('')).toEqual({ value: '', caret: 0 });
     });
   });
 

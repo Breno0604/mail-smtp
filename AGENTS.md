@@ -72,6 +72,7 @@
 - **Select inputs** get a "Selecione" placeholder `<option>` as first child (in `iniciais.js`).
 - **Date in email**: Dates are reversed from YYYY-MM-DD to DD-MM-YYYY in `composeEmail()` (line 27).
 - **Coordinates are manual by default**: the field is editable and starts empty on a new form; stored values are kept when opening a record. The ↻ button requests the current location, asks for confirmation only when replacing an existing value, and never overwrites the field on failure (a toast is shown).
+- **Coordinates format**: exactly `-3.12345678,-38.41567890` (negative latitude with 1 digit, negative longitude with 2, dot decimals up to 8, single comma, no spaces). The decimal point is inserted while typing and the negative sign too; the format error appears only on blur or on send. Rule lives in `COORDINATES_PATTERN` (`scripts/utils.js`) + `validateCoordinates()` (`scripts/validation.js`) + the server mirror `netlify/functions/validate-coordinates.cjs`.
 
 ## graphify
 

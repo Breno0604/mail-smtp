@@ -28,8 +28,7 @@ const FIELD_VALIDATIONS = {
   },
 };
 
-export const COORDINATES_MESSAGE =
-  'Formato inválido. Use -3.12345678,-38.41567890: latitude negativa com 1 algarismo, vírgula sem espaços e longitude negativa com 2 algarismos, até 8 casas decimais.';
+export const COORDINATES_MESSAGE = 'Formato inválido. Use -3.12345678,-38.41567890';
 
 export const COORDINATES_RANGE_MESSAGE =
   'Coordenadas fora dos limites permitidos (latitude até -90 e longitude até -180, ambas negativas).';

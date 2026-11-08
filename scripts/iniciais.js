@@ -3,7 +3,7 @@ import { debouncedSave } from './persistence.js';
 import { addBlurValidation, validateCoordinates } from './validation.js';
 import { showConfirm, showToast, clearFieldError, setFieldError } from './ui.js';
 import { iniciaisFields } from './fields.js';
-import { captureCoordinates, isValidCoordinates, normalizeCoordinateSigns } from './utils.js';
+import { captureCoordinates, insertDecimalPoint, normalizeCoordinateSigns } from './utils.js';
 import { INPUT_CLASS, SELECT_CLASS } from './styles.js';
 
 const linhaConfig = {
@@ -86,12 +86,24 @@ function applyCoordinateMask(input) {
   }
 }
 
+/**
+ * Aplica o ponto decimal automático preservando a posição do cursor.
+ * Ignorado ao apagar, para não devolver o ponto que o usuário acabou de excluir.
+ */
+function applyDecimalPointMask(input, inputType) {
+  if (String(inputType).startsWith('delete')) return;
+
+  const antes = input.value;
+  const { value, caret } = insertDecimalPoint(antes, input.selectionStart ?? antes.length);
+  if (value === antes) return;
+
+  input.value = value;
+  if (document.activeElement === input) input.setSelectionRange(caret, caret);
+}
+
 // Criador especial: widget de coordenadas com preenchimento manual e botão de localização.
 // Retorna o group diretamente (já inclui o wrapper interno).
-// Pausa após a última tecla antes de acusar erro: evita destacar o campo
-// vermelho no meio de um valor que ainda está sendo digitado.
-const COORD_TYPING_CHECK_MS = 500;
-
+// O formato só é cobrado ao sair do campo ou no envio: enquanto digita, nada de erro.
 function createCoordinatesGroup(field, label) {
   const coordWrapper = document.createElement('div');
   coordWrapper.className = 'coord-wrapper';
@@ -134,11 +146,7 @@ function createCoordinatesGroup(field, label) {
   const coordError = document.createElement('span');
   coordError.className = 'field-error';
 
-  let typingTimer = null;
-
   const limparErroCoordenadas = () => {
-    clearTimeout(typingTimer);
-    typingTimer = null;
     input.classList.remove('error');
     clearFieldError(input);
   };
@@ -146,28 +154,17 @@ function createCoordinatesGroup(field, label) {
   // Regra única (formato + limites), a mesma usada na seção 1 e no envio.
   const acusarSeInvalido = () => {
     if (input.value.trim() === '') return limparErroCoordenadas();
-    if (isValidCoordinates(input.value)) return limparErroCoordenadas();
     validateCoordinates();
   };
 
-  input.addEventListener('input', () => {
+  input.addEventListener('input', e => {
     applyCoordinateMask(input);
-    clearTimeout(typingTimer);
-    typingTimer = null;
-
-    // Some com o destaque assim que o valor fica válido (ou fica vazio).
-    if (input.value.trim() === '' || isValidCoordinates(input.value)) {
-      return limparErroCoordenadas();
-    }
-
-    // Valor aparentemente inválido: só acusa se o usuário parar de digitar.
-    typingTimer = setTimeout(acusarSeInvalido, COORD_TYPING_CHECK_MS);
+    applyDecimalPointMask(input, e.inputType);
+    // O aviso de formato só aparece ao sair do campo (ou no envio).
+    limparErroCoordenadas();
   });
 
   input.addEventListener('blur', () => {
-    clearTimeout(typingTimer);
-    typingTimer = null;
-
     if (input.value.trim() === '') {
       input.classList.add('error');
       setFieldError(input, 'Campo obrigatório');

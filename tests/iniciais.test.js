@@ -216,16 +216,87 @@ describe('iniciais', () => {
     });
   });
 
-  describe('coordenadas — aviso durante a digitação', () => {
-    beforeEach(() => {
-      vi.useFakeTimers();
+  describe('coordenadas — ponto decimal automático', () => {
+    const coordInput = () => document.getElementById('coordenadas');
+
+    const digitar = valor => {
+      const input = coordInput();
+      input.value = valor;
+      input.dispatchEvent(new Event('input'));
+    };
+
+    it('insere o ponto da latitude logo após o primeiro algarismo', () => {
       renderIniciais();
+      digitar('-3');
+      expect(coordInput().value).toBe('-3.');
     });
 
-    afterEach(() => {
-      vi.useRealTimers();
+    it('insere o ponto da longitude logo após os dois algarismos', () => {
+      renderIniciais();
+      digitar('-3.1234,-38');
+      expect(coordInput().value).toBe('-3.1234,-38.');
     });
 
+    it('insere o sinal e o ponto quando o teclado não tem a tecla "-"', () => {
+      renderIniciais();
+      digitar('3');
+      expect(coordInput().value).toBe('-3.');
+    });
+
+    it('não duplica o ponto em valores já formatados', () => {
+      renderIniciais();
+      digitar('-3.12345678,-38.41567890');
+      expect(coordInput().value).toBe('-3.12345678,-38.41567890');
+    });
+
+    it('permite continuar digitando depois do ponto', () => {
+      renderIniciais();
+      digitar('-3.');
+      digitar('-3.1');
+      digitar('-3.12');
+      expect(coordInput().value).toBe('-3.12');
+    });
+
+    it('não atrapalha a exclusão: o ponto não volta ao apagar', () => {
+      renderIniciais();
+      digitar('-3.');
+      const input = coordInput();
+      input.value = '-3';
+      const ev = new Event('input');
+      Object.defineProperty(ev, 'inputType', { value: 'deleteContentBackward' });
+      input.dispatchEvent(ev);
+      expect(input.value).toBe('-3');
+    });
+
+    it('preserva a posição do cursor ao inserir o ponto', () => {
+      renderIniciais();
+      const input = coordInput();
+      input.focus();
+      input.value = '-3';
+      input.setSelectionRange(2, 2);
+      input.dispatchEvent(new Event('input'));
+      expect(input.value).toBe('-3.');
+      expect(input.selectionStart).toBe(3);
+    });
+
+    it('não interfere no preenchimento pelo botão de localização', async () => {
+      renderIniciais();
+      const input = coordInput();
+      Object.defineProperty(navigator, 'geolocation', {
+        configurable: true,
+        value: {
+          getCurrentPosition: success => success({ coords: { latitude: -3.1, longitude: -38.4 } }),
+        },
+      });
+
+      document.querySelector('.coord-refresh').click();
+      await vi.waitFor(() => expect(input.value).toBe('-3.1000,-38.4000'));
+
+      delete navigator.geolocation;
+    });
+  });
+
+  describe('coordenadas — aviso ao sair do campo', () => {
     const coordInput = () => document.getElementById('coordenadas');
     const coordError = () => document.querySelector('.coord-wrapper .field-error');
 
@@ -235,58 +306,56 @@ describe('iniciais', () => {
       input.dispatchEvent(new Event('input'));
     };
 
-    it('acusa formato inválido sem precisar clicar em enviar', () => {
-      digitar('abc');
-      vi.advanceTimersByTime(500);
-
-      expect(coordInput().classList.contains('error')).toBe(true);
-      expect(coordError().textContent).toContain('Formato inválido');
-      expect(coordError().classList.contains('show')).toBe(true);
+    it('não mostra erro enquanto o usuário digita', () => {
+      renderIniciais();
+      ['a', '-3', '-3.', '-3.1,-3', '-3.1,-38.'].forEach(valor => {
+        digitar(valor);
+        expect(coordInput().classList.contains('error')).toBe(false);
+        expect(coordError().textContent).toBe('');
+      });
     });
 
-    it('não acusa erro antes da pausa na digitação', () => {
-      digitar('-3.');
-      vi.advanceTimersByTime(300);
-
-      expect(coordInput().classList.contains('error')).toBe(false);
-      expect(coordError().textContent).toBe('');
-    });
-
-    it('some com o aviso assim que o valor fica válido', () => {
-      digitar('abc');
-      vi.advanceTimersByTime(500);
-      expect(coordInput().classList.contains('error')).toBe(true);
-
-      digitar('-3.1245,-38.4156');
-
-      expect(coordInput().classList.contains('error')).toBe(false);
-      expect(coordError().textContent).toBe('');
-    });
-
-    it('não acusa campo vazio enquanto o usuário digita', () => {
-      digitar('');
-      vi.advanceTimersByTime(1000);
-
-      expect(coordInput().classList.contains('error')).toBe(false);
-      expect(coordError().textContent).toBe('');
-    });
-
-    it('acusa campo obrigatório ao sair do campo vazio', () => {
-      const input = coordInput();
-      input.value = '';
-      input.dispatchEvent(new Event('blur'));
-
-      expect(input.classList.contains('error')).toBe(true);
-      expect(coordError().textContent).toBe('Campo obrigatório');
-    });
-
-    it('acusa formato inválido ao sair do campo preenchido', () => {
+    it('mostra a mensagem curta ao sair do campo com valor inválido', () => {
+      renderIniciais();
       const input = coordInput();
       input.value = '123';
       input.dispatchEvent(new Event('blur'));
 
       expect(input.classList.contains('error')).toBe(true);
-      expect(coordError().textContent).toContain('Formato inválido');
+      expect(coordError().textContent).toBe('Formato inválido. Use -3.12345678,-38.41567890');
+      expect(coordError().classList.contains('show')).toBe(true);
+    });
+
+    it('não mostra erro ao sair do campo com valor válido', () => {
+      renderIniciais();
+      const input = coordInput();
+      input.value = '-3.12345678,-38.41567890';
+      input.dispatchEvent(new Event('blur'));
+
+      expect(input.classList.contains('error')).toBe(false);
+      expect(coordError().textContent).toBe('');
+    });
+
+    it('limpa o aviso assim que o usuário volta a digitar', () => {
+      renderIniciais();
+      const input = coordInput();
+      input.value = '123';
+      input.dispatchEvent(new Event('blur'));
+      expect(input.classList.contains('error')).toBe(true);
+
+      digitar('-3.1');
+
+      expect(input.classList.contains('error')).toBe(false);
+      expect(coordError().textContent).toBe('');
+    });
+
+    it('acusa campo obrigatório ao sair do campo vazio', () => {
+      renderIniciais();
+      const input = coordInput();
+      input.dispatchEvent(new Event('blur'));
+
+      expect(input.classList.contains('error')).toBe(true);
+      expect(coordError().textContent).toBe('Campo obrigatório');
     });
   });
 
