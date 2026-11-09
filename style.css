@@ -730,28 +730,49 @@ h3 {
 
 /* Botão compacto na linha do rótulo, alinhado ao texto. */
 .coord-refresh {
-  width: 24px;
-  height: 24px;
+  position: relative;
+  width: 30px;
+  height: 30px;
   padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex: none;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  background: #f9fafb;
-  color: #2563eb;
-  font-size: 14px;
+  border: 2px solid #1e3a8a;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
   line-height: 1;
   cursor: pointer;
+  touch-action: manipulation;
   transition: all var(--transition-fast);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
+}
+
+/* Área de toque de 44px sem aumentar o tamanho aparente do botão. */
+.coord-refresh::after {
+  content: '';
+  position: absolute;
+  inset: -7px;
 }
 
 .coord-refresh:hover {
-  background: #eff6ff;
-  border-color: #3b82f6;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  border-color: #172554;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.45);
+  transform: translateY(-1px);
+}
+
+.coord-refresh:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.4);
+}
+
+.coord-refresh:focus-visible {
+  outline: 2px solid #1d4ed8;
+  outline-offset: 2px;
 }
 
 /* === Time picker modal ─────────────────────────────────────────────────── */
