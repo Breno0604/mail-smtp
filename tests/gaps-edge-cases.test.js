@@ -1,6 +1,6 @@
 ﻿// tests/gaps-edge-cases.test.js
-// Testes para lacunas identificadas no relatório de cobertura
-// G2 a G12 — sem correções, apenas reportar falhas
+// Testes de lacunas e casos de borda (G2–G12; G8 não se aplica)
+// Cada bloco cobre um cenário isolado de falha ou borda.
 
 import 'fake-indexeddb/auto';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
@@ -13,7 +13,7 @@ import { applyRecord } from '../scripts/restore.js';
 import { resetForm } from '../scripts/reset.js';
 import { renderIniciais } from '../scripts/iniciais.js';
 import { renderRetorno, setRetornoData, handleTipoChange } from '../scripts/retornos.js';
-import { renderEquipamentos, addEquip } from '../scripts/equipment.js';
+import { renderEquipamentos } from '../scripts/equipment.js';
 import { generateUUID } from '../scripts/uuid.js';
 import { updateLivePreview, composeEmail } from '../scripts/email.js';
 import { INPUT_CLASS, SELECT_CLASS } from '../scripts/styles.js';

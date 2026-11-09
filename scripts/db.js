@@ -23,7 +23,7 @@ function openDB() {
         db.createObjectStore(STORE_RECORDS, { keyPath: 'uuid' });
       }
 
-      // Store de anexos (novo em v3): chave composta uuid+index
+      // Store de anexos (novo em v3): chave própria `id` (`${uuid}_${index}`) + índice por uuid
       if (!db.objectStoreNames.contains(STORE_ATTACHMENTS)) {
         const attStore = db.createObjectStore(STORE_ATTACHMENTS, { keyPath: 'id' });
         attStore.createIndex('uuid', 'uuid', { unique: false });
@@ -141,6 +141,36 @@ export function updateRecordStatus(uuid, sentData, status = 'sent') {
 // ── Attachments CRUD ─────────────────────────────────────────────────────────
 
 /**
+ * Substitui todos os anexos de um uuid: apaga os antigos via cursor e insere os novos.
+ * Compartilhado por `saveAttachments` e `saveRecordAtomic` para manter as duas
+ * transações com o mesmo comportamento.
+ */
+function replaceAttachments(store, uuid, attachments) {
+  const index = store.index('uuid');
+  const cursorReq = index.openCursor(IDBKeyRange.only(uuid));
+  cursorReq.onerror = () => {}; // erro já propagado por tx.onerror, mas evita "Unhandled error" no console
+  cursorReq.onsuccess = () => {
+    const cursor = cursorReq.result;
+    if (cursor) {
+      cursor.delete();
+      cursor.continue();
+    } else {
+      // Cursor terminou — agora inserir novos anexos
+      attachments.forEach((att, i) => {
+        store.put({
+          id: `${uuid}_${i}`,
+          uuid: uuid,
+          index: i,
+          name: att.name,
+          type: att.type,
+          data: att.data,
+        });
+      });
+    }
+  };
+}
+
+/**
  * Salva anexos no store separado.
  * Primeiro deleta anexos antigos do uuid, depois insere os novos.
  * @param {string} uuid - UUID do registro pai
@@ -148,30 +178,7 @@ export function updateRecordStatus(uuid, sentData, status = 'sent') {
  */
 export function saveAttachments(uuid, attachments) {
   return withTransaction(STORE_ATTACHMENTS, 'readwrite', tx => {
-    const store = tx.objectStore(STORE_ATTACHMENTS);
-    const index = store.index('uuid');
-
-    const cursorReq = index.openCursor(IDBKeyRange.only(uuid));
-    cursorReq.onerror = () => {}; // erro já propagado por tx.onerror, mas evita "Unhandled error" no console
-    cursorReq.onsuccess = () => {
-      const cursor = cursorReq.result;
-      if (cursor) {
-        cursor.delete();
-        cursor.continue();
-      } else {
-        // Cursor terminou — agora inserir novos anexos
-        attachments.forEach((att, i) => {
-          store.put({
-            id: `${uuid}_${i}`,
-            uuid: uuid,
-            index: i,
-            name: att.name,
-            type: att.type,
-            data: att.data,
-          });
-        });
-      }
-    };
+    replaceAttachments(tx.objectStore(STORE_ATTACHMENTS), uuid, attachments);
   });
 }
 
@@ -185,34 +192,11 @@ export function saveAttachments(uuid, attachments) {
  */
 export function saveRecordAtomic(uuid, record, serializedAttachments) {
   return withTransaction([STORE_RECORDS, STORE_ATTACHMENTS], 'readwrite', tx => {
-    const recordStore = tx.objectStore(STORE_RECORDS);
-    const attStore = tx.objectStore(STORE_ATTACHMENTS);
-
     // 1. Gravar registro principal
-    recordStore.put(record);
+    tx.objectStore(STORE_RECORDS).put(record);
 
-    // 2. Deletar anexos antigos do uuid via cursor e depois inserir os novos
-    const index = attStore.index('uuid');
-    const cursorReq = index.openCursor(IDBKeyRange.only(uuid));
-    cursorReq.onsuccess = () => {
-      const cursor = cursorReq.result;
-      if (cursor) {
-        cursor.delete();
-        cursor.continue();
-      } else {
-        // Cursor terminou — inserir novos anexos
-        serializedAttachments.forEach((att, i) => {
-          attStore.put({
-            id: `${uuid}_${i}`,
-            uuid: uuid,
-            index: i,
-            name: att.name,
-            type: att.type,
-            data: att.data,
-          });
-        });
-      }
-    };
+    // 2. Substituir anexos do uuid na mesma transação
+    replaceAttachments(tx.objectStore(STORE_ATTACHMENTS), uuid, serializedAttachments);
   });
 }
 

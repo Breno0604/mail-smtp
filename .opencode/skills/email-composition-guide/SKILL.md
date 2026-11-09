@@ -84,7 +84,7 @@ const subject = `RELATORIO DE CAMPO UC ${uc} OS ${os} - ${tipoLabel}`;
 
 | #   | Seção                   | Linhas                                                          | Condição para aparecer     |
 | --- | ----------------------- | --------------------------------------------------------------- | -------------------------- |
-| 1   | Iniciais                | `composeEmail()` — busca por `iniciaisFields.forEach`           | Sempre                     |
+| 1   | Iniciais                | `composeEmail()` — busca por `headerFields.forEach`             | Sempre                     |
 | 2   | Equipamentos Instalados | `composeEmail()` — busca por `instaladoEquip === 'SIM'`         | `instaladoEquip === 'SIM'` |
 | 3   | Equipamentos Retirados  | `composeEmail()` — busca por `retiradoEquip === 'SIM'`          | `retiradoEquip === 'SIM'`  |
 | 4   | Retorno                 | `composeEmail()` — busca por `applyRetornoTemplate(tipo, data)` | Sempre                     |
@@ -280,10 +280,8 @@ Para adicionar `{novo_campo}`:
 function normalizeText(str) {
   if (typeof str !== 'string' || !str) return str;
   return str
-    .normalize('NFD') // decompõe acentos (á → a + ´)
-    .replace(/[\u0300-\u036f]/g, '') // remove marcas de acento
-    .replace(/ç/g, 'c') // cedilha → c
-    .replace(/Ç/g, 'C') // cedilha maiúsculo → C
+    .normalize('NFD') // decompõe acentos (á → a + ´) e a cedilha (ç → c + U+0327)
+    .replace(/[\u0300-\u036f]/g, '') // remove as marcas de acento
     .toUpperCase(); // tudo maiúsculo
 }
 ```
@@ -292,12 +290,12 @@ function normalizeText(str) {
 
 `composeEmail()` — cada `normalizeText()` pode ser encontrada buscando por `normalizeText(` no corpo da função:
 
-| Local            | Contexto                            | O que normaliza                                     |
-| ---------------- | ----------------------------------- | --------------------------------------------------- |
-| Iniciais         | `iniciaisFields.forEach`            | `normalizeText(field.label)` e `normalizeText(val)` |
-| Equipamentos     | `.map()` sobre instalados/retirados | Cada equipamento → valor normalizado                |
-| Template         | Após `applyRetornoTemplate()`       | Template inteiro como bloco único                   |
-| Retorno fallback | `getRetornoFields(tipo).forEach`    | `normalizeText(field.label)` e `normalizeText(val)` |
+| Local            | Contexto                            | O que normaliza                                      |
+| ---------------- | ----------------------------------- | ---------------------------------------------------- |
+| Iniciais         | `headerFields.forEach`              | `normalizeText(raw)` (valor de cada campo do header) |
+| Equipamentos     | `.map()` sobre instalados/retirados | Cada equipamento → valor normalizado                 |
+| Template         | Após `applyRetornoTemplate()`       | Template inteiro como bloco único                    |
+| Retorno fallback | `getRetornoFields(tipo).forEach`    | `normalizeText(field.label)` e `normalizeText(val)`  |
 
 ### Regras
 

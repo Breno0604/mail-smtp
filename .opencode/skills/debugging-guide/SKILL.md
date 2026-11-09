@@ -263,7 +263,7 @@ Evento (clique, change) → Handler → State → Persistência → Renderizaç�
 
 **Causa:** armazenamento cheio ou transação concorrente.
 **Verificar:** DevTools > Application > IndexedDB > mail-mvp — quantos registros? Tamanho dos attachments?
-**Solução:** `cleanupOldSentRecords()` remove registros > 90 dias. Executar manualmente ou esperar o startup.
+**Solução:** `getExpiredSentRecords()` lista registros > 90 dias; no startup o app oferece removê-los (`offerCleanupOldRecords()`). `cleanupOrphanedAttachments()` limpa anexos sem registro pai.
 
 ### 8. Erro 502 no Netlify (backend)
 

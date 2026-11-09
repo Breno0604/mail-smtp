@@ -130,6 +130,14 @@ export function createTestDOM(opts = {}) {
       <img id="lightbox-img" src="" alt="Preview">
     </div>
 
+    <div class="orientation-overlay" id="orientation-overlay">
+      <div class="orientation-overlay-content">
+        <div class="orientation-icon">📱</div>
+        <p class="orientation-text">Gire o celular na vertical</p>
+        <p class="orientation-sub">O formulário funciona melhor no modo retrato.</p>
+      </div>
+    </div>
+
     <div class="modal-overlay hidden" id="confirm-modal" role="dialog" aria-modal="true">
       <p id="confirm-modal-text"></p>
       <button id="confirm-modal-cancel">Cancelar</button>
@@ -144,6 +152,13 @@ export function createTestDOM(opts = {}) {
       <div class="modal">
         <p id="anexos-modal-text"></p>
         <button class="btn btn-primary" id="anexos-modal-close">Fechar</button>
+      </div>
+    </div>
+
+    <div class="modal-overlay hidden" id="send-modal" role="dialog" aria-modal="true" aria-labelledby="send-modal-text">
+      <div class="modal">
+        <p id="send-modal-text"></p>
+        <button class="btn btn-primary" id="send-modal-close">Fechar</button>
       </div>
     </div>
   `;

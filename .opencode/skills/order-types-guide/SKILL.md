@@ -15,7 +15,7 @@ Use esta skill quando:
 
 ## Decisão inicial
 
-Antes de tocar código, responda **2 perguntas** consultando `dados_projeto/tipos_ordem_template.xlsx` (aba `corte`):
+Antes de tocar código, responda **2 perguntas** consultando o código (`scripts/data/fields-data.js`) e, como referência histórica/parcial, `dados_projeto/tipos_ordem_template.xlsx` (aba `corte`). O código é a fonte de verdade.
 
 ### Pergunta 1: O tipo tem campos de retorno customizados na planilha?
 
@@ -24,7 +24,7 @@ Antes de tocar código, responda **2 perguntas** consultando `dados_projeto/tipo
 | **Sim** define campos específicos | Cria array customizado em `retornoFieldsByTipo` |
 | **Não** só descrição              | Usa `FIELD_DESCRICAO`                           |
 
-**Regra:** se a planilha não lista o tipo na aba `corte`, assumir `FIELD_DESCRICAO`.
+**Regra:** se nem o código nem a planilha listam campos para o tipo, assumir `FIELD_DESCRICAO`.
 
 ### Pergunta 2: Os campos são iguais aos de outro tipo já implementado?
 
@@ -37,8 +37,8 @@ Antes de tocar código, responda **2 perguntas** consultando `dados_projeto/tipo
 
 ### Antes
 
-- [ ] Consultar `tipos_ordem_template.xlsx` para definir campos de retorno
-- [ ] Verificar se o nome na planilha existe exatamente em `tipoOrdemOptions`
+- [ ] Consultar `fields-data.js` (fonte de verdade) e a planilha como referência histórica para definir campos de retorno
+- [ ] Verificar se o nome no código existe exatamente em `tipoOrdemOptions`
 - [ ] Identificar tipos compartilhados para definir constante
 - [ ] Verificar se o tipo pode reusar constante existente
 
@@ -165,7 +165,7 @@ export const MEU_TIPO_TEMPLATE = [
 {
   blocos: [
     { texto: "Campo obrigatório: {campo_um}" },
-    { texto: "Campo opcional: {campo_opcional}", condicao: { campo: "campo_opcional", valor: true } },
+    { texto: "Campo opcional: {campo_opcional}", condicao: { campo: "campo_opcional", valor: "SIM" } },
   ],
 }
 ```
@@ -224,16 +224,16 @@ Husky bumpa `CACHE_NAME` automaticamente.
 
 ### Arquivos de referência (somente leitura)
 
-| Arquivo                                   | Para que serve                            |
-| ----------------------------------------- | ----------------------------------------- |
-| `dados_projeto/tipos_ordem_template.xlsx` | Fonte de verdade dos campos de retorno    |
-| `scripts/data/fields-data.js`             | Campos existentes, padrões de constante   |
-| `scripts/data/retorno-templates.js`       | Templates existentes, padrões de variante |
+| Arquivo                                   | Para que serve                                                                    |
+| ----------------------------------------- | --------------------------------------------------------------------------------- |
+| `dados_projeto/tipos_ordem_template.xlsx` | Referência histórica/parcial dos campos (não é fonte de verdade — o código manda) |
+| `scripts/data/fields-data.js`             | Fonte de verdade: campos existentes, padrões de constante                         |
+| `scripts/data/retorno-templates.js`       | Templates existentes, padrões de variante                                         |
 
 ## Situações a evitar
 
 - ❌ Adicionar ao dropdown sem criar entrada em `retornoFieldsByTipo` (teste de integridade vai falhar, mas evita ida e volta)
-- ❌ Nome no dropdown diferente do nome na planilha (causa `getRetornoFields()` retornar `undefined` — fallback silencioso para descrição)
+- ❌ Nome no dropdown diferente da chave em `retornoFieldsByTipo` (causa `getRetornoFields()` retornar `undefined` — fallback silencioso para descrição)
 - ❌ Esquecer `FIELD_DESCRICAO` ao remover de um tipo que ganhou campos (o `default` só funciona para tipos que **não** estão no mapa)
 - ❌ Incluir `"Selecione"` manualmente nas `opcoes` de SELECT (sistema adiciona automaticamente)
 - ❌ Modificar arquivos que não estão na lista de 3 — exceção apenas com sinalização ao usuário

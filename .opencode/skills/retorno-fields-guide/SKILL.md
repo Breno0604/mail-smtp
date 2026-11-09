@@ -184,8 +184,8 @@ retornoFieldsByTipo (fields-data.js)  →  retornoTemplates (retorno-templates.j
 Estado atual (conferir com o código antes de usar):
 
 - **40 tipos** no dropdown `tipo-ordem` (`tipoOrdemOptions` em `fields-data.js`)
-- **43 chaves** em `retornoFieldsByTipo`: as 40 + 3 **históricas** (`DESLOCAMENTO DE SUBESTAÇÃO`, `LIGAÇÃO NOVA ISOLADA`, `LIGAÇÃO NOVA SIMULTÂNEA`), mantidas para abrir registros antigos
-- **11 tipos** com campos próprios; **32** usam apenas `FIELD_DESCRICAO`
+- **44 chaves** em `retornoFieldsByTipo`: as 40 + 3 **históricas** (`DESLOCAMENTO DE SUBESTAÇÃO`, `LIGAÇÃO NOVA ISOLADA`, `LIGAÇÃO NOVA SIMULTÂNEA`), mantidas para abrir registros antigos, + `default`
+- **11 tipos** com campos próprios; **29** usam apenas `FIELD_DESCRICAO`
 - **43 templates** em `retornoTemplates` (32 são o template mínimo de descrição)
 - **Nenhum** campo usa `condicional.negado` hoje
 
@@ -256,12 +256,10 @@ Os nomes em `retornoFieldsByTipo` devem corresponder **exatamente** aos valores 
 
 ### Atenção 2: Ordem de campos condicionais em cascata
 
-O campo pai deve vir **antes** do filho no array. Exemplo de cascata em `AFERICAO_MEDIDOR_FIELDS`:
+O campo pai deve vir **antes** do filho no array. Exemplo de cascata em `TELEMEDICAO_FIELDS`:
 
 ```
-medidor_afericao → leitura_afericao → motivo_nao_colher
-                 → toi_afericao → numero_toi
-                                → porque_nao_aplicado_toi
+executado_telemedicao → motivo_cancelamento_telemedicao → descreva_problema_telemedicao
 ```
 
 ### Atenção 3: Negado vs. Multi-valor

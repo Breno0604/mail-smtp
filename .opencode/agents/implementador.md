@@ -4,7 +4,7 @@ description: >-
   Subagente de implementação. Responsável por escrever, modificar e configurar
   código-fonte em qualquer stack. Deve descobrir autonomamente a tecnologia,
   estrutura e convenções do projeto antes de implementar.
-model: opencode-go/deepseek-v4-pro
+model: opencode-go/glm-5.2
 temperature: 0.2
 mode: subagent
 permission:

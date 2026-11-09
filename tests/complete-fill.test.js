@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { DOM } from '../scripts/dom.js';
 import { createTestDOM } from './helpers/dom-fixture.js';
 import { state } from '../scripts/state.js';
-import { saveState, clearCurrentUUID } from '../scripts/persistence.js';
+import { saveState } from '../scripts/persistence.js';
 import { getRecord, getAllRecords, deleteRecord } from '../scripts/db.js';
 import { applyRecord } from '../scripts/restore.js';
 import { resetForm } from '../scripts/reset.js';

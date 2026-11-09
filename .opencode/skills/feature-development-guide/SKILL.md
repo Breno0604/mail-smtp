@@ -20,15 +20,15 @@ O projeto segue uma arquitetura em 5 camadas com ES6 modules, sem bundler.
 
 ```
 ┌─────────────────────────────────┐
-│ Entry Points                    │  index.html, app.js, sw.js
+│ Entry Points                    │  index.html, app.js, sw.js, sw-update.js
 ├─────────────────────────────────┤
-│ Orchestration                   │  app.js, send.js, reset.js, restore.js, sidebar.js
+│ Orchestration                   │  app.js, send.js, reset.js, restore.js, sidebar.js, duplicate.js
 ├─────────────────────────────────┤
-│ Cross-Cutting                   │  persistence.js, email.js, validation.js, collectors.js, ui.js
+│ Cross-Cutting                   │  persistence.js, email.js, validation.js, collectors.js, ui.js, filled-state.js, compress.js
 ├─────────────────────────────────┤
-│ Feature Modules                 │  iniciais.js, retornos.js, equipment.js, attachments.js
+│ Feature Modules                 │  iniciais.js, retornos.js, equipment.js, attachments.js, timepicker.js
 ├─────────────────────────────────┤
-│ Infrastructure                  │  state.js, dom.js, db.js, uuid.js, utils.js, styles.js
+│ Infrastructure                  │  state.js, dom.js, db.js, uuid.js, utils.js, styles.js, limits.js
 ├─────────────────────────────────┤
 │ Data                            │  fields-data.js, retorno-templates.js, equipment-keys.js
 └─────────────────────────────────┘
@@ -36,55 +36,58 @@ O projeto segue uma arquitetura em 5 camadas com ES6 modules, sem bundler.
 
 ### Camadas em detalhe
 
-| Camada              | Arquivos                                                                | Responsabilidade                                    |
-| ------------------- | ----------------------------------------------------------------------- | --------------------------------------------------- |
-| **Entry Points**    | `index.html`, `app.js`, `sw.js`                                         | Inicialização da aplicação, service worker          |
-| **Orchestration**   | `send.js`, `reset.js`, `restore.js`, `sidebar.js`                       | Fluxos completos (envio, reset, restore, navegação) |
-| **Cross-Cutting**   | `persistence.js`, `email.js`, `validation.js`, `collectors.js`, `ui.js` | Serviços transversais usados por múltiplos módulos  |
-| **Feature Modules** | `iniciais.js`, `retornos.js`, `equipment.js`, `attachments.js`          | Renderização + eventos de seções específicas        |
-| **Infrastructure**  | `state.js`, `dom.js`, `db.js`, `uuid.js`, `utils.js`, `styles.js`       | Serviços base: estado, DOM, banco, utilidades       |
-| **Data**            | `fields-data.js`, `retorno-templates.js`, `equipment-keys.js`           | Dados estáticos, sem imports de outros módulos      |
+| Camada              | Arquivos                                                                                                  | Responsabilidade                                    |
+| ------------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| **Entry Points**    | `index.html`, `app.js`, `sw.js`, `sw-update.js`                                                           | Inicialização da aplicação, service worker          |
+| **Orchestration**   | `send.js`, `reset.js`, `restore.js`, `sidebar.js`, `duplicate.js`                                         | Fluxos completos (envio, reset, restore, navegação) |
+| **Cross-Cutting**   | `persistence.js`, `email.js`, `validation.js`, `collectors.js`, `ui.js`, `filled-state.js`, `compress.js` | Serviços transversais usados por múltiplos módulos  |
+| **Feature Modules** | `iniciais.js`, `retornos.js`, `equipment.js`, `attachments.js`, `timepicker.js`                           | Renderização + eventos de seções específicas        |
+| **Infrastructure**  | `state.js`, `dom.js`, `db.js`, `uuid.js`, `utils.js`, `styles.js`, `limits.js`                            | Serviços base: estado, DOM, banco, utilidades       |
+| **Data**            | `fields-data.js`, `retorno-templates.js`, `equipment-keys.js`                                             | Dados estáticos, sem imports de outros módulos      |
 
 ### Grafo de dependências (quem importa quem)
 
 ```
-app.js ← dom, state, persistence, fields, iniciais, db, equipment,
-         retornos, attachments, reset, sidebar, utils, send, email, filled-state
+app.js ← dom, state, persistence, fields, iniciais, db, restore, ui, equipment,
+         retornos, attachments, reset, sidebar, send, email, filled-state
 
 send.js ← dom, state, db, ui, duplicate, compress, validation, collectors, email, persistence
-reset.js ← dom, state, persistence, iniciais, retornos, equipment, attachments, ui, utils, email, collectors
-restore.js ← dom, state, persistence, iniciais, fields, retornos, equipment, attachments, utils, db, email, collectors, filled-state
+reset.js ← dom, state, persistence, iniciais, retornos, equipment, attachments, ui, email, collectors
+restore.js ← dom, state, iniciais, fields, retornos, equipment, attachments, utils, db, email, collectors, filled-state
 sidebar.js ← dom, state, db, utils, restore, reset, ui
+duplicate.js ← dom, state, db, utils, ui
 
-persistence.js ← state, db, utils, uuid, collectors
+persistence.js ← state, db, utils, uuid, collectors, fields, ui, compress
 email.js ← dom, fields, collectors, equipment-keys, utils, retorno-templates
-validation.js ← dom, state, ui, collectors, fields
+validation.js ← dom, state, ui, collectors, fields, utils, limits
 collectors.js ← dom, state, fields
-ui.js ← dom
+ui.js ← dom, limits
+compress.js ← utils
 
-iniciais.js ← dom, persistence, validation, ui, fields, utils, styles
-retornos.js ← dom, state, persistence, validation, fields, iniciais
+iniciais.js ← dom, persistence, validation, ui, fields, utils, timepicker, styles
+retornos.js ← dom, state, persistence, validation, fields, iniciais, utils
 equipment.js ← state, persistence, styles, equipment-keys
-attachments.js ← dom, state, persistence, ui
+attachments.js ← dom, state, persistence, ui, limits
+sw-update.js ← dom
 
 state.js ← uuid, equipment-keys
 fields.js ← fields-data
-db.js ← (IndexedDB nativo)
+db.js, dom.js, limits.js, timepicker.js, utils.js, uuid.js, styles.js, filled-state.js, equipment-keys.js ← (nativo)
 ```
 
 Não há dependências circulares (a única que existia foi quebrada extraindo `filled-state.js`).
 
 ### Convenções para novos módulos
 
-| Regra                                | Detalhe                                                                                                          |
-| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
-| **ES6 modules**                      | `export function` / `export const` — sem bundler                                                                 |
-| **DOM via proxy**                    | Importar `DOM` de `dom.js`; nunca `getElementById` fora de `cacheDOM()`                                          |
-| **State mutável**                    | Importar `state` de `state.js`; mutar diretamente                                                                |
-| **Persistência**                     | Chamar `debouncedSave()` após mudanças de state; anexos são persistidos automaticamente no próximo `saveState()` |
-| **CSS via constantes**               | `INPUT_CLASS`, `SELECT_CLASS` de `styles.js`                                                                     |
-| **Nomes PT/EN**                      | Domínio/negócio em português; infraestrutura/utilitários em inglês                                               |
-| **Um módulo = uma responsabilidade** | Não criar arquivos monolíticos                                                                                   |
+| Regra                                | Detalhe                                                                                                                                                                           |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **ES6 modules**                      | `export function` / `export const` — sem bundler                                                                                                                                  |
+| **DOM via proxy**                    | Importar `DOM` de `dom.js`; `getElementById` só em `cacheDOM()` e em campos dinâmicos (`validation.js`, `collectors.js`, `equipment.js`, `restore.js`, `retornos.js`, `utils.js`) |
+| **State mutável**                    | Importar `state` de `state.js`; mutar diretamente                                                                                                                                 |
+| **Persistência**                     | Chamar `debouncedSave()` após mudanças de state; anexos são persistidos automaticamente no próximo `saveState()`                                                                  |
+| **CSS via constantes**               | `INPUT_CLASS`, `SELECT_CLASS` de `styles.js`                                                                                                                                      |
+| **Nomes PT/EN**                      | Domínio/negócio em português; infraestrutura/utilitários em inglês                                                                                                                |
+| **Um módulo = uma responsabilidade** | Não criar arquivos monolíticos                                                                                                                                                    |
 
 ---
 
@@ -395,7 +398,7 @@ export async function fetchDados() {
 ## Situações a evitar
 
 - ❌ Criar módulo sem adicionar ao `STATIC_ASSETS` no `sw.js` — o service worker não vai cachear
-- ❌ Usar `getElementById` fora de `cacheDOM()` ou de coletores/validadores de campos dinâmicos
+- ❌ Usar `getElementById` fora de `cacheDOM()` ou dos módulos de campos dinâmicos (`validation.js`, `collectors.js`, `equipment.js`, `restore.js`, `retornos.js`, `utils.js`)
 - ❌ Mutar state sem chamar `debouncedSave()` — dados não persistem
 - ❌ Adicionar campo ao state sem atualizar `collectors.js` — campo não aparece no save
 - ❌ Adicionar seção sem atualizar `reset.js` — reset deixa dados fantasmas

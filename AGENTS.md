@@ -13,7 +13,7 @@
 - Frontend: vanilla HTML/CSS/JS (ES6 modules), Tailwind CSS (static), no bundler
 - Backend: two Netlify Functions (CommonJS) — `netlify/functions/send.cjs` (Node.js + nodemailer) and `netlify/functions/validate-coordinates.cjs`
 - Persistence: IndexedDB (`mail-mvp` DB, `records` store) + localStorage (UUID only)
-- Tests: Vitest + jsdom, 36 arquivos em `tests/`
+- Tests: Vitest + jsdom, 35 arquivos de teste em `tests/`
 - Deploy: `git push` → Netlify auto-deploys (`npm install` runs on build)
 
 ## Dev workflow
@@ -46,7 +46,7 @@
 
 ## Key conventions an agent might miss
 
-- **DOM cache** (`scripts/dom.js`): All DOM lookups happen once in `cacheDOM()`. Import `DOM` from `dom.js`; never call `getElementById` elsewhere (exceto em `validation.js` e `collectors.js` para campos dinâmicos criados após `cacheDOM()`).
+- **DOM cache** (`scripts/dom.js`): All static DOM lookups happen once in `cacheDOM()`. Import `DOM` from `dom.js`; `getElementById` só para campos dinâmicos criados após `cacheDOM()` (`validation.js`, `collectors.js`, `equipment.js`, `restore.js`, `retornos.js`, `utils.js`).
 - **DOM.tipoOrdem uses a getter** (`scripts/dom.js`): `Object.defineProperty` getter always queries DOM live via `document.getElementById('tipo-ordem')`. This avoids stale references when `renderIniciais()` recreates the element. No manual assignment needed.
 - **CACHE_NAME** in `sw.js`: Bump this number every time static assets (HTML, CSS, JS) change. Backend-only changes skip this. **Auto-bumped by Husky pre-commit hook**.
 - **Tipo de Ordem names** in `scripts/fields.js` must match **exactly** between `iniciaisFields` dropdown options and `retornoFieldsByTipo` keys.

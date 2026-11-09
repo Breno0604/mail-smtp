@@ -106,7 +106,6 @@ export default [
         node: true,
         console: 'readonly',
         Buffer: 'readonly',
-        writeFile: 'readonly',
         process: 'readonly',
         module: 'readonly',
         exports: 'readonly',

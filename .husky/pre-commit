@@ -1,3 +1,6 @@
+#!/bin/sh
+set -e
+
 # Run lint-staged on staged files
 npx lint-staged
 
@@ -7,7 +10,7 @@ STATIC_FILES=$(git diff --cached --name-only | grep -E '\.(js|css|html|json|png|
 
 if [ -n "$STATIC_FILES" ]; then
   # Lê versão atual do CACHE_NAME
-  CURRENT=$(grep -oE "retorno-v[0-9]+" sw.js | sed 's/retorno-v//')
+  CURRENT=$(grep -oE "retorno-v[0-9]+" sw.js | sed 's/retorno-v//' || true)
   
   if [ -n "$CURRENT" ]; then
     NEXT=$((CURRENT + 1))
