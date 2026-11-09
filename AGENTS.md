@@ -87,7 +87,7 @@ This project has a knowledge graph at graphify-out/ with god nodes, community st
 
 ### Graph state
 
-- Current graph: **1,948 nodes, 4,594 edges, 151 communities** (as of Jul 2026)
+- Current graph: **685 nodes, 1,531 edges, 44 communities** (AST-only, Nov 2026). O pipeline semântico completo (`graphify .`) adiciona nós e labels extras.
 - Graph is AST-only on `graphify update .` (no API cost). Full pipeline (`graphify .`) uses Gemini for semantic labels (~$0.04/run).
 
 ### Commands
